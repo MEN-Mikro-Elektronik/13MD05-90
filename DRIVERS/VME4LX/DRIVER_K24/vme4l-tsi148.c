@@ -2663,8 +2663,7 @@ static int __init tsi148_init_module( void )
 {
 	int rv;
 
-	VME4LDBG( "vme4l(%s): compiled %s %s\n", __FUNCTION__,
-			  __DATE__, __TIME__ );
+	printk("tsi148_init_module...\n" );
 
 	if( (rv =  pci_register_driver( &G_pci_driver )) < 0 ){
 		printk( KERN_ERR "*** vme4l(%s): PCI device initialization failed\n",

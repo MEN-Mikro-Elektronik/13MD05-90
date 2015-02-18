@@ -28,6 +28,8 @@
  *
  *-------------------------------[ History ]---------------------------------
  *
+ * ------------- from here on maintained in Git -------------------------
+ *
  * $Log: men_chameleon.c,v $
  * Revision 1.34  2013/08/29 16:49:09  ts
  * R: 1. qualifier __devinitdata doesnt exist from 3.8.0 on
@@ -1042,8 +1044,7 @@ int __init men_chameleon_init(void)
     if( G_chamInit )
         return 0;               /* already initialized */
 
-    printk( KERN_INFO "Init MEN Chameleon PNP subsystem. Build: %s / %s\n",
-			__DATE__, __TIME__ );
+    printk( KERN_INFO "Init MEN Chameleon PNP subsystem\n" );
 #ifdef CONFIG_PCI
     if( (rv =  pci_module_init( &G_pci_driver )) < 0 )
         return rv;

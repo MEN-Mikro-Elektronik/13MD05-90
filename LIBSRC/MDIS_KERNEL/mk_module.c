@@ -191,12 +191,14 @@ module_param( mk_dbglevel, int, 0664 );
 MODULE_PARM_DESC(mk_dbglevel, "MDIS kernel debug level");
 #endif
 
-OSS_HANDLE		*G_osh;			/* MK's OSS handle */
-DBG_HANDLE 		*G_dbh;		/* debug handle */
-OSS_SEM_HANDLE  *G_mkLockSem; 		/* global MK sempahore */
-OSS_DL_LIST		G_drvList;		/* list of reg. LL drivers */
-OSS_DL_LIST		G_devList;		/* list of devices */
-OSS_DL_LIST		G_freeUsrBufList;	/* list of free user buffers */
+OSS_HANDLE		*G_osh;							/* MK's OSS handle */
+DBG_HANDLE 		*G_dbh;							/* debug handle */
+OSS_SEM_HANDLE  *G_mkLockSem; 					/* global MK sempahore */
+OSS_SEM_HANDLE  *G_mkIoctlSem; 					/* MK ioctl sempahore */
+OSS_DL_LIST		G_drvList;						/* list of reg. LL drivers */
+OSS_DL_LIST		G_devList;						/* list of devices */
+
+OSS_DL_LIST		G_freeUsrBufList;				/* list of free user buffers */
 
 #ifdef CONFIG_DEVFS_FS
 # if LINUX_VERSION_CODE < VERSION_CODE(2,6,0)
@@ -271,14 +273,14 @@ int mk_release (struct inode *inode, struct file *filp)
 	int32 err;
 
 	DBGWRT_1((DBH,"mk_release file=%p\n", filp));
-	
+
 	if( mkPath != NULL ){
 		dev = mkPath->dev;		/* point to MDIS device */
 
 		MK_LOCK( err );
-		
+
 		DBGWRT_2((DBH," %s useCount was %d\n", dev->devName, dev->useCount ));
-		if(--dev->useCount == 0 ){
+		if( (--dev->useCount == 0) && (dev->persist == FALSE) ){
 			/* do the final close */
 			if( (err = MDIS_FinalClose(dev)))
 				ret = -err;
@@ -328,7 +330,7 @@ int mk_ioctl (
      */
     if (_IOC_DIR(cmd) & _IOC_READ)
         err = !access_ok(VERIFY_WRITE, (void *)arg, size);
-	else if (_IOC_DIR(cmd) & _IOC_WRITE)
+    else if (_IOC_DIR(cmd) & _IOC_WRITE)
         err =  !access_ok(VERIFY_READ, (void *)arg, size);
 	
 	if (err)	
@@ -659,7 +661,7 @@ static int MDIS_GetStat( MK_PATH *mkPath, unsigned long arg )
 			return -EFAULT;
 
 		/*
-		 * Block getstats allow to exchange data to and from the kernel,	
+		 * Block getstats allow to exchange data to and from the kernel,
 		 * so we have to copy from user space first
 		 */
 		if( (data = MDIS_GetUsrBuf( sgblk.size, &bufId )) == NULL )
@@ -1107,14 +1109,7 @@ FUNCTYPE MDIS_IRQHANDLER(int irq, void *dev_id, struct pt_regs *regs)
 	MK_DEV *dev = (MK_DEV *)dev_id;
     int32            	irqFromBB;
 	int handled = 0;
-#ifdef CONFIG_SMP
-	OSS_IRQ_STATE oldState;
 
-	/*
-	 * this prevents concurrent execution on multiprocessor systems
-	 */
-	oldState = OSS_IrqMaskR( dev->osh, NULL );
-#endif
 
     IDBGWRT_1((DBH,">>> MDIS_IrqHandler %s vector %d \n", dev->devName, irq ));
 
@@ -1156,10 +1151,6 @@ FUNCTYPE MDIS_IRQHANDLER(int irq, void *dev_id, struct pt_regs *regs)
 	if( dev->irqSrvExitFunc )
 		dev->brdJumpTbl.irqSrvExit( dev->brd, dev->devSlot );	
 
-	/* release IRQ lock */
-#ifdef CONFIG_SMP
-	OSS_IrqRestore( dev->osh, NULL, oldState );
-#endif
 
 #ifdef LINUX_26
 	return handled ? IRQ_HANDLED : IRQ_NONE;
@@ -1336,7 +1327,7 @@ static int MDIS_OpenDevice( int ioctlCode,
 
 		/*--- check if device already known ---*/
 		if( (dev = MDIS_FindDevByName( mcdd.d.devName )) == NULL ){
-			
+
 			/*--- not known, do initial open ---*/
 			if( (err = MDIS_InitialOpen( mcdd.d.devName,
 						     devDescHdl,

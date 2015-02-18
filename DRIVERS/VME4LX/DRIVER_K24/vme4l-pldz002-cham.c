@@ -1858,7 +1858,7 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 	VME4L_BRIDGE_HANDLE *h = &G_bHandle;
 	CHAMELEONV2_UNIT_T u;
 
-	printk(KERN_INFO "MEN VME4L: probing driver built %s/%s\n", __DATE__, __TIME__);
+	printk(KERN_INFO "MEN VME4L: probing driver...\n");
 	switch ( chu->unitFpga.variant ) {
 		case 1:
 			/* control registers, perform further init */
@@ -2002,7 +2002,6 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 static int __init vme4l_pldz002_init_module(void)
 {
 	printk( KERN_INFO "%s ", __FUNCTION__);
-	printk( KERN_INFO "%s %s\n", __DATE__, __TIME__ );
 
     if (!men_chameleonV2_register_driver( &G_driver ))
 		return -ENODEV;  /* couldnt find requested unit */

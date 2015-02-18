@@ -8,6 +8,10 @@
 #
 #---------------------------------[ History ]---------------------------------
 #
+#
+#   ts@men.de: permit.c, protect.c and log.c removed.. 
+#              was an OS9 special cucumber..
+#
 #   $Log: library.mak,v $
 #   Revision 1.3  2012/12/05 10:57:13  ww
 #   added permit.c, protect.c and log.c.
@@ -37,16 +41,11 @@ MAK_INP2=bindump$(INP_SUFFIX)
 MAK_INP3=memdump$(INP_SUFFIX)
 MAK_INP4=tstopt$(INP_SUFFIX)
 MAK_INP5=ident$(INP_SUFFIX)
-MAK_INP6=permit$(INP_SUFFIX)
-MAK_INP7=protect$(INP_SUFFIX)
-MAK_INP8=log$(INP_SUFFIX)
 
 MAK_INP=\
         $(MAK_INP1)\
         $(MAK_INP2)\
         $(MAK_INP3)\
         $(MAK_INP4)\
-        $(MAK_INP5)\
-        $(MAK_INP6)\
-        $(MAK_INP7)\
-        $(MAK_INP8)
+        $(MAK_INP5)
+

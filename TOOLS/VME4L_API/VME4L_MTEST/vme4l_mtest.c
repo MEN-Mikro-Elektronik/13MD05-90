@@ -166,7 +166,6 @@ void version(void)
 
 	fprintf(stderr, "\nV ");
 	while( *p != '$' ) fprintf(stderr, "%c", *p++);
-	fprintf(stderr, " Build date: %s %s\n", __DATE__, __TIME__);
 	fprintf(stderr, " (c) Copyright 1995-2013 by MEN GmbH\n");
 }
 

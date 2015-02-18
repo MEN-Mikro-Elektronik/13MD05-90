@@ -2118,10 +2118,7 @@ static int __init vme4l_pldz002_init_module(void)
 {
 
 	int rv;
-	printk( KERN_INFO "%s ", __FUNCTION__);
-	printk( KERN_INFO "%s %s ", __DATE__, __TIME__ );
-
-	printk( KERN_INFO " \n");
+	printk( KERN_INFO "Initializing vme4l_pldz002...\n");
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 22)
 	if( (rv =  pci_module_init( &G_pci_driver )) < 0 ) {
