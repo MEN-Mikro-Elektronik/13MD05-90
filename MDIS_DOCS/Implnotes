@@ -1,0 +1,233 @@
+Implementation Notes on MDIS for Linux
+--------------------------------------
+Klaus Popp 15.08.2001 klaus.popp@men.de
+Updated    03.06.2004 klaus.popp@men.de
+
+
+Module Overview
+
+These Linux modules are produced by the build process:
+
+- men_mdis_kernel 
+
+  The central driver for all MDIS devices. Implements the /dev/mdis
+  device system calls. Provides functions to register low-level
+  drivers.  Instantiates low-level (LL) drivers.
+
+- men_bbis_kernel 
+  
+  used to register and instantiate the carrier board
+  drivers. Currently provides no seperate linux /dev device. It's
+  services are called by the MDIS kernel but can be called from other
+  - non-MDIS - devices too
+
+- men_ll_xxx (e.g. men_ll_m55)
+
+  The low-level drivers. These modules register themselves at loadtime
+  to the MDIS kernel.
+
+- men_bb_xxx (e.g. men_bb_d201)
+
+  The carrier board drivers. These modules register themselves at
+  loadtime to the BBIS kernel.
+
+- men_desc
+
+  MDIS Descriptor parser library. Used by MDIS/BBIS kernel as well as
+  by board drivers and LL drivers
+
+- men_oss
+
+  Operating System Services. Provides an abstraction of the kernel mode
+  routines offered by the specific OS (i.e. Linux)
+
+- men_dbg
+
+  Provides some additional routines to print debug messages
+  (DBGDMP_x). Note that most of the work is done by macros in dbg_os.h
+
+- men_pld / men_pld_sw
+
+  Optional module required by some LL/board drivers to load
+  PLDs/FPGAs. The men_pld_sw library is functional identical but uses
+  byte swapped accesses to access the HW.
+
+- men_id / men_id_sw
+  
+  Optional module required by some LL/board drivers to read serial
+  identification EEPROMs on the HW
+
+- men_mbuf
+
+  Optional library required by some LL drivers to implement different
+  software (ring)-buffers. Usually used by simple binary or analog I/O
+  modules
+
+Each module exists in a two versions: One version with enabled debug
+strings (MODULES/dbg) or with removed debug strings
+(MODULES/nodbg). Of course the debug versions should be used only for
+trouble shooting
+
+
+
+Descriptor Handling
+
+Every instance of an LL driver or board driver requires an MDIS device
+descriptor for its operation. The ASCII form of the descriptors is
+converted into binary form using the descgen utility. E.g. the ASCII
+m55_1.dsc descriptor is converted into DESC/m55_1.bin. The binary
+descriptors must be placed into target's /etc/mdis (or a symbolic link
+has to be setup).
+
+The user mode M_open() routine will open the central /dev/mdis device
+reads both the LL device descriptor and the board descriptor from
+/etc/mdis and passes them via ioctl to the MDIS kernel.
+
+This way only one linux device node is required. The MDIS kernel
+internally can easily maintain the corresponding devices for each
+opened path using the file structure's private_data element which is
+unique for each path.
+
+
+
+Routing of MDIS API calls
+
+MDIS API calls are routed to /dev/mdis as shown below:
+
+     API call	   Driver call
+     ---------	   -----------
+     M_open	   	   open, ioctl(MDIS_OPEN_DEVICE)
+     M_read	       ioctl(MDIS_READ)
+     M_write	   ioctl(MDIS_WRITE)
+     M_getstat	   ioctl(MDIS_GETSTAT)
+     M_setstat	   ioctl(MDIS_SETSTAT)
+     M_getblock	   read
+     M_setblock	   write
+     M_close	   close
+     M_errstring   -
+
+
+
+MDIS API buffers
+
+Unfortunately, for M_getblock/M_setblock and for block
+M_getstat/M_setstat, the MDIS kernel has to copy data from user space
+into a kernel space buffer before the LL driver routine is called and
+back to user space afterwards. This is required since MDIS LL drivers
+think that they can access user space buffers directly (i.e. they use
+direct pointer accesses and not the uaccess macros). Another reason
+for this is that MDIS LL drivers access user buffers from interrupt
+routines.
+
+Depending on the requested number of bytes requested by the API call,
+different allocation strategies are used (see
+mk_module.c:MDIS_GetUsrBuf())
+
+
+
+Signals
+
+MDIS LL drivers can send signals to the user application on predefined
+events. It is strongly recommended to use realtime signals (signal
+numbers 32..63) for that purpose, because these signals can be queued,
+so no signals will be lost (non-realtime signals will not be
+queued). Therefore UOS_SIG_USR1 and UOS_SIG_USR2 have been defined as
+33 and 34 respectively.
+
+Normal Linux drivers will immediately abort their operation when they
+receive a signal while the process is suspended and return
+ERESTARTSYS. However for the MDIS LL drivers this is slighty different
+to be compatible with other MDIS implementations. When a signal is
+received while waiting for a blocked semaphore (OSS_SemWait()), the
+wait is aborted only when a signal number <32 is received. Otherwise
+the signal is ignored and sleeping continues. When a signal is
+received while doing a timed sleep using OSS_Delay(), all signals are
+ignored. That means that the signal handler of the process will not be
+invoked before the process has finished the LL driver call.
+
+
+
+Hardware Access Macros
+
+Hardware accesses are implemented using macros in
+INCLUDE/COM/MEN/maccess, INCLUDE/NATIVE/MEN/maccess_linux.h,
+INCLUDE/NATIVE/MEN/mac_linux_generic.h and
+INCLUDE/NATIVE/MEN/mac_linux_ppc.h. 
+
+mac_linux_ppcq is used for all PowerPC platforms, and mac_linux_generic
+for the rest. This difference is because of the weird PowerPC
+implementation of readw(), readl() etc in asm-ppc/io.h. The standard
+macros always do a byteswap when accessing hardware (at least for most
+platforms), however I don't think it is a good solution, because the
+need of byteswapping depends on which kind of devices need to be
+accessed. Ok, for most devices on the PCI bus, we will need
+byteswapping, on the other hand devices on the VMEbus that are
+accessed through a PCI to VME bridge won't need byteswapping. So I
+have implemented a solution in which the user can decide at compile
+time (for each module) wether to use byteswapping or not (depending on
+the MAC_BYTESWAP switch).
+
+
+
+Debug Messages 
+
+Almost every module is instrumented with a couple of DBGWRT_x
+instructions. When the DBG switch is set when the module is compiled,
+the DBGWRT_x instruction is translated into a printk() statement. When
+DBG is undefined, the preprocessor removes the DBGWRT statements from
+the code. The debug strings are output at the lowest level
+(KERN_DEBUG). You can view the debug strings by watching
+/var/log/messages. (tail -f /var/log/messages).
+
+Format warnings for printk arguments have been disabled for now
+(-Wno-format). This is because most MDIS drivers assume that pointers
+and longs are of the same size as ints. This is ok as long as we run
+on i386 and PowerPC.
+
+
+
+Error numbers on PowerPC
+
+On PowerPC linux, error numbers can't be bigger than 515. However MDIS
+needs a wider range of error numbers. So, in mk_module.c
+CompressErrno(), the MDIS error codes are mapped to fit into
+160..511. The mdis_api then reconstructs the original MDIS error code.
+
+
+
+VMEbus support in MDIS
+
+since linux has no standardized VME interface, MEN has defined a simple
+kernel interface in order to support VME. This interface must be provided
+by your Linux kernel (or a driver). 
+
+MDIS VME support is enabled only when the configuration switch 
+CONFIG_MEN_VME_KERNELIF is set (normally in linux/autoconf.h)
+
+See Vmeimplnotes for more details
+
+
+
+Locking
+
+For SMP and kernel preemption support, MDIS components must be locked
+against concurrent accesses. The following locks are used:
+
+- mdis_kernel::G_mkLockSem (OSS semaphore):
+  Guards MDIS kernel global variables and lists.
+  Is locked during complete M_open call and therefore guards also most
+  BBIS handler calls. 
+
+- bbis_kernel::G_bkLockSem (OSS semaphore):
+  Guards BBIS kernel global variables and lists.
+  
+- Device Semaphore: (MK_DEV.semDev, OSS semaphore)
+  Prevents concurrent execution of low level driver calls (as long
+  it is not released by LL driver). This does not involve LL Irq Handler
+
+- OSS::OSS_irqLock (spin lock)
+  Locks main thread against interrupts. System wide lock.
+  Locked by OSS_IrqMask(R) routines.
+  Spinlock is also held while in MDIS_IrqHandler. This prevents also 
+  BBIS irqSrvInit and irqSrvExit from being called concurrently
+  Alarms are also locked with that lock.

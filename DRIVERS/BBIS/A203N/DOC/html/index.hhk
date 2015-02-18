@@ -1,0 +1,292 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML><HEAD></HEAD><BODY>
+<OBJECT type="text/site properties">
+<param name="FrameName" value="right">
+</OBJECT>
+<UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="__A203N_GetEntry"><param name="Name" value="__A203N_GetEntry"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a33"><param name="Name" value="bb_a203n.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8h.html#a2"><param name="Name" value="bb_a203n.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="_A203N_GLOBNAME"><param name="Name" value="_A203N_GLOBNAME"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8h.html#a0"><param name="Name" value="bb_a203n.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="_NO_BBIS_HANDLE"><param name="Name" value="_NO_BBIS_HANDLE"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a0"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="A203N_BrdExit"><param name="Name" value="A203N_BrdExit"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a15"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="A203N_BrdInfo"><param name="Name" value="A203N_BrdInfo"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a17"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="A203N_BrdInit"><param name="Name" value="A203N_BrdInit"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a14"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="A203N_CfgInfo"><param name="Name" value="A203N_CfgInfo"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a18"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="A203N_ClrMIface"><param name="Name" value="A203N_ClrMIface"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a25"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="A203N_Exit"><param name="Name" value="A203N_Exit"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a16"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="A203N_ExpEnable"><param name="Name" value="A203N_ExpEnable"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a22"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="A203N_ExpSrv"><param name="Name" value="A203N_ExpSrv"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a23"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="A203N_GetMAddr"><param name="Name" value="A203N_GetMAddr"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a26"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="A203N_GetStat"><param name="Name" value="A203N_GetStat"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a28"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="A203N_GLOBNAME"><param name="Name" value="A203N_GLOBNAME"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8h.html#a1"><param name="Name" value="bb_a203n.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="A203N_Init"><param name="Name" value="A203N_Init"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a13"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="A203N_IrqEnable"><param name="Name" value="A203N_IrqEnable"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a19"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="A203N_IrqSrvExit"><param name="Name" value="A203N_IrqSrvExit"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a21"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="A203N_IrqSrvInit"><param name="Name" value="A203N_IrqSrvInit"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a20"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="A203N_SetMIface"><param name="Name" value="A203N_SetMIface"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a24"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="A203N_SetStat"><param name="Name" value="A203N_SetStat"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a27"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="A203N_Unused"><param name="Name" value="A203N_Unused"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a29"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="a32AddrMa24"><param name="Name" value="a32AddrMa24"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o10"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="addrWinHdlMa08"><param name="Name" value="addrWinHdlMa08"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o11"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="addrWinHdlMa24"><param name="Name" value="addrWinHdlMa24"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o12"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html"><param name="Name" value="bb_a203n.c"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a33"><param name="Name" value="__A203N_GetEntry"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a0"><param name="Name" value="_NO_BBIS_HANDLE"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a15"><param name="Name" value="A203N_BrdExit"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a17"><param name="Name" value="A203N_BrdInfo"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a14"><param name="Name" value="A203N_BrdInit"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a18"><param name="Name" value="A203N_CfgInfo"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a25"><param name="Name" value="A203N_ClrMIface"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a16"><param name="Name" value="A203N_Exit"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a22"><param name="Name" value="A203N_ExpEnable"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a23"><param name="Name" value="A203N_ExpSrv"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a26"><param name="Name" value="A203N_GetMAddr"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a28"><param name="Name" value="A203N_GetStat"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a13"><param name="Name" value="A203N_Init"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a19"><param name="Name" value="A203N_IrqEnable"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a21"><param name="Name" value="A203N_IrqSrvExit"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a20"><param name="Name" value="A203N_IrqSrvInit"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a24"><param name="Name" value="A203N_SetMIface"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a27"><param name="Name" value="A203N_SetStat"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a29"><param name="Name" value="A203N_Unused"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a10"><param name="Name" value="BRD_ADDR_CCTRL"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a8"><param name="Name" value="BRD_ADDR_SPACES"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a9"><param name="Name" value="BRD_ADDR_TRIG"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a7"><param name="Name" value="BRD_MODULE_NBR"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a6"><param name="Name" value="BRD_NAME"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a32"><param name="Name" value="CfgInfoSlot"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a31"><param name="Name" value="Cleanup"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a1"><param name="Name" value="DBG_MYLEVEL"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a2"><param name="Name" value="DBH"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a30"><param name="Name" value="Ident"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a5"><param name="Name" value="ILL_ADDR"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a3"><param name="Name" value="MOD_ID_MAGIC"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a4"><param name="Name" value="MOD_ID_MS_MASK"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a12"><param name="Name" value="TEMPSENS_SLOT"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a11"><param name="Name" value="TRIGDEV_SLOT"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8h.html"><param name="Name" value="bb_a203n.h"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8h.html#a2"><param name="Name" value="__A203N_GetEntry"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8h.html#a0"><param name="Name" value="_A203N_GLOBNAME"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8h.html#a1"><param name="Name" value="A203N_GLOBNAME"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o10"><param name="Name" value="a32AddrMa24"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o11"><param name="Name" value="addrWinHdlMa08"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o12"><param name="Name" value="addrWinHdlMa24"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o5"><param name="Name" value="dbgHdl"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o4"><param name="Name" value="dbgLev"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o3"><param name="Name" value="descHdl"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o18"><param name="Name" value="forceFound"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o0"><param name="Name" value="idFuncTbl"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o16"><param name="Name" value="irqLev"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o17"><param name="Name" value="irqPri"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o15"><param name="Name" value="irqVec"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o8"><param name="Name" value="maxDataModeMa08"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o9"><param name="Name" value="maxDataModeMa24"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o2"><param name="Name" value="osHdl"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o1"><param name="Name" value="ownMemSize"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o6"><param name="Name" value="physAddrMa08"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o7"><param name="Name" value="physAddrMa24"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o13"><param name="Name" value="res"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o14"><param name="Name" value="virtAddrSpace"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="BRD_ADDR_CCTRL"><param name="Name" value="BRD_ADDR_CCTRL"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a10"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="BRD_ADDR_SPACES"><param name="Name" value="BRD_ADDR_SPACES"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a8"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="BRD_ADDR_TRIG"><param name="Name" value="BRD_ADDR_TRIG"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a9"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="BRD_MODULE_NBR"><param name="Name" value="BRD_MODULE_NBR"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a7"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="BRD_NAME"><param name="Name" value="BRD_NAME"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a6"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="CfgInfoSlot"><param name="Name" value="CfgInfoSlot"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a32"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="Cleanup"><param name="Name" value="Cleanup"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a31"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="DBG_MYLEVEL"><param name="Name" value="DBG_MYLEVEL"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a1"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="dbgHdl"><param name="Name" value="dbgHdl"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o5"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="dbgLev"><param name="Name" value="dbgLev"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o4"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="DBH"><param name="Name" value="DBH"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a2"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="descHdl"><param name="Name" value="descHdl"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o3"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="forceFound"><param name="Name" value="forceFound"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o18"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="Ident"><param name="Name" value="Ident"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a30"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="idFuncTbl"><param name="Name" value="idFuncTbl"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o0"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="ILL_ADDR"><param name="Name" value="ILL_ADDR"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a5"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="irqLev"><param name="Name" value="irqLev"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o16"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="irqPri"><param name="Name" value="irqPri"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o17"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="irqVec"><param name="Name" value="irqVec"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o15"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="maxDataModeMa08"><param name="Name" value="maxDataModeMa08"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o8"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="maxDataModeMa24"><param name="Name" value="maxDataModeMa24"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o9"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="MOD_ID_MAGIC"><param name="Name" value="MOD_ID_MAGIC"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a3"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="MOD_ID_MS_MASK"><param name="Name" value="MOD_ID_MS_MASK"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a4"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="osHdl"><param name="Name" value="osHdl"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o2"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="ownMemSize"><param name="Name" value="ownMemSize"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o1"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="physAddrMa08"><param name="Name" value="physAddrMa08"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o6"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="physAddrMa24"><param name="Name" value="physAddrMa24"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o7"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="res"><param name="Name" value="res"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o13"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="TEMPSENS_SLOT"><param name="Name" value="TEMPSENS_SLOT"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a12"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="TRIGDEV_SLOT"><param name="Name" value="TRIGDEV_SLOT"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="bb__a203n_8c.html#a11"><param name="Name" value="bb_a203n.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="virtAddrSpace"><param name="Name" value="virtAddrSpace"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structBBIS__HANDLE.html#o14"><param name="Name" value="BBIS_HANDLE"></OBJECT>
+</UL>

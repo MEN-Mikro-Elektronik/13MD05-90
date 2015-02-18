@@ -1,0 +1,36 @@
+PLD loader library
+==================
+20.11.97 see
+
+PLD Loader API
+--------------
+Each PLD loader contains of two functions:
+
+	PLD_XXX_Identify   - Return loader identify string
+                         Format: "PLD - XXX Loader: $Id: general.txt,v 1.1 1998/10/12 09:35:07 see Exp $"
+                         (auto-created from RCS)
+
+    PLD_XXX_LoadCallBk - Loading XXX with binary data (callback i/o) 
+                         This function is for complicated PLD interfaces,
+                         where PLD bits are located in different registers.
+
+    PLD_XXX_LoadDirect - Loading XXX with binary data (direct access) 
+                         This function is for simple PLD interfaces,
+                         where all PLD bits are located in one register.
+
+PLD data can be loaded at once or blockwise depending on
+passed 'flags':
+
+    PLD_FIRSTBLOCK  = perform PLD initialization before loading
+    PLD_LASTBLOCK   = perform PLD termination after loading
+
+a) load data at once
+- load full block with flags=PLD_FIRSTBLOCK+PLD_LASTBLOCK
+
+b) load data blockwise
+- load first block with flags=PLD_FIRSTBLOCK
+- load n-blocks    with flags=0
+- load last block  with flags=PLD_LASTBLOCK
+       
+The PLD data array passed to the loader function 
+must contain the PLD data as raw byte stream.

@@ -1,0 +1,198 @@
+Function Description
+====================
+Tue Apr 27 16:12:06 MEST 1999
+ 
+Overview of all Functions
+-------------------------
+
+UTL_Atox               - Ascii (hex-format) to integer conversion 
+UTL_Bindump            - Create binary dump string of long value 
+UTL_Memdump            - Print formatted hexdump 
+UTL_Tstopt             - Read command line options 
+UTL_Illiopt            - Check command line options 
+UTL_Ident              - Return ident string of UTL module 
+ 
+
+Function UTL_Atox()
+-------------------
+
+Syntax:
+    u_int32 UTL_Atox(char *str)
+
+Description:
+    Ascii (hex-format) to integer conversion
+
+Input:
+    str        string with hex value
+
+Output:
+    return     hex value as u_int32
+
+
+Function UTL_Bindump()
+----------------------
+
+Syntax:
+    char *UTL_Bindump(u_int32 data, u_int32 bits, char *buf)
+
+Description:
+    Create binary dump string of long value
+
+    All nibbles are separated with blanks:
+    bits=8:   'xxxx xxxx'
+    bits=9: 'x xxxx xxxx'
+
+Input:
+    data       value to dump
+    bits       nr of bits (1..32)
+    buf        string buffer (size=40)
+
+Output:
+    return     ptr to string buffer
+
+
+Function UTL_Memdump()
+----------------------
+Function UTL_Memdump()
+----------------------
+
+Syntax:
+    void UTL_Memdump(
+        char *info,
+        char *buf,
+        u_int32 n,
+        u_int32 fmt
+    )
+
+Description:
+    Print formatted hexdump
+
+    Trailing blanks in the description string define the
+    indention of all following debug lines.
+
+    Example:
+    (no description)
+
+
+Description:
+    Output for UTL_Memdump("WORD access", (char*)0x0000f000, 0x40, 2) is: 
+    Output for UTL_Memdump("WORD access", (char*)0x0000f000, 0x40, 2) is: 
+
+    WORD access (64 bytes):
+    WORD access (64 bytes):
+    0000f000+0000: 4afc 0001 0000 007c 0000 0009 0000 0074 J|.....|.......t
+    0000f000+0000: 4afc 0001 0000 007c 0000 0009 0000 0074 J|.....|.......t
+    0000f000+0010: 0777 0f00 8000 0006 0000 0000 0000 0000 .w..............
+    0000f000+0010: 0777 0f00 8000 0006 0000 0000 0000 0000 .w..............
+    0000f000+0020: 0000 0000 0000 0000 0000 0000 0000 3d72 ..............=r
+    0000f000+0020: 0000 0000 0000 0000 0000 0000 0000 3d72 ..............=r
+    0000f000+0030: 00ff ee00 5c04 0023 0064 0068 0070 0000 ..n.\..#.d.h.p..
+    0000f000+0030: 00ff ee00 5c04 0023 0064 0068 0070 0000 ..n.\..#.d.h.p..
+
+Input:
+    info    description string or NULL (first line)
+    Input......: info    description string or NULL (first line)
+    buf     memory start address
+    buf     memory start address
+    n       memory length [bytes]
+    n       memory length [bytes]
+    fmt     output format
+    fmt     output format
+            1 = byte aligned
+            1 = byte aligned
+            2 = word aligned
+            2 = word aligned
+            4 = long aligned
+            4 = long aligned
+            8 = 64-bit aligned
+            8 = 64-bit aligned
+
+Output:
+    -
+
+
+Function UTL_Tstopt()
+---------------------
+
+Syntax:
+    char *UTL_Tstopt(
+        int argc,
+        char **argv,
+        char *option
+    )   
+
+Description:
+    Read command line options 
+
+    Use UTL_TSTOPT macro for reading options, e.g.:
+
+    a) Options without argument: Usage "-f", Argv "-f"
+       flag = (UTL_TSTOPT("f") ? 1 : 0);      
+
+    b) Options with argument: Usage "-o=<arg>", Argv "-o=34"
+       option = ((str = UTL_TSTOPT("o=")) ? atoi(str) : 0x56);    
+
+    UTL_TSTOPT returns the option string or NULL if not found
+
+Input:
+    argc       passed argc (from main)
+    argv       passed argv (from main)
+    option     option character to test, followed by
+               nothing : no argument
+                   '=' : argument required
+
+Output:
+    return     option string or NULL if option not found
+
+
+Function UTL_Illiopt()
+----------------------
+
+Syntax:
+    char *UTL_Illiopt(
+        int argc,
+        char **argv,
+        char *opts,
+        char *errstr
+    )
+
+Description:
+    Check command line options
+    Returns error message string if failed.
+
+    Use UTL_ILLIOPT macro for checking options, e.g.:
+
+       if ((errstr = UTL_ILLIOPT("o=f?", errbuf))) {
+          printf("*** %s\n", errstr);
+          return(1);
+       }
+
+    NOTE: Don't forget to add the help request '?' to the opts
+
+Input:
+    argc       passed argc (from main)
+    argv       passed argv (from main)
+    opts       set of option characters to test, followed by
+               nothing : no argument
+                   '=' : argument required
+    errstr     error string buffer (size=40)
+
+Output:
+    return     success (NULL) or error string
+
+
+Function UTL_Ident()
+--------------------
+
+Syntax:
+    char* UTL_Ident( void )
+
+Description:
+    Return ident string of UTL module
+
+Input:
+    -
+
+Output:
+    return  pointer to ident string
+

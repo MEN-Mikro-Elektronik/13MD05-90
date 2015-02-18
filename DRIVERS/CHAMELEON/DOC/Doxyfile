@@ -1,0 +1,21 @@
+@INCLUDE_PATH = $(MEN_DOXYGENTMPL)
+@INCLUDE = DoxyfileCommon
+
+PROJECT_NAME           = "Chameleon System Unit Driver"
+INPUT                  = \
+                        ../                        \
+						../../../INCLUDE/COM/MEN/chameleon.h \
+						../../../INCLUDE/NATIVE/MEN/men_chameleon.h \
+
+EXAMPLE_RECURSIVE      = NO
+EXAMPLE_PATH           = 
+OUTPUT_DIRECTORY       = .
+EXTRACT_ALL            = NO
+EXTRACT_STATIC         = YES
+GENERATE_HTMLHELP      = YES
+WARNINGS               = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_IF_UNDOCUMENTED   = YES
+GENERATE_HTMLHELP      = YES
+TAGFILES               = 
+GENERATE_TAGFILE       = chameleon_linux_driver.tag

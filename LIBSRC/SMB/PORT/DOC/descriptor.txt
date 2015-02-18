@@ -1,0 +1,36 @@
+#include <MEN/sysmanagbus.h>
+
+...
+
+	/* SMB */
+	{
+		u_int32			error;
+		SMB_DESC_PORT   descSmb;
+
+		/* bus speed */
+		descSmb.busClock   = 0; /* max speed */
+		/* set FLAGS */
+		descSmb.flagsDataIn   = 
+		  ( SMB_DESC_PORT_FLAG_SIZE_8 | SMB_DESC_PORT_FLAG_READABLE_REG | SMB_DESC_PORT_FLAG_POLARITY_HIGH );
+		descSmb.flagsDataOut  =
+		  ( SMB_DESC_PORT_FLAG_SIZE_8 | SMB_DESC_PORT_FLAG_READABLE_REG | SMB_DESC_PORT_FLAG_POLARITY_HIGH );
+		descSmb.flagsClockIn  =
+		  ( SMB_DESC_PORT_FLAG_SIZE_8 | SMB_DESC_PORT_FLAG_READABLE_REG | SMB_DESC_PORT_FLAG_POLARITY_HIGH );
+		descSmb.flagsClockOut =
+		  ( SMB_DESC_PORT_FLAG_SIZE_8 | SMB_DESC_PORT_FLAG_READABLE_REG | SMB_DESC_PORT_FLAG_POLARITY_HIGH );
+		/* set addr and mask */
+		descSmb.addrDataIn   = PORT_ZCIO_PA_DATA_ADRS;
+		descSmb.maskDataIn   = PORT_ZCIO_PA6_SMB_SDA_IN;
+		descSmb.addrDataOut  = PORT_ZCIO_PA_DATA_ADRS;
+		descSmb.maskDataOut  = PORT_ZCIO_PA7_SMB_SDA_OUT;
+		descSmb.addrClockIn  = PORT_ZCIO_PB_DATA_ADRS;
+		descSmb.maskClockIn  = PORT_ZCIO_PB0_SMB_SCL_IN;
+		descSmb.addrClockOut = PORT_ZCIO_PB_DATA_ADRS;
+		descSmb.maskClockOut = PORT_ZCIO_PB1_SMB_SCL_OUT;
+	    error = SMB_PORT_Init( &descSmb,
+			                   NULL,  /* OSS handle */ 
+   	        		           &MAIN_SmbHandle );
+
+	}/*SMB INIT*/
+
+

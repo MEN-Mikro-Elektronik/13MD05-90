@@ -1,0 +1,39 @@
+#!/bin/sh
+if [ -z $1 ] 
+then
+    echo "Please specify kernel dir"
+    exit
+fi
+kerneldir=$1
+if [ -f $kerneldir/include/linux/fs.h ]
+then
+    echo "Installing in $kerneldir"
+else
+    echo "$kerneldir does not look like a kernel"
+fi
+
+if [ -f $kerneldir/drivers/char/vme4l-core.c ]
+then
+    vme4ldir=$kerneldir/drivers/char
+else
+    vme4ldir=$kerneldir/drivers/men_vme4l/
+fi
+
+mkdir -p $vme4ldir
+cp vme4l-core.? vme4l-pldz002.c vme4l-tsi148.? $vme4ldir
+mkdir -p $kerneldir/include/MEN
+cp ../../../INCLUDE/COM/MEN/pldz002.h \
+ ../../../INCLUDE/COM/MEN/tsi148.h \
+ ../../../INCLUDE/NATIVE/MEN/vme4l.h \
+ ../../../INCLUDE/NATIVE/MEN/vme4l_old.h \
+ $kerneldir/include/MEN
+
+rm -f $kerneldir/include/linux/men_vme_kernelif.h
+
+cp ../../../INCLUDE/NATIVE/MEN/men_vme_kernelif.h \
+ $kerneldir/include/linux
+
+cd $kerneldir/include/MEN
+ln -sf ../linux/men_vme_kernelif.h .
+
+echo "VME4L installed in kernel ($kerneldir)"

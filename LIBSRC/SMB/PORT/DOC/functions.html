@@ -1,0 +1,161 @@
+<html>
+<head>
+<title>PORT library</title>
+<style type=text/css>
+    Body { background-color: #ffffff; }
+    A:link { color: #c50038; }
+    A:hover { color: #28669b; }
+    P, H1, H2, H3, H3, H5, LI {
+        color: #434343;
+        font-family: Arial, Helvetica, Univers;
+    }
+    P, LI { font-size: 9.000000pt; }
+</style>
+</head>
+<body>
+<h1>PORT library</h1>
+<p>Fri Sep  8 10:28:03  2000</p>
+<h2>Overview of all Functions</h2>
+<a name="chapt0"><a href="#intro0"><h3>system managment bus driver for a port</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#SMB_PORT_Init">SMB_PORT_Init</a></P></TD><TD><P>Initializes this library and check's the SMB host. </P></TD></TR>
+<TR><TD><P><a href="#smbExit">smbExit</a></P></TD><TD><P>Deinitializes this library and SMB controller. </P></TD></TR>
+<TR><TD><P><a href="#smbReadByte">smbReadByte</a></P></TD><TD><P>Read a byte from a device. </P></TD></TR>
+<TR><TD><P><a href="#smbWriteByte">smbWriteByte</a></P></TD><TD><P>Write a byte to a device. </P></TD></TR>
+<TR><TD><P><a href="#smbWriteTwoByte">smbWriteTwoByte</a></P></TD><TD><P>Writes two bytes to a device. </P></TD></TR>
+<TR><TD><P><a href="#smbIdent">smbIdent</a></P></TD><TD><P>Return ident string </P></TD></TR>
+</TABLE>
+ 
+<a name="intro0"><h1>system managment bus driver for a port </h1></a>
+<pre>SMB/IIC protocol emulation.
+Single master is implemented only.
+
+Required: -
+Switches: -
+
+Note: D16/D32 access, 
+!SMB_DESC_PORT_FLAG_POLARITY_HIGH
+and !SMB_DESC_PORT_FLAG_READABLE_REG   not tested
+
+</pre>
+<a name="SMB_PORT_Init"><h2>Function SMB_PORT_Init()</h2></a>
+
+<h3>Syntax</h3>
+<pre>u_int32 SMB_PORT_Init
+(
+    SMB_DESC_PORT   *descP,
+    OSS_HANDLE      *osHdl,
+    void            **smbHdlP
+)
+</pre><h3>Description</h3>
+<pre>Initializes this library and check's the SMB host.
+
+</pre><h3>Input</h3>
+<pre>descP     pointer to SMB descriptor
+osHdl     OS specific handle
+smbHdlP   pointer to variable where the handle will be stored
+
+</pre><h3>Output</h3>
+<pre>return    0 | error code
+*smbHdlP  valid handle | NULL
+
+</pre>
+<a name="smbExit"><h2>Function smbExit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static u_int32 smbExit
+(
+    SMB_HANDLE **smbHdlP
+)
+</pre><h3>Description</h3>
+<pre>Deinitializes this library and SMB controller.
+
+</pre><h3>Input</h3>
+<pre>smbHdlP   pointer to variable where the handle is stored
+
+</pre><h3>Output</h3>
+<pre>return    always 0 
+*smbHdlP  NULL
+
+</pre>
+<a name="smbReadByte"><h2>Function smbReadByte()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static u_int32 smbReadByte
+(
+    SMB_HANDLE  *smbHdl,
+    u_int8      addr,
+    u_int8      *dataP
+)
+</pre><h3>Description</h3>
+<pre>Read a byte from a device.
+
+</pre><h3>Input</h3>
+<pre>smbHdl    valid SMB handle
+addr      device address
+dataP     pointer to variable where value will be stored
+
+</pre><h3>Output</h3>
+<pre>return    0 | error code
+*dataP    read value
+
+</pre>
+<a name="smbWriteByte"><h2>Function smbWriteByte()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static u_int32 smbWriteByte
+(
+    SMB_HANDLE  *smbHdl,
+    u_int8      addr,
+    u_int8      data
+)
+</pre><h3>Description</h3>
+<pre>Write a byte to a device.
+
+</pre><h3>Input</h3>
+<pre>smbHdl    valid SMB handle
+addr      device address
+data      value to write
+
+</pre><h3>Output</h3>
+<pre>return    0 | error code
+
+</pre>
+<a name="smbWriteTwoByte"><h2>Function smbWriteTwoByte()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static u_int32 smbWriteTwoByte
+(
+    SMB_HANDLE  *smbHdl,
+    u_int8      addr,
+    u_int8      cmdAddr,
+    u_int8      data
+)
+</pre><h3>Description</h3>
+<pre>Writes two bytes to a device.
+
+</pre><h3>Input</h3>
+<pre>smbHdl    valid SMB handle
+addr      device address
+cmdAddr   device command or index value
+data      value to write
+
+</pre><h3>Output</h3>
+<pre>return    0 | error code
+
+</pre>
+<a name="smbIdent"><h2>Function smbIdent()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static char *smbIdent( void )
+</pre><h3>Description</h3>
+<pre>Return ident string
+
+</pre><h3>Input</h3>
+<pre>-
+</pre><h3>Output</h3>
+<pre>return  pointer to ident string
+</pre></body>
+</html>

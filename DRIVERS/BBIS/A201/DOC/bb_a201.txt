@@ -1,0 +1,569 @@
+Function Description
+====================
+Mon Jun 21 16:34:20 WEDT 2004
+ 
+Overview of all Functions
+-------------------------
+
+A201_Ident             - Gets the pointer to ident string. 
+A201_GetEntry          - Gets the entry points of the BBIS handler functions. 
+A201_Init              - Allocates and initializes the board structure, 
+A201_BrdInit           - Initializes the base board. 
+A201_BrdExit           - Deinitialize the board. 
+A201_Exit              - Releases memory of the board structure and 
+A201_BrdInfo           - Get information about hardware and driver requirements. 
+A201_CfgInfo           - Get information about board configuration. 
+A201_IrqEnable         - En/disable interrupt for module slot 'mSlot' and 
+A201_IrqSrvInit        - This function is called at the beginning of an interrupt 
+A201_IrqSrvExit        - This function is called at the end of an interrupt 
+A201_ExpEnable         - Exception interrupt enable / disable. 
+A201_ExpSrv            - Called at the beginning of an exception interrupt. 
+A201_SetMIface         - This function configure the M-Module interface for slot 
+A201_ClrMIface         - Cleanup the M-Module interface for slot 'mSlot' 
+A201_GetMAddr          - This function suply a pointer to the physical address space 
+A201_SetStat           - Sets the board state. 
+A201_GetStat           - Gets the board state. 
+A201_Unused            - Dummy function. 
+ 
+
+Function A201_Ident()
+---------------------
+
+Syntax:
+    static char* A201_Ident( void )
+
+Description:
+    Gets the pointer to ident string.
+
+Input:
+    -
+
+Output:
+    return  pointer to ident string
+
+
+Function A201_GetEntry()
+------------------------
+
+Syntax:
+    #ifdef _ONE_NAMESPACE_PER_DRIVER_
+        extern void BBIS_GetEntry( BBIS_ENTRY *bbisP )
+    #else
+        extern void __A201_GetEntry( BBIS_ENTRY *bbisP ) 
+    #endif
+
+Description:
+    Gets the entry points of the BBIS handler functions.
+
+Input:
+    bbisP  pointer to the inititialized bbis entry struct
+
+Output:
+    *bbisP inititialized bbis entry struct
+
+
+Function A201_Init()
+--------------------
+
+Syntax:
+    int32 A201_Init
+    (
+        OSS_HANDLE      *osHdl,
+        DESC_SPEC       *descSpec,
+        BBIS_HANDLE     **brdHdlP
+    )
+
+Description:
+    Allocates and initializes the board structure,
+    decodes and stores descriptor data,
+    assignes and maps the needed resources.
+
+    Use only PHYS_ADDR or VME_A16_ADDR or VME_A24_ADDR.
+
+    deskriptor key        default          range
+
+    DEBUG_LEVEL           DBG_OFF          see oss.h
+
+    PHYS_ADDR             (none)           see A201 and CPU description
+                                           no bus to local address
+                                           conversion supplied
+
+    VME_A16_ADDR          (none)           see A201 description
+                                           base addr of module slot 0
+
+    VME_A24_ADDR          (none)           see A201 description
+                                           base addr of module slot 0
+
+    IRQ_VECTOR            (none)           array of irq vectors
+                                           slot 0..4
+
+    IRQ_LEVEL             (none)           array of irq levels
+                                           slot 0..4
+
+    IRQ_PRIORITY          0,0,0,0          array of irq priorities
+                                           slot 0..4
+
+    PNP_FORCE_FOUND       0,0,0,0          array of "force found"
+                                           slot 0..4
+      0: only a recognized M-Module will be reported
+      1: an M-Module will be reported for the slot
+         regardless if there is one plugged
+
+    If switch _WIN_PCI2VME_BRIDGE_ is set, the following additional
+    descriptor keys will be used for windows.
+
+    WIN_BUSNBR            (none)          windows bus number
+
+    WIN_IRQ               (none)          windows IRQ
+
+Input:
+    osHdl    pointer to os specific structure
+    descSpec pointer to os specific descriptor specifier
+    brdHdlP  pointer to variable where handle stored
+
+Output:
+    *brdHdlP created handle
+    return   0 | error code
+
+
+Function A201_BrdInit()
+-----------------------
+
+Syntax:
+    static int32 A201_BrdInit
+    (
+        BBIS_HANDLE     *brdHdl
+    )
+
+Description:
+    Initializes the base board.
+    (control = 0x00 and vector = 0xff register)
+
+Input:
+    brdHdl   pointer to board handle structure
+
+Output:
+    0 | error code
+
+
+Function A201_BrdExit()
+-----------------------
+
+Syntax:
+    static int32 A201_BrdExit
+    (
+        BBIS_HANDLE     *brdHdl
+    )
+
+Description:
+    Deinitialize the board.
+
+Input:
+    brdHdl   pointer to board handle structure
+
+Output:
+    0 | error code
+
+
+Function A201_Exit()
+--------------------
+
+Syntax:
+    static int32 A201_Exit
+    (
+        BBIS_HANDLE     **brdHdlP
+    )
+
+Description:
+    Releases memory of the board structure and
+    unmaps control register addresses.
+
+Input:
+    brdHdlP  pointer to variable where handle stored
+
+Output:
+    *brdHdlP NULL
+    return   0 | error code
+
+
+Function A201_BrdInfo()
+-----------------------
+
+Syntax:
+    static int32 A201_BrdInfo
+    (
+        u_int32 code,
+        ...
+    )
+
+Description:
+    Get information about hardware and driver requirements.
+
+    Following info codes are supported:
+
+    Code                      Description
+    ------------------------  -----------------------------
+    BBIS_BRDINFO_BUSTYPE      board bustype
+    BBIS_BRDINFO_DEVBUSTYPE   device bustype
+    BBIS_BRDINFO_FUNCTION     used optional functions
+    BBIS_BRDINFO_NUM_SLOTS    number of slots
+    BBIS_BRDINFO_INTERRUPTS   interrupt characteristics
+    BBIS_BRDINFO_ADDRSPACE    address characteristic
+    BBIS_BRDINFO_BRDNAME      name of the board hardware
+
+    The BBIS_BRDINFO_BUSTYPE code returns the bustype of
+    the specified board. (here always PCI)
+
+    The BBIS_BRDINFO_DEVBUSTYPE code returns the bustype of
+    the specified device - not the board bus type. 
+    (here always NONE)
+
+    The BBIS_BRDINFO_FUNCTION code returns the information
+    if an optional BBIS function is supported or not.
+
+    The BBIS_BRDINFO_NUM_SLOTS code returns the number of
+    devices used from the driver. (CHAMELEON BBIS: always 16)
+
+    The BBIS_BRDINFO_INTERRUPTS code returns the supported
+    interrupt capability (BBIS_IRQ_DEVIRQ/BBIS_IRQ_EXPIRQ)
+    of the specified device.
+
+    The BBIS_BRDINFO_ADDRSPACE code returns the address
+    characteristic (OSS_ADDRSPACE_MEM/OSS_ADDRSPACE_IO)
+    of the specified device.
+
+    The BBIS_BRDINFO_BRDNAME code returns the short hardware
+    name and type of the board without any prefix or suffix.
+    The hardware name must not contain any non-printing
+    characters. The length of the returned string, including
+    the terminating null character, must not exceed
+    BBIS_BRDINFO_BRDNAME_MAXSIZE.
+    Examples: D201 board, PCI device, Chameleon FPGA 
+
+Input:
+    code      reference to the information we need    
+    ...       variable arguments                      
+
+Output:
+    *...      variable arguments
+    return    0 | error code
+
+
+Function A201_CfgInfo()
+-----------------------
+
+Syntax:
+    static int32 A201_CfgInfo
+    (
+        BBIS_HANDLE     *brdHdl,
+        u_int32         code,
+        ...
+    )
+
+Description:
+    Get information about board configuration.
+
+    Following info codes are supported:
+
+    Code                      Description
+    ------------------------  ------------------------------
+    BBIS_CFGINFO_BUSNBR       bus number
+    BBIS_CFGINFO_IRQ          interrupt parameters
+    BBIS_CFGINFO_EXP          exception interrupt parameters
+    BBIS_CFGINFO_SLOT         slot information
+
+    The BBIS_CFGINFO_BUSNBR code returns the number of the
+    bus on which the board resides.
+
+    The BBIS_CFGINFO_IRQ code returns the device interrupt
+    vector, level and mode of the specified device.
+
+    The BBIS_CFGINFO_EXP code returns the exception interrupt
+    vector, level and mode of the specified device.
+
+    The BBIS_CFGINFO_SLOT code returns the following
+    information about the specified device slot:
+    The slot is occupied or empty, the device id and device
+    revision of the plugged device, the name of the slot and
+    the name of the plugged device.
+
+Input:
+    brdHdl    pointer to board handle structure       
+    code      reference to the information we need    
+    ...       variable arguments                      
+
+Output:
+    .....:  ...       variable arguments
+            return    0 | error code
+
+
+Function A201_IrqEnable()
+-------------------------
+
+Syntax:
+    static int32 A201_IrqEnable
+    (
+        BBIS_HANDLE     *brdHdl,
+        u_int32         mSlot,
+        u_int32         enable
+    )
+
+Description:
+    En/disable interrupt for module slot 'mSlot' and
+    writes vector and control register
+
+Input:
+    brdHdl    pointer to board handle structure
+    mSlot     module slot number
+    enable    interrupt setting
+
+Output:
+    return    0 | error code
+
+
+Function A201_IrqSrvInit()
+--------------------------
+
+Syntax:
+    static int32 A201_IrqSrvInit
+    (
+        BBIS_HANDLE     *brdHdl,
+        u_int32         mSlot
+    )
+
+Description:
+    This function is called at the beginning of an interrupt
+    handler.
+
+Input:
+    brdHdl    pointer to board handle structure
+    mSlot     module slot number
+
+Output:
+    return    BBIS_IRQ_UNK
+
+
+Function A201_IrqSrvExit()
+--------------------------
+
+Syntax:
+    static void A201_IrqSrvExit
+    (
+        BBIS_HANDLE     *brdHdl,
+        u_int32         mSlot
+    )
+
+Description:
+    This function is called at the end of an interrupt
+    handler.
+
+Input:
+    brdHdl    pointer to board handle structure
+    mSlot     module slot number
+
+Output:
+    ---
+
+
+Function A201_ExpEnable()
+-------------------------
+
+Syntax:
+    static int32 A201_ExpEnable(
+        BBIS_HANDLE     *brdHdl,
+        u_int32         mSlot,
+        u_int32         enable)
+
+Description:
+    Exception interrupt enable / disable.
+
+    Do nothing
+
+Input:
+    brdHdl    pointer to board handle structure   
+    mSlot     module slot number                  
+    enable    interrupt setting                   
+
+Output:
+    return    0
+
+
+Function A201_ExpSrv()
+----------------------
+
+Syntax:
+    static int32 A201_ExpSrv(
+        BBIS_HANDLE     *brdHdl,
+        u_int32         mSlot )
+
+Description:
+    Called at the beginning of an exception interrupt.
+
+    Do nothing
+
+Input:
+    brdHdl    pointer to board handle structure   
+    mSlot     module slot number                  
+
+Output:
+    return    BBIS_IRQ_NO
+
+
+Function A201_SetMIface()
+-------------------------
+
+Syntax:
+    static int32 A201_SetMIface
+    (
+        BBIS_HANDLE     *brdHdl,
+        u_int32         mSlot,
+        u_int32         addrMode,
+        u_int32         dataMode
+    )
+
+Description:
+    This function configure the M-Module interface for slot
+    'mSlot'according to the M-Module characteristic.
+    Call this function once per slot.
+
+Input:
+    brdHdl    pointer to board handle structure
+    mSlot     module slot number
+    addrMode  MDIS_MODE_A08
+    dataMode  MDIS_MODE_D08 | MDIS_MODE_D16
+
+Output:
+    0 | error code
+
+
+Function A201_ClrMIface()
+-------------------------
+
+Syntax:
+    static int32 A201_ClrMIface
+    (
+        BBIS_HANDLE     *brdHdl,
+        u_int32         mSlot
+    )
+
+Description:
+    Cleanup the M-Module interface for slot 'mSlot'
+
+Input:
+    brdHdl    pointer to board handle structure
+    mSlot     module slot number
+
+Output:
+    0 | error code
+
+
+Function A201_GetMAddr()
+------------------------
+
+Syntax:
+    static int32 A201_GetMAddr
+    (
+        BBIS_HANDLE     *brdHdl,
+        u_int32         mSlot,
+        u_int32         addrMode,
+        u_int32         dataMode,
+        void            **mAddrP,
+        u_int32         *mSizeP
+    )
+
+Description:
+    This function suply a pointer to the physical address space
+    and the size of this address space for the specified module
+    slot, address mode and data mode.
+
+Input:
+    brdHdl    pointer to board handle structure
+    mSlot     module slot number
+    addrMode  MDIS_MODE_A08
+    dataMode  MDIS_MODE_D08 | MDIS_MODE_D16
+
+Output:
+    mAddrP    pointer to address space
+    mSizeP    size of address space
+    return    0 | error code
+
+
+Function A201_SetStat()
+-----------------------
+
+Syntax:
+    static int32 A201_SetStat
+    (
+        BBIS_HANDLE     *brdHdl,
+        u_int32         mSlot,
+        int32           code,
+        INT32_OR_64     value32_or_64
+    )
+
+Description:
+    Sets the board state.
+
+    supported  codes                     values
+               M_BB_DEBUG_LEVEL          see oss.h
+
+Input:
+    brdHdl  		handle to board data
+    mSlot   		modul index
+    code    		setstat code
+    value32_or_64	setstat data or blocksetstat data pointer
+
+Output:
+    return  0 | error code
+
+
+Function A201_GetStat()
+-----------------------
+
+Syntax:
+    static int32 A201_GetStat
+    (
+        BBIS_HANDLE     *brdHdl,
+        u_int32         mSlot,
+        int32           code,
+        INT32_OR_64     *value32_or_64P
+    )
+
+Description:
+    Gets the board state.
+
+    supported  codes                     values
+               M_BB_IRQ_VECT             0..255
+               M_BB_IRQ_LEVEL            0..255
+               M_BB_IRQ_PRIORITY         0..255
+               M_BB_ID_CHECK             0
+               M_BB_DEBUG_LEVEL          see oss.h
+               M_MK_BLK_REV_ID           -
+
+Input:
+    brdHdl  handle to board data
+    mSlot   modul index
+    code    getstat code
+
+Output:
+    value32_or_64P  getstat data pointer or blockgetstat data pointer
+    return  		0 | error code
+
+
+Function A201_Unused()
+----------------------
+
+Syntax:
+    static int32 A201_Unused
+    (
+        void
+    )
+
+Description:
+    Dummy function.
+
+Input:
+    -
+
+Output:
+    return 0
+

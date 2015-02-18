@@ -1,0 +1,85 @@
+Interface for non-MDIS device drivers
+-------------------------------------
+
+The interface described here shall allow non MDIS drivers (e.g. 
+serial M-modules) to use the MDIS configuration mechanism and to share
+the carrier board with other MDIS devices.
+
+Before the non-MDIS driver can be loaded, user must load the MDIS/BBIS
+modules and create the required board instance, using the mdis_createdev
+tool (for example, "mdis_createdev -b a201_1")
+
+
+User Configuration:
+
+- Each driver shall provide the following module parameters (perhaps 
+  as an array if more than one device is to be supported):
+  - carrier board name (e.g. D201_1)
+  - module slot number on carrier board
+
+*** See file LIBSRC/MDIS_KERNEL/mk_nonmdis.c for interface definitions ***
+
+
+A driver that uses that interface could be written as follows (this driver
+supports only one instance of a device):
+
+#include <asm/system.h>
+#include <linux/types.h>
+#include <linux/module.h>
+#include <linux/init.h>
+
+#define MAC_MEM_MAPPED
+#define LINUX
+#include <MEN/maccess.h>
+#include <MEN/mk_nonmdisif.h>
+#include <MEN/mdis_com.h>
+#include <MEN/men_typs.h>
+#include <MEN/oss.h>
+#include <MEN/ll_defs.h>
+
+static void *G_dev;
+static MACCESS G_ma;
+
+static int IrqHandler(void *data)
+{
+	/* clear interrupt of device */
+
+	return LL_IRQ_DEVICE;
+}
+
+
+/* called when module is inserted */
+static int __init init_mod(void)
+{
+	int ret, i;
+	void *mydata = 0;
+
+	if( (ret = mdis_open_external_dev( 0, "mydevice", "c203_1", 0,
+									   MDIS_MA08, MDIS_MD16,
+									   256, (void *)&G_ma, 
+									   NULL, &G_dev )) < 0)
+		return ret;
+
+
+	/* reset your device */
+	MWRITE_D16( G_ma, 0x00, 0xff );
+
+	/* install interrupt */
+	if( (ret = mdis_install_external_irq( G_dev, IrqHandler, 
+	                                      (void *)mydata ))<0)
+		return ret;
+
+	/* enable interrupt of your device here */
+
+    return 0;
+}
+
+/* called when module is removed */
+static void __exit cleanup_mod(void)
+{
+	mdis_close_external_dev( G_dev );
+}
+
+module_init(init_mod);
+module_exit(cleanup_mod);
+

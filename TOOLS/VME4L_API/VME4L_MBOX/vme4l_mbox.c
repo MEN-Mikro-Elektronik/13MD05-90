@@ -1,0 +1,144 @@
+/*********************  P r o g r a m  -  M o d u l e ***********************/
+/*!
+ *        \file  vme4l_mbox.c
+ *
+ *      \author  klaus.popp@men.de
+ *        $Date: 2009/06/03 19:18:11 $
+ *    $Revision: 1.3 $
+ *
+ *  	 \brief  Example program for mailbox handling
+ *
+ * For PLDZ002 and TSI148 the A16 slave window must be exported (use
+ * vme_slvwin). The vme4l_mbox program must be started first, then the
+ * remote program.
+ *
+ * Requires a program on the remote CPU that does the following:
+ *
+ *  for(;;)
+ *     read mailbox reg until it is read as 0x0000_0000
+ *     write a value to mailbox reg
+ *		(value increases with each write. first value shall be 0x0000_0001)
+ *
+ *     Switches: -
+ *     Required: libraries: vme4l_api
+ */
+/*-------------------------------[ History ]---------------------------------
+ *
+ * $Log: vme4l_mbox.c,v $
+ * Revision 1.3  2009/06/03 19:18:11  rt
+ * R: 1.) Support for newer kernels.
+ * M: 1.) Use SIGRTMIN to determine signal no.
+ *
+ * Revision 1.2  2004/10/27 09:05:20  kp
+ * bug fix: number of mailbox writes not correctly printed
+ *
+ * Revision 1.1  2004/07/26 16:31:40  kp
+ * Initial Revision
+ *
+ *---------------------------------------------------------------------------
+ * (c) Copyright 2004 by MEN mikro elektronik GmbH, Nuernberg, Germany
+ ****************************************************************************/
+
+static const char RCSid[]="$Id: vme4l_mbox.c,v 1.3 2009/06/03 19:18:11 rt Exp $";
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+#include <signal.h>
+#include <errno.h>
+#include <unistd.h>
+#include <MEN/vme4l.h>
+#include <MEN/vme4l_api.h>
+
+/*--------------------------------------+
+|   DEFINES                             |
++--------------------------------------*/
+
+#define MBOX_SIG	(SIGRTMIN+1)
+
+#define CHK(expression) \
+ if( !(expression)) {\
+	 printf("\n*** Error during: %s\nfile %s\nline %d\n", \
+      #expression,__FILE__,__LINE__);\
+      printf("%s\n",strerror(errno));\
+     goto ABORT;\
+ }
+
+
+static void usage(void)
+{
+	printf("Usage: vme4l_mbox <mbox> <numevents> [v]\n");
+	exit(1);
+}
+
+
+/**********************************************************************/
+/** Program entry point
+ *
+ * \return success (0) always
+ */
+int main( int argc, char *argv[] )
+{
+	int nEvents, mbox, fd;
+	uint32_t mboxValue, n=0;
+	sigset_t sigMask;
+	int verbose=0;
+
+	if( argc < 3 )
+		usage();
+
+	if( argc > 3 )
+		verbose++;
+
+
+	mbox 	= strtol( argv[1], NULL, 10 );
+	nEvents = strtoul( argv[2], NULL, 10 );
+		
+	CHK( (fd = VME4L_Open( VME4L_SPC_A24_D16 )) >= 0 );
+
+
+	/*
+	 * Instruct VME4L to send signal
+	 * when mailbox is written from VME
+	 */
+	CHK( VME4L_SigInstall( fd,
+						   VME4L_IRQVEC_MBOXWR(mbox),
+						   VME4L_IRQLEV_MBOXWR(mbox),
+						   MBOX_SIG,
+						   VME4L_IRQ_ENBL ) == 0 );
+
+
+	/* mask signal, wait for signal with sigwaitinfo */
+	sigaddset( &sigMask, MBOX_SIG );
+	sigprocmask( SIG_BLOCK, &sigMask, NULL );
+
+	while( n < nEvents ){
+		
+		/* flag i'm ready */
+		CHK( VME4L_MboxWrite( fd, mbox, 0x00000000 ) == 0 );
+
+		/* Let signals come in */
+		if( sigwaitinfo( &sigMask, NULL ) == MBOX_SIG ){
+
+			CHK( VME4L_MboxRead( fd, mbox, &mboxValue ) == 0 );
+			n++;
+
+			if( verbose )
+				printf("got %d\n", mboxValue );
+
+			if( mboxValue != n ){
+				printf("Bad mboxvalue 0x%08x sb 0x%08x\n",
+					   mboxValue, n );
+				goto ABORT;
+			}					
+		}
+	}
+	printf("%d mailbox writes recognized\n", n);
+
+	return 0;
+
+ ABORT:
+	return 1;
+}
+

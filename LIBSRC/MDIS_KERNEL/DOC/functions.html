@@ -1,0 +1,980 @@
+<html>
+<head>
+<title>MDIS_KERNEL library</title>
+<style type=text/css>
+    Body { background-color: #ffffff; }
+    A:link { color: #c50038; }
+    A:hover { color: #28669b; }
+    P, H1, H2, H3, H3, H5, LI {
+        color: #434343;
+        font-family: Arial, Helvetica, Univers;
+    }
+    P, LI { font-size: 9.000000pt; }
+</style>
+</head>
+<body>
+<h1>MDIS_KERNEL library</h1>
+<p>Wed Jun  9 09:05:05 CEST 2004</p>
+<h2>Overview of all Chapters</h2>
+<a href="#chapt0">Chapter: Main file for MDIS kernel module</a><br>
+<a href="#chapt1">Chapter: Open routine for MDIS kernel module</a><br>
+<a href="#chapt2">Chapter: Close routine for MDIS kernel module</a><br>
+<a href="#chapt3">Chapter: Handle the MK Get/Setstats</a><br>
+<a href="#chapt4">Chapter: Return MK ident string</a><br>
+
+<h2>Overview of all Functions</h2>
+<a name="chapt0"><a href="#intro0"><h3>Main file for MDIS kernel module</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#mk_open">mk_open</a></P></TD><TD><P>Open entry point of MDIS kernel </P></TD></TR>
+<TR><TD><P><a href="#mk_release">mk_release</a></P></TD><TD><P>Release entry point of MDIS kernel (close) </P></TD></TR>
+<TR><TD><P><a href="#mk_ioctl">mk_ioctl</a></P></TD><TD><P>Ioctl entry point of MDIS kernel </P></TD></TR>
+<TR><TD><P><a href="#mk_read">mk_read</a></P></TD><TD><P>fs layer's read entry point. Used for MDIS M_getblock </P></TD></TR>
+<TR><TD><P><a href="#mk_write">mk_write</a></P></TD><TD><P>fs layer's write entry point. Used for MDIS M_setblock </P></TD></TR>
+<TR><TD><P><a href="#MDIS_GetUsrBuf">MDIS_GetUsrBuf</a></P></TD><TD><P>Allocate a buffer for copying user space to kernel space </P></TD></TR>
+<TR><TD><P><a href="#MDIS_RelUsrBuf">MDIS_RelUsrBuf</a></P></TD><TD><P>Return buffer allocated by MDIS_GetUsrBuf </P></TD></TR>
+<TR><TD><P><a href="#MDIS_GetStat">MDIS_GetStat</a></P></TD><TD><P>Perform MDIS getstat call (API call M_getstat) </P></TD></TR>
+<TR><TD><P><a href="#MDIS_SetStat">MDIS_SetStat</a></P></TD><TD><P>Perform MDIS setstat call (API call M_setstat) </P></TD></TR>
+<TR><TD><P><a href="#MDIS_DevLock">MDIS_DevLock</a></P></TD><TD><P>Lock the device </P></TD></TR>
+<TR><TD><P><a href="#MDIS_DevUnLock">MDIS_DevUnLock</a></P></TD><TD><P>UnLock the device </P></TD></TR>
+<TR><TD><P><a href="#MDIS_LlGetStat">MDIS_LlGetStat</a></P></TD><TD><P>Call the device drivers GetStat() routine, lock processes </P></TD></TR>
+<TR><TD><P><a href="#MDIS_BbGetStat">MDIS_BbGetStat</a></P></TD><TD><P>Call the board drivers GetStat() routine </P></TD></TR>
+<TR><TD><P><a href="#MDIS_LlSetStat">MDIS_LlSetStat</a></P></TD><TD><P>Call the device drivers SetStat() routine, lock processes </P></TD></TR>
+<TR><TD><P><a href="#MDIS_BbSetStat">MDIS_BbSetStat</a></P></TD><TD><P>Call the board drivers SetStat() routine </P></TD></TR>
+<TR><TD><P><a href="#MDIS_Read">MDIS_Read</a></P></TD><TD><P>Perform Low Level driver read (API call M_read) </P></TD></TR>
+<TR><TD><P><a href="#MDIS_Write">MDIS_Write</a></P></TD><TD><P>Perform Low Level driver write (API call M_write) </P></TD></TR>
+<TR><TD><P><a href="#MDIS_IrqHandler">MDIS_IrqHandler</a></P></TD><TD><P>Global MDIS Interrupt handler </P></TD></TR>
+<TR><TD><P><a href="#MDIS_FindDevByName">MDIS_FindDevByName</a></P></TD><TD><P>Search for a device in MDIS device list </P></TD></TR>
+<TR><TD><P><a href="#MDIS_FindDrvByName">MDIS_FindDrvByName</a></P></TD><TD><P>Search for a driver in MDIS driver list </P></TD></TR>
+<TR><TD><P><a href="#OpenDevice">OpenDevice</a></P></TD><TD><P>Ioctl handler for MDIS_OPEN_DEVICE/MDIS_CREATE_DEVICE </P></TD></TR>
+<TR><TD><P><a href="#CompressErrno">CompressErrno</a></P></TD><TD><P>PowerPC special routine to compress MDIS error numbers </P></TD></TR>
+<TR><TD><P><a href="#mk_read_procmem">mk_read_procmem</a></P></TD><TD><P>Function to fill in data when /proc/mdis file is read </P></TD></TR>
+<TR><TD><P><a href="#mdis_register_ll_driver">mdis_register_ll_driver</a></P></TD><TD><P>Register an MDIS Low Level Driver in the MDIS kernel </P></TD></TR>
+<TR><TD><P><a href="#mdis_unregister_ll_driver">mdis_unregister_ll_driver</a></P></TD><TD><P>Un-registers an MDIS Low Level Driver in the MDIS kernel </P></TD></TR>
+<TR><TD><P><a href="#mdis_find_ll_handle">mdis_find_ll_handle</a></P></TD><TD><P>Find low level handle by given device name </P></TD></TR>
+</TABLE>
+<a name="chapt1"><a href="#intro1"><h3>
+Open routine for MDIS kernel module</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#MDIS_InitialOpen">MDIS_InitialOpen</a></P></TD><TD><P>Open first path to device </P></TD></TR>
+<TR><TD><P><a href="#MapAddressSpaces">MapAddressSpaces</a></P></TD><TD><P>Map all address spaces required from device </P></TD></TR>
+<TR><TD><P><a href="#GetDeviceParams">GetDeviceParams</a></P></TD><TD><P>Get fixed device parameters via Info() function </P></TD></TR>
+<TR><TD><P><a href="#MDIS_GetBoardParams">MDIS_GetBoardParams</a></P></TD><TD><P>Get fixed board parameters via BrdInfo() function </P></TD></TR>
+<TR><TD><P><a href="#MDIS_GetPciBoardParams">MDIS_GetPciBoardParams</a></P></TD><TD><P>Get PCI board parameters from descriptor and BBIS </P></TD></TR>
+<TR><TD><P><a href="#MDIS_GetIrqParams">MDIS_GetIrqParams</a></P></TD><TD><P>Determine interrupt parameters of device </P></TD></TR>
+<TR><TD><P><a href="#MDIS_InstallSysirq">MDIS_InstallSysirq</a></P></TD><TD><P>Install the system interrupt </P></TD></TR>
+<TR><TD><P><a href="#MDIS_InitLockMode">MDIS_InitLockMode</a></P></TD><TD><P>Init process lock mode </P></TD></TR>
+<TR><TD><P><a href="#MDIS_EnableIrq">MDIS_EnableIrq</a></P></TD><TD><P>Enable/disable interrupt on board+device </P></TD></TR>
+<TR><TD><P><a href="#CheckPciDev">CheckPciDev</a></P></TD><TD><P>Check if PCI device present and vendor/devId matches </P></TD></TR>
+<TR><TD><P><a href="#PciGetAddrReg">PciGetAddrReg</a></P></TD><TD><P>Determine if PCI address register present and determine size </P></TD></TR>
+<TR><TD><P><a href="#SetMiface">SetMiface</a></P></TD><TD><P>set up the device slot with required address/data mode. </P></TD></TR>
+<TR><TD><P><a href="#BrdIrqEnable">BrdIrqEnable</a></P></TD><TD><P>if <enable>=1 enable board interrupt if irq has not been </P></TD></TR>
+</TABLE>
+<a name="chapt2"><a href="#intro2"><h3>
+Close routine for MDIS kernel module</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#MDIS_FinalClose">MDIS_FinalClose</a></P></TD><TD><P>Close last path to device </P></TD></TR>
+<TR><TD><P><a href="#MDIS_RemoveSysirq">MDIS_RemoveSysirq</a></P></TD><TD><P>Remove & disable the system interrupt </P></TD></TR>
+<TR><TD><P><a href="#MDIS_TermLockMode">MDIS_TermLockMode</a></P></TD><TD><P>Delete locking semaphores </P></TD></TR>
+<TR><TD><P><a href="#ClrMiface">ClrMiface</a></P></TD><TD><P>clears the device slot if this was the last device on slot </P></TD></TR>
+</TABLE>
+<a name="chapt3"><a href="#intro3"><h3>
+Handle the MK Get/Setstats</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#MDIS_MkSetStat">MDIS_MkSetStat</a></P></TD><TD><P>Handle MK setstat code </P></TD></TR>
+<TR><TD><P><a href="#MDIS_MkGetStat">MDIS_MkGetStat</a></P></TD><TD><P>Handle MK getstat code </P></TD></TR>
+<TR><TD><P><a href="#GetRevId">GetRevId</a></P></TD><TD><P>Create revision ident string and/or calculate size </P></TD></TR>
+</TABLE>
+<a name="chapt4"><a href="#intro4"><h3>
+Return MK ident string</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#MDIS_Ident">MDIS_Ident</a></P></TD><TD><P>Return ident string </P></TD></TR>
+<TR><TD><P><a href="#SetErrno">SetErrno</a></P></TD><TD><P>Sets "errno" of the current RTAI task </P></TD></TR>
+<TR><TD><P><a href="#MDIS_RtaiInit">MDIS_RtaiInit</a></P></TD><TD><P>Init the RTAI MDIS </P></TD></TR>
+<TR><TD><P><a href="#MDIS_RtaiExit">MDIS_RtaiExit</a></P></TD><TD><P>Exit from RTAI MDIS </P></TD></TR>
+<TR><TD><P><a href="#MDIS_RtaiInitialOpen">MDIS_RtaiInitialOpen</a></P></TD><TD><P>Perform rest of initialisation of device </P></TD></TR>
+<TR><TD><P><a href="#MDIS_RtaiFinalClose">MDIS_RtaiFinalClose</a></P></TD><TD><P>Close last path to device </P></TD></TR>
+<TR><TD><P><a href="#MDIS_RtaiIrqHandler">MDIS_RtaiIrqHandler</a></P></TD><TD><P>Global MDIS/RTAI Interrupt handler </P></TD></TR>
+<TR><TD><P><a href="#MDIS_RtaiInstallSysirq">MDIS_RtaiInstallSysirq</a></P></TD><TD><P>Install & enable the system interrupt </P></TD></TR>
+<TR><TD><P><a href="#MDIS_RtaiRemoveSysirq">MDIS_RtaiRemoveSysirq</a></P></TD><TD><P>Remove & disable the system interrupt </P></TD></TR>
+</TABLE>
+ 
+<a name="intro0"><h1>Main file for MDIS kernel module </h1></a>
+<pre>Contains the Linux filesystem's entry points
+Required: -
+Switches: DBG
+
+</pre>
+<a name="mk_open"><h2>Function mk_open()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int mk_open (struct inode *inode, struct file *filp)
+</pre><h3>Description</h3>
+<pre>Open entry point of MDIS kernel
+Note: the real "open" work is done by ioctl
+</pre><h3>Input</h3>
+<pre>inode         inode structure
+filp          file structure
+</pre><h3>Output</h3>
+<pre>returns       0=ok, or negative error number
+</pre>
+<a name="mk_release"><h2>Function mk_release()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int mk_release (struct inode *inode, struct file *filp)
+</pre><h3>Description</h3>
+<pre>Release entry point of MDIS kernel (close)
+</pre><h3>Input</h3>
+<pre>inode         inode structure
+filp          file structure
+</pre><h3>Output</h3>
+<pre>returns       0=ok, or negative error number
+</pre>
+<a name="mk_ioctl"><h2>Function mk_ioctl()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int mk_ioctl (
+    struct inode *inode, 
+    struct file *filp,
+    unsigned int cmd, 
+    unsigned long arg)
+</pre><h3>Description</h3>
+<pre>Ioctl entry point of MDIS kernel 
+</pre><h3>Input</h3>
+<pre>inode         inode structure
+filp          file structure
+cmd           ioctl number
+arg           argument to ioctl
+</pre><h3>Output</h3>
+<pre>returns       0=ok, or negative error number
+</pre>
+<a name="mk_read"><h2>Function mk_read()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static ssize_t mk_read (
+    struct file *filp, 
+    char *buf, 
+    size_t count, 
+    loff_t *pos)
+</pre><h3>Description</h3>
+<pre>fs layer's read entry point. Used for MDIS M_getblock
+</pre><h3>Input</h3>
+<pre>filp           file structure
+buf            buffer where to place read data
+count          max number of bytes to read
+*pos           current position in file (not used)  
+</pre><h3>Output</h3>
+<pre>returns:       &#62;=0 number of bytes read
+               &#60;0 negative error number 
+</pre>
+<a name="mk_write"><h2>Function mk_write()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static ssize_t mk_write (
+    struct file *filp, 
+    const char *buf, 
+    size_t count, 
+    loff_t *pos)
+</pre><h3>Description</h3>
+<pre>fs layer's write entry point. Used for MDIS M_setblock
+</pre><h3>Input</h3>
+<pre>filp           file structure
+buf            buffer that contains data to write
+count          max number of bytes to write
+*pos           current position in file (not used)  
+</pre><h3>Output</h3>
+<pre>returns:       &#62;=0 number of bytes written
+               &#60;0 negative error number 
+</pre>
+<a name="MDIS_GetUsrBuf"><h2>Function MDIS_GetUsrBuf()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static void *MDIS_GetUsrBuf( u_int32 size, void **bufIdP )
+</pre><h3>Description</h3>
+<pre>Allocate a buffer for copying user space to kernel space
+
+If the requested size is &#60;= (PAGE_SIZE-4) a statically allocated buffer
+from the MK buffer pool will be used. 
+Otherwise is the buffer is smaller 130000 bytes, the buffer is kmalloc'ed.
+Bigger buffers are vmalloc'ed (slower, but unlimited in size)
+</pre><h3>Input</h3>
+<pre>size          size of requested buffer in bytes
+</pre><h3>Output</h3>
+<pre>returns       ptr to buffer or NULL if no memory
+*bufIdP       a buffer ID that has to be passed to 
+              MDIS_RelUsrBuf
+</pre>
+<a name="MDIS_RelUsrBuf"><h2>Function MDIS_RelUsrBuf()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static void MDIS_RelUsrBuf( void *data, void *bufId )
+</pre><h3>Description</h3>
+<pre>Return buffer allocated by MDIS_GetUsrBuf
+</pre><h3>Input</h3>
+<pre>data          ptr to buffer to be returned
+bufId         Id that was returned by MDIS_GetUsrBuf
+</pre><h3>Output</h3>
+<pre>-
+</pre>
+<a name="MDIS_GetStat"><h2>Function MDIS_GetStat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int MDIS_GetStat( MK_PATH *mkPath, unsigned long arg )
+</pre><h3>Description</h3>
+<pre>Perform MDIS getstat call (API call M_getstat)
+</pre><h3>Input</h3>
+<pre>mkPath        MDIS kernel path structure
+arg           user space ptr to MDIS_LINUX_SGSTAT struct
+</pre><h3>Output</h3>
+<pre>returns       0=ok, or negative error number
+</pre>
+<a name="MDIS_SetStat"><h2>Function MDIS_SetStat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int MDIS_SetStat( MK_PATH *mkPath, unsigned long arg )
+</pre><h3>Description</h3>
+<pre>Perform MDIS setstat call (API call M_setstat)
+</pre><h3>Input</h3>
+<pre>mkPath        MDIS kernel path structure
+arg           user space ptr to MDIS_LINUX_SGSTAT struct
+</pre><h3>Output</h3>
+<pre>returns       0=ok, or negative error number
+</pre>
+<a name="MDIS_DevLock"><h2>Function MDIS_DevLock()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_DevLock( MK_PATH *mkPath, OSS_SEM_HANDLE *callSem )
+</pre><h3>Description</h3>
+<pre>Lock the device
+
+Used by both Linux and RTAI implementation
+
+If Lockmode is CHAN, locks the channel's sempahore
+If Lockmode is CALL, locks the semaphore pointed to by callSem
+Finally, locks the device semaphore            
+</pre><h3>Input</h3>
+<pre>mkPath   MDIS kernel path structure
+callSem  semaphore to lock when lock mode is CALL
+</pre><h3>Output</h3>
+<pre>return   success (0) or error code
+</pre>
+<a name="MDIS_DevUnLock"><h2>Function MDIS_DevUnLock()</h2></a>
+
+<h3>Syntax</h3>
+<pre>void MDIS_DevUnLock( MK_PATH *mkPath, OSS_SEM_HANDLE *callSem )
+</pre><h3>Description</h3>
+<pre>UnLock the device
+
+Used by both Linux and RTAI implementation
+
+</pre><h3>Input</h3>
+<pre>mkPath   MDIS kernel path structure
+callSem  semaphore to unlock when lock mode is CALL
+</pre><h3>Output</h3>
+<pre>-
+</pre>
+<a name="MDIS_LlGetStat"><h2>Function MDIS_LlGetStat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_LlGetStat(MK_PATH *mkPath, int32 code, int32 *valueP)
+</pre><h3>Description</h3>
+<pre>Call the device drivers GetStat() routine, lock processes
+
+Used by both Linux and RTAI implementation
+
+</pre><h3>Input</h3>
+<pre>mkPath   MDIS kernel path structure
+code     status code
+value    either ptr to value or M_SG_BLOCK struct
+</pre><h3>Output</h3>
+<pre>return   success (0) or error code
+</pre>
+<a name="MDIS_BbGetStat"><h2>Function MDIS_BbGetStat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_BbGetStat(MK_PATH *mkPath, int32 code, int32 *valueP)
+</pre><h3>Description</h3>
+<pre>Call the board drivers GetStat() routine
+
+Used by both Linux and RTAI implementation
+
+</pre><h3>Input</h3>
+<pre>mkPath   MDIS kernel path structure
+code     status code
+value    either ptr to value or M_SG_BLOCK struct
+</pre><h3>Output</h3>
+<pre>return   success (0) or error code
+</pre>
+<a name="MDIS_LlSetStat"><h2>Function MDIS_LlSetStat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_LlSetStat(MK_PATH *mkPath, int32 code, void *value)
+</pre><h3>Description</h3>
+<pre>Call the device drivers SetStat() routine, lock processes
+
+Used by both Linux and RTAI implementation
+
+</pre><h3>Input</h3>
+<pre>mkPath   MDIS kernel path structure
+code     status code
+value    either the value or M_SG_BLOCK struct
+</pre><h3>Output</h3>
+<pre>return   success (0) or error code
+</pre>
+<a name="MDIS_BbSetStat"><h2>Function MDIS_BbSetStat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_BbSetStat(MK_PATH *mkPath, int32 code, void *value)
+</pre><h3>Description</h3>
+<pre>Call the board drivers SetStat() routine
+
+Used by both Linux and RTAI implementation
+
+</pre><h3>Input</h3>
+<pre>mkPath   MDIS kernel path structure
+code     status code
+value    either the value or M_SG_BLOCK struct
+</pre><h3>Output</h3>
+<pre>return   success (0) or error code
+</pre>
+<a name="MDIS_Read"><h2>Function MDIS_Read()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int MDIS_Read( MK_PATH *mkPath, unsigned long arg )
+</pre><h3>Description</h3>
+<pre>Perform Low Level driver read (API call M_read)
+
+current channel number is incremented according to ioMode
+</pre><h3>Input</h3>
+<pre>mkPath        MDIS kernel path structure
+arg           ptr into user space int32 variable
+</pre><h3>Output</h3>
+<pre>returns       0=ok, or negative error number
+</pre>
+<a name="MDIS_Write"><h2>Function MDIS_Write()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int MDIS_Write( MK_PATH *mkPath, unsigned long arg )
+</pre><h3>Description</h3>
+<pre>Perform Low Level driver write (API call M_write)
+
+current channel number is incremented according to ioMode
+</pre><h3>Input</h3>
+<pre>mkPath        MDIS kernel path structure
+arg           value to write
+</pre><h3>Output</h3>
+<pre>returns       0=ok, or negative error number
+</pre>
+<a name="MDIS_IrqHandler"><h2>Function MDIS_IrqHandler()</h2></a>
+
+<h3>Syntax</h3>
+<pre>#ifdef LINUX_26
+irqreturn_t MDIS_IrqHandler( int irq, void *dev_id, struct pt_regs *regs )
+#else
+void MDIS_IrqHandler( int irq, void *dev_id, struct pt_regs *regs )
+#endif
+</pre><h3>Description</h3>
+<pre>Global MDIS Interrupt handler
+
+- calls board handler service init (irqSrvcInit)
+- dispatch to low-level-handler      (MXX_Irq)
+- calls board handler service exit (irqSrvcExit)
+
+Used by both Linux and RTAI implementations 
+</pre><h3>Input</h3>
+<pre>irq           interrupt number
+dev_id        for MDIS, ptr to MK_DEV struct
+regs          register snapshot (not used)
+</pre><h3>Output</h3>
+<pre>Linux_2.6 only: IRQ_HANDLED / IRQ_NONE
+</pre>
+<a name="MDIS_FindDevByName"><h2>Function MDIS_FindDevByName()</h2></a>
+
+<h3>Syntax</h3>
+<pre>MK_DEV *MDIS_FindDevByName( const char *name )
+</pre><h3>Description</h3>
+<pre>Search for a device in MDIS device list
+</pre><h3>Input</h3>
+<pre>name          name to look for
+</pre><h3>Output</h3>
+<pre>returns       ptr to device struct or NULL if not found
+</pre>
+<a name="MDIS_FindDrvByName"><h2>Function MDIS_FindDrvByName()</h2></a>
+
+<h3>Syntax</h3>
+<pre>MK_DRV *MDIS_FindDrvByName( const char *name )
+</pre><h3>Description</h3>
+<pre>Search for a driver in MDIS driver list
+</pre><h3>Input</h3>
+<pre>name          name to look for
+</pre><h3>Output</h3>
+<pre>returns       ptr to driver struct or NULL if not found
+</pre>
+<a name="OpenDevice"><h2>Function OpenDevice()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int MDIS_OpenDevice( int ioctlCode, 
+                            unsigned long usrMop, MK_PATH **mkPathP )
+</pre><h3>Description</h3>
+<pre>Ioctl handler for MDIS_OPEN_DEVICE/MDIS_CREATE_DEVICE
+</pre><h3>Input</h3>
+<pre>ioctlCode     MDIS_OPEN_DEVICE or MDIS_CREATE_DEVICE
+usrMop        user space address of MDIS_OPEN_DEVICE_DATA
+              or MDIS_CREATE_DEVICE_DATA struct
+</pre><h3>Output</h3>
+<pre>returns       0=ok, or negative error number
+*mkPathP      if successfull, contains the MK path struct
+</pre>
+<a name="CompressErrno"><h2>Function CompressErrno()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int CompressErrno( int mdisErr )
+</pre><h3>Description</h3>
+<pre>PowerPC special routine to compress MDIS error numbers
+
+On this machine, error numbers returned by system calls
+cannot be higher than 515. So try to compress MDIS error numbers so that
+they fit into this range.
+On the user level, this value is expanded to its original value in mdis_api
+
+The following table shows the mapping:
+
+MDIS class   org. range      compressed error code
+------------------------------------------------
+ERR_MK       (0x400..0x4ff)  0xa0..0xbf
+ERR_MBUF     (0x600..0x6ff)  0xc0..0xcf
+ERR_BBIS     (0x700..0x7ff)  0xd0..0xdf
+ERR_OSS      (0x800..0x87f)  0xe0..0xff
+ERR_OSS_PCI  (0x880..0x89f)  0x100..0x10f
+ERR_OSS_VME  (0x8a0..0x8bf)  0x110..0x117
+ERR_OSS_ISA  (0x8c0..0x8ff)  0x118..0x11f
+ERR_DESC     (0x900..0x97f)  0x120..0x12f
+ERR_ID       (0x980..0x9ff)  0x130..0x137
+ERR_PLD      (0xa00..0xa7f)  0x138..0x13f
+ERR_BK       (0xb00..0xbff)  0x140..0x14f
+ERR_LL       (0x500..0x5ff)  0x150..0x15f
+ERR_DEV      (0xc00..0xcff)  0x160..0x1ff
+</pre><h3>Input</h3>
+<pre>mdisErr       original MDIS error code (positive)
+</pre><h3>Output</h3>
+<pre>returns       compressed error code
+</pre>
+<a name="mk_read_procmem"><h2>Function mk_read_procmem()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int mk_read_procmem( char *page, char **start, off_t off,
+                            int count, int *eof, void *data)
+</pre><h3>Description</h3>
+<pre>Function to fill in data when /proc/mdis file is read
+
+</pre><h3>Input</h3>
+<pre>proc          page start
+offset        offset within file
+count         max bytes to read
+data          ?
+</pre><h3>Output</h3>
+<pre>returns       0=ok, or negative error number
+*start        ptr to first valid char in page
+*eof          true if all characters output
+</pre>
+<a name="mdis_register_ll_driver"><h2>Function mdis_register_ll_driver()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int mdis_register_ll_driver( 
+    char *llName, 
+    void (*getEntry)(LL_ENTRY *),
+    struct module *module)
+</pre><h3>Description</h3>
+<pre>Register an MDIS Low Level Driver in the MDIS kernel
+</pre><h3>Input</h3>
+<pre>llName        name of low level driver e.g. "men_ll_m55"
+getEntry      ptr to GetEntry function of LL driver
+module        calling module structure
+</pre><h3>Output</h3>
+<pre>returns       0=ok, or negative error number
+</pre>
+<a name="mdis_unregister_ll_driver"><h2>Function mdis_unregister_ll_driver()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int mdis_unregister_ll_driver( char *llName )
+</pre><h3>Description</h3>
+<pre>Un-registers an MDIS Low Level Driver in the MDIS kernel
+</pre><h3>Input</h3>
+<pre>llName        name of low level driver e.g. "men_ll_m55"
+</pre><h3>Output</h3>
+<pre>returns       0=ok, or negative error number
+</pre>
+<a name="mdis_find_ll_handle"><h2>Function mdis_find_ll_handle()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int mdis_find_ll_handle( char *devName, LL_HANDLE **hP, LL_ENTRY *entry )
+</pre><h3>Description</h3>
+<pre>Find low level handle by given device name
+
+This routine can be used to access MDIS drivers from other MDIS drivers
+(such as LM78/Z8536 on F2). 
+
+The device to be queried must be already opened before calling this
+routine. 
+
+It returns the LL handle and the LL entry points. Note that the MDIS
+locking mechanism will be bypassed in this case.           
+</pre><h3>Input</h3>
+<pre>devName        device name to look for
+</pre><h3>Output</h3>
+<pre>returns:       0=ok or negative error number
+*hP            low level handle for that device
+*entry     low level driver jump table filled with entries
+</pre><a name="intro1"><h1>Open routine for MDIS kernel module </h1></a>
+<pre>
+Required: -
+Switches: DBG
+
+</pre>
+<a name="MDIS_InitialOpen"><h2>Function MDIS_InitialOpen()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_InitialOpen( 
+    char *devName, 
+    DESC_HANDLE *devDescHdl,
+    DESC_SPEC *devDesc,
+    char *brdName, 
+    DESC_SPEC *brdDesc,
+    int rtMode,
+    int persist,
+    MK_DEV **devP)
+</pre><h3>Description</h3>
+<pre>Open first path to device
+- set up parameters
+- set up hardware
+
+If rtMode is non-zero, MDIS_InitialOpen skips some of the initialisation
+steps, e.g. it does not initialize the LL driver. The missing steps must
+be performed by MDIS_RtaiInitialOpen().
+
+For rtMode, persist must also be passed as non-zero
+</pre><h3>Input</h3>
+<pre>devName    device name
+devDescHdl device descriptor handle
+devDesc    device descriptor specifier
+brdName    board device name
+brdDesc    board descriptor specifier
+rtMode     if non-zero, create device for RTAI
+persist    if non-zero, don't delete device on close
+</pre><h3>Output</h3>
+<pre>return     success (0) or error code
+*devP      device handle
+</pre>
+<a name="MapAddressSpaces"><h2>Function MapAddressSpaces()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MapAddressSpaces(MK_DEV *dev, DESC_HANDLE *devDescHdl)
+</pre><h3>Description</h3>
+<pre>Map all address spaces required from device
+
+</pre><h3>Input</h3>
+<pre>dev     device structure
+devDescHdl descriptor handle
+</pre><h3>Output</h3>
+<pre>return  success (0) or error code
+</pre>
+<a name="GetDeviceParams"><h2>Function GetDeviceParams()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 GetDeviceParams(MK_DEV *dev)
+</pre><h3>Description</h3>
+<pre>Get fixed device parameters via Info() function
+
+</pre><h3>Input</h3>
+<pre>dev     device structure
+</pre><h3>Output</h3>
+<pre>return  success (0) or error code
+</pre>
+<a name="MDIS_GetBoardParams"><h2>Function MDIS_GetBoardParams()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_GetBoardParams(MK_DEV *dev)
+</pre><h3>Description</h3>
+<pre>Get fixed board parameters via BrdInfo() function
+
+</pre><h3>Input</h3>
+<pre>dev     device structure
+</pre><h3>Output</h3>
+<pre>return  success (0) or error code
+</pre>
+<a name="MDIS_GetPciBoardParams"><h2>Function MDIS_GetPciBoardParams()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_GetPciBoardParams(MK_DEV *dev, DESC_HANDLE *devDescHdl)
+</pre><h3>Description</h3>
+<pre>Get PCI board parameters from descriptor and BBIS
+Does nothing for non-PCI devices
+</pre><h3>Input</h3>
+<pre>dev     device structure
+devDescHdl descriptor handle
+</pre><h3>Output</h3>
+<pre>return  success (0) or error code
+</pre>
+<a name="MDIS_GetIrqParams"><h2>Function MDIS_GetIrqParams()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_GetIrqParams(MK_DEV *dev)
+</pre><h3>Description</h3>
+<pre>Determine interrupt parameters of device
+
+</pre><h3>Input</h3>
+<pre>dev     device structure
+</pre><h3>Output</h3>
+<pre>return  success (0) or error code
+</pre>
+<a name="MDIS_InstallSysirq"><h2>Function MDIS_InstallSysirq()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_InstallSysirq(MK_DEV *dev)
+</pre><h3>Description</h3>
+<pre>Install the system interrupt
+
+For devices initialized for rtMode, the interrupt is only temporary
+installed to see if a linux devices uses the same irq.
+</pre><h3>Input</h3>
+<pre>dev     device structure
+</pre><h3>Output</h3>
+<pre>return  success (0) or error code
+</pre>
+<a name="MDIS_InitLockMode"><h2>Function MDIS_InitLockMode()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_InitLockMode(MK_DEV *dev)
+</pre><h3>Description</h3>
+<pre>Init process lock mode
+
+</pre><h3>Input</h3>
+<pre>dev     device structure
+</pre><h3>Output</h3>
+<pre>return  success (0) or error code
+</pre>
+<a name="MDIS_EnableIrq"><h2>Function MDIS_EnableIrq()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_EnableIrq(MK_DEV *dev, u_int32 enable)
+</pre><h3>Description</h3>
+<pre>Enable/disable interrupt on board+device
+System interrupt is masked while disabling
+
+</pre><h3>Input</h3>
+<pre>dev         device structure
+enable  0=disable, 1=enable
+</pre><h3>Output</h3>
+<pre>return  success (0) or error code
+</pre>
+<a name="CheckPciDev"><h2>Function CheckPciDev()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 CheckPciDev( MK_DEV *dev )
+</pre><h3>Description</h3>
+<pre>Check if PCI device present and vendor/devId matches
+
+</pre><h3>Input</h3>
+<pre>dev         device structure
+</pre><h3>Output</h3>
+<pre>return  success (0) or error code
+</pre>
+<a name="PciGetAddrReg"><h2>Function PciGetAddrReg()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 PciGetAddrReg( 
+    MK_DEV *dev, 
+    u_int32 pciBaseReg,
+    void **addrP,
+    u_int32 *sizeP,
+    u_int32 *spaceP)
+</pre><h3>Description</h3>
+<pre>Determine if PCI address register present and determine size
+
+</pre><h3>Input</h3>
+<pre>dev            device structure
+pciBaseReg base address register index (0..5)
+</pre><h3>Output</h3>
+<pre>return     success (0) or error code
+*addrP     physical address 
+*sizeP     size of region
+*spaceP    space of region (OSS_ADDRSPACE_MEM or IO)
+</pre>
+<a name="SetMiface"><h2>Function SetMiface()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_SetMiface( MK_DEV *dev )
+</pre><h3>Description</h3>
+<pre>set up the device slot with required address/data mode.
+
+Checks wether the slot is already enabled by another device with a 
+different subdevice offset / pciFunc. Initialize device slot if not 
+already done           
+</pre><h3>Input</h3>
+<pre>dev            device structure
+</pre><h3>Output</h3>
+<pre>return     success (0) or error code
+</pre>
+<a name="BrdIrqEnable"><h2>Function BrdIrqEnable()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 BrdIrqEnable( MK_DEV *dev, int enable )
+</pre><h3>Description</h3>
+<pre>if &#60;enable&#62;=1 enable board interrupt if irq has not been 
+enabled on that slot
+if &#60;enable&#62;=0 disable board interrupt if irq has not been 
+enabled on that slot by another device
+</pre><h3>Input</h3>
+<pre>dev            device structure
+enable         0=disable 1=enable
+</pre><h3>Output</h3>
+<pre>return     success (0) or error code
+</pre><a name="intro2"><h1>Close routine for MDIS kernel module </h1></a>
+<pre>
+Required: -
+Switches: DBG
+
+??? Exception IRQ disable
+</pre>
+<a name="MDIS_FinalClose"><h2>Function MDIS_FinalClose()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_FinalClose( MK_DEV *dev )
+</pre><h3>Description</h3>
+<pre>Close last path to device
+
+</pre><h3>Input</h3>
+<pre>dev     device structure
+</pre><h3>Output</h3>
+<pre>return  success (0) or error code
+</pre>
+<a name="MDIS_RemoveSysirq"><h2>Function MDIS_RemoveSysirq()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_RemoveSysirq(MK_DEV *dev)
+</pre><h3>Description</h3>
+<pre>Remove & disable the system interrupt
+
+</pre><h3>Input</h3>
+<pre>dev     device structure
+</pre><h3>Output</h3>
+<pre>return  success (0) or error code
+</pre>
+<a name="MDIS_TermLockMode"><h2>Function MDIS_TermLockMode()</h2></a>
+
+<h3>Syntax</h3>
+<pre>void MDIS_TermLockMode( MK_DEV *dev )
+</pre><h3>Description</h3>
+<pre>Delete locking semaphores
+
+</pre><h3>Input</h3>
+<pre>dev            device structure
+</pre><h3>Output</h3>
+<pre>-
+</pre>
+<a name="ClrMiface"><h2>Function ClrMiface()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 ClrMiface( MK_DEV *dev )
+</pre><h3>Description</h3>
+<pre>clears the device slot if this was the last device on slot
+
+</pre><h3>Input</h3>
+<pre>dev            device structure
+</pre><h3>Output</h3>
+<pre>return     success (0) or error code
+</pre><a name="intro3"><h1>Handle the MK Get/Setstats </h1></a>
+<pre>
+Required: -
+Switches: DBG
+
+</pre>
+<a name="MDIS_MkSetStat"><h2>Function MDIS_MkSetStat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_MkSetStat( MK_PATH *mkPath, u_int32 code, void *arg )
+</pre><h3>Description</h3>
+<pre>Handle MK setstat code
+
+Used by both Linux and RTAI implementation
+
+</pre><h3>Input</h3>
+<pre>mkPath   MK path structure
+code     status code
+arg      for std codes: value
+         for blk codes: M_SG_BLOCK struct
+</pre><h3>Output</h3>
+<pre>return   success (0) or error code
+</pre>
+<a name="MDIS_MkGetStat"><h2>Function MDIS_MkGetStat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_MkGetStat(MK_PATH *mkPath, int32 code, int32 *valueP)
+</pre><h3>Description</h3>
+<pre>Handle MK getstat code
+
+Used by both Linux and RTAI implementation
+
+</pre><h3>Input</h3>
+<pre>lu       unit storage
+code     status code
+pd       path descriptor
+</pre><h3>Input</h3>
+<pre>mkPath   MK path structure
+code     status code
+arg      for std codes: ptr to value
+         for blk codes: M_SG_BLOCK struct
+</pre><h3>Output</h3>
+<pre>return   success (0) or error code
+</pre>
+<a name="GetRevId"><h2>Function GetRevId()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 GetRevId(MK_DEV *dev, char *buf, u_int32 *size, u_int32 doExec)
+</pre><h3>Description</h3>
+<pre>Create revision ident string and/or calculate size
+
+</pre><h3>Input</h3>
+<pre>dev     MK device struct
+buf     destination string buffer or NULL
+doExec  0 = only size is returned
+        1 = string is created in buf
+</pre><h3>Output</h3>
+<pre>size    size of ident string
+return  pointer to ident string
+</pre><a name="intro4"><h1>Return MK ident string </h1></a>
+<pre>
+Required: -
+Switches: -
+
+</pre>
+<a name="MDIS_Ident"><h2>Function MDIS_Ident()</h2></a>
+
+<h3>Syntax</h3>
+<pre>char* MDIS_Ident( void )
+</pre><h3>Description</h3>
+<pre>Return ident string 
+
+</pre><h3>Input</h3>
+<pre>-
+</pre><h3>Output</h3>
+<pre>return  pointer to ident string
+</pre></pre>
+<a name="SetErrno"><h2>Function SetErrno()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static void SetErrno( int err )
+</pre><h3>Description</h3>
+<pre>Sets "errno" of the current RTAI task
+
+</pre><h3>Input</h3>
+<pre>err       error code to pass to errno
+</pre><h3>Output</h3>
+<pre>-
+</pre>
+<a name="MDIS_RtaiInit"><h2>Function MDIS_RtaiInit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>void MDIS_RtaiInit(void)
+</pre><h3>Description</h3>
+<pre>Init the RTAI MDIS
+
+called from mk_module.c::init_module
+</pre><h3>Input</h3>
+<pre>-
+</pre><h3>Output</h3>
+<pre>-
+</pre>
+<a name="MDIS_RtaiExit"><h2>Function MDIS_RtaiExit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>void MDIS_RtaiExit(void)
+</pre><h3>Description</h3>
+<pre>Exit from RTAI MDIS
+
+called from mk_module.c::exit_module
+</pre><h3>Input</h3>
+<pre>-
+</pre><h3>Output</h3>
+<pre>-
+</pre>
+<a name="MDIS_RtaiInitialOpen"><h2>Function MDIS_RtaiInitialOpen()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_RtaiInitialOpen( MK_DEV *dev )
+</pre><h3>Description</h3>
+<pre>Perform rest of initialisation of device
+
+Performs the steps that MDIS_InitialOpen() has skipped
+</pre><h3>Input</h3>
+<pre>dev   device to initialize
+</pre><h3>Output</h3>
+<pre>returns error number
+</pre>
+<a name="MDIS_RtaiFinalClose"><h2>Function MDIS_RtaiFinalClose()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_RtaiFinalClose( MK_DEV *dev )
+</pre><h3>Description</h3>
+<pre>Close last path to device
+
+Note: Device is not fully deinitialized. We clean up here only those
+things that have been setup by MDIS_RtaiInitialOpen
+</pre><h3>Input</h3>
+<pre>dev     device structure
+</pre><h3>Output</h3>
+<pre>return  success (0) or error code
+</pre>
+<a name="MDIS_RtaiIrqHandler"><h2>Function MDIS_RtaiIrqHandler()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static void MDIS_RtaiIrqHandler( unsigned int irq )
+</pre><h3>Description</h3>
+<pre>Global MDIS/RTAI Interrupt handler
+
+just calls MDIS_IrqHandler for each registered device on vector 
+from the MDIS/Linux implementation, which does:
+
+- calls board handler service init (irqSrvcInit)
+- dispatch to low-level-handler      (MXX_Irq)
+- calls board handler service exit (irqSrvcExit)
+
+</pre><h3>Input</h3>
+<pre>irq           interrupt number
+</pre><h3>Output</h3>
+<pre>-
+</pre>
+<a name="MDIS_RtaiInstallSysirq"><h2>Function MDIS_RtaiInstallSysirq()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_RtaiInstallSysirq(MK_DEV *dev)
+</pre><h3>Description</h3>
+<pre>Install & enable the system interrupt
+
+</pre><h3>Input</h3>
+<pre>dev     device structure
+</pre><h3>Output</h3>
+<pre>return  success (0) or error code
+</pre>
+<a name="MDIS_RtaiRemoveSysirq"><h2>Function MDIS_RtaiRemoveSysirq()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int32 MDIS_RtaiRemoveSysirq(MK_DEV *dev)
+</pre><h3>Description</h3>
+<pre>Remove & disable the system interrupt
+
+</pre><h3>Input</h3>
+<pre>dev     device structure
+</pre><h3>Output</h3>
+<pre>return  success (0) or error code
+</pre></pre></body>
+</html>

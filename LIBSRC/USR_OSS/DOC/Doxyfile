@@ -1,0 +1,17 @@
+@INCLUDE_PATH = $(MEN_DOXYGENTMPL)
+@INCLUDE = DoxyfileCommon
+
+PROJECT_NAME           = "USR_OSS library for Linux"
+PROJECT_NUMBER         = "for USR_OSS Linux fileset $(MEN_FILESET_REVISION)"
+INPUT                  = .. $(MEN_COM_INC)/MEN/usr_oss.h ../COM
+OUTPUT_DIRECTORY       = .
+EXTRACT_ALL            = NO
+EXTRACT_STATIC         = NO
+GENERATE_HTMLHELP      = YES
+WARNINGS               = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_IF_UNDOCUMENTED   = YES
+GENERATE_HTMLHELP      = YES
+PREDEFINED             = 
+TAGFILES               = ../../OSS/DOC/oss.tag=../../../OSS/DOC/html
+GENERATE_TAGFILE       = lin_usr_oss.tag

@@ -1,0 +1,13 @@
+List of PCI bus paths to Compact PCI backplane
+
+
+CPU			PCI_BUS_PATH
+----------  ---------------------
+MEN D001	0x14
+MEN D002	0x08
+MEN F001	0x1e
+MEN F002	0x08
+MEN F003	(empty)
+MEN F006	(empty)
+MEN F007	0x1e,0x06
+MEN D003	0x1e

@@ -1,0 +1,601 @@
+<html>
+<head>
+<title>D201 driver</title>
+<style type=text/css>
+    Body { background-color: #ffffff; }
+    A:link { color: #c50038; }
+    A:hover { color: #28669b; }
+    P, H1, H2, H3, H3, H5, LI {
+        color: #434343;
+        font-family: Arial, Helvetica, Univers;
+    }
+    P, LI { font-size: 9.000000pt; }
+</style>
+</head>
+<body>
+<h1>D201 driver</h1>
+<p>Fri Aug 21 13:36:16 WEDT 2009</p>
+<h2>Overview of all Chapters</h2>
+<a href="#chapt0">Chapter: D201 board handler routines</a><br>
+<a href="#chapt1">Chapter: reading words from the d201 EEPROM (NMC93CS46)</a><br>
+<a href="#chapt2">Chapter: D201 PLD data</a><br>
+<a href="#chapt3">Chapter: Return D201 ident string</a><br>
+
+<h2>Overview of all Functions</h2>
+<a name="chapt0"><a href="#intro0"><h3>D201 board handler routines</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#D201_GetEntry">D201_GetEntry</a></P></TD><TD><P>Initialize drivers jump table. </P></TD></TR>
+<TR><TD><P><a href="#D201_Init">D201_Init</a></P></TD><TD><P>BBIS initialization: </P></TD></TR>
+<TR><TD><P><a href="#D201_BrdInit">D201_BrdInit</a></P></TD><TD><P>Board initialization: </P></TD></TR>
+<TR><TD><P><a href="#D201_BrdExit">D201_BrdExit</a></P></TD><TD><P>Board deinitialization: </P></TD></TR>
+<TR><TD><P><a href="#D201_Exit">D201_Exit</a></P></TD><TD><P>BBIS deinitialization: </P></TD></TR>
+<TR><TD><P><a href="#D201_BrdInfo">D201_BrdInfo</a></P></TD><TD><P>Get information about hardware and driver requirements. </P></TD></TR>
+<TR><TD><P><a href="#D201_CfgInfo">D201_CfgInfo</a></P></TD><TD><P>Get information about board configuration. </P></TD></TR>
+<TR><TD><P><a href="#D201_IrqEnable">D201_IrqEnable</a></P></TD><TD><P>Enable/disable interrupt for specified module slot. </P></TD></TR>
+<TR><TD><P><a href="#D201_IrqSrvInit">D201_IrqSrvInit</a></P></TD><TD><P>Called at the beginning of an interrupt. </P></TD></TR>
+<TR><TD><P><a href="#D201_IrqSrvExit">D201_IrqSrvExit</a></P></TD><TD><P>Called at the end of an interrupt. </P></TD></TR>
+<TR><TD><P><a href="#D201_ExpEnable">D201_ExpEnable</a></P></TD><TD><P>Exception interrupt enable / disable. </P></TD></TR>
+<TR><TD><P><a href="#D201_ExpSrv">D201_ExpSrv</a></P></TD><TD><P>Called at the beginning of an exception interrupt. </P></TD></TR>
+<TR><TD><P><a href="#D201_SetMIface">D201_SetMIface</a></P></TD><TD><P>Set interface for specified module slot. </P></TD></TR>
+<TR><TD><P><a href="#D201_ClrMIface">D201_ClrMIface</a></P></TD><TD><P>Clear interface for specified module slot. </P></TD></TR>
+<TR><TD><P><a href="#D201_GetMAddr">D201_GetMAddr</a></P></TD><TD><P>Get physical address description. </P></TD></TR>
+<TR><TD><P><a href="#D201_SetStat">D201_SetStat</a></P></TD><TD><P>Set driver status. </P></TD></TR>
+<TR><TD><P><a href="#D201_GetStat">D201_GetStat</a></P></TD><TD><P>Get driver status. </P></TD></TR>
+</TABLE>
+<a name="chapt1"><a href="#intro1"><h3>
+reading words from the d201 EEPROM (NMC93CS46)</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+</TABLE>
+<a name="chapt2"><a href="#intro2"><h3>
+D201 PLD data</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+</TABLE>
+<a name="chapt3"><a href="#intro3"><h3>
+Return D201 ident string</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+</TABLE>
+ 
+<a name="intro0"><h1>D201 board handler routines </h1></a>
+<pre>
+The D201 board handler provides driver variants for the
+following carrier boards:
+       - D201
+       - F201 / F202
+       - C203 / C204
+
+To locate the PCI bus number on which the D201 resides, the user can
+specify PCI_BUS_PATH or PCI_BUS_NUMBER. PCI_BUS_PATH specifies an 
+exact geographical location in the system, regardless which PCI
+devices are present in the system, so PCI_BUS_PATH is preferrable.
+
+It is also possible to specify the key PCI_BUS_NUMBER in the descriptor.
+If present, it overrides PCI_BUS_PATH. But note that the bus number may
+change if additional devices are installed in the PCI system.
+
+PCI_BUS_PATH is a list of PCI device numbers, that must belong to 
+PCI-to-PCI bridges.
+
+Example: To specify the bus of the MEN D002 Compact-PCI bus, carrier board
+         the user has to specify the following path: 
+
+         PCI_BUS_PATH = BINARY 0x08
+
+         0x08 is the device number on Bus 0 of the PCI-to-PCI bridge 
+         on the D2, that connects the internal PCI bus to the CPCI
+         backplane.
+
+-----------------------
+PLX BAR0 bug workaround: The PLX 9050 chip has a bug that might occur
+depending on the mapping of BAR0 applied by the BIOS. If Bit7 in BAR0
+is set (an address of xxxxxx80), the PLX chip's runtime registers will
+not work. 
+
+The workaround will be automatically enabled depending of the setting
+bit 7 in BAR0. If bit 7 in BAR0 is set, the work around will be enabled
+
+When workaround is enabled, the driver will ignore the BAR0 value set
+by the BIOS. Instead, every time the runtime registers need to be accessed,
+the driver will write the value of one of BAR2..5 + 0xffff00 into BAR0 
+and disables BAR2..5. During this time of course BAR2..5 cannot be 
+accessed. This is not a big problem, since the runtime registers will
+be accessed only during BrdInit and SetMiface. 
+
+When workaround is enabled, getstats M_BB_BLK_ID_xx and 
+D201_BLK_EEPROM_DATA are disabled (they return ERR_BBIS_EEPROM)
+
+   Required: -
+   Switches: _ONE_NAMESPACE_PER_DRIVER_, _D201. _F201, _F202, _C203, _C204
+             D201_VARIANT=xxx, OSS_HAS_UNASSIGN_RESOURCES
+
+</pre>
+<a name="D201_GetEntry"><h2>Function D201_GetEntry()</h2></a>
+
+<h3>Syntax</h3>
+<pre>#ifdef _ONE_NAMESPACE_PER_DRIVER_
+    extern void BBIS_GetEntry( BBIS_ENTRY *bbisP )
+#else
+    extern void __D201_GetEntry( BBIS_ENTRY *bbisP ) 
+#endif
+</pre><h3>Description</h3>
+<pre>Initialize drivers jump table.
+
+</pre><h3>Input</h3>
+<pre>bbisP     pointer to the not initialized structure
+</pre><h3>Output</h3>
+<pre>*bbisP    initialized structure
+</pre>
+<a name="D201_Init"><h2>Function D201_Init()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D201_Init(
+    OSS_HANDLE      *osHdl,
+    DESC_SPEC       *descSpec,
+    BBIS_HANDLE     **brdHdlP )
+</pre><h3>Description</h3>
+<pre>BBIS initialization:
+
+- initializes board structure
+- init id function table
+- prepare debugging
+- scan descriptor
+- identify PCI9050 device
+- get base addresses
+- map used base addresses 
+- get interrupt information
+
+The following descriptor keys are used:
+
+Deskriptor key        Default            Range
+--------------------  -----------------  -------------
+DEBUG_LEVEL_DESC      OSS_DBG_DEFAULT    see dbg.h
+DEBUG_LEVEL           OSS_DBG_DEFAULT    see dbg.h
+PCI_BUS_PATH
+PCI_BUS_NUMBER        none               0...255
+PCI_BUS_SLOT          none               1...8
+PCI_DEVICE_ID         0xFFFF             0...31
+PCI_CHECK_LOCATION    0                  0, 1
+ID_CHECK              1                  0, 1
+PLD_LOAD              1                  0, 1
+NONE_A24              0                  0, 1
+MISC_SETMASK          0x0                0x0..0xffffffff
+MISC_CLRMASK          0x0                0x0..0xffffffff
+
+Either PCI_BUS_NUMBER or PCI_BUS_PATH must be specified
+If both are present, PCI_BUS_NUMBER takes precedence.
+
+NONE_A24 specifies if the Carrier Board requests only an
+A08 address space per module slot from the BIOS.
+Normally each board requests an A24 memory address space
+per module slot to support A08 and A24 M-Modules.
+However, this depends on the boards eeprom configuration.
+
+  0 - A08/A24 address space (normal eeprom configuration)
+  1 - A08     address space (requires special eeprom data)
+
+MISC_SETMASK/MISC_CLRMASK sets/clears specified bits in the
+Misc. Control register. ONLY FOR TEST & DEBUGGING !!!
+
+PCI_DEVICE_ID overwrites PCI_BUS_SLOT. The device id can set
+directly.
+
+</pre><h3>Input</h3>
+<pre>osHdl     pointer to os specific structure             
+descSpec  pointer to os specific descriptor specifier  
+brdHdlP   pointer to not initialized board handle structure            
+</pre><h3>Output</h3>
+<pre>*brdHdlP  initialized board handle structure  
+return    0 | error code
+</pre>
+<a name="D201_BrdInit"><h2>Function D201_BrdInit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D201_BrdInit(
+    BBIS_HANDLE     *brdHdl )
+</pre><h3>Description</h3>
+<pre>Board initialization:
+
+- identify board with EEPROM Id
+- load PLD
+- check the board location
+- enable interrupt
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure    
+</pre><h3>Output</h3>
+<pre>return    0 | error code
+</pre>
+<a name="D201_BrdExit"><h2>Function D201_BrdExit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D201_BrdExit(
+    BBIS_HANDLE     *brdHdl )
+</pre><h3>Description</h3>
+<pre>Board deinitialization:
+
+- disable interrupt
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure   
+</pre><h3>Output</h3>
+<pre>return    0 | error code
+</pre>
+<a name="D201_Exit"><h2>Function D201_Exit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D201_Exit(
+    BBIS_HANDLE     **brdHdlP )
+</pre><h3>Description</h3>
+<pre>BBIS deinitialization:
+
+- cleanup memory
+- deinitializes the bbis handle
+
+</pre><h3>Input</h3>
+<pre>brdHdlP   pointer to board handle structure
+</pre><h3>Output</h3>
+<pre>*brdHdlP  NULL
+return    0 | error code
+</pre>
+<a name="D201_BrdInfo"><h2>Function D201_BrdInfo()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D201_BrdInfo(
+    u_int32 code,
+    ... )
+</pre><h3>Description</h3>
+<pre>Get information about hardware and driver requirements.
+
+Following info codes are supported:
+
+Code                      Description
+------------------------  -----------------------------
+BBIS_BRDINFO_BUSTYPE      board bustype
+BBIS_BRDINFO_DEVBUSTYPE   device bustype
+BBIS_BRDINFO_FUNCTION     used optional functions
+BBIS_BRDINFO_NUM_SLOTS    number of slots
+BBIS_BRDINFO_INTERRUPTS   interrupt characteristics
+BBIS_BRDINFO_ADDRSPACE    address characteristic
+BBIS_BRDINFO_BRDNAME      name of the board hardware
+
+The BBIS_BRDINFO_BUSTYPE code returns the bustype of
+the specified board.
+
+The BBIS_BRDINFO_DEVBUSTYPE code returns the bustype of
+the specified device - not the board bus type. 
+
+The BBIS_BRDINFO_FUNCTION code returns the information
+if an optional BBIS function is supported or not.
+
+The BBIS_BRDINFO_NUM_SLOTS code returns the number of
+supported M-Module slots.
+
+The BBIS_BRDINFO_INTERRUPTS code returns the supported
+interrupt capability (BBIS_IRQ_DEVIRQ/BBIS_IRQ_EXPIRQ)
+of the specified device.
+
+The BBIS_BRDINFO_ADDRSPACE code returns the address
+characteristic (OSS_ADDRSPACE_MEM/OSS_ADDRSPACE_IO)
+of the specified device.
+
+The BBIS_BRDINFO_BRDNAME code returns the short hardware
+name and type of the board without any prefix or suffix.
+The hardware name must not contain any non-printing
+characters. The length of the returned string, including
+the terminating null character, must not exceed
+BBIS_BRDINFO_BRDNAME_MAXSIZE.
+Examples: D201 board, PCI device, Chameleon FPGA 
+
+</pre><h3>Input</h3>
+<pre>code      reference to the information we need    
+...       variable arguments                      
+</pre><h3>Output</h3>
+<pre>*...      variable arguments
+return    0 | error code
+</pre>
+<a name="D201_CfgInfo"><h2>Function D201_CfgInfo()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D201_CfgInfo(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         code,
+    ... )
+</pre><h3>Description</h3>
+<pre>Get information about board configuration.
+
+Following info codes are supported:
+
+Code                      Description
+------------------------  ------------------------------
+BBIS_CFGINFO_BUSNBR       bus number
+BBIS_CFGINFO_IRQ          interrupt parameters
+BBIS_CFGINFO_EXP          exception interrupt parameters
+BBIS_CFGINFO_SLOT         slot information
+
+The BBIS_CFGINFO_BUSNBR code returns the number of the
+bus on which the board resides.
+
+The BBIS_CFGINFO_IRQ code returns the device interrupt
+vector, level and mode of the specified device.
+
+The BBIS_CFGINFO_EXP code returns the exception interrupt
+vector, level and mode of the specified device.
+
+The BBIS_CFGINFO_SLOT code returns the following
+information about the specified device slot:
+The slot is occupied or empty, the device id and device
+revision of the plugged device, the name of the slot and
+the name of the plugged device.
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure       
+code      reference to the information we need    
+...       variable arguments                      
+</pre><h3>Output</h3>
+<pre>.....:  ...       variable arguments
+        return    0 | error code
+</pre>
+<a name="D201_IrqEnable"><h2>Function D201_IrqEnable()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D201_IrqEnable(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot,
+    u_int32         enable )
+</pre><h3>Description</h3>
+<pre>Enable/disable interrupt for specified module slot.
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure   
+mSlot     module slot number                  
+enable    interrupt setting                   
+</pre><h3>Output</h3>
+<pre>return    0 | error code
+</pre>
+<a name="D201_IrqSrvInit"><h2>Function D201_IrqSrvInit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D201_IrqSrvInit(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot)
+</pre><h3>Description</h3>
+<pre>Called at the beginning of an interrupt.
+
+- DEBUG: print irq information
+- determine interrupt reason 
+
+Note: Bus or timeout interrupts will be cleared.
+      Module interrupt must be cleared on the module
+      itself and by D201_IrqSrvExit().
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure   
+mSlot     module slot number                  
+</pre><h3>Output</h3>
+<pre>return    BBIS_IRQ_NO | BBIS_IRQ_MODULE | BBIS_IRQ_EXP
+</pre>
+<a name="D201_IrqSrvExit"><h2>Function D201_IrqSrvExit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static void D201_IrqSrvExit(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot )
+</pre><h3>Description</h3>
+<pre>Called at the end of an interrupt.
+
+- clear module interrupt
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure   
+mSlot     module slot number                  
+</pre><h3>Output</h3>
+<pre>---
+</pre>
+<a name="D201_ExpEnable"><h2>Function D201_ExpEnable()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D201_ExpEnable(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot,
+    u_int32         enable)
+</pre><h3>Description</h3>
+<pre>Exception interrupt enable / disable.
+
+Do nothing
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure   
+mSlot     module slot number                  
+enable    interrupt setting                   
+</pre><h3>Output</h3>
+<pre>return    0
+</pre>
+<a name="D201_ExpSrv"><h2>Function D201_ExpSrv()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D201_ExpSrv(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot )
+</pre><h3>Description</h3>
+<pre>Called at the beginning of an exception interrupt.
+
+Do nothing
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure   
+mSlot     module slot number                  
+</pre><h3>Output</h3>
+<pre>return    BBIS_IRQ_NO
+</pre>
+<a name="D201_SetMIface"><h2>Function D201_SetMIface()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D201_SetMIface(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot,
+    u_int32         addrMode,
+    u_int32         dataMode)
+</pre><h3>Description</h3>
+<pre>Set interface for specified module slot.
+
+- check module slot number
+- set data mode
+- set address mode
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure   
+mSlot     module slot number                  
+addrMode  MDIS_MODE_A08 | MDIS_MODE_A24       
+dataMode  MDIS_MODE_D16 | MDIS_MODE_D32       
+</pre><h3>Output</h3>
+<pre>return    0 | error code
+</pre>
+<a name="D201_ClrMIface"><h2>Function D201_ClrMIface()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D201_ClrMIface(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot)
+</pre><h3>Description</h3>
+<pre>Clear interface for specified module slot.
+
+- check module slot number
+- set data mode defaults
+- set address mode defaults
+- disable module interrupt
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure   
+mSlot     module slot number                  
+</pre><h3>Output</h3>
+<pre>return    0
+</pre>
+<a name="D201_GetMAddr"><h2>Function D201_GetMAddr()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D201_GetMAddr(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot,
+    u_int32         addrMode,
+    u_int32         dataMode,
+    void            **mAddr,
+    u_int32         *mSize )
+</pre><h3>Description</h3>
+<pre>Get physical address description.
+
+- check module slot number
+- assign address spaces
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure   
+mSlot     module slot number                  
+addrMode  MDIS_MODE_A08 | MDIS_MODE_A24       
+dataMode  MDIS_MODE_D16 | MDIS_MODE_D32       
+mAddr     pointer to address space            
+mSize     size of address space               
+</pre><h3>Output</h3>
+<pre>return    0 | error code
+</pre>
+<a name="D201_SetStat"><h2>Function D201_SetStat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D201_SetStat(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot,
+    int32           code,
+    INT32_OR_64     value32_or_64 )
+</pre><h3>Description</h3>
+<pre>Set driver status.
+
+Following status codes are supported:
+
+Code                 Description                Values
+-------------------  -------------------------  ----------
+M_BB_DEBUG_LEVEL     board debug level          see dbg.h
+M_BB_IRQ_EXP_COUNT   exception irq count        0..max
+
+</pre><h3>Input</h3>
+<pre>brdHdl            pointer to board handle structure           
+mSlot             module slot number                          
+code              setstat code                                
+value32_or_64     setstat value or ptr to blocksetstat data   
+</pre><h3>Output</h3>
+<pre>return    0 | error code
+</pre>
+<a name="D201_GetStat"><h2>Function D201_GetStat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D201_GetStat(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot,
+    int32           code,
+    INT32_OR_64     *value32_or_64P )
+</pre><h3>Description</h3>
+<pre>Get driver status.
+
+Following status codes are supported:
+
+Code                 Description                Values
+-------------------  -------------------------  ----------
+M_BB_DEBUG_LEVEL     driver debug level         see dbg.h
+M_BB_IRQ_EXP_COUNT   exception irq count        0..max
+M_BB_IRQ_VECT        interrupt vector           0..max
+M_BB_IRQ_LEVEL       interrupt level            0..max
+M_BB_IRQ_PRIORITY    interrupt priority         0
+M_BB_ID_CHECK        eeprom-id is checked       0..1
+M_BB_ID_SIZE         eeprom id-data size[bytes] 28
+M_MK_BLK_REV_ID      ident function table ptr   -
+M_BB_BLK_ID_DATA     eeprom id-data             -
+D201_BLK_EEPROM_DATA eeprom raw-data            -
+
+D201_BLK_EEPROM_DATA gets the data of the entire eeprom.
+  The entire eeprom size is 128 bytes.
+
+</pre><h3>Input</h3>
+<pre>brdHdl            pointer to board handle structure           
+mSlot             module slot number                          
+code              getstat code                                
+</pre><h3>Output</h3>
+<pre>value32_or_64P    getstat value or ptr to blockgetstat data
+return    0 | error code
+</pre><a name="intro1"><h1>reading words from the d201 EEPROM (NMC93CS46) </h1></a>
+<pre>
+Required: -
+Switches: see bb_d201.c
+
+NOTE:   The most part of this code is an extract from 'PCI.C',
+a source file from the PLXmon Programm (see the header below). 
+************************************************************************
+
+PCI.C
+
+User application level code for showing and programming PCI devices.
+Emphasis on PLX devices.
+Designed as a component of PLX's general-purpose monitor program.
+
+Copyright PLX Technology, 1996
+
+Changes
+960521  Ryan    Genesis - PCI BIOS and PCI device interface
+
+*************************************************************************
+
+</pre><a name="intro2"><h1>D201 PLD data </h1></a>
+<pre>
+Required: -
+Switches: _
+
+</pre><a name="intro3"><h1>Return D201 ident string </h1></a>
+<pre>
+Required: -
+Switches: DBG        enable debugging
+
+</pre></body>
+</html>

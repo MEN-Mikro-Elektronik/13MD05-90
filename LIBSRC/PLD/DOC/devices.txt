@@ -1,0 +1,23 @@
+PLD loader library
+==================
+12.10.98 see
+
+Supported Devices
+-----------------
+JTAG = Joint Test Action Group
+PS   = Passive Serial
+
+=========== =========== =========== =========== =============== ===============
+PLD Family  Manufact.   Devices     Interface   File / Type     Loader
+=========== =========== =========== =========== =============== ===============
+FlashLogic  ALTERA      EPXxxx      JTAG        *.BIN   binary  (n.a.)
+            INTEL       IFX780      JTAG        *.BIN   binary  (n.a.)
+----------- ----------- ----------- ----------- --------------- ---------------
+MAX 9000    ALTERA      EPM9xxx     JTAG        *.SVF   ascii   (n.a.)
+                                                *.JAM   ascii   (n.a.)
+----------- ----------- ----------- ----------- --------------- ---------------
+FLEX 8000   ALTERA      EPF8xxx     PS          *.TTF   ascii   FLEX10K
+----------- ----------- ----------- ----------- --------------- ---------------
+FLEX 10k    ALTERA      EPF10kxxx   PS          *.TTF   ascii   FLEX10K
+----------- ----------- ----------- ----------- --------------- ---------------
+

@@ -1,0 +1,217 @@
+Body {
+	background-color: #ffffff;
+	color: #4A4A4D;
+	margin-left: 0pt;
+	margin-right: 0pt;
+	margin-top: 0pt;
+	margin-bottom: 4pt;
+	padding: 0px;
+	text-align: left;
+	font-family: Verdana,Tahoma,Arial,Helvetica,Sans-Serif;
+	font-size: 8pt;
+	line-height: 11pt;
+	font-weight: normal;
+}
+
+A { text-decoration: none; }
+A:link { color: #6BB7B7; }
+A:visited { color: #6BB7B7; }
+A:hover { text-decoration: underline; color: #c50038; }
+A:active { color: #c50038; }
+
+A.qindex
+{
+	color: #c50038;
+	font-size: 8pt;
+	font-weight: bold;
+	font-family: Verdana,Tahoma,Arial,Helvetica,Univers,Sans Serif;
+}
+A.qindex:visited { color: #c50038; }
+A.qindexRef {}
+A.el { font-style: regular; }
+A.elRef { font-style: regular; }
+A.code { color: #6BB7B7 }
+A.codeRef { color: #6BB7B7 }
+
+EM { font-style: italic; }
+
+HR
+{
+	color: #707072;
+	height: 1px;
+}
+
+P,TD,DL,DT,DD {
+	text-align: left;
+	margin-top: 3pt;
+	margin-bottom: 3pt;
+	margin-right: 0pt;
+	margin-left: 0pt;
+	font-size: 8pt;
+	line-height: 10.5pt;
+	font-weight: normal;
+	color: #4A4A4D;
+	font-family: Verdana,Tahoma,Arial,Helvetica,Sans-Serif;
+}
+
+ul
+{
+	margin-top: 8px;
+	margin-bottom: 8px;
+	list-style-type: square;
+}
+ol
+{
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+li
+{
+	text-align: left;
+	margin-top: 4px;
+	margin-bottom: 4px;
+	margin-left: -10px;
+	margin-right: 0px;
+	padding: 0px;
+	font-size: 8pt;
+	font-weight: normal;
+}
+
+.left_to_right
+{
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+
+.main
+{
+	margin-top: 10px;
+	padding-left: 20px;
+	width: 750px;
+}
+
+div.footer
+{
+	width: 100%;
+	margin-top: 20px;
+	background-color: #F0F0F0;
+	border-top: 2px solid #D1D1D2;
+	padding-top: 5px;
+	padding-bottom: 8px;
+}
+
+p.footer {
+	margin-top: 0pt;
+	margin-bottom: 0pt;
+	margin-left: 3pt;
+	margin-right: 0pt;
+	font-size: 7pt;
+	line-height: 8pt;
+	font-weight: normal;
+	font-style: Regular;
+	color: #4A4A4D;
+	font-family: Verdana,Tahoma,Arial,Helvetica,Sans-Serif;
+}
+
+DD { margin-left: 12pt; }
+
+H1 {
+	text-align: left;
+	margin-top: 7pt;
+	margin-bottom: 6pt;
+	margin-right: 0pt;
+	margin-left: 0pt;
+	font-size: 10pt;
+	line-height: 12.5pt;
+	font-weight: bold;
+	font-style: Regular;
+	color: #4A4A4D;
+	font-family: Verdana,Tahoma,Arial,Helvetica,Sans-Serif;
+}
+
+H2 {
+	text-align: left;
+	margin-top: 6pt;
+	margin-bottom: 4pt;
+	margin-right: 0pt;
+	margin-left: 0pt;
+	font-size: 9pt;
+	font-weight: bold;
+	font-style: Regular;
+	color: #4A4A4D;
+	font-family: Verdana,Tahoma,Arial,Helvetica,Sans-Serif;
+}
+
+H3 {
+	text-align: left;
+	margin-top: 4pt;
+	margin-bottom: 3pt;
+	margin-right: 0pt;
+	margin-left: 0pt;
+	font-size: 8pt;
+	font-weight: bold;
+	color: #4A4A4D;
+	vertical-align: top;
+	font-family: Verdana,Tahoma,Arial,Helvetica,Sans-Serif;
+}
+H4 {
+	text-align: left;
+	margin-top: 4pt;
+	margin-bottom: 3pt;
+	margin-right: 0pt;
+	margin-left: 0pt;
+	font-size: 8pt;
+	font-weight: bold;
+	font-style: italic;
+	color: #4A4A4D;
+	vertical-align: top;
+	font-family: Verdana,Tahoma,Arial,Helvetica,Sans-Serif;
+}
+
+PRE,CODE,KBD {
+	font-family: Courier,Courier New;
+	font-size: 9pt;
+}
+
+CAPTION { font-weight: bold }
+
+DL.el { margin-left: -1cm }
+DIV.fragment { width: 100%; padding-top: 5px; margin-top: 5px; border: 1px dotted #707072; }
+
+DIV.ah { background-color: black; font-weight: bold; color: #ffffff; margin-bottom: 3px; margin-top: 3px }
+DIV.groupHeader { margin-left: 16px; margin-top: 12px; margin-bottom: 6px; font-weight: bold }
+DIV.groupText { margin-left: 16px; font-style: italic; font-size: smaller }
+
+TABLE { spacing: 0; padding: 0; border-collapse: collapse; }
+
+TD.md { background-color: #eaeaea; font-weight: bold; }
+TD.mdname1 { background-color: #eaeaea; font-weight: bold; color: #666666; }
+TD.mdname { background-color: #eaeaea; font-weight: bold; color: #666666; }
+
+TD.indexkey {
+   background-color: #f1f1f1;
+   font-weight: bold;
+   padding: 2px;
+   margin-left: 0px;
+   margin-right: 0px;
+   margin-top: 2px;
+   margin-bottom: 2px;
+}
+TD.indexvalue {
+   background-color: #f1f1f1;
+   font-style: regular;
+   padding: 2px;
+   margin-left: 0px;
+   margin-right: 0px;
+   margin-top: 2px;
+   margin-bottom: 2px;
+}
+
+span.keyword       { color: #008000 }
+span.keywordtype   { color: #604020 }
+span.keywordflow   { color: #e08000 }
+span.comment       { color: #800000 }
+span.preprocessor  { color: #806020 }
+span.stringliteral { color: #002080 }
+span.charliteral   { color: #008080 }

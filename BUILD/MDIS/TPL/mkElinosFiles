@@ -1,0 +1,32 @@
+#! /bin/sh
+#****************************************************************************
+#  
+#         Author: kp
+#          $Date: 2004/06/09 11:13:19 $
+#      $Revision: 2.2 $
+#  
+#    Description: Create MDIS files for ELINOS project
+#          Usage: mkElinosFiles      
+#-----------------------------------------------------------------------------
+#   (c) Copyright 2002 by MEN mikro elektronik GmbH, Nuernberg, Germany 
+#*****************************************************************************
+
+if [ -z "$MEN_LIN_DIR" ] 
+then
+	MEN_LIN_DIR=/opt/menlinux
+fi
+
+elinosDir=$1 
+
+#echo elinosDir=$elinosDir MEN_LIN_DIR=$MEN_LIN_DIR
+
+if [ -e $elinosDir/autonode.sh ]
+then
+	if ! [ -e $elinosDir/autonode.sh.bak ]
+	then
+		mv $elinosDir/autonode.sh $elinosDir/autonode.sh.bak
+	fi			
+fi
+
+cp -a $MEN_LIN_DIR/BUILD/MDIS/ELINOS/* $elinosDir
+

@@ -1,0 +1,238 @@
+Function Description
+====================
+Tue Apr 27 14:12:11 CEST 1999
+ 
+Overview of all Functions
+-------------------------
+
+DESC_Ident             - Gets the pointer to ident string. 
+DESC_Init              - Get handle to access descriptor 
+DESC_Exit              - Terminate use of descriptor handle 
+DESC_GetUInt32         - Get descriptor entry of type "U_INT32" 
+DESC_GetBinary         - Get descriptor entry of type "BINARY" 
+DESC_GetString         - Get descriptor entry of type "STRING" 
+DESC_DbgLevelSet       - Sets the debug level of this module. 
+DESC_DbgLevelGet       - Gets the debug level of this module. 
+ 
+
+Function DESC_Ident()
+---------------------
+
+Syntax:
+    char* DESC_Ident( void )
+
+Description:
+    Gets the pointer to ident string.
+
+Input:
+    -
+
+Output:
+    return  pointer to ident string
+
+
+Function DESC_Init()
+--------------------
+
+Syntax:
+    int32 DESC_Init(
+    DESC_SPEC   *descSpec,
+    OSS_HANDLE  *osHdl,
+    DESC_HANDLE **descHandleP
+    )
+
+Description:
+    Get handle to access descriptor
+
+Input:
+    descSpec       descriptor specifier (here: ptr to descriptor)
+    osHdl          OS specific data
+    descHandleP    ptr to variable where handle will be stored
+
+Output:
+    Return:        error code
+    *descHandleP   handle for descriptor access
+
+
+Function DESC_Exit()
+--------------------
+
+Syntax:
+    int32 DESC_Exit( DESC_HANDLE **descHandleP )
+
+Description:
+    Terminate use of descriptor handle
+
+Input:
+    descHandleP    Descriptor handle
+
+Output:
+    descHandleP    is set to NULL
+    Return:        error code
+
+
+Function DESC_GetUInt32()
+-------------------------
+
+Syntax:
+    int32 DESC_GetUInt32(
+    DESC_HANDLE *descHandle,
+    u_int32     defVal,
+    u_int32     *valueP,
+    char        *keyFmt,
+    ...
+    )
+
+Description:
+    Get descriptor entry of type "U_INT32"
+
+    Searches the descriptor for the specified key and return its value. If
+    any error occurs or if the key is not found, the default value is
+    returned.
+
+    The <keyFmt> has the same format as the printf format argument. The
+    variable argument list is then used to expand the <keyFmt> argument.
+
+    Example:
+        "CHANNEL_%d/GAIN", 2
+    expands to
+        "CHANNEL_2/GAIN"
+
+    Subdirectories in the descriptor must be separated with a '/' character
+
+    NOTE: ERR_DESC_KEY_NOTFOUND is returned when default value used
+
+Input:
+    descHandle    handle for descriptor access
+    defVal        default value if key not found
+    valueP        ptr to variable where value will be stored
+    keyfmt        format string for key
+    ...           arguments for <keyfmt>
+
+Output:
+    Return:       error code
+    *valueP       value of key or default value if key not found
+
+
+Function DESC_GetBinary()
+-------------------------
+
+Syntax:
+    int32 DESC_GetBinary
+    (
+        DESC_HANDLE *descHandle,
+        u_int8      *defVal,
+        u_int32     defValLen,
+        u_int8      *bufP,
+        u_int32     *lenP,
+        char        *keyFmt,
+        ...
+    )
+
+Description:
+    Get descriptor entry of type "BINARY"
+
+    Searches the descriptor for the specified key and copy the binary array
+    from the descriptor into the caller's buffer. If any error occurs or if
+    the key is not found, the default array is copied to the caller's buffer
+
+    See further notes on DESC_GetUInt32
+
+    NOTE: ERR_DESC_KEY_NOTFOUND is returned when default value used
+
+Input:
+    descHandle    handle for descriptor access
+    defVal        array with default data
+    defValLen     number of bytes in <defVal> array
+    buf           callers buffer where data will be stored
+    lenP          ptr to buffer length
+                  IN: *lenp = size of <buf> array
+    keyFmt        format string for key
+    ...           arguments for <keyFmt>
+
+Output:
+    Return:       error code
+    buf           array entries of key or default data
+    *lenP         actual number of bytes copied
+
+
+Function DESC_GetString()
+-------------------------
+
+Syntax:
+    int32 DESC_GetString(
+    DESC_HANDLE *descHandle,
+    char    *defVal,
+    char    *bufP,
+    u_int32 *lenP,
+    char    *keyFmt,
+    ...
+    )
+
+Description:
+    Get descriptor entry of type "STRING"
+
+    Searches the descriptor for the specified key and copy the string
+    from the descriptor into the caller's buffer. If any error occurs or if
+    the key is not found, the default string is copied to the caller's buffer
+
+    See further notes on DESC_GetUInt32
+
+    NOTE: ERR_DESC_KEY_NOTFOUND is returned when default value used
+
+Input:
+    descHandle    handle for descriptor access
+    defVal        default string
+    bufP          callers buffer where string will be stored
+    lenP          ptr to buffer length
+                  IN: *lenp = size of <buf>
+    keyFmt        format string for key
+    ...           arguments for <keyfmt>
+
+Output:
+    Return:       error code
+    bufP          string of key or default string
+    *lenP         actual number of characters copied (incl.
+                  terminating '\0')
+
+
+Function DESC_DbgLevelSet()
+---------------------------
+
+Syntax:
+    void DESC_DbgLevelSet
+    (
+        DESC_HANDLE *descHandle,
+        u_int32 dbgLevel
+    )
+
+Description:
+    Sets the debug level of this module.
+
+Input:
+    descHandle    handle for descriptor access
+    dbgLevel      new dbg level
+
+Output:
+    ---
+
+
+Function DESC_DbgLevelGet()
+---------------------------
+
+Syntax:
+    void DESC_DbgLevelGet
+    (
+        DESC_HANDLE *descHandle,
+        u_int32 *dbgLevelP
+    )
+
+Description:
+    Gets the debug level of this module.
+
+Input:
+    descHandle    handle for descriptor access
+
+Output:
+    dbgLevelP     current dbg level
+

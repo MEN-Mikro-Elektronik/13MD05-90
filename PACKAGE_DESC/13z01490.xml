@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="packagedesc.xsd">
+	<name>13z01490</name>
+	<description>Linux driver package for MEN PCI to VME bridge on A12, A13, A15, A17, A19, A20, B11</description>
+	<date>2012-08-08</date>
+	<revision>Release-2.16</revision>
+	<docroot>DRIVERS/VME4LX/DRIVER_K24/README_VME4L.txt</docroot>
+	<modellist>
+		<model>
+			<hwname>PLDZ002</hwname>
+			<modelname>PLDZ002_LINUX</modelname>
+			<description>Just a dummy entry...</description>
+			<devtype>NATIVE</devtype>
+			<bbslot>
+			  <bbismodel>ImpossibleModel</bbismodel>
+			</bbslot>  
+			<swmodulelist>
+			  <swmodule>
+			    <name>PLDZ002CHAM</name>
+				<description>LL VME driver for PLDZ002, chameleon variant</description>
+				<type>Native Driver</type>
+				<makefilepath>DRIVERS/VME4LX/DRIVER_K24/driver_pldz002_cham.mak</makefilepath>
+				<os>Linux</os>
+			  </swmodule>
+			  <swmodule>
+			    <name>PLDZ002</name>
+				<description>LL VME driver for PLDZ002</description>
+				<type>Native Driver</type>
+				<makefilepath>DRIVERS/VME4LX/DRIVER_K24/driver_pldz002.mak</makefilepath>
+				<os>Linux</os>
+			  </swmodule>
+			</swmodulelist>
+		</model>
+		<model>
+			<hwname>TSI148</hwname>
+			<modelname>TSI148_LINUX</modelname>
+			<description>Just a dummy entry...</description>
+			<devtype>NATIVE</devtype>
+			<bbslot>
+			  <bbismodel>ImpossibleModel</bbismodel>
+			</bbslot>  
+			<swmodulelist>
+			  <swmodule>
+			    <name>TSI148</name>
+				<description>LL VME driver for TSI148</description>
+				<type>Native Driver</type>
+				<makefilepath>DRIVERS/VME4LX/DRIVER_K24/driver_tsi148.mak</makefilepath>
+				<os>Linux</os>
+			  </swmodule>
+			</swmodulelist>
+		</model>
+	</modellist>
+	<swmodulelist>
+		<swmodule>
+			<name>VME4L-CORE</name>
+			<description>VME4L core driver</description>
+			<type>Native Driver</type>
+			<makefilepath>DRIVERS/VME4LX/DRIVER_K24/driver.mak</makefilepath>
+			<os>Linux</os>
+		</swmodule>
+		<swmodule>
+			<name>VME4L_API</name>
+			<description>VME4L user state API</description>
+			<type>User Library</type>
+			<makefilepath>VME4L_API/library.mak</makefilepath>
+			<os>Linux</os>
+		</swmodule>
+		<swmodule>
+			<name>VME4L_RWEX</name>
+			<description>VME4L API read/write example</description>
+			<type>Common Tool</type>
+			<makefilepath>VME4L_API/VME4L_RWEX/program.mak</makefilepath>
+			<os>Linux</os>
+		</swmodule>
+		<swmodule>
+			<name>VME4L_PLDZ002_LOCMON</name>
+			<description>Example program for VME location monitor</description>
+			<type>Common Tool</type>
+			<makefilepath>VME4L_API/VME4L_PLDZ002_LOCMON/program.mak</makefilepath>
+			<os>Linux</os>
+		</swmodule>
+		<swmodule>
+			<name>VME4L_TSI148_LOCMON</name>
+			<description>Example program for VME location monitor</description>
+			<type>Common Tool</type>
+			<makefilepath>VME4L_API/VME4L_TSI148_LOCMON/program.mak</makefilepath>
+			<os>Linux</os>
+		</swmodule>
+		<swmodule>
+			<name>VME4L_M99IRQ</name>
+			<description>Example program for VME4L user space IRQs</description>
+			<type>Common Tool</type>
+			<makefilepath>VME4L_API/VME4L_M99IRQ/program.mak</makefilepath>
+			<os>Linux</os>
+		</swmodule>
+		<swmodule>
+			<name>VME4L_M99IRQ_TSI148</name>
+			<description>Example program for VME4L user space IRQs (for A17/A19/A20)</description>
+			<type>Common Tool</type>
+			<makefilepath>VME4L_API/VME4L_M99IRQ/program_tsi148.mak</makefilepath>
+			<os>Linux</os>
+		</swmodule>
+		<swmodule>
+			<name>VME4L_MMAP</name>
+			<description>Example program for VME4L_Map</description>
+			<type>Common Tool</type>
+			<makefilepath>VME4L_API/VME4L_MMAP/program.mak</makefilepath>
+			<os>Linux</os>
+		</swmodule>
+		<swmodule>
+			<name>VME4L_MBOX</name>
+			<description>Example program for VME mailboxes</description>
+			<type>Common Tool</type>
+			<makefilepath>VME4L_API/VME4L_MBOX/program.mak</makefilepath>
+			<os>Linux</os>
+		</swmodule>
+		<swmodule>
+			<name>VME4L_MTEST</name>
+			<description>Memory test for VME4L master spaces</description>
+			<type>Common Tool</type>
+			<makefilepath>VME4L_API/VME4L_MTEST/program.mak</makefilepath>
+			<os>Linux</os>
+		</swmodule>
+		<swmodule>
+			<name>VME4L_RWSPEED</name>
+			<description>Speed measurement for VME4L_Read/Write</description>
+			<type>Common Tool</type>
+			<makefilepath>VME4L_API/VME4L_RWSPEED/program.mak</makefilepath>
+			<os>Linux</os>
+		</swmodule>
+		<swmodule>
+			<name>VME4L_SLVWIN</name>
+			<description>Example program for slave windows</description>
+			<type>Common Tool</type>
+			<makefilepath>VME4L_API/VME4L_SLVWIN/program.mak</makefilepath>
+			<os>Linux</os>
+		</swmodule>
+		<swmodule>
+			<name>VME4L_SPCYCLE</name>
+			<description>Example program for special cycles (RMW, AONLY)</description>
+			<type>Common Tool</type>
+			<makefilepath>VME4L_API/VME4L_SPCYCLE/program.mak</makefilepath>
+			<os>Linux</os>
+		</swmodule>
+		<swmodule>
+			<name>VME4L_CTRL</name>
+			<description>Example program for controller functions</description>
+			<type>Common Tool</type>
+			<makefilepath>VME4L_API/VME4L_CTRL/program.mak</makefilepath>
+			<os>Linux</os>
+		</swmodule>
+		<swmodule>
+			<name>VME4L_IRQGEN</name>
+			<description>Example program for VME interrupt generator</description>
+			<type>Common Tool</type>
+			<makefilepath>VME4L_API/VME4L_IRQGEN/program.mak</makefilepath>
+			<os>Linux</os>
+		</swmodule>
+	</swmodulelist>
+		
+</package>

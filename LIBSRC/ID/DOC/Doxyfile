@@ -1,0 +1,34 @@
+
+# Doxyfile for ID lib
+
+@INCLUDE_PATH = $(MEN_DOXYGENTMPL)
+@INCLUDE = DoxyfileCommon
+
+#---------------------------------------------------------------------------
+# General configuration options
+#---------------------------------------------------------------------------
+PROJECT_NAME           = "ID Library"
+PROJECT_NUMBER         =
+OUTPUT_DIRECTORY       = .
+HIDE_UNDOC_MEMBERS     = NO
+SHOW_INCLUDE_FILES     = YES
+
+#---------------------------------------------------------------------------
+# configuration options related to the input files
+#---------------------------------------------------------------------------
+INPUT                  = ../../../INCLUDE/COM/MEN/modcom.h ../COM \
+						 ../../../INCLUDE/COM/MEN/microwire.h 
+                         
+#---------------------------------------------------------------------------
+# configuration options related to the HTML output
+#---------------------------------------------------------------------------
+GENERATE_HTMLHELP      = YES
+
+#---------------------------------------------------------------------------
+# Configuration::addtions related to external references
+#---------------------------------------------------------------------------
+TAGFILES               =
+GENERATE_TAGFILE       = id.tag
+ALLEXTERNALS           = NO
+EXTERNAL_GROUPS        = YES
+PERL_PATH              = /usr/bin/perl

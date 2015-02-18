@@ -1,0 +1,56 @@
+The accompanying package holds user mode as well as kernel mode software.
+
+Linux kernel mode drivers and libraries
+
+    The Linux kernel mode drivers and libraries contained in this software
+    package are provided under the terms of the
+    GNU General Public License (GPL)(version 2.0 or any later version).
+
+    This is true for the following modules:
+        - mdis5linux/DRIVERS/*
+            (except the example applications delivered with the drivers)
+        - mdis5linux/LIBSRC/BBIS_KERNEL
+        - mdis5linux/LIBSRC/CHAMELEON
+        - mdis5linux/LIBSRC/DBG
+        - mdis5linux/LIBSRC/DESC
+        - mdis5linux/LIBSRC/ID
+        - mdis5linux/LIBSRC/MBUF
+        - mdis5linux/LIBSRC/MDIS_COMPONENT_COMMON
+        - mdis5linux/LIBSRC/MDIS_KERNEL
+        - mdis5linux/LIBSRC/OSS
+        - mdis5linux/LIBSRC/PLD
+        - mdis5linux/LIBSRC/SMB
+        - mdis5linux/LIBSRC/SMB2
+
+
+Linux user mode software modules
+
+    The Linux user mode software modules (tools and libraries) are provided
+    under the terms of the
+    GNU Lesser General Public License (LGPL)(version 2.1 or any later version)
+    AND/OR the
+    GNU General Public License (GPL)(version 2.0 or any later version).
+
+    This is true for the following modules:
+        - example applications delivered with the drivers in mdis5linux/DRIVERS/*
+        - mdis5linux/INCLUDE
+        - mdis5linux/LIBSRC/MDIS_API
+        - mdis5linux/LIBSRC/RTAI_USR_OSS
+        - mdis5linux/LIBSRC/USR_OSS
+        - mdis5linux/LIBSRC/USR_UTL
+        - mdis5linux/LIBSRC/VME4L_API
+        - mdis5linux/TOOLS/*
+
+NOTE!
+ The MDIS_API, used by applications to communicate with the
+ drivers, as well as other user mode libraries, are provided under the
+ GNU Lesser General Public License (LGPL) and/or the GNU General Public License
+ (GPL), so users can choose the appropriate license for their use without
+ affecting the license of the users application.
+ Also note that the LGPL and GPL are copyrighted by the Free Software Foundation
+ but the instance of code that it refers to (the MDIS5 for Linux package)
+ is copyrighted by MEN Mikro Elektronik GmbH.
+
+Any use, reproduction or distribution of the software constitutes
+recipient's acceptance of this agreement.
+

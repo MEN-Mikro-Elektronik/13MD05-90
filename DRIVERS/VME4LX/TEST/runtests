@@ -1,0 +1,24 @@
+#!/bin/sh
+
+rm -f outresult
+
+if [ -z $1 ]
+then
+	match=
+else
+	match="-match $1"	
+fi
+
+echo $match
+
+expect vme.test $match -outfile outresult -verbose error | tee outdetails
+
+
+echo
+echo
+echo "------------------------------------------------------------------------"
+more outresult
+
+cat outresult outdetails >output
+
+echo "Result has also been written to file \"output\""

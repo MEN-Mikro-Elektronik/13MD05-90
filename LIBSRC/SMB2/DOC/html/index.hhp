@@ -1,0 +1,45 @@
+[OPTIONS]
+Compatibility=1.1
+Full-text search=Yes
+Contents file=index.hhc
+Default Window=main
+Default topic=index.html
+Index file=index.hhk
+Language=0x409 English (United States)
+Title=SMB2 Library
+
+[WINDOWS]
+main="SMB2 Library","index.hhc","index.hhk","index.html","index.html",,,,,0x23520,,0x387e,,,,,,,,0
+
+[FILES]
+index.html
+files.html
+smb2_8h-source.html
+smb2_8h.html
+smb2__com_8c.html
+smb2__ich_8c.html
+annotated.html
+functions.html
+functions_func.html
+functions_vars.html
+structI2CMESSAGE.html
+structSMB__ALERT__NODE.html
+structSMB__COM__HANDLE.html
+structSMB__DESC__ALI1543.html
+structSMB__DESC__ICH.html
+structSMB__DESC__MENZ001.html
+structSMB__DESC__MGT5200.html
+structSMB__DESC__MPC85XX.html
+structSMB__DESC__PORTCB.html
+structSMB__DESC__SCH.html
+structSMB__ENTRIES.html
+structSMB__HANDLE.html
+dummy.html
+group____SMB2__ERR.html
+group____SMB2__FLAG.html
+modules.html
+globals.html
+globals_func.html
+globals_type.html
+globals_defs.html
+pages.html

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Klaus Popp (MEN Mikro Elektronik GmbH) -->
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="packagedesc.xsd">
+	<name>13m04306</name>
+	<description>MDIS5 driver package for MEN M43 M-Module</description>
+	<date>2013-07-11</date>
+	<revision>2.12</revision>
+	<docroot>DRIVERS/MDIS_LL/M043/DOC/m43_drv.html</docroot>
+	<modellist>
+		<model>
+			<hwname>M43</hwname>
+			<description>Relais output M-Module</description>
+			<devtype>MDIS</devtype>
+			<autoid>
+				<mmoduleid>0x5346002b</mmoduleid>
+			</autoid>
+			<busif>M-Module</busif>
+			<swmodulelist>
+				<swmodule>
+					<name>m43</name>
+					<description>Driver for M43</description>
+					<type>Low Level Driver</type>
+					<makefilepath>M043/DRIVER/COM/driver.mak</makefilepath>
+				</swmodule>
+			</swmodulelist>
+		</model>
+	</modellist>
+	<settinglist>
+		<setting>
+			<name>ID_CHECK</name>
+			<description>Define wether M-Module ID-PROM is checked</description>
+			<type>U_INT32</type>
+			<defaultvalue>1</defaultvalue>
+			<choises>
+				<choise>
+					<value>1</value>
+					<description>enable</description>
+				</choise>
+				<choise>
+					<value>0</value>
+					<description>disable -- ignore IDPROM</description>
+				</choise>
+			</choises>
+		</setting>
+	</settinglist>
+	<swmodulelist>
+		<swmodule>
+			<name>m43_ex1</name>
+			<description>Simple example program for the M43 driver</description>
+			<type>Driver Specific Tool</type>
+			<makefilepath>M043/EXAMPLE/M43_EX1/COM/program.mak</makefilepath>
+		</swmodule>
+	</swmodulelist>
+</package>

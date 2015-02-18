@@ -1,0 +1,226 @@
+Program Description
+===================
+Tue Apr 20 15:12:47 MEST 1999
+ 
+Overview of all Programs
+------------------------
+
+m_rev_id         - Print revision id
+m_mod_id         - Print module id
+m_errstr         - Testing M_errstring function
+m_getblock       - Testing M_getblock function
+m_getstat        - Testing M_getstat function
+m_getstat_blk    - Testing M_getstat() function (blockwise)
+m_open           - Testing M_open() function
+m_read           - Testing M_read() function
+m_setblock       - Testing M_setblock() function
+m_setstat        - Testing M_setstat() function
+m_setstat_blk    - Testing M_setstat() function (blockwise)
+m_write          - Testing M_write() function
+
+Program m_rev_id
+----------------
+
+Usage:
+   m_rev_id <device>
+
+Function:
+   Print revision id
+
+Options:
+   device       device name           [none]   
+   
+Description:
+   Print revision id   
+   
+Program m_mod_id
+----------------
+
+Usage:
+   m_mod_id <opts>] <device> [<opts>]
+
+Function:
+   Print module id
+
+Options:
+   device       device name           [none]   
+   
+Description:
+   Print module id   
+   
+Program m_errstr
+----------------
+
+Usage:
+   m_errstr [<opts>] <errcode> [<opts>]
+
+Function:
+   Testing M_errstring function
+
+Options:
+   errcode     start error code (hex)        [none]   
+   -n=<n>      nr of error codes             [1]   
+   
+Description:
+   Testing M_errstring()   
+   
+Program m_getblock
+------------------
+
+Usage:
+   m_getblock [<opts>] <device> <size> [<opts>]<
+
+Function:
+   Testing M_getblock function
+
+Options:
+   device       device name                          [none]   
+   size         block size                           [none]   
+   -c=<chan>    channel number (0..n)                [none]   
+   -b=<mode>    block i/o mode                       [none]   
+                0 = M_BUF_USRCTRL   
+                1 = M_BUF_CURRBUF   
+                2 = M_BUF_RINGBUF   
+                3 = M_BUF_RINGBUF_OVERWR   
+   -t=<msec>    block read timeout [msec] (0=none)   [none]   
+   
+Description:
+   Testing M_getblock()   
+   
+Program m_getstat
+-----------------
+
+Usage:
+   m_getstat <device> <code>
+
+Function:
+   Testing M_getstat function
+
+Options:
+   device       device name           [none]   
+   code         status code (hex)     [none]   
+   
+Description:
+   Testing M_getstat   
+   
+Program m_getstat_blk
+---------------------
+
+Usage:
+   m_getstat_blk <device> <code> <size>
+
+Function:
+   Testing M_getstat() function (blockwise)
+
+Options:
+   device       device name           [none]   
+   code         status code (hex)     [none]   
+   size         block size            [none]   
+   
+Description:
+   Testing M_getstat() (blockwise)   
+   
+Program m_open
+--------------
+
+Usage:
+   m_open [<opts>] <device> [<opts>]
+
+Function:
+   Testing M_open() function
+
+Options:
+   device       device name                    [none]   
+   -w           wait for signal before close   [OFF]   
+   
+Description:
+   Testing M_open()   
+   
+Program m_read
+--------------
+
+Usage:
+   m_read <device>
+
+Function:
+   Testing M_read() function
+
+Options:
+   device       device name           [none]   
+   
+Description:
+   Testing M_read   
+   
+Program m_setblock
+------------------
+
+Usage:
+   m_setblock [<opts>] <device> <byte(s)> [<opts>]
+
+Function:
+   Testing M_setblock() function
+
+Options:
+   device       device name                          [none]   
+   byte(s)      block data bytes (hex)               [none]   
+   -c=<chan>    channel number (0..n)                [none]   
+   -b=<mode>    block i/o mode                       [none]   
+                0 = M_BUF_USRCTRL   
+                1 = M_BUF_CURRBUF   
+                2 = M_BUF_RINGBUF   
+                3 = M_BUF_RINGBUF_OVERWR   
+   -t=<msec>    block write timeout [msec] (0=none)  [none]   
+   
+Description:
+   Testing M_setblock()   
+   
+Program m_setstat
+-----------------
+
+Usage:
+   m_setstat <device> <code> <value>
+
+Function:
+   Testing M_setstat() function
+
+Options:
+   device       device name           [none]   
+   code         status code (hex)     [none]   
+   value        data value (hex)      [none]   
+   
+Description:
+   Testing M_setstat()   
+   
+Program m_setstat_blk
+---------------------
+
+Usage:
+   m_setstat_blk <device> <code> <<byte0> [<byte1>..]
+
+Function:
+   Testing M_setstat() function (blockwise)
+
+Options:
+   device       device name           [none]   
+   code         status code (hex)     [none]   
+   byte0..n     block data bytes (hex)  [none]   
+   
+Description:
+   Testing M_setstat() (blockwise)   
+   
+Program m_write
+---------------
+
+Usage:
+   m_write <device> <value>
+
+Function:
+   Testing M_write() function
+
+Options:
+   device       device name           [none]   
+   value        value to write (hex)  [none]   
+   
+Description:
+   Testing M_write()   
+   

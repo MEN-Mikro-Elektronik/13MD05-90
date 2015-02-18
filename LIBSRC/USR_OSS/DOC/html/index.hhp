@@ -1,0 +1,38 @@
+[OPTIONS]
+Compatibility=1.1
+Full-text search=Yes
+Contents file=index.hhc
+Default Window=main
+Default topic=index.html
+Index file=index.hhk
+Language=0x409 English (United States)
+Title=USR_OSS library for Linux
+
+[WINDOWS]
+main="USR_OSS library for Linux","index.hhc","index.hhk","index.html","index.html",,,,,0x23520,,0x387e,,,,,,,,0
+
+[FILES]
+index.html
+files.html
+uos__int_8h-source.html
+usr__oss_8h-source.html
+delay_8c.html
+dl__list_8c.html
+errno_8c.html
+errstr_8c.html
+ident_8c.html
+key_8c.html
+mdelay_8c.html
+random_8c.html
+signal_8c.html
+timer_8c.html
+usr__oss__specification_8c.html
+dummy.html
+linuossigusage.html
+usrosscommonspec.html
+uossigusage.html
+uosdllusage.html
+deprecated.html
+globals.html
+globals_func.html
+pages.html

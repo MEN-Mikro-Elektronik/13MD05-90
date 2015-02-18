@@ -1,0 +1,476 @@
+Function Description
+====================
+Wed Apr 11 11:01:09 MEST 2001
+ 
+Overview of all Functions
+-------------------------
+
+A12_GetEntry           - Initialize drivers jump table. 
+A12_Init               - Allocate and return board handle. 
+A12_BrdInit            - Board initialization. 
+A12_BrdExit            - Board deinitialization. 
+A12_Exit               - Cleanup memory. 
+A12_BrdInfo            - Get information about hardware and driver requirements. 
+A12_CfgInfo            - Get information about board configuration. 
+A12_IrqEnable          - Interrupt enable / disable. 
+A12_IrqSrvInit         - Called at the beginning of an interrupt. 
+A12_IrqSrvExit         - Called at the end of an interrupt. 
+A12_ExpEnable          - Exception interrupt enable / disable. 
+A12_ExpSrv             - Called at the beginning of an exception interrupt. 
+A12_SetMIface          - Set device interface. 
+A12_ClrMIface          - Clear device interface. 
+A12_GetMAddr           - Get physical address description. 
+A12_SetStat            - Set driver status 
+A12_GetStat            - Get driver status 
+ 
+
+Function A12_GetEntry()
+-----------------------
+
+Syntax:
+    #ifdef _ONE_NAMESPACE_PER_DRIVER_
+        extern void BBIS_GetEntry( BBIS_ENTRY *bbisP )
+    #else
+        extern void A12_GetEntry( BBIS_ENTRY *bbisP )
+    #endif
+
+Description:
+    Initialize drivers jump table.
+
+Input:
+    bbisP     pointer to the not initialized structure
+
+Output:
+    *bbisP    initialized structure
+
+
+Function A12_Init()
+-------------------
+
+Syntax:
+    static int32 A12_Init(
+        OSS_HANDLE      *osHdl,
+        DESC_SPEC       *descSpec,
+        BBIS_HANDLE     **hP )
+
+Description:
+    Allocate and return board handle.
+
+    - initializes the board handle
+    - reads and saves board descriptor entries
+    - check for M-module FPGA
+    - Locate memory base 
+    - Assign resources to board handler
+    - Map used resources
+
+    The following descriptor keys are used:
+
+    Deskriptor key           Default          Range
+    -----------------------  ---------------  -------------
+    DEBUG_LEVEL_DESC         OSS_DBG_DEFAULT  see dbg.h
+    DEBUG_LEVEL              OSS_DBG_DEFAULT  see dbg.h
+
+Input:
+    osHdl     pointer to os specific structure             
+    descSpec  pointer to os specific descriptor specifier  
+    hP   pointer to not initialized board handle structure            
+
+Output:
+    *hP  initialized board handle structure  
+    return    0 | error code
+
+
+Function A12_BrdInit()
+----------------------
+
+Syntax:
+    static int32 A12_BrdInit(
+        BBIS_HANDLE     *h )
+
+Description:
+    Board initialization.
+    - init all control regs to a safe state
+
+Input:
+    h         pointer to board handle structure    
+
+Output:
+    return    0 | error code
+
+
+Function A12_BrdExit()
+----------------------
+
+Syntax:
+    static int32 A12_BrdExit(
+        BBIS_HANDLE     *h )
+
+Description:
+    Board deinitialization.
+
+    - init all control regs to a safe state
+
+Input:
+    h    pointer to board handle structure   
+
+Output:
+    return    0 | error code
+
+
+Function A12_Exit()
+-------------------
+
+Syntax:
+    static int32 A12_Exit(
+        BBIS_HANDLE     **hP )
+
+Description:
+    Cleanup memory.
+
+    - deinitializes the bbis handle
+
+Input:
+    hP   pointer to board handle structure
+
+Output:
+    *hP  NULL
+    return    0 | error code
+
+
+Function A12_BrdInfo()
+----------------------
+
+Syntax:
+    static int32 A12_BrdInfo(
+        u_int32 code,
+        ... )
+
+Description:
+    Get information about hardware and driver requirements.
+
+    Following info codes are supported:
+
+    Code                      Description
+    ------------------------  -----------------------------
+    BBIS_BRDINFO_BUSTYPE      board bustype
+    BBIS_BRDINFO_DEVBUSTYPE   device bustype
+    BBIS_BRDINFO_FUNCTION     used optional functions
+    BBIS_BRDINFO_NUM_SLOTS    number of slots
+    BBIS_BRDINFO_INTERRUPTS   interrupt characteristics
+    BBIS_BRDINFO_ADDRSPACE    address characteristic
+
+    The BBIS_BRDINFO_BUSTYPE code returns the bustype of
+    the specified device - not the board bus type.
+
+    The BBIS_BRDINFO_FUNCTION code returns the information
+    if an optional BBIS function is supported or not.
+
+    The BBIS_BRDINFO_NUM_SLOTS code returns the number of
+    devices used from the driver.
+
+    The BBIS_BRDINFO_INTERRUPTS code returns the supported
+    interrupt capability (BBIS_IRQ_DEVIRQ/BBIS_IRQ_EXPIRQ)
+    of the specified device.
+
+    The BBIS_BRDINFO_ADDRSPACE code returns the address
+    characteristic (OSS_ADDRSPACE_MEM/OSS_ADDRSPACE_IO)
+    of the specified device.
+
+Input:
+    code      reference to the information we need    
+    ...       variable arguments                      
+
+Output:
+    *...      variable arguments
+    return    0 | error code
+
+
+Function A12_CfgInfo()
+----------------------
+
+Syntax:
+    static int32 A12_CfgInfo(
+        BBIS_HANDLE     *h,
+        u_int32         code,
+        ... )
+
+Description:
+    Get information about board configuration.
+
+    Following info codes are supported:
+
+    Code                      Description
+    ------------------------  ------------------------------
+    BBIS_CFGINFO_BUSNBR       bus number
+    BBIS_CFGINFO_PCI_DEVNBR   PCI device number   
+    BBIS_CFGINFO_IRQ          interrupt parameters
+    BBIS_CFGINFO_EXP          exception interrupt parameters
+
+    The BBIS_CFGINFO_BUSNBR code returns the number of the
+    bus on which the specified device resides
+
+    The BBIS_CFGINFO_PCI_DEVNBR code returns the device number 
+    on the PCI bus on which the specified device resides
+
+    The BBIS_CFGINFO_IRQ code returns the device interrupt
+    vector, level and mode of the specified device.
+
+    The BBIS_CFGINFO_EXP code returns the exception interrupt
+    vector, level and mode of the specified device.
+
+Input:
+    h    pointer to board handle structure       
+    code      reference to the information we need    
+    ...       variable arguments                      
+
+Output:
+    .....:  ...       variable arguments
+            return    0 | error code
+
+
+Function A12_IrqEnable()
+------------------------
+
+Syntax:
+    static int32 A12_IrqEnable(
+        BBIS_HANDLE     *h,
+        u_int32         mSlot,
+        u_int32         enable )
+
+Description:
+    Interrupt enable / disable.
+
+    For QSPI, nothing is done. QSPI has seperate IRQ9
+
+Input:
+    h    pointer to board handle structure   
+    mSlot     module slot number                  
+    enable    interrupt setting                   
+
+Output:
+    return    0
+
+
+Function A12_IrqSrvInit()
+-------------------------
+
+Syntax:
+    static int32 A12_IrqSrvInit(
+        BBIS_HANDLE     *h,
+        u_int32         mSlot)
+
+Description:
+    Called at the beginning of an interrupt.
+
+    checks if the slot caused the interrupt
+
+Input:
+    h    pointer to board handle structure   
+    mSlot     module slot number                  
+
+Output:
+    return    BBIS_IRQ_NO
+
+
+Function A12_IrqSrvExit()
+-------------------------
+
+Syntax:
+    static void A12_IrqSrvExit(
+        BBIS_HANDLE     *h,
+        u_int32         mSlot )
+
+Description:
+    Called at the end of an interrupt.
+
+    Do nothing
+
+Input:
+    h    pointer to board handle structure   
+    mSlot     module slot number                  
+
+Output:
+    ---
+
+
+Function A12_ExpEnable()
+------------------------
+
+Syntax:
+    static int32 A12_ExpEnable(
+        BBIS_HANDLE     *h,
+        u_int32         mSlot,
+        u_int32         enable)
+
+Description:
+    Exception interrupt enable / disable.
+
+    Do nothing
+
+Input:
+    h    pointer to board handle structure   
+    mSlot     module slot number                  
+    enable    interrupt setting                   
+
+Output:
+    return    0
+
+
+Function A12_ExpSrv()
+---------------------
+
+Syntax:
+    static int32 A12_ExpSrv(
+        BBIS_HANDLE     *h,
+        u_int32         mSlot )
+
+Description:
+    Called at the beginning of an exception interrupt.
+
+    Do nothing
+
+Input:
+    h    pointer to board handle structure   
+    mSlot     module slot number                  
+
+Output:
+    return    BBIS_IRQ_NO
+
+
+Function A12_SetMIface()
+------------------------
+
+Syntax:
+    static int32 A12_SetMIface(
+        BBIS_HANDLE     *h,
+        u_int32         mSlot,
+        u_int32         addrMode,
+        u_int32         dataMode)
+
+Description:
+    Set device interface.
+
+    Do nothing
+
+Input:
+    h    pointer to board handle structure   
+    mSlot     module slot number                  
+    addrMode  MDIS_MODE_A08 | MDIS_MODE_A24       
+    dataMode  MDIS_MODE_D16 | MDIS_MODE_D32       
+
+Output:
+    return    0
+
+
+Function A12_ClrMIface()
+------------------------
+
+Syntax:
+    static int32 A12_ClrMIface(
+        BBIS_HANDLE     *h,
+        u_int32         mSlot)
+
+Description:
+    Clear device interface.
+
+    Do nothing
+
+Input:
+    h    pointer to board handle structure   
+    mSlot     module slot number                  
+
+Output:
+    return    0
+
+
+Function A12_GetMAddr()
+-----------------------
+
+Syntax:
+    static int32 A12_GetMAddr(
+        BBIS_HANDLE     *h,
+        u_int32         mSlot,
+        u_int32         addrMode,
+        u_int32         dataMode,
+        void            **mAddr,
+        u_int32         *mSize )
+
+Description:
+    Get physical address description.
+
+    - check device number
+    - assign address spaces
+
+Input:
+    h    pointer to board handle structure   
+    mSlot     module slot number                  
+    addrMode  MDIS_MA08 | MDIS_MA24    
+    dataMode  MDIS_MD16 | MDIS_MD32      
+    mAddr     pointer to address space            
+    mSize     size of address space               
+
+Output:
+    return    0 | error code
+
+
+Function A12_SetStat()
+----------------------
+
+Syntax:
+    static int32 A12_SetStat(
+        BBIS_HANDLE     *h,
+        u_int32         mSlot,
+        int32           code,
+        int32           value )
+
+Description:
+    Set driver status
+
+    Following status codes are supported:
+
+    Code                 Description                Values
+    -------------------  -------------------------  ----------
+    M_BB_DEBUG_LEVEL     board debug level          see dbg.h
+
+Input:
+    h    pointer to board handle structure           
+    mSlot     module slot number                          
+    code      setstat code                                
+    value     setstat value or ptr to blocksetstat data   
+
+Output:
+    return    0 | error code
+
+
+Function A12_GetStat()
+----------------------
+
+Syntax:
+    static int32 A12_GetStat(
+        BBIS_HANDLE     *h,
+        u_int32         mSlot,
+        int32           code,
+        int32           *valueP )
+
+Description:
+    Get driver status
+
+    Following status codes are supported:
+
+    Code                 Description                Values
+    -------------------  -------------------------  ----------
+    M_BB_DEBUG_LEVEL     driver debug level         see dbg.h
+    M_BB_IRQ_VECT        interrupt vector           0..max
+    M_BB_IRQ_LEVEL       interrupt level            0..max
+    M_BB_IRQ_PRIORITY    interrupt priority         0
+    M_MK_BLK_REV_ID      ident function table ptr   -
+
+Input:
+    h    pointer to board handle structure           
+    mSlot     module slot number                          
+    code      getstat code                                
+
+Output:
+    valueP    getstat value or ptr to blockgetstat data
+    return    0 | error code
+

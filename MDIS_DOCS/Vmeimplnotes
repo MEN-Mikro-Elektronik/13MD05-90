@@ -1,0 +1,99 @@
+The following shows the kernel interface that needs to be provided by
+your Linux kernel (LSP).
+
+See also header file INCLUDE/NATIVE/MEN/men_vme_kernelif.h
+that can be placed under include/linux.
+
+
+Overview of all Functions
+-------------------------
+
+vme_bus_to_phys        - Convert VME address to CPU physical address 
+vme_request_irq        - Install handler for VME interrupt 
+vme_free_irq           - Remove handler for VME interrupt 
+vme_ilevel_control     - Enable or disable a VMEbus interrupt level 
+ 
+
+Function vme_bus_to_phys()
+--------------------------
+
+Syntax:
+    int vme_bus_to_phys( int space, u32 vmeadrs, void **physadrs_p )
+
+Description:
+    Convert VME address to CPU physical address
+
+    The returned address will be ioremap'ed by the calling driver
+
+Input:
+    space      VME space to use (VME_XXX_SPACE) or'ed with
+               data width (VME_XXX_ACCESS)
+    vmeadrs    offset in VME space
+
+Output:
+    returns:   Linux error number (negative)
+    *physadrs_p CPU physical address
+
+
+Function vme_request_irq()
+--------------------------
+
+Syntax:
+    int vme_request_irq(
+        unsigned int vme_irq,
+        void (*handler)(int, void *, struct pt_regs *),
+        unsigned long flags,
+        const char *device, 
+        void *dev_id)
+
+Description:
+    Install handler for VME interrupt
+
+    Current implementation does not allow to install more than one handler
+    per vme irq vector.         
+    This call does not implicitely enable interrupts. See vme_ilevel_conrol()  
+
+Input:
+    vme_irq        VME irq number to install
+    handler        handler to call 
+    flags          (currently not used)
+    device         device name registered for this irq
+    dev_id         ptr that is passed to handler
+
+Output:
+    returns:       Linux error number (negative)
+
+
+Function vme_free_irq()
+-----------------------
+
+Syntax:
+    void vme_free_irq(unsigned int vme_irq, void *dev_id)
+
+Description:
+    Remove handler for VME interrupt
+
+Input:
+    vme_irq        VME irq number to be removed
+    dev_id         must be the same ptr as for vme_request_irq
+
+Output:
+    -
+
+
+Function vme_ilevel_control()
+-----------------------------
+
+Syntax:
+    int vme_ilevel_control( int level, int enable )
+
+Description:
+    Enable or disable a VMEbus interrupt level
+
+Input:
+    level      VME bus irq level to modify (1..7)
+    enable     1=enable 0=disable
+
+Output:
+    returns:   Linux error number (negative)
+

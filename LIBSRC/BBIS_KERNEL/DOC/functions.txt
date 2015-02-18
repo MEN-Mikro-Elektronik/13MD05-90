@@ -1,0 +1,170 @@
+Function Description
+====================
+Wed Jun  9 09:04:43 CEST 2004
+ 
+Overview of all Functions
+-------------------------
+
+bbis_ident             - Return ident string 
+bbis_open              - Open a BBIS device 
+OpenDevice             - Do the first open on the BBIS device 
+bbis_close             - Close a BBIS device 
+FindDrvByName          - Search for a driver in BBIS driver list 
+bbis_register_bb_drive - Register an BBIS Driver in the BBIS kernel 
+bbis_unregister_bb_dri - Un-registers an BBIS Low Level Driver in the BBIS kernel 
+bk_read_procmem        - Function to fill in data when /proc/bbis file is read 
+ 
+
+Function bbis_ident()
+---------------------
+
+Syntax:
+    char* bbis_ident( void )
+
+Description:
+    Return ident string 
+
+Input:
+    -
+
+Output:
+    return  pointer to ident string
+
+
+Function bbis_open()
+--------------------
+
+Syntax:
+    int bbis_open(
+        char *devName,
+        DESC_SPEC *bbDesc,
+        BBIS_HANDLE **bbHdlP,
+        BBIS_ENTRY *bbEntries)
+
+Description:
+    Open a BBIS device
+
+    Checks if device is already initialized. If not, creates an instance
+    of the BB driver and initializes the board
+
+Input:
+    devName       device name of board (e.g. D201_1)
+    bbDesc        board descriptor data       
+
+Output:
+    returns       0=ok, or negative error number
+    *bbHdlP       base board handle
+    bbEntries     filled with base board entries
+
+
+Function OpenDevice()
+---------------------
+
+Syntax:
+    static int32 OpenDevice( DESC_SPEC *bbDesc, BK_DEV *node )
+
+Description:
+    Do the first open on the BBIS device
+
+Input:
+    bbDesc        board descriptor data      
+    node          device node
+
+Output:
+    returns       0=ok, or (pos.) error number
+    node->bb      device handle
+    node->drv     ptr to driver structure
+
+
+Function bbis_close()
+---------------------
+
+Syntax:
+    int bbis_close(char *devName)
+
+Description:
+    Close a BBIS device
+
+    The last close deinitializes the base board
+
+Input:
+    devName       device name of board (e.g. D201_1)
+
+Output:
+    returns       0=ok, or negative error number
+
+
+Function FindDrvByName()
+------------------------
+
+Syntax:
+    static BK_DRV *FindDrvByName( char *name )
+
+Description:
+    Search for a driver in BBIS driver list
+
+Input:
+    name          name to look for
+
+Output:
+    returns       ptr to driver struct or NULL if not found
+
+
+Function bbis_register_bb_driver()
+----------------------------------
+
+Syntax:
+    int bbis_register_bb_driver( 
+        char *bbName, 
+        void (*getEntry)(BBIS_ENTRY *),
+        struct module *module)
+
+Description:
+    Register an BBIS Driver in the BBIS kernel
+
+Input:
+    bbName        name of low level driver e.g. "men_bb_d201"
+    getEntry      ptr to GetEntry function of BB driver
+    module        calling module structure
+
+Output:
+    returns       0=ok, or negative error number
+
+
+Function bbis_unregister_bb_driver()
+------------------------------------
+
+Syntax:
+    int bbis_unregister_bb_driver( char *bbName )
+
+Description:
+    Un-registers an BBIS Low Level Driver in the BBIS kernel
+
+Input:
+    bbName        name of low level driver e.g. "men_bb_d201"
+
+Output:
+    returns       0=ok, or negative error number
+
+
+Function bk_read_procmem()
+--------------------------
+
+Syntax:
+    static int bk_read_procmem( char *page, char **start, off_t off,
+                                int count, int *eof, void *data)
+
+Description:
+    Function to fill in data when /proc/bbis file is read
+
+Input:
+    proc          page start
+    offset        offset within file
+    count         max bytes to read
+    data          ?
+
+Output:
+    returns       0=ok, or negative error number
+    *start        ptr to first valid char in page
+    *eof          true if all characters output
+

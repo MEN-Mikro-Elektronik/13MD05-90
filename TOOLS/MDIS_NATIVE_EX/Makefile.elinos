@@ -1,0 +1,21 @@
+CFLAGS = -I/opt/menlinux/INCLUDE/COM -I/opt/menlinux/INCLUDE/NATIVE \
+		 -L../mdis/LIB -lmdis_api
+
+bin_files = mdis_native_ex
+
+all: $(bin_files)
+
+install: all
+	install -d $(ELINOS_PROJECT)/app.rootfs/bin
+	(for file in $(bin_files); do \
+		install -m 555 $$file $(ELINOS_PROJECT)/app.rootfs/bin; \
+	done)
+ifeq "$(ELINOS_LIBC)" "libc6"
+	touch $(ELINOS_PROJECT)/app.rootfs/etc/nsswitch.conf
+endif
+
+clean:
+	rm -f $(bin_files) *.o
+
+distclean: 
+	rm -rf $(ELINOS_PROJECT)/app.rootfs/bin

@@ -1,0 +1,66 @@
+Sample Program for scanning command line arguments
+==================================================
+10.08.98 see
+
+#include <stdio.h>
+#include <MEN/men_typs.h>
+#include <MEN/usr_utl.h>
+
+#define REV "V1.0"      /* program revision */
+
+void usage(void)
+{
+	printf("Usage: utl_tstopt [<opts>] <device> [<opts>]\n");
+	printf("Function: Testing UTL_Tstopt function\n");
+	printf("Options:\n");
+	printf("    device       device name           [none]\n");
+	printf("    -c=<chan>    channel (1..6)        [1]\n");
+	printf("    -v           verbose               [off]\n");
+	printf("\n");
+	printf("(c) 1998 by MEN mikro elektronik GmbH, %s\n\n",REV);
+}
+
+main(argc,argv)
+int  argc;
+char *argv[];
+{
+	u_int32 n,chan,verbose;
+	char *device,*str,*errstr,buf[40];
+
+	/*--------------------+
+    |  check arguments    |
+    +--------------------*/
+	if ((errstr = UTL_ILLIOPT("c=v?", buf))) {	/* check args */
+		printf("*** %s\n", errstr);
+		return(1);
+	}
+
+	if (UTL_TSTOPT("?")) {						/* help requested ? */
+		usage();
+		return(1);
+	}
+
+	/*--------------------+
+    |  get arguments      |
+    +--------------------*/
+	for (device=NULL, n=1; n<argc; n++)			/* search for name */
+		if (*argv[n] != '-') {
+			device = argv[n];
+			break;
+		}
+
+	if (!device) {					/* not found ? */
+		printf("*** device not specified\n");
+		return(1);
+	}
+
+	chan      = ((str = UTL_TSTOPT("c=")) ? atoi(str) : 1);
+	verbose   = (UTL_TSTOPT("v") ? 1 : 0);
+
+	/*  ...  */
+
+	return(0);
+}
+
+
+

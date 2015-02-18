@@ -1,0 +1,29 @@
+@INCLUDE_PATH = $(MEN_DOXYGENTMPL)
+@INCLUDE = DoxyfileCommon
+
+PROJECT_NAME           = "VME4L API"
+PROJECT_NUMBER		   = "for VME4L fileset $(MEN_FILESET_REVISION)"
+INPUT                  = \
+                    ../vme4l_api.c \
+                    ../../../INCLUDE/NATIVE/MEN/vme4l_api.h \
+                    ../../../INCLUDE/NATIVE/MEN/vme4l.h \
+                    ../../../DRIVERS/VME4LX/DRIVER_K24/vme4l-tsi148.h \
+            
+#EXAMPLE_RECURSIVE      = YES
+#EXAMPLE_PATH           = $(MEN_MDIS_DRV_SRC)/MSCAN/TOOLS
+OUTPUT_DIRECTORY       = .
+EXTRACT_ALL            = YES
+EXTRACT_STATIC         = YES
+GENERATE_HTMLHELP      = YES
+WARNINGS               = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_IF_UNDOCUMENTED   = YES
+GENERATE_HTMLHELP      = YES
+
+ALIASES                += "pldz002=\par Notes for VME-bridge on A13/A15:\n" \
+						  "plda12=\par Notes for VME-bridge on A12/B11:\n" \
+						  "tsi148=\par Notes for VME-bridge on A17/A19/A20:\n"
+
+#TAGFILES               = ../../../../LIBSRC/MDIS_API/DOC/mdis_api.tag=../../../../../LIBSRC/MDIS_API/DOC/html
+#GENERATE_TAGFILE       = m78_driver.tag
+

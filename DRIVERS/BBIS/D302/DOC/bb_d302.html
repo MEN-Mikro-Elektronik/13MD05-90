@@ -1,0 +1,475 @@
+<html>
+<head>
+<title>D302 driver</title>
+<style type=text/css>
+    Body { background-color: #ffffff; }
+    A:link { color: #c50038; }
+    A:hover { color: #28669b; }
+    P, H1, H2, H3, H3, H5, LI {
+        color: #434343;
+        font-family: Arial, Helvetica, Univers;
+    }
+    P, LI { font-size: 9.000000pt; }
+</style>
+</head>
+<body>
+<h1>D302 driver</h1>
+<p>Mon Jun 21 15:30:47 WEDT 2004</p>
+<h2>Overview of all Functions</h2>
+<a name="chapt0"><a href="#intro0"><h3>D302 board handler routines for D302 boards</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#D302_GetEntry">D302_GetEntry</a></P></TD><TD><P>Initialize drivers jump table. </P></TD></TR>
+<TR><TD><P><a href="#D302_Init">D302_Init</a></P></TD><TD><P>Allocate and return board handle. </P></TD></TR>
+<TR><TD><P><a href="#D302_BrdInit">D302_BrdInit</a></P></TD><TD><P>Board initialization. </P></TD></TR>
+<TR><TD><P><a href="#D302_BrdExit">D302_BrdExit</a></P></TD><TD><P>Board deinitialization. </P></TD></TR>
+<TR><TD><P><a href="#D302_Exit">D302_Exit</a></P></TD><TD><P>Cleanup memory. </P></TD></TR>
+<TR><TD><P><a href="#D302_BrdInfo">D302_BrdInfo</a></P></TD><TD><P>Get information about hardware and driver requirements. </P></TD></TR>
+<TR><TD><P><a href="#D302_CfgInfo">D302_CfgInfo</a></P></TD><TD><P>Get information about board configuration. </P></TD></TR>
+<TR><TD><P><a href="#D302_IrqEnable">D302_IrqEnable</a></P></TD><TD><P>Interrupt enable / disable. </P></TD></TR>
+<TR><TD><P><a href="#D302_IrqSrvInit">D302_IrqSrvInit</a></P></TD><TD><P>Called at the beginning of an interrupt. </P></TD></TR>
+<TR><TD><P><a href="#D302_IrqSrvExit">D302_IrqSrvExit</a></P></TD><TD><P>Called at the end of an interrupt. </P></TD></TR>
+<TR><TD><P><a href="#D302_ExpEnable">D302_ExpEnable</a></P></TD><TD><P>Exception interrupt enable / disable. </P></TD></TR>
+<TR><TD><P><a href="#D302_ExpSrv">D302_ExpSrv</a></P></TD><TD><P>Called at the beginning of an exception interrupt. </P></TD></TR>
+<TR><TD><P><a href="#D302_SetMIface">D302_SetMIface</a></P></TD><TD><P>Set device interface. </P></TD></TR>
+<TR><TD><P><a href="#D302_ClrMIface">D302_ClrMIface</a></P></TD><TD><P>Clear device interface. </P></TD></TR>
+<TR><TD><P><a href="#D302_GetMAddr">D302_GetMAddr</a></P></TD><TD><P>Get physical address description. </P></TD></TR>
+<TR><TD><P><a href="#D302_SetStat">D302_SetStat</a></P></TD><TD><P>Set driver status </P></TD></TR>
+<TR><TD><P><a href="#D302_GetStat">D302_GetStat</a></P></TD><TD><P>Get driver status </P></TD></TR>
+</TABLE>
+ 
+<a name="intro0"><h1>D302 board handler routines for D302 boards </h1></a>
+<pre>
+The D302 bbis supports four M66 onboard devices. The slots
+0..3 corresponds to the M66 units 0..3.
+
+Each M66 unit (32 binary I/O device):
+ - is connected via a serial bus to the PLD
+ - uses one memory space for the I/O functionality
+ - uses one shared interrupt for all M66 units
+
+Required: ---
+Switches: _ONE_NAMESPACE_PER_DRIVER_, D302
+
+D302_VARIANT - prefix for global symbols
+D302_VARIANT=D302 : standard bbis (supports D302 CPCI boards) 
+
+</pre>
+<a name="D302_GetEntry"><h2>Function D302_GetEntry()</h2></a>
+
+<h3>Syntax</h3>
+<pre>#ifdef _ONE_NAMESPACE_PER_DRIVER_
+    extern void BBIS_GetEntry( BBIS_ENTRY *bbisP )
+#else
+    extern void __D302_GetEntry( BBIS_ENTRY *bbisP )
+#endif
+</pre><h3>Description</h3>
+<pre>Initialize drivers jump table.
+
+</pre><h3>Input</h3>
+<pre>bbisP     pointer to the not initialized structure
+</pre><h3>Output</h3>
+<pre>*bbisP    initialized structure
+</pre>
+<a name="D302_Init"><h2>Function D302_Init()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D302_Init(
+    OSS_HANDLE      *osHdl,
+    DESC_SPEC       *descSpec,
+    BBIS_HANDLE     **brdHdlP )
+</pre><h3>Description</h3>
+<pre>Allocate and return board handle.
+
+- initializes the board handle
+- reads and saves board descriptor entries
+- assign resources
+- map used addresses
+
+The following descriptor keys are used:
+
+Deskriptor key         Default          Range
+---------------------  ---------------  -------------------
+DEBUG_LEVEL_DESC       OSS_DBG_DEFAULT  see dbg.h
+DEBUG_LEVEL            OSS_DBG_DEFAULT  see dbg.h
+PCI_BUS_PATH           none             see pcibuspath.txt
+PCI_BUS_NUMBER         none             0...255
+PCI_BUS_SLOT           none             1...8
+PCI_DEVICE_ID          0xFFFF           0...31
+ID_CHECK               1                0, 1
+
+Either PCI_BUS_NUMBER or PCI_BUS_PATH must be specified
+If both are present, PCI_BUS_NUMBER takes precedence.
+
+PCI_DEVICE_ID overwrites PCI_BUS_SLOT. The device id can set
+directly.
+
+</pre><h3>Input</h3>
+<pre>osHdl     pointer to os specific structure             
+descSpec  pointer to os specific descriptor specifier  
+brdHdlP   pointer to not initialized board handle structure            
+</pre><h3>Output</h3>
+<pre>*brdHdlP  initialized board handle structure  
+return    0 | error code
+</pre>
+<a name="D302_BrdInit"><h2>Function D302_BrdInit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D302_BrdInit(
+    BBIS_HANDLE     *brdHdl )
+</pre><h3>Description</h3>
+<pre>Board initialization.
+
+- enable global interrupt
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure    
+</pre><h3>Output</h3>
+<pre>return    0 | error code
+</pre>
+<a name="D302_BrdExit"><h2>Function D302_BrdExit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D302_BrdExit(
+    BBIS_HANDLE     *brdHdl )
+</pre><h3>Description</h3>
+<pre>Board deinitialization.
+
+- disable global interrupt
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure   
+</pre><h3>Output</h3>
+<pre>return    0 | error code
+</pre>
+<a name="D302_Exit"><h2>Function D302_Exit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D302_Exit(
+    BBIS_HANDLE     **brdHdlP )
+</pre><h3>Description</h3>
+<pre>Cleanup memory.
+
+- deinitializes the bbis handle
+
+</pre><h3>Input</h3>
+<pre>brdHdlP   pointer to board handle structure
+</pre><h3>Output</h3>
+<pre>*brdHdlP  NULL
+return    0 | error code
+</pre>
+<a name="D302_BrdInfo"><h2>Function D302_BrdInfo()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D302_BrdInfo(
+    u_int32 code,
+    ... )
+</pre><h3>Description</h3>
+<pre>Get information about hardware and driver requirements.
+
+Following info codes are supported:
+
+Code                      Description
+------------------------  -----------------------------
+BBIS_BRDINFO_BUSTYPE      board bustype
+BBIS_BRDINFO_DEVBUSTYPE   device bustype
+BBIS_BRDINFO_FUNCTION     used optional functions
+BBIS_BRDINFO_NUM_SLOTS    number of slots
+BBIS_BRDINFO_INTERRUPTS   interrupt characteristics
+BBIS_BRDINFO_ADDRSPACE    address characteristic
+BBIS_BRDINFO_BRDNAME      name of the board hardware
+
+The BBIS_BRDINFO_BUSTYPE code returns the bustype of
+the specified board.
+
+The BBIS_BRDINFO_DEVBUSTYPE code returns the bustype of
+the specified device - not the board bus type. 
+
+The BBIS_BRDINFO_FUNCTION code returns the information
+if an optional BBIS function is supported or not.
+
+The BBIS_BRDINFO_NUM_SLOTS code returns the number of
+devices used from the driver.
+
+The BBIS_BRDINFO_INTERRUPTS code returns the supported
+interrupt capability (BBIS_IRQ_DEVIRQ/BBIS_IRQ_EXPIRQ)
+of the specified device.
+
+The BBIS_BRDINFO_ADDRSPACE code returns the address
+characteristic (OSS_ADDRSPACE_MEM/OSS_ADDRSPACE_IO)
+of the specified device.
+
+The BBIS_BRDINFO_BRDNAME code returns the short hardware
+name and type of the board without any prefix or suffix.
+The hardware name must not contain any non-printing
+characters. The length of the returned string, including
+the terminating null character, must not exceed
+BBIS_BRDINFO_BRDNAME_MAXSIZE.
+Examples: D201 board, PCI device, Chameleon FPGA 
+
+</pre><h3>Input</h3>
+<pre>code      reference to the information we need    
+...       variable arguments                      
+</pre><h3>Output</h3>
+<pre>*...      variable arguments
+return    0 | error code
+</pre>
+<a name="D302_CfgInfo"><h2>Function D302_CfgInfo()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D302_CfgInfo(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         code,
+    ... )
+</pre><h3>Description</h3>
+<pre>Get information about board configuration.
+
+Following info codes are supported:
+
+Code                      Description
+------------------------  ------------------------------
+BBIS_CFGINFO_BUSNBR       bus number
+BBIS_CFGINFO_IRQ          interrupt parameters
+BBIS_CFGINFO_EXP          exception interrupt parameters
+BBIS_CFGINFO_SLOT         slot information
+
+The BBIS_CFGINFO_BUSNBR code returns the number of the
+bus on which the board resides.
+
+The BBIS_CFGINFO_IRQ code returns the device interrupt
+vector, level and mode of the specified device.
+
+The BBIS_CFGINFO_EXP code returns the exception interrupt
+vector, level and mode of the specified device.
+
+The BBIS_CFGINFO_SLOT code returns the following
+information about the specified device slot:
+The slot is occupied or empty, the device id and device
+revision of the plugged device, the name of the slot and
+the name of the plugged device.
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure       
+code      reference to the information we need    
+...       variable arguments                      
+</pre><h3>Output</h3>
+<pre>.....:  ...       variable arguments
+        return    0 | error code
+</pre>
+<a name="D302_IrqEnable"><h2>Function D302_IrqEnable()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D302_IrqEnable(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot,
+    u_int32         enable )
+</pre><h3>Description</h3>
+<pre>Interrupt enable / disable.
+
+Enable/disable interrupt for specified module slot
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure   
+mSlot     module slot number                  
+enable    interrupt setting                   
+</pre><h3>Output</h3>
+<pre>return    0
+</pre>
+<a name="D302_IrqSrvInit"><h2>Function D302_IrqSrvInit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D302_IrqSrvInit(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot)
+</pre><h3>Description</h3>
+<pre>Called at the beginning of an interrupt.
+
+- determine interrupt reason 
+
+Note: Timeout interrupts will be cleared.
+      Module interrupt must be cleared on the module
+      itself and by D302_IrqSrvExit().
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure   
+mSlot     module slot number                  
+</pre><h3>Output</h3>
+<pre>return    BBIS_IRQ_UNK
+</pre>
+<a name="D302_IrqSrvExit"><h2>Function D302_IrqSrvExit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static void D302_IrqSrvExit(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot )
+</pre><h3>Description</h3>
+<pre>Called at the end of an interrupt.
+
+- clear module interrupt
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure   
+mSlot     module slot number                  
+</pre><h3>Output</h3>
+<pre>---
+</pre>
+<a name="D302_ExpEnable"><h2>Function D302_ExpEnable()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D302_ExpEnable(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot,
+    u_int32         enable)
+</pre><h3>Description</h3>
+<pre>Exception interrupt enable / disable.
+
+Do nothing
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure   
+mSlot     module slot number                  
+enable    interrupt setting                   
+</pre><h3>Output</h3>
+<pre>return    0
+</pre>
+<a name="D302_ExpSrv"><h2>Function D302_ExpSrv()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D302_ExpSrv(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot )
+</pre><h3>Description</h3>
+<pre>Called at the beginning of an exception interrupt.
+
+Do nothing
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure   
+mSlot     module slot number                  
+</pre><h3>Output</h3>
+<pre>return    BBIS_IRQ_NO
+</pre>
+<a name="D302_SetMIface"><h2>Function D302_SetMIface()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D302_SetMIface(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot,
+    u_int32         addrMode,
+    u_int32         dataMode)
+</pre><h3>Description</h3>
+<pre>Set device interface.
+
+Do nothing
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure   
+mSlot     module slot number                  
+addrMode  MDIS_MODE_A08 | MDIS_MODE_A24       
+dataMode  MDIS_MODE_D3026 | MDIS_MODE_D32       
+</pre><h3>Output</h3>
+<pre>return    0
+</pre>
+<a name="D302_ClrMIface"><h2>Function D302_ClrMIface()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D302_ClrMIface(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot)
+</pre><h3>Description</h3>
+<pre>Clear device interface.
+
+Do nothing
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure   
+mSlot     module slot number                  
+</pre><h3>Output</h3>
+<pre>return    0
+</pre>
+<a name="D302_GetMAddr"><h2>Function D302_GetMAddr()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D302_GetMAddr(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot,
+    u_int32         addrMode,
+    u_int32         dataMode,
+    void            **mAddr,
+    u_int32         *mSize )
+</pre><h3>Description</h3>
+<pre>Get physical address description.
+
+- check module slot number
+- assign address spaces
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure   
+mSlot     module slot number                  
+addrMode  MDIS_MODE_A08 | MDIS_MODE_A24    
+dataMode  MDIS_MODE_D16 | MDIS_MODE_D32      
+mAddr     pointer to address space            
+mSize     size of address space               
+</pre><h3>Output</h3>
+<pre>return    0 | error code
+</pre>
+<a name="D302_SetStat"><h2>Function D302_SetStat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D302_SetStat(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot,
+    int32           code,
+    int32           value )
+</pre><h3>Description</h3>
+<pre>Set driver status
+
+Following status codes are supported:
+
+Code                 Description                Values
+-------------------  -------------------------  ----------
+M_BB_DEBUG_LEVEL     board debug level          see dbg.h
+M_BB_IRQ_EXP_COUNT   exception irq count        0..max
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure           
+mSlot     module slot number                          
+code      setstat code                                
+value     setstat value or ptr to blocksetstat data   
+</pre><h3>Output</h3>
+<pre>return    0 | error code
+</pre>
+<a name="D302_GetStat"><h2>Function D302_GetStat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 D302_GetStat(
+    BBIS_HANDLE     *brdHdl,
+    u_int32         mSlot,
+    int32           code,
+    int32           *valueP )
+</pre><h3>Description</h3>
+<pre>Get driver status
+
+Following status codes are supported:
+
+Code                 Description                Values
+-------------------  -------------------------  ----------
+M_BB_DEBUG_LEVEL     driver debug level         see dbg.h
+M_BB_IRQ_EXP_COUNT   exception irq count        0..max
+M_BB_IRQ_VECT        interrupt vector           0..max
+M_BB_IRQ_LEVEL       interrupt level            0..max
+M_BB_IRQ_PRIORITY    interrupt priority         0
+M_BB_ID_CHECK        board id is checked        0..1
+M_BB_ID_SIZE         eeprom id-data size[bytes] 0
+M_MK_BLK_REV_ID      ident function table ptr   -
+
+</pre><h3>Input</h3>
+<pre>brdHdl    pointer to board handle structure           
+mSlot     module slot number                          
+code      getstat code                                
+</pre><h3>Output</h3>
+<pre>valueP    getstat value or ptr to blockgetstat data
+return    0 | error code
+</pre></body>
+</html>

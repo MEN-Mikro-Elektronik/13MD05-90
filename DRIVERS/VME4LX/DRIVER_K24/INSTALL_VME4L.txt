@@ -1,0 +1,6 @@
+INSTALL_VME4L.txt
+-----------------
+
+The Installation Instructions in the previous versions of this file are
+outdated. Please refer to Document 21Z014-00.pdf.
+

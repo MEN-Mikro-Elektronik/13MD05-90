@@ -1,0 +1,31 @@
+# Doxyfile for USR_UTL
+
+@INCLUDE_PATH = $(MEN_DOXYGENTMPL)
+@INCLUDE = DoxyfileCommon
+
+#---------------------------------------------------------------------------
+# General configuration options
+---------------------------------------------------------------------------
+PROJECT_NAME           = "USR_UTL Library"
+PROJECT_NUMBER         =
+OUTPUT_DIRECTORY	   = .
+
+#---------------------------------------------------------------------------
+# configuration options related to the input files
+#---------------------------------------------------------------------------
+INPUT                  = $(MEN_COM_INC)/MEN/usr_utl.h ../COM
+EXAMPLE_PATH           = tstopt.txt
+
+#---------------------------------------------------------------------------
+# configuration options related to the HTML output
+#---------------------------------------------------------------------------
+GENERATE_HTMLHELP      = YES
+
+#---------------------------------------------------------------------------
+# Configuration::addtions related to external references
+#---------------------------------------------------------------------------
+TAGFILES               =
+GENERATE_TAGFILE       = usr_utl.tag
+ALLEXTERNALS           = NO
+EXTERNAL_GROUPS        = YES
+PERL_PATH              = /usr/bin/perl

@@ -1,0 +1,23 @@
+@INCLUDE_PATH = $(MEN_DOXYGENTMPL)
+@INCLUDE = DoxyfileCommon
+
+PROJECT_NAME           = "Z100 FPGA update tool"
+INPUT                  = \
+			            ../COM \
+
+EXAMPLE_RECURSIVE      = NO
+EXAMPLE_PATH           =
+OUTPUT_DIRECTORY       = .
+EXTRACT_ALL            = YES
+EXTRACT_STATIC         = YES
+GENERATE_HTMLHELP      = YES
+WARNINGS               = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_IF_UNDOCUMENTED   = YES
+GENERATE_HTMLHELP      = YES
+TAGFILES               = ../../../../LIBSRC/MDIS_API/DOC/mdis_api.tag=../../../../../LIBSRC/MDIS_API/DOC/html
+GENERATE_TAGFILE       = fpga_load.tag
+WARN_LOGFILE           = ./fpga_load.log
+PREDEFINED             = LINUX = 1 \
+                         VXWORKS = 1 \
+                         Z100_IO_MAPPED_EN = 1 \

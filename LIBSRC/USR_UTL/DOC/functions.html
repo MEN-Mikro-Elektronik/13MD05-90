@@ -1,0 +1,245 @@
+<html>
+<head>
+<title>USR_UTL library</title>
+<style type=text/css>
+    Body { background-color: #ffffff; }
+    A:link { color: #c50038; }
+    A:hover { color: #28669b; }
+    P, H1, H2, H3, H3, H5, LI {
+        color: #434343;
+        font-family: Arial, Helvetica, Univers;
+    }
+    P, LI { font-size: 9.000000pt; }
+</style>
+</head>
+<body>
+<h1>USR_UTL library</h1>
+<p>Tue Apr 27 16:12:06 MEST 1999</p>
+<h2>Overview of all Chapters</h2>
+<a href="#chapt0">Chapter: Ascii (hex-format) to integer conversion</a><br>
+<a href="#chapt1">Chapter: Binary dump routine</a><br>
+<a href="#chapt2">Chapter: Print formatted hexdump</a><br>
+<a href="#chapt3">Chapter: Test command line options</a><br>
+<a href="#chapt4">Chapter: USR_UTL global edition history</a><br>
+
+<h2>Overview of all Functions</h2>
+<a name="chapt0"><a href="#intro0"><h3>Ascii (hex-format) to integer conversion</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#UTL_Atox">UTL_Atox</a></P></TD><TD><P>Ascii (hex-format) to integer conversion </P></TD></TR>
+</TABLE>
+<a name="chapt1"><a href="#intro1"><h3>
+Binary dump routine</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#UTL_Bindump">UTL_Bindump</a></P></TD><TD><P>Create binary dump string of long value </P></TD></TR>
+</TABLE>
+<a name="chapt2"><a href="#intro2"><h3>
+Print formatted hexdump</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#UTL_Memdump">UTL_Memdump</a></P></TD><TD><P>Print formatted hexdump </P></TD></TR>
+</TABLE>
+<a name="chapt3"><a href="#intro3"><h3>
+Test command line options</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#UTL_Tstopt">UTL_Tstopt</a></P></TD><TD><P>Read command line options </P></TD></TR>
+<TR><TD><P><a href="#UTL_Illiopt">UTL_Illiopt</a></P></TD><TD><P>Check command line options </P></TD></TR>
+</TABLE>
+<a name="chapt4"><a href="#intro4"><h3>
+USR_UTL global edition history</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#UTL_Ident">UTL_Ident</a></P></TD><TD><P>Return ident string of UTL module </P></TD></TR>
+</TABLE>
+ 
+<a name="intro0"><h1>Ascii (hex-format) to integer conversion </h1></a>
+<pre>
+Required: -
+Switches: -
+
+</pre>
+<a name="UTL_Atox"><h2>Function UTL_Atox()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    u_int32 UTL_Atox(char *str)
+</pre><h3>Description</h3>
+<pre>    Ascii (hex-format) to integer conversion
+
+</pre><h3>Input</h3>
+<pre>    str        string with hex value
+</pre><h3>Output</h3>
+<pre>    return     hex value as u_int32
+</pre><a name="intro1"><h1>Binary dump routine </h1></a>
+<pre>
+Required: -
+Switches: - 
+
+</pre>
+<a name="UTL_Bindump"><h2>Function UTL_Bindump()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    char *UTL_Bindump(u_int32 data, u_int32 bits, char *buf)
+</pre><h3>Description</h3>
+<pre>    Create binary dump string of long value
+
+    All nibbles are separated with blanks:
+    bits=8:   'xxxx xxxx'
+    bits=9: 'x xxxx xxxx'
+
+</pre><h3>Input</h3>
+<pre>    data       value to dump
+    bits       nr of bits (1..32)
+    buf        string buffer (size=40)
+</pre><h3>Output</h3>
+<pre>    return     ptr to string buffer
+</pre><a name="intro2"><h1>Print formatted hexdump </h1></a>
+<pre>
+Required: -
+Switches: -
+
+</pre>
+<a name="UTL_Memdump"><h2>Function UTL_Memdump()</h2></a>
+<a name="UTL_Memdump"><h2>Function UTL_Memdump()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    void UTL_Memdump(
+        char *info,
+        char *buf,
+        u_int32 n,
+        u_int32 fmt
+    )
+</pre><h3>Description</h3>
+<pre>    Print formatted hexdump
+
+    Trailing blanks in the description string define the
+    indention of all following debug lines.
+
+    Example:
+    (no description)
+</pre><h3>Description</h3>
+<pre>    Output for UTL_Memdump("WORD access", (char*)0x0000f000, 0x40, 2) is: 
+    Output for UTL_Memdump("WORD access", (char*)0x0000f000, 0x40, 2) is: 
+
+    WORD access (64 bytes):
+    WORD access (64 bytes):
+    0000f000+0000: 4afc 0001 0000 007c 0000 0009 0000 0074 J|.....|.......t
+    0000f000+0000: 4afc 0001 0000 007c 0000 0009 0000 0074 J|.....|.......t
+    0000f000+0010: 0777 0f00 8000 0006 0000 0000 0000 0000 .w..............
+    0000f000+0010: 0777 0f00 8000 0006 0000 0000 0000 0000 .w..............
+    0000f000+0020: 0000 0000 0000 0000 0000 0000 0000 3d72 ..............=r
+    0000f000+0020: 0000 0000 0000 0000 0000 0000 0000 3d72 ..............=r
+    0000f000+0030: 00ff ee00 5c04 0023 0064 0068 0070 0000 ..n.\..#.d.h.p..
+    0000f000+0030: 00ff ee00 5c04 0023 0064 0068 0070 0000 ..n.\..#.d.h.p..
+
+</pre><h3>Input</h3>
+<pre>    info    description string or NULL (first line)
+    Input......: info    description string or NULL (first line)
+    buf     memory start address
+    buf     memory start address
+    n       memory length [bytes]
+    n       memory length [bytes]
+    fmt     output format
+    fmt     output format
+            1 = byte aligned
+            1 = byte aligned
+            2 = word aligned
+            2 = word aligned
+            4 = long aligned
+            4 = long aligned
+            8 = 64-bit aligned
+            8 = 64-bit aligned
+</pre><h3>Output</h3>
+<pre>    -
+</pre><a name="intro3"><h1>Test command line options </h1></a>
+<pre>
+Required: -
+Switches: -
+
+</pre>
+<a name="UTL_Tstopt"><h2>Function UTL_Tstopt()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    char *UTL_Tstopt(
+        int argc,
+        char **argv,
+        char *option
+    )   
+</pre><h3>Description</h3>
+<pre>    Read command line options 
+
+    Use UTL_TSTOPT macro for reading options, e.g.:
+
+    a) Options without argument: Usage "-f", Argv "-f"
+       flag = (UTL_TSTOPT("f") ? 1 : 0);      
+
+    b) Options with argument: Usage "-o=&#60;arg&#62;", Argv "-o=34"
+       option = ((str = UTL_TSTOPT("o=")) ? atoi(str) : 0x56);    
+
+    UTL_TSTOPT returns the option string or NULL if not found
+
+</pre><h3>Input</h3>
+<pre>    argc       passed argc (from main)
+    argv       passed argv (from main)
+    option     option character to test, followed by
+               nothing : no argument
+                   '=' : argument required
+</pre><h3>Output</h3>
+<pre>    return     option string or NULL if option not found
+</pre>
+<a name="UTL_Illiopt"><h2>Function UTL_Illiopt()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    char *UTL_Illiopt(
+        int argc,
+        char **argv,
+        char *opts,
+        char *errstr
+    )
+</pre><h3>Description</h3>
+<pre>    Check command line options
+    Returns error message string if failed.
+
+    Use UTL_ILLIOPT macro for checking options, e.g.:
+
+       if ((errstr = UTL_ILLIOPT("o=f?", errbuf))) {
+          printf("*** %s\n", errstr);
+          return(1);
+       }
+
+    NOTE: Don't forget to add the help request '?' to the opts
+
+</pre><h3>Input</h3>
+<pre>    argc       passed argc (from main)
+    argv       passed argv (from main)
+    opts       set of option characters to test, followed by
+               nothing : no argument
+                   '=' : argument required
+    errstr     error string buffer (size=40)
+</pre><h3>Output</h3>
+<pre>    return     success (NULL) or error string
+</pre><a name="intro4"><h1>USR_UTL global edition history </h1></a>
+<pre>
+Required: -
+Switches: DBG        enable debugging
+
+</pre>
+<a name="UTL_Ident"><h2>Function UTL_Ident()</h2></a>
+
+<h3>Syntax</h3>
+<pre>    char* UTL_Ident( void )
+</pre><h3>Description</h3>
+<pre>    Return ident string of UTL module
+
+</pre><h3>Input</h3>
+<pre>    -
+</pre><h3>Output</h3>
+<pre>    return  pointer to ident string
+</pre></body>
+</html>

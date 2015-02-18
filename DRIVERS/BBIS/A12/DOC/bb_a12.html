@@ -1,0 +1,443 @@
+<html>
+<head>
+<title>A12 driver</title>
+<style type=text/css>
+    Body { background-color: #ffffff; }
+    A:link { color: #c50038; }
+    A:hover { color: #28669b; }
+    P, H1, H2, H3, H3, H5, LI {
+        color: #434343;
+        font-family: Arial, Helvetica, Univers;
+    }
+    P, LI { font-size: 9.000000pt; }
+</style>
+</head>
+<body>
+<h1>A12 driver</h1>
+<p>Wed Apr 11 11:01:09 MEST 2001</p>
+<h2>Overview of all Functions</h2>
+<a name="chapt0"><a href="#intro0"><h3>A12 board handler</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#A12_GetEntry">A12_GetEntry</a></P></TD><TD><P>Initialize drivers jump table. </P></TD></TR>
+<TR><TD><P><a href="#A12_Init">A12_Init</a></P></TD><TD><P>Allocate and return board handle. </P></TD></TR>
+<TR><TD><P><a href="#A12_BrdInit">A12_BrdInit</a></P></TD><TD><P>Board initialization. </P></TD></TR>
+<TR><TD><P><a href="#A12_BrdExit">A12_BrdExit</a></P></TD><TD><P>Board deinitialization. </P></TD></TR>
+<TR><TD><P><a href="#A12_Exit">A12_Exit</a></P></TD><TD><P>Cleanup memory. </P></TD></TR>
+<TR><TD><P><a href="#A12_BrdInfo">A12_BrdInfo</a></P></TD><TD><P>Get information about hardware and driver requirements. </P></TD></TR>
+<TR><TD><P><a href="#A12_CfgInfo">A12_CfgInfo</a></P></TD><TD><P>Get information about board configuration. </P></TD></TR>
+<TR><TD><P><a href="#A12_IrqEnable">A12_IrqEnable</a></P></TD><TD><P>Interrupt enable / disable. </P></TD></TR>
+<TR><TD><P><a href="#A12_IrqSrvInit">A12_IrqSrvInit</a></P></TD><TD><P>Called at the beginning of an interrupt. </P></TD></TR>
+<TR><TD><P><a href="#A12_IrqSrvExit">A12_IrqSrvExit</a></P></TD><TD><P>Called at the end of an interrupt. </P></TD></TR>
+<TR><TD><P><a href="#A12_ExpEnable">A12_ExpEnable</a></P></TD><TD><P>Exception interrupt enable / disable. </P></TD></TR>
+<TR><TD><P><a href="#A12_ExpSrv">A12_ExpSrv</a></P></TD><TD><P>Called at the beginning of an exception interrupt. </P></TD></TR>
+<TR><TD><P><a href="#A12_SetMIface">A12_SetMIface</a></P></TD><TD><P>Set device interface. </P></TD></TR>
+<TR><TD><P><a href="#A12_ClrMIface">A12_ClrMIface</a></P></TD><TD><P>Clear device interface. </P></TD></TR>
+<TR><TD><P><a href="#A12_GetMAddr">A12_GetMAddr</a></P></TD><TD><P>Get physical address description. </P></TD></TR>
+<TR><TD><P><a href="#A12_SetStat">A12_SetStat</a></P></TD><TD><P>Set driver status </P></TD></TR>
+<TR><TD><P><a href="#A12_GetStat">A12_GetStat</a></P></TD><TD><P>Get driver status </P></TD></TR>
+</TABLE>
+ 
+<a name="intro0"><h1>A12 board handler </h1></a>
+<pre>
+The A12 supports several onboard-devices:
+
+device  
+-----------------------------------------------------------
+0x0     M-Module 0 
+0x1     M-Module 1
+0x2     M-Module 2 
+0x1000  QSPI
+
+The onboard PC-MIP and PMC slots are handled by the 
+generic PCI BBIS
+
+Note: do not compile this handler with MAC_BYTESWAP!
+
+Required: ---
+Switches: _ONE_NAMESPACE_PER_DRIVER_
+
+</pre>
+<a name="A12_GetEntry"><h2>Function A12_GetEntry()</h2></a>
+
+<h3>Syntax</h3>
+<pre>#ifdef _ONE_NAMESPACE_PER_DRIVER_
+    extern void BBIS_GetEntry( BBIS_ENTRY *bbisP )
+#else
+    extern void A12_GetEntry( BBIS_ENTRY *bbisP )
+#endif
+</pre><h3>Description</h3>
+<pre>Initialize drivers jump table.
+
+</pre><h3>Input</h3>
+<pre>bbisP     pointer to the not initialized structure
+</pre><h3>Output</h3>
+<pre>*bbisP    initialized structure
+</pre>
+<a name="A12_Init"><h2>Function A12_Init()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 A12_Init(
+    OSS_HANDLE      *osHdl,
+    DESC_SPEC       *descSpec,
+    BBIS_HANDLE     **hP )
+</pre><h3>Description</h3>
+<pre>Allocate and return board handle.
+
+- initializes the board handle
+- reads and saves board descriptor entries
+- check for M-module FPGA
+- Locate memory base 
+- Assign resources to board handler
+- Map used resources
+
+The following descriptor keys are used:
+
+Deskriptor key           Default          Range
+-----------------------  ---------------  -------------
+DEBUG_LEVEL_DESC         OSS_DBG_DEFAULT  see dbg.h
+DEBUG_LEVEL              OSS_DBG_DEFAULT  see dbg.h
+</pre><h3>Input</h3>
+<pre>osHdl     pointer to os specific structure             
+descSpec  pointer to os specific descriptor specifier  
+hP   pointer to not initialized board handle structure            
+</pre><h3>Output</h3>
+<pre>*hP  initialized board handle structure  
+return    0 | error code
+</pre>
+<a name="A12_BrdInit"><h2>Function A12_BrdInit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 A12_BrdInit(
+    BBIS_HANDLE     *h )
+</pre><h3>Description</h3>
+<pre>Board initialization.
+- init all control regs to a safe state
+</pre><h3>Input</h3>
+<pre>h         pointer to board handle structure    
+</pre><h3>Output</h3>
+<pre>return    0 | error code
+</pre>
+<a name="A12_BrdExit"><h2>Function A12_BrdExit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 A12_BrdExit(
+    BBIS_HANDLE     *h )
+</pre><h3>Description</h3>
+<pre>Board deinitialization.
+
+- init all control regs to a safe state
+
+</pre><h3>Input</h3>
+<pre>h    pointer to board handle structure   
+</pre><h3>Output</h3>
+<pre>return    0 | error code
+</pre>
+<a name="A12_Exit"><h2>Function A12_Exit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 A12_Exit(
+    BBIS_HANDLE     **hP )
+</pre><h3>Description</h3>
+<pre>Cleanup memory.
+
+- deinitializes the bbis handle
+
+</pre><h3>Input</h3>
+<pre>hP   pointer to board handle structure
+</pre><h3>Output</h3>
+<pre>*hP  NULL
+return    0 | error code
+</pre>
+<a name="A12_BrdInfo"><h2>Function A12_BrdInfo()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 A12_BrdInfo(
+    u_int32 code,
+    ... )
+</pre><h3>Description</h3>
+<pre>Get information about hardware and driver requirements.
+
+Following info codes are supported:
+
+Code                      Description
+------------------------  -----------------------------
+BBIS_BRDINFO_BUSTYPE      board bustype
+BBIS_BRDINFO_DEVBUSTYPE   device bustype
+BBIS_BRDINFO_FUNCTION     used optional functions
+BBIS_BRDINFO_NUM_SLOTS    number of slots
+BBIS_BRDINFO_INTERRUPTS   interrupt characteristics
+BBIS_BRDINFO_ADDRSPACE    address characteristic
+
+The BBIS_BRDINFO_BUSTYPE code returns the bustype of
+the specified device - not the board bus type.
+
+The BBIS_BRDINFO_FUNCTION code returns the information
+if an optional BBIS function is supported or not.
+
+The BBIS_BRDINFO_NUM_SLOTS code returns the number of
+devices used from the driver.
+
+The BBIS_BRDINFO_INTERRUPTS code returns the supported
+interrupt capability (BBIS_IRQ_DEVIRQ/BBIS_IRQ_EXPIRQ)
+of the specified device.
+
+The BBIS_BRDINFO_ADDRSPACE code returns the address
+characteristic (OSS_ADDRSPACE_MEM/OSS_ADDRSPACE_IO)
+of the specified device.
+
+</pre><h3>Input</h3>
+<pre>code      reference to the information we need    
+...       variable arguments                      
+</pre><h3>Output</h3>
+<pre>*...      variable arguments
+return    0 | error code
+</pre>
+<a name="A12_CfgInfo"><h2>Function A12_CfgInfo()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 A12_CfgInfo(
+    BBIS_HANDLE     *h,
+    u_int32         code,
+    ... )
+</pre><h3>Description</h3>
+<pre>Get information about board configuration.
+
+Following info codes are supported:
+
+Code                      Description
+------------------------  ------------------------------
+BBIS_CFGINFO_BUSNBR       bus number
+BBIS_CFGINFO_PCI_DEVNBR   PCI device number   
+BBIS_CFGINFO_IRQ          interrupt parameters
+BBIS_CFGINFO_EXP          exception interrupt parameters
+
+The BBIS_CFGINFO_BUSNBR code returns the number of the
+bus on which the specified device resides
+
+The BBIS_CFGINFO_PCI_DEVNBR code returns the device number 
+on the PCI bus on which the specified device resides
+
+The BBIS_CFGINFO_IRQ code returns the device interrupt
+vector, level and mode of the specified device.
+
+The BBIS_CFGINFO_EXP code returns the exception interrupt
+vector, level and mode of the specified device.
+
+</pre><h3>Input</h3>
+<pre>h    pointer to board handle structure       
+code      reference to the information we need    
+...       variable arguments                      
+</pre><h3>Output</h3>
+<pre>.....:  ...       variable arguments
+        return    0 | error code
+</pre>
+<a name="A12_IrqEnable"><h2>Function A12_IrqEnable()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 A12_IrqEnable(
+    BBIS_HANDLE     *h,
+    u_int32         mSlot,
+    u_int32         enable )
+</pre><h3>Description</h3>
+<pre>Interrupt enable / disable.
+
+For QSPI, nothing is done. QSPI has seperate IRQ9
+
+</pre><h3>Input</h3>
+<pre>h    pointer to board handle structure   
+mSlot     module slot number                  
+enable    interrupt setting                   
+</pre><h3>Output</h3>
+<pre>return    0
+</pre>
+<a name="A12_IrqSrvInit"><h2>Function A12_IrqSrvInit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 A12_IrqSrvInit(
+    BBIS_HANDLE     *h,
+    u_int32         mSlot)
+</pre><h3>Description</h3>
+<pre>Called at the beginning of an interrupt.
+
+checks if the slot caused the interrupt
+
+</pre><h3>Input</h3>
+<pre>h    pointer to board handle structure   
+mSlot     module slot number                  
+</pre><h3>Output</h3>
+<pre>return    BBIS_IRQ_NO
+</pre>
+<a name="A12_IrqSrvExit"><h2>Function A12_IrqSrvExit()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static void A12_IrqSrvExit(
+    BBIS_HANDLE     *h,
+    u_int32         mSlot )
+</pre><h3>Description</h3>
+<pre>Called at the end of an interrupt.
+
+Do nothing
+
+</pre><h3>Input</h3>
+<pre>h    pointer to board handle structure   
+mSlot     module slot number                  
+</pre><h3>Output</h3>
+<pre>---
+</pre>
+<a name="A12_ExpEnable"><h2>Function A12_ExpEnable()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 A12_ExpEnable(
+    BBIS_HANDLE     *h,
+    u_int32         mSlot,
+    u_int32         enable)
+</pre><h3>Description</h3>
+<pre>Exception interrupt enable / disable.
+
+Do nothing
+
+</pre><h3>Input</h3>
+<pre>h    pointer to board handle structure   
+mSlot     module slot number                  
+enable    interrupt setting                   
+</pre><h3>Output</h3>
+<pre>return    0
+</pre>
+<a name="A12_ExpSrv"><h2>Function A12_ExpSrv()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 A12_ExpSrv(
+    BBIS_HANDLE     *h,
+    u_int32         mSlot )
+</pre><h3>Description</h3>
+<pre>Called at the beginning of an exception interrupt.
+
+Do nothing
+
+</pre><h3>Input</h3>
+<pre>h    pointer to board handle structure   
+mSlot     module slot number                  
+</pre><h3>Output</h3>
+<pre>return    BBIS_IRQ_NO
+</pre>
+<a name="A12_SetMIface"><h2>Function A12_SetMIface()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 A12_SetMIface(
+    BBIS_HANDLE     *h,
+    u_int32         mSlot,
+    u_int32         addrMode,
+    u_int32         dataMode)
+</pre><h3>Description</h3>
+<pre>Set device interface.
+
+Do nothing
+
+</pre><h3>Input</h3>
+<pre>h    pointer to board handle structure   
+mSlot     module slot number                  
+addrMode  MDIS_MODE_A08 | MDIS_MODE_A24       
+dataMode  MDIS_MODE_D16 | MDIS_MODE_D32       
+</pre><h3>Output</h3>
+<pre>return    0
+</pre>
+<a name="A12_ClrMIface"><h2>Function A12_ClrMIface()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 A12_ClrMIface(
+    BBIS_HANDLE     *h,
+    u_int32         mSlot)
+</pre><h3>Description</h3>
+<pre>Clear device interface.
+
+Do nothing
+
+</pre><h3>Input</h3>
+<pre>h    pointer to board handle structure   
+mSlot     module slot number                  
+</pre><h3>Output</h3>
+<pre>return    0
+</pre>
+<a name="A12_GetMAddr"><h2>Function A12_GetMAddr()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 A12_GetMAddr(
+    BBIS_HANDLE     *h,
+    u_int32         mSlot,
+    u_int32         addrMode,
+    u_int32         dataMode,
+    void            **mAddr,
+    u_int32         *mSize )
+</pre><h3>Description</h3>
+<pre>Get physical address description.
+
+- check device number
+- assign address spaces
+
+</pre><h3>Input</h3>
+<pre>h    pointer to board handle structure   
+mSlot     module slot number                  
+addrMode  MDIS_MA08 | MDIS_MA24    
+dataMode  MDIS_MD16 | MDIS_MD32      
+mAddr     pointer to address space            
+mSize     size of address space               
+</pre><h3>Output</h3>
+<pre>return    0 | error code
+</pre>
+<a name="A12_SetStat"><h2>Function A12_SetStat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 A12_SetStat(
+    BBIS_HANDLE     *h,
+    u_int32         mSlot,
+    int32           code,
+    int32           value )
+</pre><h3>Description</h3>
+<pre>Set driver status
+
+Following status codes are supported:
+
+Code                 Description                Values
+-------------------  -------------------------  ----------
+M_BB_DEBUG_LEVEL     board debug level          see dbg.h
+
+</pre><h3>Input</h3>
+<pre>h    pointer to board handle structure           
+mSlot     module slot number                          
+code      setstat code                                
+value     setstat value or ptr to blocksetstat data   
+</pre><h3>Output</h3>
+<pre>return    0 | error code
+</pre>
+<a name="A12_GetStat"><h2>Function A12_GetStat()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 A12_GetStat(
+    BBIS_HANDLE     *h,
+    u_int32         mSlot,
+    int32           code,
+    int32           *valueP )
+</pre><h3>Description</h3>
+<pre>Get driver status
+
+Following status codes are supported:
+
+Code                 Description                Values
+-------------------  -------------------------  ----------
+M_BB_DEBUG_LEVEL     driver debug level         see dbg.h
+M_BB_IRQ_VECT        interrupt vector           0..max
+M_BB_IRQ_LEVEL       interrupt level            0..max
+M_BB_IRQ_PRIORITY    interrupt priority         0
+M_MK_BLK_REV_ID      ident function table ptr   -
+
+</pre><h3>Input</h3>
+<pre>h    pointer to board handle structure           
+mSlot     module slot number                          
+code      getstat code                                
+</pre><h3>Output</h3>
+<pre>valueP    getstat value or ptr to blockgetstat data
+return    0 | error code
+</pre></body>
+</html>

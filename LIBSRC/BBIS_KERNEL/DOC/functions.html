@@ -1,0 +1,156 @@
+<html>
+<head>
+<title>BBIS_KERNEL library</title>
+<style type=text/css>
+    Body { background-color: #ffffff; }
+    A:link { color: #c50038; }
+    A:hover { color: #28669b; }
+    P, H1, H2, H3, H3, H5, LI {
+        color: #434343;
+        font-family: Arial, Helvetica, Univers;
+    }
+    P, LI { font-size: 9.000000pt; }
+</style>
+</head>
+<body>
+<h1>BBIS_KERNEL library</h1>
+<p>Wed Jun  9 09:04:43 CEST 2004</p>
+<h2>Overview of all Functions</h2>
+<a name="chapt0"><a href="#intro0"><h3>Main file for BBIS kernel module</h3></a>
+<TABLE border=1>
+<TR><TD><P><B>Function</B></P></TD><TD><P><B>Description</B></P></TD></TR>
+
+<TR><TD><P><a href="#bbis_ident">bbis_ident</a></P></TD><TD><P>Return ident string </P></TD></TR>
+<TR><TD><P><a href="#bbis_open">bbis_open</a></P></TD><TD><P>Open a BBIS device </P></TD></TR>
+<TR><TD><P><a href="#OpenDevice">OpenDevice</a></P></TD><TD><P>Do the first open on the BBIS device </P></TD></TR>
+<TR><TD><P><a href="#bbis_close">bbis_close</a></P></TD><TD><P>Close a BBIS device </P></TD></TR>
+<TR><TD><P><a href="#FindDrvByName">FindDrvByName</a></P></TD><TD><P>Search for a driver in BBIS driver list </P></TD></TR>
+<TR><TD><P><a href="#bbis_register_bb_driver">bbis_register_bb_driver</a></P></TD><TD><P>Register an BBIS Driver in the BBIS kernel </P></TD></TR>
+<TR><TD><P><a href="#bbis_unregister_bb_driver">bbis_unregister_bb_driver</a></P></TD><TD><P>Un-registers an BBIS Low Level Driver in the BBIS kernel </P></TD></TR>
+<TR><TD><P><a href="#bk_read_procmem">bk_read_procmem</a></P></TD><TD><P>Function to fill in data when /proc/bbis file is read </P></TD></TR>
+</TABLE>
+ 
+<a name="intro0"><h1>Main file for BBIS kernel module </h1></a>
+<pre>Contains the Linux filesystem's entry points
+Required: -
+Switches: DBG
+
+</pre>
+<a name="bbis_ident"><h2>Function bbis_ident()</h2></a>
+
+<h3>Syntax</h3>
+<pre>char* bbis_ident( void )
+</pre><h3>Description</h3>
+<pre>Return ident string 
+
+</pre><h3>Input</h3>
+<pre>-
+</pre><h3>Output</h3>
+<pre>return  pointer to ident string
+</pre>
+<a name="bbis_open"><h2>Function bbis_open()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int bbis_open(
+    char *devName,
+    DESC_SPEC *bbDesc,
+    BBIS_HANDLE **bbHdlP,
+    BBIS_ENTRY *bbEntries)
+</pre><h3>Description</h3>
+<pre>Open a BBIS device
+
+Checks if device is already initialized. If not, creates an instance
+of the BB driver and initializes the board
+</pre><h3>Input</h3>
+<pre>devName       device name of board (e.g. D201_1)
+bbDesc        board descriptor data       
+</pre><h3>Output</h3>
+<pre>returns       0=ok, or negative error number
+*bbHdlP       base board handle
+bbEntries     filled with base board entries
+</pre>
+<a name="OpenDevice"><h2>Function OpenDevice()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int32 OpenDevice( DESC_SPEC *bbDesc, BK_DEV *node )
+</pre><h3>Description</h3>
+<pre>Do the first open on the BBIS device
+
+</pre><h3>Input</h3>
+<pre>bbDesc        board descriptor data      
+node          device node
+</pre><h3>Output</h3>
+<pre>returns       0=ok, or (pos.) error number
+node-&#62;bb      device handle
+node-&#62;drv     ptr to driver structure
+</pre>
+<a name="bbis_close"><h2>Function bbis_close()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int bbis_close(char *devName)
+</pre><h3>Description</h3>
+<pre>Close a BBIS device
+
+The last close deinitializes the base board
+</pre><h3>Input</h3>
+<pre>devName       device name of board (e.g. D201_1)
+</pre><h3>Output</h3>
+<pre>returns       0=ok, or negative error number
+</pre>
+<a name="FindDrvByName"><h2>Function FindDrvByName()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static BK_DRV *FindDrvByName( char *name )
+</pre><h3>Description</h3>
+<pre>Search for a driver in BBIS driver list
+</pre><h3>Input</h3>
+<pre>name          name to look for
+</pre><h3>Output</h3>
+<pre>returns       ptr to driver struct or NULL if not found
+</pre>
+<a name="bbis_register_bb_driver"><h2>Function bbis_register_bb_driver()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int bbis_register_bb_driver( 
+    char *bbName, 
+    void (*getEntry)(BBIS_ENTRY *),
+    struct module *module)
+</pre><h3>Description</h3>
+<pre>Register an BBIS Driver in the BBIS kernel
+</pre><h3>Input</h3>
+<pre>bbName        name of low level driver e.g. "men_bb_d201"
+getEntry      ptr to GetEntry function of BB driver
+module        calling module structure
+</pre><h3>Output</h3>
+<pre>returns       0=ok, or negative error number
+</pre>
+<a name="bbis_unregister_bb_driver"><h2>Function bbis_unregister_bb_driver()</h2></a>
+
+<h3>Syntax</h3>
+<pre>int bbis_unregister_bb_driver( char *bbName )
+</pre><h3>Description</h3>
+<pre>Un-registers an BBIS Low Level Driver in the BBIS kernel
+</pre><h3>Input</h3>
+<pre>bbName        name of low level driver e.g. "men_bb_d201"
+</pre><h3>Output</h3>
+<pre>returns       0=ok, or negative error number
+</pre>
+<a name="bk_read_procmem"><h2>Function bk_read_procmem()</h2></a>
+
+<h3>Syntax</h3>
+<pre>static int bk_read_procmem( char *page, char **start, off_t off,
+                            int count, int *eof, void *data)
+</pre><h3>Description</h3>
+<pre>Function to fill in data when /proc/bbis file is read
+
+</pre><h3>Input</h3>
+<pre>proc          page start
+offset        offset within file
+count         max bytes to read
+data          ?
+</pre><h3>Output</h3>
+<pre>returns       0=ok, or negative error number
+*start        ptr to first valid char in page
+*eof          true if all characters output
+</pre></body>
+</html>

@@ -1,0 +1,282 @@
+/*********************  P r o g r a m  -  M o d u l e ***********************/
+/*!
+ *        \file  oss_alarm.c
+ *
+ *      \author  klaus.popp@men.de
+ *        $Date: 2005/07/07 17:16:58 $
+ *    $Revision: 1.6 $
+ *
+ *	   \project  MDIS4Linux
+ *  	 \brief  Alarm routines
+ *
+ */
+/*-------------------------------[ History ]---------------------------------
+ *
+ * $Log: oss_alarm.c,v $
+ * Revision 1.6  2005/07/07 17:16:58  cs
+ * Copyright line changed
+ *
+ * Revision 1.5  2004/06/09 09:24:50  kp
+ * for OSS_AlarmMask/Restore, call directly OSS_IrqMaskR/Restore due to
+ * nesting problems with spinlocks on SMP systems
+ *
+ * Revision 1.4  2003/06/06 09:19:57  kp
+ * added OSS_AlarmMask etc.
+ *
+ * Revision 1.3  2003/04/11 16:13:11  kp
+ * Comments changed for Doxygen
+ *
+ * Revision 1.2  2003/02/21 11:25:05  kp
+ * added RTAI dispatching functions
+ *
+ * Revision 1.1  2001/01/19 14:39:04  kp
+ * Initial Revision
+ *
+ *---------------------------------------------------------------------------
+ * (c) Copyright 2000-2005 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
+ ****************************************************************************/
+
+#define _OSS_ALARM_C
+#include "oss_intern.h"
+
+
+/*-----------------------------------------+
+|  TYPEDEFS                                |
++------------------------------------------*/
+
+static void AlarmTimeout( unsigned long data );
+
+/*! \page linossalarmusage
+
+  \section linossalarmusagesect Linux notes to OSS alarms
+
+  Under linux, the alarms are implemented using kernel timers.
+  The granularity of alarm cycles is limited to the tick rate of Linux,
+  typically 10ms.
+
+  Alarm routines are called at interrupt level.
+
+  See \ref ossalarmusagesect for more info.
+*/
+
+/**********************************************************************/
+/** Create an alarm.
+ *
+ * \copydoc oss_specification.c::OSS_AlarmCreate()
+ *
+ * See \ref linossalarmusagesect for more info.
+ *
+ *
+ * \sa OSS_AlarmRemove, OSS_AlarmSet, OSS_AlarmClear
+ */
+int32 OSS_AlarmCreate(
+    OSS_HANDLE       *oss,
+    void             (*funct)(void *arg),
+	void             *arg,
+    OSS_ALARM_HANDLE **alarmP)
+{
+    DBGWRT_1((DBH,"OSS - OSS_AlarmCreate func=0x%p arg=0x%lx\n", funct, arg));
+
+	/*----------------------+
+    |  alloc/init handle    |
+    +----------------------*/
+    if ((*alarmP = kmalloc( sizeof(OSS_ALARM_HANDLE), GFP_KERNEL )) == NULL )
+       return(ERR_OSS_MEM_ALLOC);
+
+	(*alarmP)->funct    = funct;
+	(*alarmP)->arg		= arg;
+	(*alarmP)->tmr.data = (unsigned long)*alarmP;
+	(*alarmP)->active   = 0;
+	(*alarmP)->cyclic   = 0;	/* set later */
+	(*alarmP)->interval = 0;	/* set later */
+	(*alarmP)->oss		= oss;
+
+	return(ERR_SUCCESS);
+}
+
+/**********************************************************************/
+/** Destroys alarm handle.
+ *
+ * \copydoc oss_specification.c::OSS_AlarmRemove()
+ *
+ * See \ref linossalarmusagesect for more info.
+ *
+ *
+ * \sa OSS_AlarmCreate, OSS_AlarmSet, OSS_AlarmClear
+ */
+int32 OSS_AlarmRemove(
+    OSS_HANDLE       *oss,
+    OSS_ALARM_HANDLE **alarmP
+)
+{
+	int32 error;
+
+    DBGWRT_1((DBH,"OSS - OSS_AlarmRemove alm=%p\n", *alarmP));
+
+	/* de-activate alarm if activated */
+	if ((*alarmP)->active && (error = OSS_AlarmClear(oss, *alarmP)))
+		return(error);
+
+	kfree( *alarmP );
+	*alarmP = NULL;
+	return ERR_SUCCESS;
+}
+
+/**********************************************************************/
+/** Activate an installed alarm routine
+ *
+ * \copydoc oss_specification.c::OSS_AlarmSet()
+ *
+ * See \ref linossalarmusagesect for more info.
+ *
+ * \sa OSS_AlarmCreate, OSS_AlarmRemove, OSS_AlarmClear
+ */
+int32 OSS_AlarmSet(
+    OSS_HANDLE       *oss,
+    OSS_ALARM_HANDLE *alarm,
+    u_int32          msec,
+    u_int32          cyclic,
+    u_int32          *realMsecP
+)
+{
+	OSS_ALARM_STATE flags;
+	u_int32 ticks;
+
+    DBGWRT_1((DBH,"OSS - OSS_AlarmSet: %s, msec=%d\n",
+			  cyclic ? "cyclic":"single", msec));
+
+	/* return error if already active */
+	flags = OSS_AlarmMask( oss );
+
+	if (alarm->active) {
+		DBGWRT_ERR((DBH," *** OSS_AlarmSet: alarm already active\n"));
+		OSS_AlarmRestore( oss, flags );
+		return(ERR_OSS_ALARM_SET);
+	}
+
+	/*--- round time, and correct for timer inaccuracy ---*/
+	ticks = (msec * HZ) / 1000;
+	ticks++;
+
+	if( (msec * HZ) % 1000 )
+		ticks++;
+
+	alarm->interval = ticks;
+
+	/* calc rounded msec */
+	*realMsecP = (ticks * 1000) / HZ;
+
+	init_timer( &alarm->tmr );
+	alarm->tmr.function = AlarmTimeout;
+	alarm->tmr.expires 	= jiffies + ticks;
+	alarm->cyclic 		= cyclic;
+	alarm->active 		= TRUE;
+
+	/* activate timer */
+	add_timer( &alarm->tmr );
+	OSS_AlarmRestore( oss, flags );
+
+	return(ERR_SUCCESS);
+}
+
+/**********************************************************************/
+/** Deactivate an installed alarm routine
+ *
+ * \copydoc oss_specification.c::OSS_AlarmClear()
+ *
+ * See \ref linossalarmusagesect for more info.
+ *
+ * \sa OSS_AlarmCreate, OSS_AlarmRemove, OSS_AlarmSet
+ */
+int32 OSS_AlarmClear(
+    OSS_HANDLE       *oss,
+    OSS_ALARM_HANDLE *alarm
+)
+{
+	OSS_ALARM_STATE flags;
+
+
+    DBGWRT_1((DBH,"OSS - OSS_AlarmClear\n"));
+
+	flags = OSS_AlarmMask( oss );
+
+	if (!alarm->active) {
+		DBGWRT_ERR((DBH," *** OSS_AlarmClear: alarm not active"));
+		OSS_AlarmRestore( oss, flags );
+		return(ERR_OSS_ALARM_CLR);
+	}
+
+	del_timer(&alarm->tmr);
+
+	alarm->active = FALSE;
+
+	OSS_AlarmRestore( oss, flags );
+
+
+	return(ERR_SUCCESS);
+}
+
+/**********************************************************************/
+/** Mask alarms
+ *
+ * \copydoc oss_specification.c::OSS_AlarmMask()
+ *
+ * \linux Masks \b all processor interrupts
+ *
+ * \sa OSS_AlarmRestore()
+ */
+OSS_ALARM_STATE OSS_AlarmMask( OSS_HANDLE *oss )
+{
+	DBGWRT_1((DBH,"OSS_AlarmMask (Lin)\n"));
+	return OSS_IrqMaskR( oss, NULL );
+}
+
+/**********************************************************************/
+/** Unmask alarms
+ *
+ * \copydoc oss_specification.c::OSS_AlarmRestore()
+ *
+ * \sa OSS_AlarmMask()
+ */
+void OSS_AlarmRestore( OSS_HANDLE *oss, OSS_ALARM_STATE oldState )
+{
+	DBGWRT_1((DBH,"OSS_AlarmRestore (Lin)\n"));
+	OSS_IrqRestore( oss, NULL, oldState );
+}
+
+
+/******************************** AlarmTimeout *******************************
+ *
+ *  Description: Alarm handler routine
+ *
+ *---------------------------------------------------------------------------
+ *  Input......: data	    alarm handle
+ *  Output.....: -
+ *  Globals....: -
+ ****************************************************************************/
+static void AlarmTimeout( unsigned long data )
+{
+	OSS_ALARM_HANDLE *alarm = (OSS_ALARM_HANDLE *)data;
+	OSS_ALARM_STATE flags;
+
+	flags = OSS_AlarmMask( alarm->oss );
+	/*DBGWRT_3((DBH,">>> alarm handler\n"));*/
+
+	/* jump into installed function */
+	alarm->funct(alarm->arg);		
+
+	if (!alarm->cyclic)
+		/* mark single-alarm as inactive */
+		alarm->active = FALSE;
+	else {
+		/* reinstall alarm */
+		alarm->tmr.expires = jiffies + alarm->interval;
+		add_timer( &alarm->tmr );
+	}
+	OSS_AlarmRestore( alarm->oss, flags );
+}
+
+
+
+
+

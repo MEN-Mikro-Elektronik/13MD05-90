@@ -1,0 +1,1219 @@
+#
+# Test script to check VME4L functionality
+#
+# See also 13z014-90_VerificationSpec_x.doc
+#
+#
+package require tcltest 2.2
+
+eval tcltest::configure $argv
+
+source params.tcl
+
+
+set G_testRevision {$Revision: 1.6 $}
+
+set G_telId {}
+
+
+namespace eval ::vme4l::test {
+    global G_dut G_pldz002Rev
+
+    proc isPldZ002 {} {
+	global G_dut
+
+	return [expr [string compare $G_dut "A13"] == 0 \
+		    || [string compare $G_dut "A15"] == 0 \
+		    || [string compare $G_dut "A14"] == 0 ]
+    }
+
+
+    namespace import ::tcltest::*
+
+    testConstraint isLe [eval { expr [string compare $G_dut "A13"] == 0 }]
+
+    testConstraint isBe [eval { expr [string compare $G_dut "A12"] == 0 \
+ 				                  || [string compare $G_dut "A15"] == 0 \
+						          || [string compare $G_dut "A14"] == 0}]
+	
+
+    testConstraint pldz002 [isPldZ002]
+
+    # featuresets
+    testConstraint fs3 [ expr [isPldZ002] && $G_pldz002Rev >= 17 ]
+    testConstraint fs2 [ expr [isPldZ002] && $G_pldz002Rev < 17 ]
+
+     
+    #
+    # Login to Linux
+    # also sets global G_telId
+    #
+    proc login {} {
+	global G_linPrompt G_telId G_dutIp G_haveSsh G_sshPasswd
+
+	if { $G_haveSsh == 0 } {
+	    spawn telnet $G_dutIp
+	    set G_telId $spawn_id
+
+	    expect {
+		"login: " {} 
+		default { return "no login" }
+	    }
+	    exp_send "root\r"
+	    expect {
+		$G_linPrompt {} 
+		default { return "no shell" }
+	    }
+	} else {
+	    spawn ssh -l root $G_dutIp
+	    set G_telId $spawn_id
+
+	    expect {
+		"Password: " {} 
+		default { return "no ssh-passwd" }
+	    }
+	    exp_send "$G_sshPasswd\r"
+	    expect {
+		$G_linPrompt {} 
+		default { return "no shell" }
+	    }
+	
+	}
+    }
+
+
+    #
+    # Make sure that VME4L driver is loaded
+    # and a11 is setup
+    #
+    proc load-vme4l { } {
+	global G_dutIp G_linPrompt G_telId
+
+
+	if { $G_telId == {} } {
+	    if { [set rv [login]] != {} } { return $rv }
+	}
+
+	set spawn_id $G_telId
+
+	exp_send "grep pldz002 /proc/modules\r"
+	expect {
+	    $G_linPrompt {
+		if { [string match "*vme4l-*" $expect_out(buffer)] } {
+		    return 
+		}
+	    } 	    
+	    default { return "no shell prompt" }
+	}
+	
+	exp_send "modprobe men_pldz002\r"
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "no shell" }	
+	}
+    }    
+
+    #
+    # Make sure that M99 MDIS driver is loaded
+    #
+    proc load-mdis-m99 { } {
+	global G_dutIp G_linPrompt G_telId
+
+	if { [set rv [load-vme4l]] != {} } { return $rv }
+
+	set spawn_id $G_telId
+
+	exp_send "grep ll_m99 /proc/modules\r"
+	expect {
+	    $G_linPrompt {
+		if { [string match "*men_ll_m99*" $expect_out(buffer)] } {
+		    return 
+		}
+	    } 	    
+	    default { return "no shell prompt" }
+	}
+	
+	exp_send "modprobe men_ll_m99\r"
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "no shell" }	
+	}
+
+	exp_send "modprobe men_bb_a201\r"
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "no shell" }	
+	}
+    }    
+
+	
+	
+
+    proc load-n-setupa11 { } {
+	if { [set rv [setup-a11]] != {} } { return $rv }
+	if { [set rv [load-vme4l]] != {} } { return $rv }
+    }
+
+
+    #
+    # Print OS, test version 
+    #
+    test os-info {} -setup load-vme4l -body {
+	global G_telId G_linPrompt G_testRevision
+
+	puts "vme.test version $G_testRevision"
+
+	set spawn_id $G_telId
+
+	exp_send "uname -a\r"
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "no shell" }	
+	}
+	
+	exp_send "cat /proc/vme4l\r"
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "no shell" }	
+	}
+    }
+
+
+    #
+    # DMA speed tests against A11
+    # 
+    #
+    proc dma-test { cmd } {
+	global G_linPrompt G_telId
+
+	set spawn_id $G_telId
+	exp_send $cmd
+
+	expect {
+	    -re {([0-9\.]+) MB/s} {
+		set speed $expect_out(1,string)
+	    }
+	    default { return "0" }
+	}
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "0" }	
+	}
+	puts "SPEED is $speed"
+	return $speed
+    }
+    
+    test dma-r-speed {} -setup load-n-setupa11 -constraints pldz002 -body {
+	set speed [dma-test "vme4l_rwspeed 10 80000000 100000 8 10 r\r"]
+	
+	if { [expr $speed < 20.0] } {
+	    return "too slow $speed"
+	}
+    }
+
+    test dma-w-speed {} -setup load-n-setupa11 -constraints pldz002 -body {
+	set speed [dma-test "vme4l_rwspeed 10 80000000 100000 8 10 w\r"]
+	
+	if { [expr $speed < 20.0] } {
+	    return "too slow $speed"
+	}
+    }
+
+    # PIO functions over API 
+    # just informational (no speed check)
+    test pio-w-speed {} -setup load-n-setupa11 -body {
+	set speed [dma-test "vme4l_rwspeed 4 a00000 10000 2 10 w\r"]
+	puts "pio-w-speed: $speed"
+    }
+    test pio-r-speed {} -setup load-n-setupa11 -body {
+	set speed [dma-test "vme4l_rwspeed 4 a00000 10000 2 10 r\r"]
+	puts "pio-r-speed: $speed"
+    }
+
+    #
+    # Byte ordering tests
+    # 
+    #
+    proc endian-r-test { cmd expBytes {spc a32} } {
+	global G_linPrompt G_telId G_a11Dmod
+
+	if { $G_a11Dmod($spc) == -1 } { return "G_a11Dmod($spc) invalid" }
+
+	set rv [a11-fill-mem $G_a11Dmod($spc) { 88 99 aa bb cc dd ee ff } ]
+	if { $rv != {} } { return $rv }
+
+	set spawn_id $G_telId
+	exp_send "$cmd\r"
+
+	expect {
+	    -re {0000: (([0-9a-f][0-9a-f] )+)} {
+		set gotBytes $expect_out(1,string)
+		set gotBytes [lrange $gotBytes 0 [expr [llength $expBytes] -1]]
+	    }
+	    default { return "no $cmd response" }
+	}
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "no prompt" }	
+	}
+	
+	if { $gotBytes != $expBytes } {
+	    return "Expected <$expBytes> but got <$gotBytes>"
+	}
+    }
+	
+    proc endian-w-test { cmd expBytes {spc a32} } {
+	global G_linPrompt G_telId G_a11Dmod
+
+
+	set spawn_id $G_telId
+	exp_send "$cmd\r"
+
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "no prompt" }	
+	}
+
+	set gotBytes [a11-dump-mem $G_a11Dmod($spc) [llength $expBytes]]
+
+	
+	if { $gotBytes != $expBytes } {
+	    return "Expected <$expBytes> but got <$gotBytes>"
+	}
+    }
+	
+
+    ## endian read tests for little endian
+    test endian-le-api-read-pio8 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 8 80000000 10 1 r" \
+		    "99 88 bb aa dd cc ff ee"]
+    }
+
+    test endian-le-api-read-pio16 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 8 80000000 10 2 r" \
+		    "99 88 bb aa dd cc ff ee"]
+    }
+
+    test endian-le-api-read-pio32 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 8 80000000 10 4 r" \
+		    "bb aa 99 88 ff ee dd cc"]
+    }
+
+    test endian-le-api-read-dma-a24d16 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 5 a00000 10 2 r" \
+		    "99 88 bb aa dd cc ff ee" a24]
+    }
+
+    test endian-le-api-read-dma-a24d32 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 7 a00000 10 2 r" \
+		    "bb aa 99 88 ff ee dd cc" a24]
+    }
+
+    test endian-le-api-read-dma32 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 9 80000000 10 4 r" \
+		    "bb aa 99 88 ff ee dd cc"]
+    }
+
+    test endian-le-api-read-dma64 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 10 80000000 10 8 r" \
+		    "ff ee dd cc bb aa 99 88"]
+    }
+
+    test endian-le-hwsw-api-read-pio8 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 8 80000000 10 1 r 1" \
+		    "88 99 aa bb cc dd ee ff"]
+    }
+
+    test endian-le-hwsw-api-read-pio16 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 8 80000000 10 2 r 1" \
+		    "88 99 aa bb cc dd ee ff"]
+    }
+
+    test endian-le-hwsw-api-read-pio32 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 8 80000000 10 4 r 1" \
+		    "88 99 aa bb cc dd ee ff"]
+    }
+
+    test endian-le-hwsw-api-read-dma-a24d16 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 7 a00000 10 2 r 1" \
+		    "88 99 aa bb cc dd ee ff" a24]
+    }
+
+    test endian-le-hwsw-api-read-dma-a24d32 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 7 a00000 10 2 r 1" \
+		    "88 99 aa bb cc dd ee ff" a24]
+    }
+
+    test endian-le-hwsw-api-read-dma32 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 9 80000000 10 4 r 1" \
+		    "88 99 aa bb cc dd ee ff"]
+    }
+
+    test endian-le-hwsw-api-read-dma64 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 10 80000000 10 8 r 1" \
+		    "88 99 aa bb cc dd ee ff"]
+    }
+
+    test endian-le-swsw-api-read-pio8 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 8 80000000 10 1 r 2" \
+		    "88 99 aa bb cc dd ee ff"]
+    }
+
+
+    ## endian write tests
+    test endian-le-api-write-pio8 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-w-test "vme4l_rwex 8 80000000 10 1 w" \
+		    "01 00 03 02 05 04 07 06"]
+    }
+
+    test endian-le-api-write-pio16 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-w-test "vme4l_rwex 8 80000000 10 2 w" \
+		    "01 00 03 02 05 04 07 06"]
+    }
+
+    test endian-le-api-write-pio32 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-w-test "vme4l_rwex 8 80000000 10 4 w" \
+		    "03 02 01 00 07 06 05 04"]
+    }
+
+    test endian-le-api-write-dma32 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-w-test "vme4l_rwex 9 80000000 10 4 w" \
+		    "03 02 01 00 07 06 05 04"]
+    }
+
+    test endian-le-api-write-dma64 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-w-test "vme4l_rwex 10 80000000 10 8 w" \
+		    "07 06 05 04 03 02 01 00"]
+    }
+
+    test endian-le-hwsw-api-write-pio8 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-w-test "vme4l_rwex 8 80000000 10 1 w 1" \
+		    "00 01 02 03 04 05 06 07"]
+    }
+
+    test endian-le-hwsw-api-write-pio16 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-w-test "vme4l_rwex 8 80000000 10 2 w 1" \
+		    "00 01 02 03 04 05 06 07"]
+    }
+
+    test endian-le-hwsw-api-write-pio32 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-w-test "vme4l_rwex 8 80000000 10 4 w 1" \
+		    "00 01 02 03 04 05 06 07"]
+    }
+
+    test endian-le-hwsw-api-write-dma32 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-w-test "vme4l_rwex 9 80000000 10 4 w 1" \
+		    "00 01 02 03 04 05 06 07"]
+    }
+
+    test endian-le-hwsw-api-write-dma64 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-w-test "vme4l_rwex 10 80000000 10 8 w 1" \
+		    "00 01 02 03 04 05 06 07"]
+    }
+
+    test endian-le-swsw-api-write-pio8 {} -constraints isLe \
+	-setup load-n-setupa11 -body {
+	return [endian-w-test "vme4l_rwex 8 80000000 10 1 w 2" \
+		    "00 01 02 03 04 05 06 07"]
+    }
+
+
+    ## endian read tests for big endian
+    test endian-be-api-read-pio8 {} -constraints { isBe pldz002 }\
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 8 80000000 10 1 r" \
+		    "88 99 aa bb cc dd ee ff"]
+    }
+
+    test endian-be-api-read-pio16 {} -constraints { isBe pldz002 } \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 8 80000000 10 2 r" \
+		    "88 99 aa bb cc dd ee ff"]
+    }
+
+    test endian-be-api-read-pio32 {} -constraints { isBe pldz002 } \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 8 80000000 10 4 r" \
+		    "88 99 aa bb cc dd ee ff"]
+    }
+
+    test endian-be-api-read-dma-a24d16 {} -constraints { isBe pldz002 } \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 5 a00000 10 2 r" \
+		    "88 99 aa bb cc dd ee ff" a24]
+    }
+
+    test endian-be-api-read-dma-a24d32 {} -constraints { isBe pldz002 } \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 7 a00000 10 2 r" \
+		    "88 99 aa bb cc dd ee ff" a24]
+    }
+
+    test endian-be-api-read-dma32 {} -constraints { isBe pldz002 } \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 9 80000000 10 4 r" \
+		    "88 99 aa bb cc dd ee ff"]
+    }
+
+    test endian-be-api-read-dma64 {} -constraints { isBe pldz002 } \
+	-setup load-n-setupa11 -body {
+	return [endian-r-test "vme4l_rwex 10 80000000 10 8 r" \
+		    "88 99 aa bb cc dd ee ff"]
+    }
+
+    ## endian write tests big endian
+    test endian-be-api-write-pio8 {} -constraints { isBe pldz002 } \
+	-setup load-n-setupa11 -body {
+	return [endian-w-test "vme4l_rwex 8 80000000 10 1 w" \
+		    "00 01 02 03 04 05 06 07"]
+    }
+
+    test endian-be-api-write-pio16 {} -constraints { isBe pldz002 } \
+	-setup load-n-setupa11 -body {
+	return [endian-w-test "vme4l_rwex 8 80000000 10 2 w" \
+		    "00 01 02 03 04 05 06 07"]
+    }
+
+    test endian-be-api-write-pio32 {} -constraints { isBe pldz002 } \
+	-setup load-n-setupa11 -body {
+	return [endian-w-test "vme4l_rwex 8 80000000 10 4 w" \
+		    "00 01 02 03 04 05 06 07"]
+    }
+
+    test endian-be-api-write-dma32 {} -constraints { isBe pldz002 } \
+	-setup load-n-setupa11 -body {
+	return [endian-w-test "vme4l_rwex 9 80000000 10 4 w" \
+		    "00 01 02 03 04 05 06 07"]
+    }
+
+    test endian-be-api-write-dma64 {} -constraints { isBe pldz002 } \
+	-setup load-n-setupa11 -body {
+	return [endian-w-test "vme4l_rwex 10 80000000 10 8 w" \
+		    "00 01 02 03 04 05 06 07"]
+    }
+
+
+    #
+    # Memory tests
+    # 
+    #
+    proc mtest { cmd } {
+	global G_linPrompt G_telId
+
+	set spawn_id $G_telId
+	exp_send "$cmd -q=10\r"
+
+	set timeout 20
+
+	expect {
+	    -re {TOTAL TEST RESULT: ([0-9]+) errors} {
+		set errors $expect_out(1,string)
+	    }
+	    default { return "999" }
+	}
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "999" }	
+	}
+	puts "MTEST errors $errors"
+	return $errors
+    }
+
+
+
+    test mtest-map-a32 {} -setup load-n-setupa11 -constraints pldz002 \
+	-result 0 -body {
+	return [mtest "vme4l_mtest -f -t=Lbwl -n=2 -s=8 80000000 80100000"]
+    }
+
+    test mtest-map-a24 {} -setup load-n-setupa11 -result 0 -body {
+	return [mtest "vme4l_mtest -f -t=bwW -n=2 -s=4 a00000 a20000"]
+    }
+
+    test mtest-pio-a32 {} -setup load-n-setupa11 -constraints pldz002 \
+	-result 0 -body {
+	return [mtest "vme4l_mtest -f -t=Vv -n=2 -s=8 80000000 80100000"]
+    }
+
+    test mtest-dma-a24d16 {} -setup load-n-setupa11 -constraints pldz002 \
+	-result 0 -body {
+	return [mtest "vme4l_mtest -f -t=vV -n=2 -s=5 a00000 a20000"]
+    }
+
+    test mtest-dma-a24d32 {} -setup load-n-setupa11 -constraints pldz002 \
+	-result 0 -body {
+	return [mtest "vme4l_mtest -f -t=vV -n=2 -s=7 a00000 a20000"]
+    }
+
+    test mtest-dma-a32d32-nastart {} -setup load-n-setupa11 -constraints pldz002 \
+	-result 0 -body {
+	# odd start address    
+	return [mtest "vme4l_mtest -f -t=vV -n=2 -s=9 800000f0 80100000"]
+    }
+
+    test mtest-dma-a32d32 {} -setup load-n-setupa11 -constraints pldz002 \
+	-result 0 -body {
+	return [mtest "vme4l_mtest -f -t=vV -n=2 -s=9 80000000 80100000"]
+    }
+
+    test mtest-dma-a32d64 {} -setup load-n-setupa11 -constraints pldz002 \
+	-result 0 -body {
+	return [mtest "vme4l_mtest -f -t=vV -n=2 -s=10 80000000 80100000"]
+    }
+
+    # Concurrent DMA/Mmap test
+    test mtest-dma-pio {} -setup load-n-setupa11 -constraints pldz002 \
+	-result 0 -body {
+	global G_linPrompt G_telId
+
+	set spawn_id $G_telId
+	
+	# start MMAP test on A24/D16
+	exp_send "rm -f result; nice -n -10 vme4l_mtest -f -t=bwW -n=3 \
+                 -s=4 a00000 a20000 >result 2>&1 &\r"
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "997" }	
+	}
+
+	exp_send "vme4l_mtest -f -t=vV -n=5 -s=10 80000000 80100000 -q=10\r"
+	expect {
+	    -re {TOTAL TEST RESULT: ([0-9]+) errors} {
+		set errors $expect_out(1,string)
+	    }
+	    default { return "998" }
+	}
+
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "999" }	
+	}
+
+	    
+	exp_send "cat result\r"
+	
+	expect {
+	    -re {TOTAL TEST RESULT: ([0-9]+) errors} {
+		incr errors $expect_out(1,string)
+	    }
+	    default { return "999" }
+	}
+
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "999" }	
+	}
+	return $errors
+    }
+
+    #
+    # Interrupt tests
+    # 
+    # Requires A201@e00000 + M99 in first slot.
+    # A11 interrupt level 3 must be disabled!
+    #
+    test irq-user {} -setup load-vme4l -body {
+	global G_linPrompt G_telId
+
+	set spawn_id $G_telId
+	
+	exp_send "vme4l_m99irq e00000 65 3 2500\r"
+	after 5000
+	exp_send [format %c 3] ;# ^C
+
+	expect {
+	    -re {RESULT: Min: ([0-9]+), Max: ([0-9]+) us, ints: ([0-9]+)} {
+		set max $expect_out(2,string)
+		set count $expect_out(3,string)
+	    }
+	    default { return "no response" }
+	}
+
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "no shell" }	
+	}
+
+	if { [expr $count < 400] } {
+	    return "too few interrupts $count"
+	}
+    }
+
+    #
+    # Bus error handling 
+    # 
+    #
+
+    # no bus error expected
+    test berr-mmap-no {} -setup load-vme4l -body {
+	set spawn_id $G_telId
+
+	exp_send "vme4l_mmap 4 10000 10 r\r"
+	
+	expect { 
+	    {0000:} {} 
+	    default { return "no dump" }	
+	}
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "no shell" }	
+	}
+	
+    }
+
+    # bus error to mmap
+    test berr-mmap {} -setup load-vme4l -body {
+	set spawn_id $G_telId
+
+	exp_send "vme4l_mtest -s=4 10000 10004 -t=l\r"
+	
+	expect { 
+	    {ERROR: BERR} {} 
+	    default { return "no bus error" }	
+	}
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "no shell" }	
+	}
+	
+    }
+
+    # bus error to pio
+    test berr-pio {} -setup load-vme4l -body {
+	set spawn_id $G_telId
+
+	exp_send "vme4l_mtest -s=4 10000 10004 -t=V -a=2\r"
+	
+	expect { 
+	    {Input/output error} {} 
+	    default { return "no bus error" }	
+	}
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "no shell" }	
+	}
+	
+    }
+
+    # bus error to DMA 
+    test berr-dma {} -setup load-vme4l -constraints pldz002 -body {
+	set spawn_id $G_telId
+
+	exp_send "vme4l_mtest -s=10 60000000 60000004 -t=V\r"
+	
+	expect { 
+	    {Input/output error} {} 
+	    default { return "no bus error" }	
+	}
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "no shell" }	
+	}
+	
+    }
+
+    # bus error to DMA
+    # use 8 byte transfers. PLD Z002 rev 18 doesn't report BERR on 4 bytes
+    test berr-dma-8 {} -setup load-vme4l -constraints pldz002 -body {
+	set spawn_id $G_telId
+
+	exp_send "vme4l_mtest -s=10 60000000 60000008 -t=V\r"
+	
+	expect { 
+	    {Input/output error} {} 
+	    default { return "no bus error" }	
+	}
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "no shell" }	
+	}
+	
+    }
+
+    #
+    # IRQ generation 
+    # Level 1 must be enabled on A11
+    #
+    test irq-gen {} -setup load-vme4l -body {
+	global G_a11Prompt G_a11Ip
+
+	set ok 0
+
+	spawn telnet $G_a11Ip
+	set a11spid $spawn_id
+
+	set rv [a11-tsmon-login]
+	if { $rv != "" } { return $rv }
+
+	# start receive irqs on A11
+	exp_send "vme_rcvirq -v=80 -n=100\r"
+	expect { 
+	    {Irqs received:} {} 
+	    default { return "no A11 vme_rcvirq response" }	
+	}
+
+	set spawn_id $G_telId
+
+	exp_send "vme4l_irqgen 1 128 100\r"
+	expect {
+	    {IRQS SENT OK} {
+		set ok 1
+	    }
+	    default { return "bad/no response from vme4l_irqgen" }
+	}
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "no shell" }	
+	}
+
+	# check A11
+	set spawn_id $a11spid 
+	expect { 
+	    $G_a11Prompt {} 
+	    default { return "no A11 prompt" }	
+	}
+	
+
+    }
+
+
+    #
+    # MDIS M99 tests
+    # 
+    # Requires A201@e00000 + M99 in second slot.
+    # A11 interrupt level 3 must be disabled!
+    #
+    test mdis-m99 {} -setup load-mdis-m99 -body {
+	global G_linPrompt G_telId
+
+	set spawn_id $G_telId
+	
+	exp_send "m99_latency /m99_1\r"
+	after 5000
+	exp_send [format %c 3] ;# ^C
+
+
+	expect {
+	    -re {IRQ=min=.*\([ \t]*([0-9]+)\)} {
+		set count $expect_out(1,string)
+	    }
+	    default { return "no response" }
+	}
+    # additional CR to flush a shell Prompt
+	exp_send " \r"
+	expect { 
+	    $G_linPrompt {} 
+	    default { return "no shell" }	
+	}
+
+	if { [expr $count < 990] } {
+	    return "too few interrupts $count"
+	}
+    }
+
+    #----------------------------------------------------------------------
+    # Slave window tests
+    #
+
+    proc slvwin-expect { cmd expectedErrMsg } {
+	global G_linPrompt G_telId
+	set spawn_id $G_telId
+	set rv {}
+
+	exp_send "$cmd\r"
+	expect { 
+	    $expectedErrMsg {}
+	    default { set rv "Error message $expectedErrMsg not occurred" }
+	}
+	expect $G_linPrompt
+	return $rv
+    }
+    
+    test slvwin-ill-space {} -setup load-vme4l -body {
+	return [slvwin-expect "vme4l_slvwin 16 400000 100000" \
+		    "Inappropriate ioctl for device"]
+    }
+
+    test slvwin-master-space {} -setup load-vme4l -body {
+	return [slvwin-expect "vme4l_slvwin 4 400000 100000" \
+		    "Inappropriate ioctl for device"]
+    }
+
+    test slvwin-ill-align {} -setup load-vme4l -body {
+	return [slvwin-expect "vme4l_slvwin 12 401000 100000" \
+		    "Invalid argument"]
+    }
+
+    test slvwin-addr2big {} -setup load-vme4l -body {
+	return [slvwin-expect "vme4l_slvwin 12 1000000 100000" \
+		    "Invalid argument"]
+    }
+
+    test slvwin-size2small {} -setup load-vme4l -body {
+	return [slvwin-expect "vme4l_slvwin 12 400000 8000" \
+		    "Invalid argument"]
+    }
+
+    test slvwin-initialdisable {} -setup load-vme4l -body {
+	return [slvwin-expect "vme4l_slvwin 12 0 0" "Open"]
+    }
+
+    # Setup address window, A11 fills window 
+    # test if data  written to slave window
+    proc slvwin-datatest { spc vmeAddr size mtestSize } {
+	global G_dut
+
+	set rv [slvwin-expect "vme4l_slvwin $spc $vmeAddr $size" "Open"]
+	if { $rv != "" } { return $rv }
+	    
+	if { $size != 0 } {
+	    # fill window from local CPU with scratch data
+	    set rv [mtest "vme4l_mtest -f -t=L -s=$spc 0 $mtestSize"]
+	    if { $rv != 0 } { return "local mtest failed $rv" }
+
+	    # fill window from A11
+	    set rv [a11-vme-fill-mtest $spc $vmeAddr $mtestSize]
+	    if { $rv != {} } { return "A11 VME fill failed $rv" }
+
+	    # check if data can be seen at local CPU (byte ordering?!?!)
+	    set swSwap {}
+	    if { [string compare $G_dut "A13"] == 0 } {
+		set swSwap "-x"
+	    }
+	    set rv [mtest "vme4l_mtest -f -v -t=l $swSwap -s=$spc 0 $mtestSize"]
+	    if { $rv != 0 } { return "local verify failed $rv" }
+	}
+    }
+
+    # featureset1 slave windows
+    test slvwin-data {} -setup load-vme4l -body {
+
+	# try some different window addresses
+	set rv [slvwin-datatest 12 000000 100000 100000 ]
+	if { $rv != {} } { return $rv }
+
+	set rv [slvwin-datatest 12 300000 100000 100000 ]
+	if { $rv != {} } { return $rv }
+	
+	# check if window is really only 1M
+	set rv [a11-vme-berr-check 12 2ffff8]
+	if { $rv == 0 } { return "expected bus error (1)" }
+	set rv [a11-vme-berr-check 12 400000]
+	if { $rv == 0 } { return "expected bus error (2)" }
+
+
+	set rv [slvwin-datatest 12 400000 100000 100000 ]
+	if { $rv != {} } { return $rv }
+
+	set rv [slvwin-datatest 12 f00000 100000 0f0000 ]
+	if { $rv != {} } { return $rv }
+
+	# disable win
+	set rv [slvwin-datatest 12 0 0 0 ]
+	if { $rv != {} } { return $rv }
+
+	set rv [a11-vme-berr-check 12 f00000 ]
+	if { $rv == 0 } { return "expected bus error (3)" }
+    }
+
+    # featureset2 slave windows
+    test slvwin-data-fs2 {} -setup load-vme4l -constraints fs2 -body {
+	
+	set rv [slvwin-datatest 13 00000000 10000000 00100000 ]
+	if { $rv != {} } { return $rv }
+
+	set rv [slvwin-datatest 13 30000000 10000000 00100000 ]
+	if { $rv != {} } { return $rv }
+
+	set rv [slvwin-datatest 13 70000000 10000000 00100000 ]
+	if { $rv != {} } { return $rv }
+
+	set rv [slvwin-datatest 13 f0000000 10000000 00100000 ]
+	if { $rv != {} } { return $rv }
+    }
+
+    # featureset3 slave windows
+    test slvwin-sizes-fs3 {} -setup load-vme4l -constraints fs3 -body {
+
+	set rv [slvwin-datatest 13 00000000 00100000 000ff800 ]
+	if { $rv != {} } { return $rv }
+
+	set rv [slvwin-datatest 13 30000000 00100000 000ff800 ]
+	if { $rv != {} } { return $rv }
+
+	set rv [slvwin-datatest 13 70000000 00100000 000ff800 ]
+	if { $rv != {} } { return $rv }
+
+	set rv [slvwin-datatest 13 f0000000 00100000 000ff800 ]
+	if { $rv != {} } { return $rv }
+
+	# different window sizes
+	## SRAM windows
+	set rv [slvwin-expect "vme4l_slvwin 12 100000 8000" \
+		    "Invalid argument"]
+	if { $rv != {} } { return $rv }
+	set rv [slvwin-expect "vme4l_slvwin 12 100000 200000" \
+		    "Invalid argument"]
+	if { $rv != {} } { return $rv }
+	set rv [slvwin-expect "vme4l_slvwin 13 100000 80000" \
+		    "Invalid argument"]
+	if { $rv != {} } { return $rv }
+	set rv [slvwin-expect "vme4l_slvwin 13 100000 2000000" \
+		    "Invalid argument"]
+	if { $rv != {} } { return $rv }
+	
+	# SRAM A24 64k size 
+	set rv [slvwin-datatest 12 00410000 00010000 00010000 ]
+	if { $rv != {} } { return $rv }
+	set rv [a11-vme-berr-check 12 4ffff0 ]
+	if { $rv == 0 } { return "expected bus error (1a)" }
+	set rv [a11-vme-berr-check 12 420000 ]
+	if { $rv == 0 } { return "expected bus error (1b)" }
+
+	# SRAM A24 1M size 
+	set rv [slvwin-datatest 12 00500000 00100000 000ff800 ]
+	if { $rv != {} } { return $rv }
+	set rv [a11-vme-berr-check 12 4fffff0 ]
+	if { $rv == 0 } { return "expected bus error (2a)" }
+	set rv [a11-vme-berr-check 12 600000 ]
+	if { $rv == 0 } { return "expected bus error (2b)" }
+	slvwin-expect "vme4l_slvwin 12 0 0" "Open"
+
+	# SRAM A32 1M size 
+	set rv [slvwin-datatest 13 00600000 00100000 000ff800 ]
+	if { $rv != {} } { return $rv }
+	set rv [a11-vme-berr-check 13 4ffff0 ]
+	if { $rv == 0 } { return "expected bus error (3a)" }
+	set rv [a11-vme-berr-check 13 420000 ]
+	if { $rv == 0 } { return "expected bus error (3b)" }
+	slvwin-expect "vme4l_slvwin 13 0 0" "Open"
+
+	# SRAM A32 256M size 
+	#set rv [slvwin-datatest 13 70000000 10000000 000ff800 ]
+	#if { $rv != {} } { return $rv }
+	#set rv [a11-vme-berr-check 13 6ffffff0 ]
+	#if { $rv == 0 } { return "expected bus error (4a)" }
+	#set rv [a11-vme-berr-check 13 80000000 ]
+	#if { $rv == 0 } { return "expected bus error (4b)" }
+
+	## BM windows
+	set rv [slvwin-expect "vme4l_slvwin 14 100000 8000" \
+		    "Invalid argument"]
+	if { $rv != {} } { return $rv }
+	set rv [slvwin-expect "vme4l_slvwin 14 100000 200000" \
+		    "Invalid argument"]
+	if { $rv != {} } { return $rv }
+	set rv [slvwin-expect "vme4l_slvwin 15 100000 80000" \
+		    "Invalid argument"]
+	if { $rv != {} } { return $rv }
+	set rv [slvwin-expect "vme4l_slvwin 15 100000 2000000" \
+		    "Invalid argument"]
+	if { $rv != {} } { return $rv }
+	
+	# BM A24 64k size 
+	set rv [slvwin-datatest 14 00410000 00010000 00010000 ]
+	if { $rv != {} } { return $rv }
+	set rv [a11-vme-berr-check 14 4ffff0 ]
+	if { $rv == 0 } { return "expected bus error (5a)" }
+	set rv [a11-vme-berr-check 14 420000 ]
+	if { $rv == 0 } { return "expected bus error (5b)" }
+
+	# BM A24 1M size 
+	set rv [slvwin-expect "vme4l_slvwin 14 0 0" "Open" ]
+	set rv [slvwin-datatest 14 00500000 00100000 00100000 ]
+	if { $rv != {} } { return $rv }
+	set rv [a11-vme-berr-check 14 4fffff0 ]
+	if { $rv == 0 } { return "expected bus error (6a)" }
+	set rv [a11-vme-berr-check 14 600000 ]
+	if { $rv == 0 } { return "expected bus error (6b)" }
+
+	# BM A32 1M size 
+	set rv [slvwin-expect "vme4l_slvwin 14 0 0" "Open" ]
+	set rv [slvwin-datatest 15 00600000 00100000 00100000 ]
+	if { $rv != {} } { return $rv }
+	set rv [a11-vme-berr-check 15 005ffff0 ]
+	if { $rv == 0 } { return "expected bus error (7a)" }
+	set rv [a11-vme-berr-check 15 0070000 ]
+	if { $rv == 0 } { return "expected bus error (7b)" }
+
+	# BM A32 2M size (max. size default linux allows)
+	set rv [slvwin-expect "vme4l_slvwin 15 0 0" "Open" ]
+	set rv [slvwin-datatest 15 70000000 00200000 00100000 ]
+	if { $rv != {} } { return $rv }
+	set rv [a11-vme-berr-check 15 6ffffff0 ]
+	if { $rv == 0 } { return "expected bus error (8a)" }
+	set rv [a11-vme-berr-check 15 70200000 ]
+	if { $rv == 0 } { return "expected bus error (8b)" }
+	set rv [slvwin-expect "vme4l_slvwin 15 0 0" "Open" ]
+    }
+
+    ## Concurrent Tests to slave windows
+    ## slave windows to be setup by caller
+    ## local mtest must finish before remote
+    proc concurrent-test { locMtestArgs remMtestArgs } {
+	global G_linPrompt G_telId G_a11Ip G_a11Prompt 
+
+	set timeout 50
+
+	# start remote mtest
+	spawn telnet $G_a11Ip
+	set a11spid $spawn_id
+	set rv [a11-tsmon-login]
+	if { $rv != "" } { return $rv }
+	exp_send "mtest2 $remMtestArgs >/nil\r" 
+	
+	# start local mtest
+	set spawn_id $G_telId
+	exp_send "vme4l_mtest $locMtestArgs\r"
+
+	expect {
+	    -re {TOTAL TEST RESULT: ([0-9]+) errors} {
+		set errors $expect_out(1,string)
+		if { $errors != 0 } {
+		    return "Local mtest errors"
+		}
+	    }
+	    default { return "xxx" }
+	}
+	expect $G_linPrompt
+
+	# wait for remote mtest
+	set spawn_id $a11spid
+	expect {
+	    $G_a11Prompt {}
+	    # mtest2 waits for user input on error
+	    default { return "VME mtest error" }
+	}
+
+    }
+    
+    # featureset3 concurrent tests
+
+    # local -> SRAM
+    # remote-> PCI
+    test slvwin-locsram-rempci {} -setup load-vme4l -constraints fs3 -body {
+	set rv [slvwin-expect "vme4l_slvwin 12 400000 100000" "Open" ]
+	if { $rv != "" } { return $rv }
+	set rv [slvwin-expect "vme4l_slvwin 15 10000000 200000" "Open" ]
+	if { $rv != "" } { return $rv }
+
+	set rv [concurrent-test "-s=12 0 ff800 -n=10 -q=1 -t=wLb" \
+	    "-t=vV -m=a32,d32,user,data,blt 10000000 10200000 -n=10"]
+	if { $rv != "" } { return $rv }
+
+	set rv [slvwin-expect "vme4l_slvwin 12 0 0" "Open" ]
+	set rv [slvwin-expect "vme4l_slvwin 15 0 0" "Open" ]
+
+    }
+
+    # local -> VME
+    # remote-> PCI
+    test slvwin-locvme-rempci {} -setup load-n-setupa11 \
+	-constraints fs3 -body {
+
+	set rv [slvwin-expect "vme4l_slvwin 15 10000000 200000" "Open" ]
+	if { $rv != "" } { return $rv }
+
+	set rv [concurrent-test "-s=4 a00000 a20000 -n=10 -q=1 -t=wLb" \
+	   "-t=vV -m=a32,d32,user,data,blt 10000000 10200000 -n=10"]
+	if { $rv != "" } { return $rv }
+
+	set rv [slvwin-expect "vme4l_slvwin 15 0 0" "Open" ]
+    }
+
+    ## mailbox test
+    proc mbox-test { mbox } {
+	global G_linPrompt G_telId G_a11Ip G_a11Prompt 
+	set spawn_id $G_telId
+	set runs 500
+
+	# make PLDZ002 SRAM/mbox regs accessible from outside
+	set rv [slvwin-expect "vme4l_slvwin 12 500000 100000" "Open"]
+	if { $rv != "" } { return $rv }
+
+	# start receiving program
+	exp_send "vme4l_mbox $mbox $runs\r" 
+
+	# start sender on A11
+	spawn telnet $G_a11Ip
+	set a11spid $spawn_id
+
+	set rv [a11-tsmon-login]
+	if { $rv != "" } { return $rv }
+	
+	exp_send "vme_pldz002_mbx -b=8c5ff000 -m=$mbox -n=$runs\r" 
+	expect $G_a11Prompt
+
+	# wait for vme4l_mbox finished
+	set spawn_id $G_telId
+	expect {
+	    {mailbox writes recognized}  {
+	    }
+	    default { return "bad/no response from vme4l_mbox" }	    
+	}
+	expect $G_linPrompt
+    }
+
+    test mbox-0 {} -setup load-vme4l -constraints fs3 -body {
+	return [mbox-test 0]
+    }
+    test mbox-1 {} -setup load-vme4l -constraints fs3 -body {
+	return [mbox-test 1]
+    }
+    test mbox-2 {} -setup load-vme4l -constraints fs3 -body {
+	return [mbox-test 2]
+    }
+    test mbox-3 {} -setup load-vme4l -constraints fs3 -body {
+	return [mbox-test 3]
+    }
+
+    ## location monitor test
+    test locmon {} -setup load-vme4l -constraints pldz002 -body {
+	global G_linPrompt G_telId 
+	set spawn_id $G_telId
+
+	# start locmon on A24/E00000
+	exp_send "vme4l_pldz002_locmon 0 36 e00000\r" 
+
+	a11-fill-mem 8ce00000 { 12 }
+
+	set spawn_id $G_telId
+	expect {
+	    {HIT! ctrl=0x37 addr=0x00e00000}  {
+	    }
+	    default { return "bad/no response from vme4l_pldz002_locmon" } 
+	}
+	exp_send [format %c 3]
+	expect $G_linPrompt
+    }
+	
+
+
+    cleanupTests
+}
+namespace delete ::vme4l::test
