@@ -14,6 +14,10 @@
  *
  *-------------------------------[ History ]---------------------------------
  *
+ * 
+ * ts@18.02.2015   SC24 specific code removed, BIOS was updated.
+ * ------ from here on code is maintained in Git -----------
+ * 
  * $Log: bk_module.c,v $
  * Revision 1.9  2014/07/29 14:35:51  ts
  * R: compiler warnings remained under 3.134 kernel: unused return value,
@@ -224,11 +228,6 @@ static int32 OpenDevice( DESC_SPEC *bbDesc, BK_DEV *node )
 	BK_DRV *drvNode;
 	BBIS_ENTRY ent;
 	BBIS_HANDLE *bb = NULL;
-
-#ifdef CONFIG_X86
-	struct pci_dev *dev = NULL;
-	unsigned long apicAddr = 0, regVal = 0, regAddr=0;
-#endif
 
 	if( (error = DESC_Init( bbDesc, OSH, &descHdl ))){
 		DBGWRT_ERR((DBH,"*** BBIS:OpenDevice: can't init dev desc "

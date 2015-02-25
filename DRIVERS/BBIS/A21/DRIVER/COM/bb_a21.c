@@ -81,8 +81,8 @@ static const char RCSid[]="$Id: bb_a21.c,v 1.6 2006/12/20 12:23:57 ufranke Exp $
 #define CFIDX(i) ((i)<BBIS_SLOTS_ONBOARDDEVICE_START ? (i):((i)-BBIS_SLOTS_ONBOARDDEVICE_START+3))
 
 /* include files which need BBIS_HANDLE */
-#include <MEN/bb_entry.h>	/* bbis jumptable				  */
-#include <MEN/bb_a21.h>		/* A21 bbis header file			  */
+#include <MEN/bb_entry.h>	/* bbis jumptable	  */
+#include <MEN/bb_a21.h>		/* A21 bbis header file	  */
 
 typedef struct {
 	u_int32 devBusType;
@@ -100,14 +100,14 @@ typedef struct {
 +-----------------------------------------*/
 const A21_SLOT_CFG G_slotCfg[BRD_NBR_OF_BRDDEV] = {
 	/* M-mods */
-	{ OSS_BUSTYPE_MMODULE, BBIS_IRQ_DEVIRQ, OSS_ADDRSPACE_MEM, -1, -1, -1, -1,
+	 { OSS_BUSTYPE_MSI, BBIS_IRQ_DEVIRQ, OSS_ADDRSPACE_MEM, -1, -1, -1, 1,
 	  BBIS_IRQ_SHARED },
-	{ OSS_BUSTYPE_MMODULE, BBIS_IRQ_DEVIRQ, OSS_ADDRSPACE_MEM, -1, -1, -1, -1,
+	{ OSS_BUSTYPE_MSI , BBIS_IRQ_DEVIRQ, OSS_ADDRSPACE_MEM, -1, -1, -1, 2,
 	  BBIS_IRQ_SHARED },
-	{ OSS_BUSTYPE_MMODULE, BBIS_IRQ_DEVIRQ, OSS_ADDRSPACE_MEM, -1, -1, -1, -1,
+	{ OSS_BUSTYPE_MSI, BBIS_IRQ_DEVIRQ, OSS_ADDRSPACE_MEM, -1, -1, -1, 3,
 	  BBIS_IRQ_SHARED },
 	/* QSPI */
-	{ OSS_BUSTYPE_NONE, BBIS_IRQ_DEVIRQ, OSS_ADDRSPACE_MEM, -1, -1, 9, -1,
+	{ OSS_BUSTYPE_MSI, BBIS_IRQ_DEVIRQ, OSS_ADDRSPACE_MEM, -1, -1, 9, 17,
 	  BBIS_IRQ_EXCLUSIVE }
 };
 
@@ -521,6 +521,7 @@ static int32 A21_BrdInfo(
 			/* supported */
 			case BBIS_FUNC_IRQENABLE:
 			case BBIS_FUNC_IRQSRVINIT:
+			case BBIS_FUNC_IRQSRVEXIT:
 				*used = TRUE;
 				break;
 			/* unsupported */
@@ -692,7 +693,7 @@ static int32 A21_CfgInfo(
 			*vector = h->irqVector;
 		}
 		else {
-			*level = G_slotCfg[CFIDX(mSlot)].irqLevel;
+			*level = h->irqLevel + G_slotCfg[CFIDX(mSlot)].irqLevel;
 
 			/* convert level to vector */
 			status = OSS_IrqLevelToVector(
@@ -806,9 +807,10 @@ static int32 A21_IrqSrvInit(
 	IDBGWRT_1((DBH, "BB - %s_IrqSrvInit: mSlot=%d\n",BBNAME,mSlot));
 	
 	if( (mSlot==0x1000) ||
-		(MREAD_D8( h->mmod[CFIDX(mSlot)].vCtrlBase, 0 ) & 0x1 ))
+		(MREAD_D8( h->mmod[CFIDX(mSlot)].vCtrlBase, 0 ) & 0x1 )) {
+		A21_IrqEnable(h, mSlot, 0);
 		return BBIS_IRQ_YES;
-	else
+	} else
 		return BBIS_IRQ_NO;
 }
 
@@ -829,6 +831,9 @@ static void A21_IrqSrvExit(
     u_int32         mSlot )
 {
 	IDBGWRT_1((DBH, "BB - %s_IrqSrvExit: mSlot=%d\n",BBNAME,mSlot));
+	if( (mSlot==0x1000) ||
+		!(MREAD_D8( h->mmod[CFIDX(mSlot)].vCtrlBase, 0 ) & 0x1 ))
+		A21_IrqEnable(h, mSlot, 1);
 }
 
 /****************************** A21_ExpEnable ********************************

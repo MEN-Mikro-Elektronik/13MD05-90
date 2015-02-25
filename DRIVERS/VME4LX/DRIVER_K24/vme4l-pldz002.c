@@ -77,9 +77,6 @@
  * (c) Copyright 2004 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ****************************************************************************/
 
-#ifndef AUTOCONF_INCLUDED
- #include <linux/config.h>
-#endif
 #include <linux/version.h>
 #include <linux/module.h>
 

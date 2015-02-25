@@ -24,7 +24,7 @@
 #                     default file /tmp/men_pci_devs is not written. Used to
 #                     test system.dsc generation with predefined test data.
 ############################################################################
-# copyright (c) 2013 MEN Mikro Elektronik GmbH Nuremberg
+# copyright (c) 2113 MEN Mikro Elektronik GmbH Nuremberg
 ############################################################################
 
 ##########
@@ -39,7 +39,7 @@ MOD_DIR=/lib/modules/`uname -r`
 
 # currently detected CPU boards. ADD NEW BOARDS HERE!
 # also take care for special (native) driver adding etc.
-CPU_KNOWN_BOARDS="SC24 F011 F11S F14- F014 F15- F015 F17- F017 F19P F19C F019 F21P F21C F021 XM01 MM01 G20- G22-"
+CPU_KNOWN_BOARDS="SC24 F011 F11S F14- F014 F15- F015 F17- F017 F075 F19P F19C F019 F21P F21C F021 XM01 MM01 G20- G22-"
 
 # which SMB adresses to scan for CPU ID eeproms
 ID_EEPROM_ADRESSES="0x57 0x55"
@@ -156,40 +156,45 @@ function detect_board_id {
     # these can be safely assumed to exist on any recent distribution.
     modprobe i2c-dev   # for i2cdetect
     modprobe i2c-i801  # F1x SMB controllers
-    modprobe i2c-piix4 # SC24 SMB controller. Use 13SC24-90 modified driver!
-    # not sure if SCH driver is available on all Distros
+
+    # these might not exist on all Distros
     if [ -e "$MOD_DIR/kernel/drivers/i2c/busses/i2c-isch.ko" ]; then
         modprobe i2c-isch
     fi
-	G_cpu=""
-	for adrs in $ID_EEPROM_ADRESSES; do
-		for dev in /dev/i2c-*; do
-			smbus=`echo $dev | awk '{print substr($1,10,2)}'`
+    if [ -e "$MOD_DIR/kernel/drivers/i2c/busses/i2c-piix4.ko" ]; then	
+        modprobe i2c-piix4 # SC24 SMB controller. Use 13SC24-90 modified driver!
+    fi
+
+    G_cpu=""
+    for adrs in $ID_EEPROM_ADRESSES; do
+	for dev in /dev/i2c-*; do
+	    smbus=`echo $dev | awk '{print substr($1,10,2)}'`
             # scan for ID EEprom 0x55 at every present bus
-			echo "scan SMBus: bus $smbus SMB addr $adrs"
-			RES=`i2cdump -r 9-12 -y $smbus $adrs b | tail -n 1 | awk '{print $6}'`
+	    echo "scan SMBus: bus $smbus SMB addr $adrs"
+	    RES=`i2cdump -r 9-12 -y $smbus $adrs b | tail -n 1 | awk '{print $6}'`
 
-			check_if_men_cpu $RES
+	    check_if_men_cpu $RES
+	    
+	    if [[ $SCAN_SIM == 1 && $smbus == $SCAN_SIM_SMBUS ]]; then
+		G_cpu=$SCAN_SIM_CPU
+		echo "- simulating CPU $G_cpu on bus $smbus"
+		break
+	    fi
+	    # board found ? break inner loop
+	    if [ "$G_cpu" != "" ]; then
+		break
+	    fi
+	done;
+	
+	# board found ? break outer loop
+	if [ "$G_cpu" != "" ]; then
+	    break
+	fi
+    done
 
-			if [[ $SCAN_SIM == 1 && $smbus == $SCAN_SIM_SMBUS ]]; then
-				G_cpu=$SCAN_SIM_CPU
-				echo "- simulating CPU $G_cpu on bus $smbus"
-				break
-			fi
-			# board found ? break inner loop
-			if [ "$G_cpu" != "" ]; then
-				break
-			fi
-		done;
-
-		# board found ? break outer loop
-		if [ "$G_cpu" != "" ]; then
-			break
-		fi
-	done
     if [ "$G_cpu" == "" ]; then
         echo "*** could not find CPU type or no ID EEprom present!"
-		exit 1
+	exit 1
     fi
 }
 
@@ -924,7 +929,7 @@ case $main_cpu in
 		bCreateF14bcDrv=1
 		add_f14bc_support
 		;;
-	F017)
+    F017)
 		wiz_model_cpu=F17
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
@@ -969,6 +974,13 @@ case $main_cpu in
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
 		wiz_model_busif=0
+		;;
+    F075)
+		wiz_model_cpu=F75P
+		wiz_model_smb=SMBPCI_SCH
+		G_primPciPath=0x18
+		bCreateXm01bcDrv=1
+		add_xm01bc_support
 		;;
     XM01)
 		wiz_model_cpu=XM1

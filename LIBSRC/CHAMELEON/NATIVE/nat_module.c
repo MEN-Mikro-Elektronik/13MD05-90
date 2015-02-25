@@ -61,6 +61,14 @@ EXPORT_SYMBOL(CHAM_DevIdToName);
  EXPORT_SYMBOL(ChameleonTerm);
 #endif /* CHAMELEONV2_EXPORT_CHAMELEONV0  */
 
+/* original function
+int mod_init(void)
+{
+    printk( KERN_INFO "MEN " COMP_NAME " init_module\n");
+    return 0;
+}
+*/
+
 /*****************************  init_module  *********************************
  *
  *  Description:  Called when module is loaded by insmod
@@ -71,6 +79,34 @@ EXPORT_SYMBOL(CHAM_DevIdToName);
  ****************************************************************************/
 int mod_init(void)
 {
+	struct pci_dev *pdev = NULL;
+	int error;
+	int nvec;
+
+	pdev = pci_get_device(0x1a88, 0x4d45, pdev);
+	if (!pdev) {
+		printk(KERN_ERR "PCI device not found\n");
+		return -ENODEV;
+	}
+
+	if (pdev->msi_enabled) goto out;
+
+	error = pci_enable_device(pdev);
+	if (error) {
+		printk(KERN_ERR "pci_enable_device failed\n");
+		return -ENODEV;
+	}
+
+	pci_set_master(pdev);
+
+	if ( pci_msi_enabled()) {
+	  if((nvec = pci_enable_msi_block(pdev, 32))) {
+	    if (pci_enable_msi_block(pdev, nvec) < 0) {
+	      printk(KERN_ERR " *** failed to request MSI,"" falling back to legacy IRQs\n");
+	    }
+	  }
+	}
+out:
 	printk( KERN_INFO "MEN " COMP_NAME " init_module\n");
 	return 0;
 }
