@@ -156,6 +156,7 @@ static int32 BrdIrqEnable( MK_DEV *dev, int enable );
  *				 devDesc	device descriptor specifier
  *				 brdName	board device name
  *				 brdDesc	board descriptor specifier
+ *				 persist    if non-zero, don't delete device on close
  *  Output.....: return  	success (0) or error code
  *				 *devP		device handle
  *  Globals....: -
@@ -166,6 +167,7 @@ int32 MDIS_InitialOpen(
 	DESC_SPEC *devDesc,
 	char *brdName,
 	DESC_SPEC *brdDesc,
+	int persist,
 	MK_DEV **devP)
 {
 	DBGCMD(const char fname[] = "MK:InitialOpen: "; )
@@ -191,6 +193,7 @@ int32 MDIS_InitialOpen(
 	memset( (char *)dev, 0, sizeof(*dev));
 	strcpy( dev->devName, devName );
 	strcpy( dev->brdName, brdName );
+	dev->persist = persist;
 	
 	/* init OSS for device */
 	if(( error = OSS_Init( dev->devName, &dev->osh )))

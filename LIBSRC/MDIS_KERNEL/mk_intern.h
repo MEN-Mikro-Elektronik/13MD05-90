@@ -200,6 +200,7 @@ typedef struct {
 	char		    devName[MK_MAX_DEVNAME+1]; /* device name */
 	char		    brdName[BK_MAX_DEVNAME+1]; /* board device name */
 	u_int32		   	useCount;		/* number of opens */
+	int 			persist;		/* don't remove device on last close */
 	int			externalDev;	/* flags external, non-MDIS driver */
 
 	OSS_HANDLE		*osh;			/* device's OSS handle */
@@ -321,6 +322,7 @@ int32 MDIS_InitialOpen(
 	DESC_SPEC *devDesc,
 	char *brdName,
 	DESC_SPEC *brdDesc,
+	int persist,
 	MK_DEV **devP);
 int32 MDIS_InitLockMode(MK_DEV *dev);
 int32 MDIS_EnableIrq(MK_DEV *dev, u_int32 enable);

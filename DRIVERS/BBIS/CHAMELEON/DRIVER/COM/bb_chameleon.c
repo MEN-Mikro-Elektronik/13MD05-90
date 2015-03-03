@@ -110,7 +110,7 @@
  *     Required: chameleon library
  *     Switches: _ONE_NAMESPACE_PER_DRIVER_
  *
- *-------------------------------[ History ]---------------------------------
+ *---------------[ History of CVS, from here on stored in Git ]---------------
  *
  * $Log: bb_chameleon.c,v $
  * Revision 1.48  2013/11/28 17:00:05  ts
@@ -607,7 +607,7 @@ extern void __BB_CHAMELEON_GetEntry( BBIS_ENTRY *bbisP )
   /* exception handling */
   bbisP->expEnable    =   CHAMELEON_ExpEnable;
   bbisP->expSrv       =   CHAMELEON_ExpSrv;
-  bbisP->msiEnable    =   CHAMELEON_MSIUnused;
+  bbisP->fkt17        =   CHAMELEON_Unused;
   bbisP->fkt18        =   CHAMELEON_Unused;
   bbisP->fkt19        =   CHAMELEON_Unused;
   /* */
@@ -1943,9 +1943,7 @@ static int32 CHAMELEON_CfgInfo(
 
 #endif
 
-#define MSI_IS_USED
-
-#if MSI_IS_USED
+#if defined(CHAMELEON_USE_MSI)
 	*level += chamTblInt;
 #endif
 

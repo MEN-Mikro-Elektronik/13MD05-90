@@ -283,14 +283,10 @@ static int32 OpenDevice( DESC_SPEC *bbDesc, BK_DEV *node )
 	}
 
 	/* ... here jt USE_MSI descriptor read... */
-	if (use_msi)
-	  bk_enable_msi(struct pci_dev);
-
-	
+	/* if (use_msi) */
+	/*   bk_enable_msi(struct pci_dev); */
 
 	DESC_Exit( &descHdl );		/* descriptor handle no longer required */
-
-
 
 
 	/*--- search for driver ---*/

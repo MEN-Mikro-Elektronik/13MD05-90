@@ -270,8 +270,9 @@ int32 OSS_IrqLevelToVector(
 	switch( busType ){
 	case OSS_BUSTYPE_PCI:
 	case OSS_BUSTYPE_ISA:
+	case OSS_BUSTYPE_MSI:
 	case OSS_BUSTYPE_ISAPNP:
-		*vectorP = irqNbr;		/* for now ??? */
+		*vectorP = irqNbr;		/* ts: under Linux, level = vector. Its a numeric Value */
 		break;
 	default:
         DBGWRT_ERR(( DBH, "*** %s: busType %ld not supported\n",

@@ -77,7 +77,6 @@
 +------------------------------------------*/
 #define NO_CALLBACK		/* flag for oss.h not to include callback protos */
 #define NO_SHARED_MEM	/* flag for oss.h not to include shared mem protos */
-#define __KERNEL__
 
 #ifdef __KERNEL__
 #include <linux/timer.h>

@@ -1334,6 +1334,7 @@ static int MDIS_OpenDevice( int ioctlCode,
 						     (DESC_SPEC)devDesc,	
 						     mcdd.d.brdName,
 						     (DESC_SPEC)brdDesc,
+						     0,
 						     &dev))){
 				DBGWRT_ERR((DBH,"*** MDIS_OpenDevice: %s: initial open failed"
 							"err=0x%x\n", mcdd.d.devName, err ));

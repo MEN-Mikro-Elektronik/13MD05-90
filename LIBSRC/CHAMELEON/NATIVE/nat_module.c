@@ -39,6 +39,7 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/init.h>
+#include <linux/pci.h>
 #include <MEN/men_typs.h>
 #include <MEN/dbg.h>
 #include <MEN/oss.h>
