@@ -530,7 +530,9 @@ static int32 A21_BrdInfo(
 			/* supported */
 			case BBIS_FUNC_IRQENABLE:
 			case BBIS_FUNC_IRQSRVINIT:
+#if defined(A21_USE_MSI)
 			case BBIS_FUNC_IRQSRVEXIT:
+#endif
 				*used = TRUE;
 				break;
 			/* unsupported */
@@ -702,7 +704,13 @@ static int32 A21_CfgInfo(
 			*vector = h->irqVector;
 		}
 		else {
-			*level = h->irqLevel + G_slotCfg[CFIDX(mSlot)].irqLevel;
+
+#if defined(A21_USE_MSI)
+			/* add Chameleon tables MMOD unit Irq level to get a unique vector */
+			*level = G_slotCfg[CFIDX(mSlot)].irqLevel + h->irqLevel;
+#else
+			*level = G_slotCfg[CFIDX(mSlot)].irqLevel;
+#endif
 
 			/* convert level to vector */
 			status = OSS_IrqLevelToVector(
@@ -815,9 +823,11 @@ static int32 A21_IrqSrvInit(
 {
 	IDBGWRT_1((DBH, "BB - %s_IrqSrvInit: mSlot=%d\n",BBNAME,mSlot));
 	
-	if( (mSlot==0x1000) ||
-		(MREAD_D8( h->mmod[CFIDX(mSlot)].vCtrlBase, 0 ) & 0x1 )) {
+	if( (mSlot==0x1000) || (MREAD_D8( h->mmod[CFIDX(mSlot)].vCtrlBase, 0 ) & 0x1 )) 
+	{
+#if defined(A21_USE_MSI)
 		A21_IrqEnable(h, mSlot, 0);
+#endif
 		return BBIS_IRQ_YES;
 	} else
 		return BBIS_IRQ_NO;
@@ -840,9 +850,10 @@ static void A21_IrqSrvExit(
     u_int32         mSlot )
 {
 	IDBGWRT_1((DBH, "BB - %s_IrqSrvExit: mSlot=%d\n",BBNAME,mSlot));
-	if( (mSlot==0x1000) ||
-		!(MREAD_D8( h->mmod[CFIDX(mSlot)].vCtrlBase, 0 ) & 0x1 ))
+#if defined(A21_USE_MSI)
+	if( (mSlot==0x1000) || !(MREAD_D8( h->mmod[CFIDX(mSlot)].vCtrlBase, 0 ) & 0x1 ))
 		A21_IrqEnable(h, mSlot, 1);
+#endif
 }
 
 /****************************** A21_ExpEnable ********************************
