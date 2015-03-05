@@ -1039,3 +1039,4 @@ else
 	create_makefile
 fi
 echo "finished."
+sudo chmod 777 *
