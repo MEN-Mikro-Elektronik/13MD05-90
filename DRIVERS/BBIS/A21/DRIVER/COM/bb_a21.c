@@ -152,6 +152,11 @@ static int32 A21_Unused(void);
 static char* Ident( void );
 static int32 Cleanup(BBIS_HANDLE *h, int32 retCode);
 
+/* A21 MSI variant helper for enabling MSIs */
+#if defined(A21_USE_MSI)
+extern int A21_MSI_enable(void);
+#endif
+
 
 /**************************** A21_GetEntry ***********************************
  *
@@ -769,6 +774,11 @@ static int32 A21_CfgInfo(
 		va_end( argptr );
 		return ERR_BBIS_UNK_CODE;
     }
+
+#if defined(A21_USE_MSI)
+    /* dummy call to some function in men_lx_a21_msi_enable to create an artificial dependency to that driver */
+    A21_MSI_enable();
+#endif
 
     va_end( argptr );
     return status;

@@ -539,6 +539,12 @@ static char* Ident( void );
 static int32 Cleanup(BBIS_HANDLE *h, int32 retCode);
 static int32 CfgInfoSlot( BBIS_HANDLE *h, va_list argptr );
 
+/* A21 MSI variant helper for enabling MSIs */
+#if defined(CHAMELEON_USE_A21_MSI)
+extern int A21_MSI_enable(void);
+#endif
+
+
 #ifndef CHAM_ISA
 static int32 ParsePciPath(
 			  BBIS_HANDLE *brdHdl,
@@ -1451,9 +1457,9 @@ static int32 CHAMELEON_BrdInit(
 	    goto ABORT;
 	  }/*if*/
 
-	_MREAD_D32(irqenLower, h->girqVirtAddr, BBCHAM_GIRQ_IRQ_EN);
-	_MREAD_D32(irqenUpper, h->girqVirtAddr, BBCHAM_GIRQ_IRQ_EN + 4);
-	_MREAD_D32(h->girqApiVersion, h->girqVirtAddr, BBCHAM_GIRQ_API_VER );
+	_MREAD_D32(irqenLower, (MACCESS)h->girqVirtAddr, BBCHAM_GIRQ_IRQ_EN);
+	_MREAD_D32(irqenUpper, (MACCESS)h->girqVirtAddr, BBCHAM_GIRQ_IRQ_EN + 4);
+	_MREAD_D32(h->girqApiVersion, (MACCESS)h->girqVirtAddr, BBCHAM_GIRQ_API_VER );
 #ifdef	_BIG_ENDIAN_
 	irqenLower = OSS_SWAP32( irqenLower );
 	irqenUpper = OSS_SWAP32( irqenUpper );
@@ -1905,19 +1911,8 @@ static int32 CHAMELEON_CfgInfo(
 
 	/* interrupt used? */
 	if( *mode != BBIS_IRQ_NONE ){
-
 	  // share always (for ser IRQs at SC24 LPC bus)
 	  *mode = BBIS_IRQ_SHARED;
-
-	  /* maybe an alternative? */
-#if 0
-	  /* non shared legacy IRQ0..15? */
-	  if( *level < 16 )
-	    *mode = BBIS_IRQ_EXCLUSIVE;					
-	  /* shared IRQ16..max */
-	  else
-	    *mode = BBIS_IRQ_SHARED;
-#endif
 	}
 
 	/* default (PCI variant) */
@@ -2011,6 +2006,11 @@ static int32 CHAMELEON_CfgInfo(
     va_end( argptr );
     return ERR_BBIS_UNK_CODE;
   }
+
+#if defined(CHAMELEON_USE_A21_MSI)
+    /* dummy call to some function in men_lx_a21_msi_enable to create an artificial dependency to that driver under RT-linux */
+    A21_MSI_enable();
+#endif
 
   va_end( argptr );
   return status;
@@ -2113,7 +2113,7 @@ static int32 CHAMELEON_IrqEnable(
 	u_int32 girqCount = 0;
 
 	/* check INUSE bit */
-	_MREAD_D32(girqInUse, h->girqVirtAddr, BBCHAM_GIRQ_IN_USE);
+	_MREAD_D32(girqInUse, (MACCESS)h->girqVirtAddr, BBCHAM_GIRQ_IN_USE);
 #ifdef  _BIG_ENDIAN_
 	girqInUse = OSS_SWAP32( girqInUse );
 #endif
@@ -2130,7 +2130,7 @@ static int32 CHAMELEON_IrqEnable(
 	    OSS_MikroDelay(h->osHdl, 10 );
 
 	    /* check INUSE bit */
-	    _MREAD_D32(girqInUse, h->girqVirtAddr, BBCHAM_GIRQ_IN_USE);
+	    _MREAD_D32(girqInUse, (MACCESS)h->girqVirtAddr, BBCHAM_GIRQ_IN_USE);
 #ifdef	_BIG_ENDIAN_
 	    girqInUse = OSS_SWAP32( girqInUse );
 #endif
@@ -2156,7 +2156,7 @@ static int32 CHAMELEON_IrqEnable(
       oldState = OSS_IrqMaskR(  h->osHdl, h->irqHdl );
 #endif /* BBIS_DONT_USE_IRQ_MASKR */
       /* set/reset slot corresponding irq enable bit */
-      _MREAD_D32(irqen, h->girqVirtAddr, BBCHAM_GIRQ_IRQ_EN + offs);
+      _MREAD_D32(irqen, (MACCESS)h->girqVirtAddr, BBCHAM_GIRQ_IRQ_EN + offs);
 
 #ifdef	_BIG_ENDIAN_
       irqenLittleEndian = OSS_SWAP32( irqen );
@@ -2179,7 +2179,7 @@ static int32 CHAMELEON_IrqEnable(
       irqen = irqenLittleEndian;
 #endif
 
-      _MWRITE_D32(h->girqVirtAddr, BBCHAM_GIRQ_IRQ_EN + offs, irqen);
+      _MWRITE_D32((MACCESS)h->girqVirtAddr, BBCHAM_GIRQ_IRQ_EN + offs, irqen);
 
 #ifndef BBIS_DONT_USE_IRQ_MASKR
       /* unlock critical section */
@@ -2197,7 +2197,7 @@ static int32 CHAMELEON_IrqEnable(
 #endif
 
 	/* release INUSE bit */
-	_MWRITE_D32(h->girqVirtAddr, BBCHAM_GIRQ_IN_USE, girqInUse);
+	_MWRITE_D32((MACCESS)h->girqVirtAddr, BBCHAM_GIRQ_IN_USE, girqInUse);
 	DBGWRT_1((DBH, "BB - %s%s: GIRQ INUSE bit released.\n",
 		  BBNAME, functionName ));
       }

@@ -30,7 +30,6 @@
  *  Output.....:  returns: 0 on success
  *  Globals....:  -
  ****************************************************************************/
-
 int A21_MSI_enable(void)
 {
   return 0;
