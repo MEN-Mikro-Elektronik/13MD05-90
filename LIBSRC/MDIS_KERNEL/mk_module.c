@@ -1238,6 +1238,7 @@ static int MDIS_OpenDevice( int ioctlCode,
 	if( ioctlCode == MDIS_OPEN_DEVICE ){
 		if( copy_from_user ((void *)&mcdd.d, (void *)usrMop, sizeof(mcdd.d)) )
 			return -EFAULT;
+		mcdd.persist 	= FALSE;
 	}
 	else {
 		if( copy_from_user ((void *)&mcdd, (void *)usrMop, sizeof(mcdd)) )
@@ -1334,7 +1335,7 @@ static int MDIS_OpenDevice( int ioctlCode,
 						     (DESC_SPEC)devDesc,	
 						     mcdd.d.brdName,
 						     (DESC_SPEC)brdDesc,
-						     0,
+							 mcdd.persist,
 						     &dev))){
 				DBGWRT_ERR((DBH,"*** MDIS_OpenDevice: %s: initial open failed"
 							"err=0x%x\n", mcdd.d.devName, err ));
@@ -1497,9 +1498,14 @@ static int mk_read_procmem( char *page, char **start, off_t off, int count, int 
 	 node->node.next;
 	 node = (MK_DEV *)node->node.next ){
 
-      len += sprintf( page+len, "  %s brd=%s slot=%d drv=%s usecnt=%d \n",
-		      node->devName, node->brdName, node->devSlot, node->drv ? node->drv->drvName : "?",
-		      node->useCount);
+      len += sprintf( page+len, "  %s brd=%s slot=%d drv=%s "
+							"usecnt=%d persist=%d\n",
+							node->devName,
+							node->brdName,
+							node->devSlot,
+							node->drv ? node->drv->drvName : "?",
+							node->useCount,
+							node->persist);
       INC_LEN;
     }
   }
