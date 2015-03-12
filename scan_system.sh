@@ -820,14 +820,14 @@ else
     TMP_PCIDEVS=$PCI_DRYTEST
 fi
 
-#echo "checking if gksu/gksudo exists..."
-#have_gksu=`which gksu`
-#if [ "$have_gksu" == "" ]; then
-#    echo "*** error: please install gksu. Examples: Ubuntu: apt-get install gksu, Fedora: yum install gksu"
-#    exit 1
-#else
-#    echo "OK."
-#fi
+echo "checking if gksu/gksudo exists..."
+have_gksu=`which gksu`
+if [ "$have_gksu" == "" ]; then
+    echo "*** error: please install gksu. Examples: Ubuntu: apt-get install gksu, Fedora: yum install gksu"
+    exit 1
+else
+    echo "OK."
+fi
 
 
 echo "checking if I2C tools exists..."

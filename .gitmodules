@@ -1,0 +1,3 @@
+[submodule "TOOLS/MDIS_API"]
+	path = TOOLS/MDIS_API
+	url = http://tschnuerer:AzByCx44@192.168.1.166:7990/scm/mct/mdis_api.git
