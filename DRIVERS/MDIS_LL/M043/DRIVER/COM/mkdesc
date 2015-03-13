@@ -1,3 +1,0 @@
-#!/bin/sh
-mdiswiz -pkg2dsc 13m04306.xml A12b A201 M43 m43
-mdiswiz -pkg2dsc 13m04306.xml A12b  A12_OBMMODS M43 m43_sw
