@@ -1,7 +1,0 @@
-PLD loader library
-==================
-12.10.98 see
-
-Using PLD loaders
------------------
-(in Preparation)
