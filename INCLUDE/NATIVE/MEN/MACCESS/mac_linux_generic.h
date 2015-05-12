@@ -35,6 +35,14 @@
 #ifndef _MAC_LINUX_GENERIC_H
 #define _MAC_LINUX_GENERIC_H
 
+/* define here too, not just in mac_linux_ppc.h or MDIS driver builds under x86 fail */
+#ifdef MAC_IO_MAPPED
+# define _MAC_OFF_	(_IO_BASE)
+#else
+# define _MAC_OFF_	0			
+#endif
+
+
 /*---- MEMORY MAPPED I/O ---*/
 #ifdef MAC_MEM_MAPPED
 typedef void* MACCESS;         	/* access pointer */

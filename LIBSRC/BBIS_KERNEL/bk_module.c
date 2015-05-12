@@ -560,9 +560,12 @@ int bbis_unregister_bb_driver( char *bbName )
  *  Globals....:  -
  ****************************************************************************/
 #if LINUX_VERSION_CODE < VERSION_CODE(3,10,0)
-static ssize_t bk_read_procmem( char *page, char **start, off_t off,
-							int count, int *eof, void *data)
-
+static ssize_t bk_read_procmem( char *page, 
+				char **start, 
+				off_t off,
+				int count, 
+				int *eof, 
+				void *data)
 {
     int i, len = 0, rv;
 	off_t begin = 0;
@@ -712,7 +715,7 @@ int init_module(void)
 	OSS_DL_NewList( &G_devList );
 
 #if LINUX_VERSION_CODE < VERSION_CODE(3,10,0)
-    create_proc_read_entry ("bbis", 0, NULL, bk_read_procmem, NULL);
+	create_proc_read_entry ("bbis", 0, NULL, (read_proc_t *)bk_read_procmem, NULL);
 #else
 	proc_create (           "bbis", 0, NULL, &bk_proc_fops);
 #endif
