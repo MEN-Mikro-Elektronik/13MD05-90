@@ -86,8 +86,6 @@ typedef uint32_t u_int32;
 
 #include <MEN/pldz002.h>
 
-#include <MEN/men_rtai_shirq.h>
-
 /*--------------------------------------+
 |   DEFINES                             |
 +--------------------------------------*/
