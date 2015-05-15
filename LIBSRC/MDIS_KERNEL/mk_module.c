@@ -1459,8 +1459,6 @@ static int mk_read_procmem( char *page, char **start, off_t off, int count, int 
   DBGWRT_3((DBH,"mk_read_procmem: count %d page=%p\n", count, page));
   MK_LOCK(error);
 
-  if( i )
-    return (-ERESTARTSYS);
 
   /* user buffers */
   {
@@ -1499,13 +1497,13 @@ static int mk_read_procmem( char *page, char **start, off_t off, int count, int 
 	 node = (MK_DEV *)node->node.next ){
 
       len += sprintf( page+len, "  %s brd=%s slot=%d drv=%s "
-							"usecnt=%d persist=%d\n",
-							node->devName,
-							node->brdName,
-							node->devSlot,
-							node->drv ? node->drv->drvName : "?",
-							node->useCount,
-							node->persist);
+		      "usecnt=%d persist=%d\n",
+		      node->devName,
+		      node->brdName,
+		      node->devSlot,
+		      node->drv ? node->drv->drvName : "?",
+		      node->useCount,
+		      node->persist);
       INC_LEN;
     }
   }
@@ -1530,7 +1528,7 @@ static int mk_read_procmem( char *page, char **start, off_t off, int count, int 
 static ssize_t mk_read_procmem( struct file *filp, char *buf, size_t count, loff_t *pos)
 {
 
-  int i, error, rv=0;
+  int error, rv=0;
   char locbuf[PROC_BUF_LEN];
   char *tmp = locbuf;
   static int len=0;
