@@ -169,8 +169,8 @@ typedef uint32_t u_int32;
 +--------------------------------------*/
 /** structure to maintain variable used to ioremap bridge regs etc. */
 typedef struct {
-	uint32_t phys;				/**< phys. address  */
-	uint32_t size;				/**< size of region  */
+	unsigned long phys;				/**< phys. address  */
+	unsigned long size;				/**< size of region  */
 	void *vaddr;				/**< mapped virt. address  */
 	int memReq;					/**< flag memory has been requested  */
 	int cache;					/**< region cacheing flags (0=no cache)  */
@@ -180,7 +180,7 @@ typedef struct {
 typedef struct {
 	struct pci_dev *pdev;		/**< PCI device struct  */
 	int  isPldZ002;				/**< false if it's an A12/B11 bridge */
-	uint32_t  bar[6];			/**< copy of PCI bars (bus adrs) */
+	unsigned long  bar[6];			/**< copy of PCI bars (bus adrs) */
 	VME4L_RESRC regs;			/**< bridge regs [+ PLD internal RAM if any] */
 	VME4L_RESRC	sramRegs;		/**< PLDZ002>=Rev17 registers in SRAM  */
 	VME4L_RESRC iack;			/**< IACK space */
@@ -280,7 +280,7 @@ static int RequestAddrWindow(
 
 	switch( spc ){
 	case VME4L_SPC_A16_D16:
-		physAddr = (void *)(h->bar[barA24A16] + PLDZ002_A16D16_SPACE);
+	  physAddr = (void*)(h->bar[barA24A16] + PLDZ002_A16D16_SPACE);
 		vmeAddr  = 0;
 		size 	 = PLDZ002_A16Dxx_SIZE;
 		break;

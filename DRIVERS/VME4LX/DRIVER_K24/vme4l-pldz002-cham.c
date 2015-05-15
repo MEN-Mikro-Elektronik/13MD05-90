@@ -189,8 +189,8 @@
 +--------------------------------------*/
 /** structure to maintain variable used to ioremap bridge regs etc. */
 typedef struct {
-	uint32_t phys;				/**< phys. address  */
-	uint32_t size;				/**< size of region  */
+	unsigned long phys;				/**< phys. address  */
+	unsigned long size;				/**< size of region  */
 	void *vaddr;				/**< mapped virt. address  */
 	int memReq;					/**< flag memory has been requested  */
 	int cache;					/**< region cacheing flags (0=no cache)  */
@@ -212,7 +212,7 @@ typedef enum {
 /** bridge drivers private data */
 typedef struct {
 	CHAMELEONV2_UNIT_T * chu;		/**< chameleon unit for vme control registers  */
-	uint32_t spaces[CHAM_SPC_END]; /**< chameleon units of the separate spaces*/
+	unsigned long spaces[CHAM_SPC_END]; /**< chameleon units of the separate spaces*/
 	VME4L_RESRC regs;			/**< bridge regs [+ PLD internal RAM if any] */
 	VME4L_RESRC	sramRegs;		/**< PLDZ002>=Rev17 registers in SRAM  */
 	VME4L_RESRC iack;			/**< IACK space */
@@ -1885,16 +1885,16 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 			printk(KERN_ERR "Variant unexpectedly is larger than %d\n", CHAM_SPC_END);
 			rv = -EINVAL;
 		}
-		h->spaces[u.unitFpga.variant] = (uint32_t) u.unitFpga.addr;
+		h->spaces[u.unitFpga.variant] = (unsigned long) u.unitFpga.addr;
 		VME4LDBG("found chameleon unit %d, variant %d, address %p\n", i, u.unitFpga.variant,u.unitFpga.addr);
 	}
 	printk( KERN_INFO "vme-pldz002-cham: found bridge (rev %d), irq %d\n",
 		   chu->unitFpga.revision, chu->pdev->irq);
 
-	h->regs.phys = (uint32_t)chu->unitFpga.addr + PLDZ002_CTRL_SPACE;
+	h->regs.phys = (unsigned long)chu->unitFpga.addr + PLDZ002_CTRL_SPACE;
 	h->regs.size = PLDZ002_CTRL_SIZE;
 
-	h->iack.phys = (uint32_t)chu->unitFpga.addr + PLDZ002_IACK_SPACE;
+	h->iack.phys = (unsigned long)chu->unitFpga.addr + PLDZ002_IACK_SPACE;
 	h->iack.size = PLDZ002_IACK_SIZE;
 
 	/*--- request/map permanent spaces ---*/
