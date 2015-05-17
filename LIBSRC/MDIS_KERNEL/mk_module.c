@@ -1528,7 +1528,7 @@ static int mk_read_procmem( char *page, char **start, off_t off, int count, int 
 static ssize_t mk_read_procmem( struct file *filp, char *buf, size_t count, loff_t *pos)
 {
 
-  int error, rv=0;
+  int i,error, rv=0;
   char locbuf[PROC_BUF_LEN];
   char *tmp = locbuf;
   static int len=0;
