@@ -279,43 +279,36 @@ function create_entry_dsc_cpu_type {
 #
 # parameters:
 # $1 DSC template directory
-# $2 BBIS instance number (subst. SCAN_BBIS_INSTANCE )
-# $3 _WIZ_MODEL, e.g. F210 (subst. SCAN_WIZ_MODEL)
-# $4 PCI_BUS primary path (subst. SCAN_PCIPATH_PRIM )
-# $5 PCI devnr. (subst. SCAN_PCI_BUS_SLOT)
+# $2 BBIS instance number  (subst. SCAN_BBIS_INSTANCE )
+# $3 _WIZ_MODEL, e.g. F210 (subst. SCAN_WIZ_MODEL   )
+# $4 PCI bus number        (subst. SCAN_PCI_BUS_NR  )
+# $5 PCI device nr..       (subst. SCAN_PCI_DEV_NR  )
 # $6 DEVICE_IDV2_x array of found IP cores inside this BBIS device
-#
-# convert PCI dev.nr. to pci slot on standard backplanes:
-# slot |  dev.nr
-#   2  |  0x0f
-#   3  |  0x0e
-#   4  |  0x0d
-#   5  |  0x0c
-#   6  |  0x0b
-#   ... -> slot = 17-devnr [slot=2-8]
+
 function create_entry_dsc_bbis_cham {
     echo "create chameleon BBIS device..."
     debug_args " \$1 = $1  \$2 = $2  \$3 = $3  \$4 = $4  \$5 = $5  \$6 = $6"
-        # BBIS driver name = WIZ_MODEL in lower letters
+    # BBIS driver name = WIZ_MODEL in lower letters
+    pci_busnr=$4
     pci_devnr=$5
     device_id=$6
 
     bbis_name=`echo $3 | awk '{print tolower($1)}'`
-        # calculate bus_slot from given PCI devnr. on standard backplanes
+    # calculate bus_slot from given PCI devnr. on standard backplanes
     pci_bus_slot=`expr 17 - $pci_devnr`
 
-        # cat template to temp file that gets DEVICE_IDV2_xx added after IPcore scan
+    # cat template to temp file that gets DEVICE_IDV2_xx added after IPcore scan
 
-	# unfortunately some FPGA BBIS models dont match the IC file name. E.g. on MM1
+    # unfortunately some FPGA BBIS models dont match the IC file name. E.g. on MM1
     # the IC filename starts with "MM01-IC..." but modelname is just 'fpga'
-	if [ "$bbis_name" == "mm01" ]; then
-		tplname=mm1_cham.tpl
-	else
-		tplname=f2xx_cham.tpl
-	fi
+    if [ "$bbis_name" == "mm01" ]; then
+	tplname=mm1_cham.tpl
+    else
+	tplname=f2xx_cham.tpl
+    fi
 
-	# TODO generate the long filter commands dynamically..
-    cat $1/$tplname | sed "s/SCAN_BBIS_NAME/$bbis_name/g;s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_WIZ_MODEL/$3/g;s/SCAN_PCIPATH_PRIM/$4/g;s/SCAN_PCI_BUS_SLOT/$pci_bus_slot/g" > $TMP_BBIS_DSC
+    # TODO generate the long filter commands dynamically..
+    cat $1/$tplname | sed "s/SCAN_BBIS_NAME/$bbis_name/g;s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_WIZ_MODEL/$3/g;s/SCAN_PCI_BUS_NR/$pci_busnr/g;s/SCAN_PCI_DEV_NR/$pci_devnr/g" > $TMP_BBIS_DSC
 
 }
 
@@ -455,6 +448,7 @@ function scan_cham_table {
 # $5  PCI subvendor
 # $6  instance count
 # $7  pci primary path
+# $8  pci bus nr. 
 function check_for_cham_devs {
     debug_args "PCIvd.$2 PCIdev. $3 PCIdevnr $4  PCIsubv $5 instance $6  PCIprimPath $7"
     cham_file=""
@@ -481,22 +475,22 @@ function check_for_cham_devs {
 
         # Now add the found device IDs to temporary BBIS des file
         create_entry_dsc_bbis_cham $DSC_TPL_DIR $6 $cham_file $7 $4
-		for id in $G_deviceIdV2; do
+	for id in $G_deviceIdV2; do
         # format data into a DEVICE_IDV2 entry and add same scan tag in next line
             idv2line="    DEVICE_IDV2_$device_id_count = U_INT32 $id\n#SCAN_NEXT_DEVID"
             sed -i.bak "s/#SCAN_NEXT_DEVID/$idv2line/g" $TMP_BBIS_DSC
             device_id_count=`expr $device_id_count + 1`
-		done
+	done
         # BBIS dsc section now complete. append it to $DSC_FILE
-		cat $TMP_BBIS_DSC >> $DSC_FILE
+	cat $TMP_BBIS_DSC >> $DSC_FILE
 
         # all F2xx BBIS are supported by chameleon PCI table driver..
         G_makefileBbisDriver+=" CHAMELEON/DRIVER/COM/driver_pcitbl.mak"
 
         # create MDIS dev entries under this BBIS device
-		G_bus_slot_count=0
+	G_bus_slot_count=0
         G_deviceIdV2=""    # clear list of IDs for next BBIS
-		scan_cham_table $DSC_TPL_DIR $cham_file $inst_count 1
+	scan_cham_table $DSC_TPL_DIR $cham_file $inst_count 1
     fi
 
 }
@@ -581,7 +575,7 @@ function scan_for_pci_devs {
     state_check_f223=0
     state_check_pp04=0
     count_usb_devs=0
-	count_pp04_devs=0
+    count_pp04_devs=0
     count_instance_f223=0 # handled separately
     count_instance_f207=0
     count_instance_f2xx=0 # any other F2xx cham. carrier
@@ -661,7 +655,7 @@ function scan_for_pci_devs {
             echo "Found possible MEN chameleon device(s), checking."
             check_for_cham_devs $MEN_LIN_DIR \
                 $pcivend $pcidevid $pcidevnr $pcisubvend \
-                $count_instance_f2xx $bus_path_prim
+                $count_instance_f2xx $pcibus
         fi
 
     done <  $TMP_PCIDEVS
