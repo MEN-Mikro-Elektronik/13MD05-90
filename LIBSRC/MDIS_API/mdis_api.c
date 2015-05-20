@@ -315,6 +315,10 @@ static int32 ReadDesc( const char *name, int32 *lenP, char **dataP )
 		goto error;
 
 	*lenP = len;
+
+	if( descFp ) 
+	  fclose( descFp );
+
 	return 0;
 
  error:
@@ -322,7 +326,9 @@ static int32 ReadDesc( const char *name, int32 *lenP, char **dataP )
 		free( *dataP );
 		*dataP = NULL;
 	}
-	if( descFp ) fclose( descFp );
+
+        if( descFp )
+          fclose( descFp );
 
 	return rv;
 }
