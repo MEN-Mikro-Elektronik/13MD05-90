@@ -1,4 +1,5 @@
-SCAN_BBIS_NAME_SCAN_BBIS_INSTANCE {
+
+mezz_cham_SCAN_BBIS_INSTANCE {
 
     # ------------------------------------------------------------------------
     #        general parameters (don't modify)
@@ -6,13 +7,14 @@ SCAN_BBIS_NAME_SCAN_BBIS_INSTANCE {
     DESC_TYPE = U_INT32 0x2
     HW_TYPE = STRING CHAMELEON_PCITBL
     _WIZ_MODEL = STRING SCAN_WIZ_MODEL
-    _WIZ_BUSIF = STRING cpu,0
+    _WIZ_BUSIF = STRING SCAN_WIZ_BUSIF
 
     # ------------------------------------------------------------------------
     #  		PCI configuration
     # ------------------------------------------------------------------------
     PCI_BUS_NUMBER = U_INT32 SCAN_PCI_BUS_NR
     PCI_DEVICE_NUMBER = U_INT32 SCAN_PCI_DEV_NR
+    PCI_BUS_SLOT = U_INT32 SCAN_PCI_BUS_SLOT
 
     # ------------------------------------------------------------------------
     #        Chameleon BBIS Device: 

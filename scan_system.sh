@@ -85,6 +85,14 @@ G_SmBusNumber=0
 G_bus_slot_count=0
 G_primPciPath=0
 
+# counting PCI_BUS_SLOT number for cPCI Standard cards like F210. Begins per
+# default at 2 (1 = system slot)
+G_cPciRackSlotStandard=2
+
+# counting PCI_BUS_SLOT number for cPCI Serial cards like G215
+# default at 2 (1 = system slot)
+G_cPciRackSlotSerial=2
+
 # lists for driver/library/program mak files
 G_makefileLlDriver=""
 G_makefileLlTool=""
@@ -131,18 +139,18 @@ function usage {
 # parameters: $1     found string
 #
 function check_if_men_cpu {
-	detectedCpu=$1
-	for i in $CPU_KNOWN_BOARDS;
-	do
-		debug_print "\$i = $i  detectedCpu = $detectedCpu"
-		if [ "$i" == "$detectedCpu" ] ; then
-			G_cpu=$i;
-			echo "found matching CPU: $i"
-			break
-		else
-			G_cpu="";
-		fi
-	done
+    detectedCpu=$1
+    for i in $CPU_KNOWN_BOARDS;
+    do
+	debug_print "\$i = $i  detectedCpu = $detectedCpu"
+	if [ "$i" == "$detectedCpu" ] ; then
+	    G_cpu=$i;
+	    echo "found matching CPU: $i"
+	    break
+	else
+	    G_cpu="";
+	fi
+    done
 }
 
 
@@ -161,7 +169,7 @@ function detect_board_id {
     if [ -e "$MOD_DIR/kernel/drivers/i2c/busses/i2c-isch.ko" ]; then
         modprobe i2c-isch
     fi
-    if [ -e "$MOD_DIR/kernel/drivers/i2c/busses/i2c-piix4.ko" ]; then	
+    if [ -e "$MOD_DIR/kernel/drivers/i2c/busses/i2c-piix4.ko" ]; then
         modprobe i2c-piix4 # SC24 SMB controller. Use 13SC24-90 modified driver!
     fi
 
@@ -174,7 +182,7 @@ function detect_board_id {
 	    RES=`i2cdump -r 9-12 -y $smbus $adrs b | tail -n 1 | awk '{print $6}'`
 
 	    check_if_men_cpu $RES
-	    
+
 	    if [[ $SCAN_SIM == 1 && $smbus == $SCAN_SIM_SMBUS ]]; then
 		G_cpu=$SCAN_SIM_CPU
 		echo "- simulating CPU $G_cpu on bus $smbus"
@@ -185,7 +193,7 @@ function detect_board_id {
 		break
 	    fi
 	done;
-	
+
 	# board found ? break outer loop
 	if [ "$G_cpu" != "" ]; then
 	    break
@@ -284,31 +292,84 @@ function create_entry_dsc_cpu_type {
 # $4 PCI bus number        (subst. SCAN_PCI_BUS_NR  )
 # $5 PCI device nr..       (subst. SCAN_PCI_DEV_NR  )
 # $6 DEVICE_IDV2_x array of found IP cores inside this BBIS device
+#
+# Addendum 05/2015: With the new unified generic mezz_cham carrier we must check
+# if its a cPCI Serial card (G2xx, e.g. G215) or a parallel cPCI card like F2xx.
+# Based on this the position can be rougly estimated on the FPGA file name:
+#  
+#  Example entries for a hybrid backplane: 
+#
+#  standard cPCI slots          cPCI Serial slots
+#   
+# cpu,1 cpu,1 cpu,1 cpu,1       cpu,2 cpu,3 cpu,4 cpu,5      <- _WIZ_BUSIF = STRING ...  
+#   5     4     3     2    SYS    2     3     4     5        <- PCI_BUS_SLOT = U_INT32 ...
+#  ---   ---   ---   ---   ---   
+#  | |   | |   | |   | |   | | 
+#  | |   | |   | |   | |   | | 
+#  | |   | |   | |   | |   | | 
+#  | |   | |   | |   | |   | |  
+#  | |   | |   | |   | |   | |   ----  ----  ----  ----
+#  | |   | |   | |   | |   | |   |  |  |  |  |  |  |  |
+#  ---   ---   ---   ---   ---   ----  ----  ----  ----  
+#
+#  This results in the following algorithm described below. In this script we can 
+#  not detect the true physical slots, so we assign just incrementing slots according to
+#  each card type (cPCI serial, standard cPCI)
 
 function create_entry_dsc_bbis_cham {
     echo "create chameleon BBIS device..."
     debug_args " \$1 = $1  \$2 = $2  \$3 = $3  \$4 = $4  \$5 = $5  \$6 = $6"
     # BBIS driver name = WIZ_MODEL in lower letters
+    bbis_instance=$2
+    wiz_mod=$3
     pci_busnr=$4
     pci_devnr=$5
     device_id=$6
+    pcibusslot=""
+    
+    # basic algorithm:    
+    # if bbis_name[0] == 'F' then 
+    #      PCI_BUS_SLOT = G_cPciRackSlotStandard
+    #      busif = "cpu,1"
+    #      G_cPciRackSlotStandard++;
+    # else # 'G' -> cPCI Serial
+    #      PCI_BUS_SLOT = G_cPciRackSerialSlot
+    #      busif = "cpu,"$G_cPciRackSerialSlot
+    #      G_cPciRackSerialSlot ++;
+    
+    is_F2xx=`echo $bbis_name | awk '{print substr($1,1,1)}'`
+
+    if [ "$is_F2xx"=="f"  ] ; then
+	pcibusslot=$G_cPciRackSlotStandard
+	busif="cpu,1"     # for standard cPCI always
+	wiz_mod="MEZZ_CHAM"
+	# count to next stndard cPCI slot nr.
+	G_cPciRackSlotStandard=`expr $G_cPciRackSlotStandard + 1`
+    fi
+    if [ "$is_F2xx"=="g"  ] ; then    
+	echo "using Gxxxx definitions" 
+	pcibusslot=$G_cPciRackSlotSerial
+	# on cPCI serial the businterface nr. is equal to its slot.
+	busif="cpu,"$G_cPciRackSlotSerial
+	wiz_mod="MEZZ_CHAM"
+	# count to next cPCI serial slot nr.
+	G_cPciRackSlotSerial=`expr $G_cPciRackSlotSerial + 1`
+    fi
 
     bbis_name=`echo $3 | awk '{print tolower($1)}'`
     # calculate bus_slot from given PCI devnr. on standard backplanes
-    pci_bus_slot=`expr 17 - $pci_devnr`
-
+       
     # cat template to temp file that gets DEVICE_IDV2_xx added after IPcore scan
-
     # unfortunately some FPGA BBIS models dont match the IC file name. E.g. on MM1
     # the IC filename starts with "MM01-IC..." but modelname is just 'fpga'
     if [ "$bbis_name" == "mm01" ]; then
 	tplname=mm1_cham.tpl
     else
-	tplname=f2xx_cham.tpl
+	tplname=mezz_cham.tpl
     fi
 
     # TODO generate the long filter commands dynamically..
-    cat $1/$tplname | sed "s/SCAN_BBIS_NAME/$bbis_name/g;s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_WIZ_MODEL/$3/g;s/SCAN_PCI_BUS_NR/$pci_busnr/g;s/SCAN_PCI_DEV_NR/$pci_devnr/g" > $TMP_BBIS_DSC
+    cat $1/$tplname | sed "s/SCAN_BBIS_INSTANCE/$bbis_instance/g;s/SCAN_WIZ_MODEL/$wiz_mod/g;s/SCAN_WIZ_BUSIF/$busif/g;s/SCAN_PCI_BUS_NR/$pci_busnr/g;s/SCAN_PCI_BUS_SLOT/$pcibusslot/g;s/SCAN_PCI_DEV_NR/$pci_devnr/g" > $TMP_BBIS_DSC
 
 }
 
@@ -333,91 +394,91 @@ function scan_cham_table {
     write_mdis_dsc=$4
 
     while read devline; do
-		if [ "$do_parse" == "1" ]; then
-			ipcore=`echo $devline | awk '{print $3}' | awk '{print substr($1,1,6)}'`
-			devid=`echo $devline | awk '{print $2}' | awk '{print substr($1,5,2)}'`
-			inst_raw=`echo $devline | awk '{print $5}'`
-			instance=`printf "%02x" $inst_raw`
-			is_cham_dev=1
-			isNativeDriver=0
-			case $ipcore in
-				16Z025) # native drivers: add also men_lx_chameleon driver!
-					G_makefileNatDriver+=" DRIVERS/13Z025/driver.mak DRIVERS/CHAMELEON/driver.mak"
-					isNativeDriver=1
-					;;
-				16Z057)
-					G_makefileNatDriver+=" DRIVERS/13Z025/driver.mak DRIVERS/CHAMELEON/driver.mak"
-					isNativeDriver=1
-					;;
-				16Z125)
-					G_makefileNatDriver+=" DRIVERS/13Z025/driver.mak DRIVERS/CHAMELEON/driver.mak"
-					isNativeDriver=1
-					;;
-				16Z001)
-					G_makefileNatDriver+=" DRIVERS/Z001_SMB/driver.mak DRIVERS/CHAMELEON/driver.mak"
-					isNativeDriver=1
-					;;
-				16Z087)
-					G_makefileNatDriver+=" DRIVERS/ETH_16Z077/DRIVER/driver.mak DRIVERS/CHAMELEON/driver.mak"
-					isNativeDriver=1
-					;;
-				16Z077)
-					G_makefileNatDriver+=" DRIVERS/ETH_16Z077/DRIVER/driver.mak DRIVERS/CHAMELEON/driver.mak"
-					isNativeDriver=1
-					;;
-				16Z034) # GPIO
-					;;
-				16Z037) # GPIO serial
-					;;
-				16Z029) # CAN
-					;;
-				16Z076) # QSPIM
-					;;
-				*)  # skip other IP cores not handled above
-					debug_print "omitting IP core $ipcore"
-					is_cham_dev=0
-					;;
-			esac
+	if [ "$do_parse" == "1" ]; then
+	    ipcore=`echo $devline | awk '{print $3}' | awk '{print substr($1,1,6)}'`
+	    devid=`echo $devline | awk '{print $2}' | awk '{print substr($1,5,2)}'`
+	    inst_raw=`echo $devline | awk '{print $5}'`
+	    instance=`printf "%02x" $inst_raw`
+	    is_cham_dev=1
+	    isNativeDriver=0
+	    case $ipcore in
+		16Z025) # native drivers: add also men_lx_chameleon driver!
+		    G_makefileNatDriver+=" DRIVERS/13Z025/driver.mak DRIVERS/CHAMELEON/driver.mak"
+		    isNativeDriver=1
+		    ;;
+		16Z057)
+		    G_makefileNatDriver+=" DRIVERS/13Z025/driver.mak DRIVERS/CHAMELEON/driver.mak"
+		    isNativeDriver=1
+		    ;;
+		16Z125)
+		    G_makefileNatDriver+=" DRIVERS/13Z025/driver.mak DRIVERS/CHAMELEON/driver.mak"
+		    isNativeDriver=1
+		    ;;
+		16Z001)
+		    G_makefileNatDriver+=" DRIVERS/Z001_SMB/driver.mak DRIVERS/CHAMELEON/driver.mak"
+		    isNativeDriver=1
+		    ;;
+		16Z087)
+		    G_makefileNatDriver+=" DRIVERS/ETH_16Z077/DRIVER/driver.mak DRIVERS/CHAMELEON/driver.mak"
+		    isNativeDriver=1
+		    ;;
+		16Z077)
+		    G_makefileNatDriver+=" DRIVERS/ETH_16Z077/DRIVER/driver.mak DRIVERS/CHAMELEON/driver.mak"
+		    isNativeDriver=1
+		    ;;
+		16Z034) # GPIO
+		    ;;
+		16Z037) # GPIO serial
+		    ;;
+		16Z029) # CAN
+		    ;;
+		16Z076) # QSPIM
+		    ;;
+		*)  # skip other IP cores not handled above
+		    debug_print "omitting IP core $ipcore"
+		    is_cham_dev=0
+		    ;;
+	    esac
 
-			if [ "$is_cham_dev" == "1" ] ; then
-				G_deviceIdV2+=" 0x$devid$instance"
-				if [ $write_mdis_dsc == "1" ]; then
-					bbis_name=`echo $fpga_file | awk '{print tolower($1)}'`
+	    if [ "$is_cham_dev" == "1" ] ; then
+		G_deviceIdV2+=" 0x$devid$instance"
+		if [ $write_mdis_dsc == "1" ]; then
+		    bbis_name=`echo $fpga_file | awk '{print tolower($1)}'`
 	            # special case MM1: MM1 FPGA BBIS model is not 'mm01_x', just 'fpga'. So
-				# naming the BBIS section 'mm01_x' would cause mdiswiz to refuse loading devices.
+		    # naming the BBIS section 'mm01_x' would cause mdiswiz to refuse loading devices.
 
-				# TODO generate the long sed filter commands dynamically..
-				if [ "$bbis_name" == "mm01" ]; then
-					cat $1/$ipcore.tpl | sed "s/SCAN_MDIS_INSTANCE/$G_mdisInstanceCount/g;s/SCAN_BBIS_NAME/fpga/g;s/USCORESCAN_BBIS_INSTANCE//g;s/SCAN_DEV_SLOT/$G_bus_slot_count/g;" >> $DSC_FILE
-				else
-				      cat $1/$ipcore.tpl | sed "s/SCAN_MDIS_INSTANCE/$G_mdisInstanceCount/g;s/SCAN_BBIS_NAME/$bbis_name/g;s/USCORESCAN_BBIS_INSTANCE/_$bbis_instance/g;s/SCAN_DEV_SLOT/$G_bus_slot_count/g;" >> $DSC_FILE
-				fi
+		    # TODO generate the long sed filter commands dynamically..
+		    if [ "$bbis_name" == "mm01" ]; then
+			cat $1/$ipcore.tpl | sed "s/SCAN_MDIS_INSTANCE/$G_mdisInstanceCount/g;s/SCAN_BBIS_NAME/fpga/g;s/USCORESCAN_BBIS_INSTANCE//g;s/SCAN_DEV_SLOT/$G_bus_slot_count/g;" >> $DSC_FILE
+		    else
+			cat $1/$ipcore.tpl | sed "s/SCAN_MDIS_INSTANCE/$G_mdisInstanceCount/g;s/SCAN_BBIS_NAME/$bbis_name/g;s/USCORESCAN_BBIS_INSTANCE/_$bbis_instance/g;s/SCAN_DEV_SLOT/$G_bus_slot_count/g;" >> $DSC_FILE
+		    fi
 
-			       G_bus_slot_count=`expr $G_bus_slot_count + 1`
-				G_mdisInstanceCount=`expr $G_mdisInstanceCount + 1`
+		    G_bus_slot_count=`expr $G_bus_slot_count + 1`
+		    G_mdisInstanceCount=`expr $G_mdisInstanceCount + 1`
 
                     # collect non native drivers .mak macro definitions from xml files
-					if [ "$isNativeDriver" == "0"  ]; then
-						xmlfile=`fgrep $ipcore $MEN_LIN_DIR/PACKAGE_DESC/* | head -n 1 | awk '{print $1}' | sed "s/://"`
+		    if [ "$isNativeDriver" == "0"  ]; then
+			xmlfile=`fgrep $ipcore $MEN_LIN_DIR/PACKAGE_DESC/* | head -n 1 | awk '{print $1}' | sed "s/://"`
                         # the name is not always "driver.mak" e.g. CAN: driver_boromir.mak.
 
-						lldrv=`fgrep ".mak" $xmlfile | grep DRIVER | sed "s/<makefilepath>//;s/<\/makefilepath>//"`
-						G_makefileLlDriver+=" "$lldrv
+			lldrv=`fgrep ".mak" $xmlfile | grep DRIVER | sed "s/<makefilepath>//;s/<\/makefilepath>//"`
+			G_makefileLlDriver+=" "$lldrv
 
-						lltool=`fgrep "program.mak" $xmlfile | sed "s/<makefilepath>//;s/<\/makefilepath>//"`
-						G_makefileLlTool+=" "$lltool
-						usrlib=`fgrep "library.mak" $xmlfile | sed "s/<makefilepath>//;s/<\/makefilepath>//"`
-						G_makefileUsrLibs+=" "$usrlib
-					fi
-				fi
-			fi
-		fi # do_parse
+			lltool=`fgrep "program.mak" $xmlfile | sed "s/<makefilepath>//;s/<\/makefilepath>//"`
+			G_makefileLlTool+=" "$lltool
+			usrlib=`fgrep "library.mak" $xmlfile | sed "s/<makefilepath>//;s/<\/makefilepath>//"`
+			G_makefileUsrLibs+=" "$usrlib
+		    fi
+		fi
+	    fi
+	fi # do_parse
 
         # skip to begin of IP cores table
-		delimiter=`echo $devline | awk '{print $1}'`
-		if [ $delimiter == "---" ]; then
+	delimiter=`echo $devline | awk '{print $1}'`
+	if [ $delimiter == "---" ]; then
             do_parse=1
-		fi
+	fi
 
     done < $TMP_CHAM_TBL
 }
@@ -448,7 +509,7 @@ function scan_cham_table {
 # $5  PCI subvendor
 # $6  instance count
 # $7  pci primary path
-# $8  pci bus nr. 
+# $8  pci bus nr.
 function check_for_cham_devs {
     debug_args "PCIvd.$2 PCIdev. $3 PCIdevnr $4  PCIsubv $5 instance $6  PCIprimPath $7"
     cham_file=""
@@ -458,25 +519,27 @@ function check_for_cham_devs {
     $1/BIN/$FPGA_LOAD $2 $3 $5 0 -t > /dev/null
     if [[ $? == "0" || "$SCAN_SIM" == "1" ]]; then
         # store temp. cham table ( '>' to start new file!)
-		if [ "$SCAN_SIM" == "0" ]; then
+	if [ "$SCAN_SIM" == "0" ]; then
             $1/BIN/$FPGA_LOAD $2 $3 $5 0 -t > $TMP_CHAM_TBL
-		fi
+	fi
 
         # extract board name from 'file='
-        cham_file=`fgrep "file=" $TMP_CHAM_TBL | awk '{print substr($1,6,4)}'`
-        debug_print "cham_file = $cham_file (= _WIZ_MODEL)"
+        # cham_file=`fgrep "file=" $TMP_CHAM_TBL | awk '{print substr($1,6,4)}'`
+	# ts: new generic chameleon carrier is named mezz_cham_<instance>
+	cham_file="mezz_cham"
+	debug_print "cham_file = $cham_file (= _WIZ_MODEL)"
         inst_count=$6
 
         G_bus_slot_count=0 # in next BBIS carrier PCI_BUS_SLOT starts at 0 again
         G_deviceIdV2=""    # clear list of IDs for next BBIS
 
 	# gather DEVICE_IDV2 data for this BBIS first
-		scan_cham_table $DSC_TPL_DIR $cham_file $inst_count 0
+	scan_cham_table $DSC_TPL_DIR $cham_file $inst_count 0
 
-        # Now add the found device IDs to temporary BBIS des file
+        # Now add the found device IDs to temporary BBIS desc file
         create_entry_dsc_bbis_cham $DSC_TPL_DIR $6 $cham_file $7 $4
 	for id in $G_deviceIdV2; do
-        # format data into a DEVICE_IDV2 entry and add same scan tag in next line
+            # format data into a DEVICE_IDV2 entry and add same scan tag in next line
             idv2line="    DEVICE_IDV2_$device_id_count = U_INT32 $id\n#SCAN_NEXT_DEVID"
             sed -i.bak "s/#SCAN_NEXT_DEVID/$idv2line/g" $TMP_BBIS_DSC
             device_id_count=`expr $device_id_count + 1`
@@ -537,8 +600,8 @@ function create_entry_dsc_f207 {
 # F-Cards have a BMC, some dont (F21P). bundle necessary mak file adding here
 #
 function add_xm01bc_support {
-	G_makefileLlTool+=" XM01BC/TOOLS/XM01BC_CTRL/COM/program.mak"
-	G_makefileLlDriver+=" XM01BC/DRIVER/COM/driver.mak"
+    G_makefileLlTool+=" XM01BC/TOOLS/XM01BC_CTRL/COM/program.mak"
+    G_makefileLlDriver+=" XM01BC/DRIVER/COM/driver.mak"
 }
 
 ############################################################################
@@ -546,8 +609,8 @@ function add_xm01bc_support {
 # F-Cards have a BMC, some dont (F21P). bundle necessary mak file adding here
 #
 function add_f14bc_support {
-	G_makefileLlTool+=" F14BC/TOOLS/F14BC_CTRL/COM/program.mak"
-	G_makefileLlDriver+=" F14BC/DRIVER/COM/driver.mak"
+    G_makefileLlTool+=" F14BC/TOOLS/F14BC_CTRL/COM/program.mak"
+    G_makefileLlDriver+=" F14BC/DRIVER/COM/driver.mak"
 }
 
 ############################################################################
@@ -555,7 +618,7 @@ function add_f14bc_support {
 # F-Cards have a BMC, some dont (F21P). bundle necessary mak file adding here
 #
 function add_z001_io_support {
-	G_makefileNatDriver+=" DRIVERS/Z001_SMB/driver_g2x.mak DRIVERS/CHAMELEON/driver.mak"
+    G_makefileNatDriver+=" DRIVERS/Z001_SMB/driver_g2x.mak DRIVERS/CHAMELEON/driver.mak"
 }
 
 
@@ -584,8 +647,8 @@ function scan_for_pci_devs {
     bus_path_sec_f223=0
 
     while read line; do
-    # Nr.|bus|dev|fun| Ven ID | Dev ID | SubVen ID |
-    #  25   5  15   0  0x12d8   0xe110    0x0000
+	# Nr.|bus|dev|fun| Ven ID | Dev ID | SubVen ID |
+	#  25   5  15   0  0x12d8   0xe110    0x0000
         listnr=`echo $line | awk '{print $1}'`
         pcibus=`echo $line | awk '{print $2}'`
         pcidevnr=`echo $line | awk '{print $3}'`
@@ -615,15 +678,15 @@ function scan_for_pci_devs {
             fi
         fi
 
-		# does a PP04 show up ?
+	# does a PP04 show up ?
         if [ "$state_check_pp04" == "1" ]; then
             # previous line was a F207. Do we find a PP04 now? PP04 has V0 cham table.
             if [ "$pcivend"=="0x1172" ] && [ "$pcidevid"=="0x000c" ] && [ "$pcisubvend"=="0x4d45" ]; then
-				echo "Found PP04 MVB card. adding dsc entries for F207 and PP04."
-				count_pp04_devs=`expr $count_pp04_devs + 1`
+		echo "Found PP04 MVB card. adding dsc entries for F207 and PP04."
+		count_pp04_devs=`expr $count_pp04_devs + 1`
                 create_entry_dsc_f207 $DSC_TPL_DIR $count_instance_f207 $bus_path_prim $bus_path_sec
                 create_entry_dsc_pp04 $DSC_TPL_DIR $count_pp04_devs $count_instance_f207
-	        else # other device showed up in between -> its no F223.
+	    else # other device showed up in between -> its no F223.
                 state_check_pp04=0
             fi
         fi
@@ -632,24 +695,24 @@ function scan_for_pci_devs {
         ############################
         # state events
 
-		# check if a F223 starts here
+	# check if a F223 starts here
         if [ "$pcivend" == "0x12d8" ] && [ "$pcidevid" == "0xe110" ]; then
             echo "Found Pericom PCI bridge. Keep looking if F223 appears"
-                        # store PCI devnr. in case its a F223
+            # store PCI devnr. in case its a F223
             bus_path_sec_f223=$pcidevnr
             state_check_f223=1
         fi
 
-		# check if TI Bridge (=F207), if so check if a PP04 follows next
+	# check if TI Bridge (=F207), if so check if a PP04 follows next
         if [ "$pcivend" == "0x104c" ] && [ "$pcidevid" == "0xac28" ]; then
             echo "Found TI2050 PCI bridge, possibly F207. Keep looking if PP04 appears."
-                       # store PCI devnr. in case its a F223
-			bus_path_sec=$pcidevnr
-			count_instance_f207=`expr $count_instance_f207 + 1`
+            # store PCI devnr. in case its a F223
+	    bus_path_sec=$pcidevnr
+	    count_instance_f207=`expr $count_instance_f207 + 1`
             state_check_pp04=1
         fi
 
-        # any other F2xx carrier ?
+        # any other F2xx/G2xx carrier (mezzanine chameleon) ?
         if [ "$pcivend" == "0x1172" ] && [ "$pcidevid" == "0x4d45" ] || [ "$pcivend" == "0x1a88" ]; then
             count_instance_f2xx=`expr $count_instance_f2xx + 1`
             echo "Found possible MEN chameleon device(s), checking."
@@ -688,7 +751,7 @@ function create_makefile {
     kern_dir=`echo "$LIN_SRC_DIR" | sed "s/\//@/g"`
     sed -i.bak "s/SCAN_LIN_KERNEL_DIR/$kern_dir/g" $TMP_MAKE_FILE
 
-	# insert all collected BBIS drivers into Makefile
+    # insert all collected BBIS drivers into Makefile
     for i in $G_makefileBbisDriver; do
 	debug_print "checking bbis driver: $i"
         if [ -f $MEN_LIN_DIR/DRIVERS/BBIS/$i ]; then
@@ -696,11 +759,11 @@ function create_makefile {
             subs=`echo "     $i" | sed "s/\//@/g"`
             sed -i.bak "s/#SCAN_NEXT_BB_DRIVER/$subs\n#SCAN_NEXT_BB_DRIVER/g" $TMP_MAKE_FILE
         else
-			debug_print "BB driver '$i' not found in MDIS tree, skipping."
+	    debug_print "BB driver '$i' not found in MDIS tree, skipping."
         fi
     done
 
-	# insert all collected LL drivers into Makefile
+    # insert all collected LL drivers into Makefile
     for i in $G_makefileLlDriver; do
 	debug_print "checking LL driver: $i"
         if [ -f $MEN_LIN_DIR/DRIVERS/MDIS_LL/$i ]; then
@@ -712,7 +775,7 @@ function create_makefile {
         fi
     done
 
-	# insert all collected LL Tools into Makefile
+    # insert all collected LL Tools into Makefile
     for i in $G_makefileLlTool; do
         if [ -f $MEN_LIN_DIR/DRIVERS/MDIS_LL/$i ]; then
             debug_print "ll tool: $i"
@@ -723,7 +786,7 @@ function create_makefile {
         fi
     done
 
-	# insert all collected native drivers into Makefile
+    # insert all collected native drivers into Makefile
     for i in $G_makefileNatDriver; do
         if [ -f $MEN_LIN_DIR/$i ]; then
             debug_print "native driver: $i"
@@ -772,8 +835,8 @@ echo "============================================================"
 echo
 
 if [ $# -lt 1 ]; then
-	usage
-	exit 1
+    usage
+    exit 1
 fi
 
 VERBOSE_PRINT=$2
@@ -791,11 +854,11 @@ debug_print "MEN_LIN_DIR = $1"
 # prerequisites
 #
 if [[ -e "$DSC_FILE" && $SCAN_SIM == 0 ]]; then
-	echo "backing up system.dsc..."
+    echo "backing up system.dsc..."
     mv $DSC_FILE $DSC_FILE.bak
 fi
 if [[ -e "$MAKE_FILE" && $SCAN_SIM == 0 ]]; then
-	echo "backing up Makefile..."
+    echo "backing up Makefile..."
     mv $MAKE_FILE $MAKE_FILE.bak
 fi
 
@@ -806,7 +869,7 @@ if [ "$PCI_DRYTEST" == "" ]; then
         rm $TMP_PCIDEVS
     fi
     if [ $SCAN_SIM == 0 ]; then
-		$MEN_LIN_DIR/BIN/$FPGA_LOAD -s > $TMP_PCIDEVS
+	$MEN_LIN_DIR/BIN/$FPGA_LOAD -s > $TMP_PCIDEVS
     fi
 
 else
@@ -871,172 +934,172 @@ bCreateF14bcDrv=0
 #unfortunately some F-cards seem to be have IDs with and without '0' (marketing name)
 case $main_cpu in
     SC24)
-		wiz_model_cpu=SC24_BC2_BCxx
-		wiz_model_smb=SMBPCI_FCH
-		;;
+	wiz_model_cpu=SC24_BC2_BCxx
+	wiz_model_smb=SMBPCI_FCH
+	;;
     F011)
-		wiz_model_cpu=F11S
-		wiz_model_smb=SMBPCI_SCH
-		G_primPciPath=0x3c
-		bCreateXm01bcDrv=1
-		add_xm01bc_support
-		;;
+	wiz_model_cpu=F11S
+	wiz_model_smb=SMBPCI_SCH
+	G_primPciPath=0x3c
+	bCreateXm01bcDrv=1
+	add_xm01bc_support
+	;;
     F11S)
-		wiz_model_cpu=F11S
-		wiz_model_smb=SMBPCI_SCH
-		G_primPciPath=0x3c
-		bCreateXm01bcDrv=1
-		add_xm01bc_support
-		;;
+	wiz_model_cpu=F11S
+	wiz_model_smb=SMBPCI_SCH
+	G_primPciPath=0x3c
+	bCreateXm01bcDrv=1
+	add_xm01bc_support
+	;;
     F14)
-		wiz_model_cpu=F14
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1e
-		add_xm01bc_support
-		bCreateXm01bcDrv=1
-		;;
+	wiz_model_cpu=F14
+	wiz_model_smb=SMBPCI_ICH
+	G_primPciPath=0x1e
+	add_xm01bc_support
+	bCreateXm01bcDrv=1
+	;;
     F014)
-		wiz_model_cpu=F14
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1e
-		bCreateXm01bcDrv=1
-		add_xm01bc_support
-		;;
+	wiz_model_cpu=F14
+	wiz_model_smb=SMBPCI_ICH
+	G_primPciPath=0x1e
+	bCreateXm01bcDrv=1
+	add_xm01bc_support
+	;;
     F15)
-		wiz_model_cpu=F15
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1e
-		bCreateXm01bcDrv=1
-		add_xm01bc_support
-		;;
+	wiz_model_cpu=F15
+	wiz_model_smb=SMBPCI_ICH
+	G_primPciPath=0x1e
+	bCreateXm01bcDrv=1
+	add_xm01bc_support
+	;;
     F015)
-		wiz_model_cpu=F15
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1e
-		bCreateXm01bcDrv=1
-		add_xm01bc_support
-		;;
+	wiz_model_cpu=F15
+	wiz_model_smb=SMBPCI_ICH
+	G_primPciPath=0x1e
+	bCreateXm01bcDrv=1
+	add_xm01bc_support
+	;;
     F17)
-		wiz_model_cpu=F17
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1e
-		bCreateF14bcDrv=1
-		add_f14bc_support
-		;;
+	wiz_model_cpu=F17
+	wiz_model_smb=SMBPCI_ICH
+	G_primPciPath=0x1e
+	bCreateF14bcDrv=1
+	add_f14bc_support
+	;;
     F017)
-		wiz_model_cpu=F17
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1e
-		bCreateF14bcDrv=1
-		add_f14bc_support
-		;;
+	wiz_model_cpu=F17
+	wiz_model_smb=SMBPCI_ICH
+	G_primPciPath=0x1e
+	bCreateF14bcDrv=1
+	add_f14bc_support
+	;;
     F19P)
-		wiz_model_cpu=F19P_F19C
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1e
-		bCreateXm01bcDrv=1
-		add_xm01bc_support
-		;;
+	wiz_model_cpu=F19P_F19C
+	wiz_model_smb=SMBPCI_ICH
+	G_primPciPath=0x1e
+	bCreateXm01bcDrv=1
+	add_xm01bc_support
+	;;
     F19C)
-		wiz_model_cpu=F19P_F19C
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1e
-		bCreateXm01bcDrv=1
-		add_xm01bc_support
-		;;
+	wiz_model_cpu=F19P_F19C
+	wiz_model_smb=SMBPCI_ICH
+	G_primPciPath=0x1e
+	bCreateXm01bcDrv=1
+	add_xm01bc_support
+	;;
     F019)
-		wiz_model_cpu=F19P_F19C
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1e
-		bCreateXm01bcDrv=1
-		add_xm01bc_support
-		;;
+	wiz_model_cpu=F19P_F19C
+	wiz_model_smb=SMBPCI_ICH
+	G_primPciPath=0x1e
+	bCreateXm01bcDrv=1
+	add_xm01bc_support
+	;;
     F21P)
-		wiz_model_cpu=F21P_F21C
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1e
-		wiz_model_busif=0
-		;;
+	wiz_model_cpu=F21P_F21C
+	wiz_model_smb=SMBPCI_ICH
+	G_primPciPath=0x1e
+	wiz_model_busif=0
+	;;
     F21C)
-		wiz_model_cpu=F21P_F21C
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1e
-		wiz_model_busif=0
-		;;
+	wiz_model_cpu=F21P_F21C
+	wiz_model_smb=SMBPCI_ICH
+	G_primPciPath=0x1e
+	wiz_model_busif=0
+	;;
     F021)
-		wiz_model_cpu=F21P_F21C
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1e
-		wiz_model_busif=0
-	        ;;
+	wiz_model_cpu=F21P_F21C
+	wiz_model_smb=SMBPCI_ICH
+	G_primPciPath=0x1e
+	wiz_model_busif=0
+	;;
     F23P)
-                wiz_model_cpu=F23P
-                wiz_model_smb=SMBPCI_ICH
-                G_primPciPath=0x1e
-                wiz_model_busif=0
-                ;;
+        wiz_model_cpu=F23P
+        wiz_model_smb=SMBPCI_ICH
+        G_primPciPath=0x1e
+        wiz_model_busif=0
+        ;;
     F075)
-		wiz_model_cpu=F75P
-		wiz_model_smb=SMBPCI_SCH
-		G_primPciPath=0x18
-		bCreateXm01bcDrv=1
-		add_xm01bc_support
-		;;
+	wiz_model_cpu=F75P
+	wiz_model_smb=SMBPCI_SCH
+	G_primPciPath=0x18
+	bCreateXm01bcDrv=1
+	add_xm01bc_support
+	;;
     XM01)
-		wiz_model_cpu=XM1
-		wiz_model_smb=SMBPCI_SCH
-		bCreateXm01bcDrv=1
-		add_xm01bc_support
-		;;
+	wiz_model_cpu=XM1
+	wiz_model_smb=SMBPCI_SCH
+	bCreateXm01bcDrv=1
+	add_xm01bc_support
+	;;
     MM01)
-		wiz_model_cpu=MM1
-		wiz_model_smb=SMBPCI_SCH
-		G_primPciPath=0x1c
-		bCreateXm01bcDrv=1
-		add_xm01bc_support
-		;;
+	wiz_model_cpu=MM1
+	wiz_model_smb=SMBPCI_SCH
+	G_primPciPath=0x1c
+	bCreateXm01bcDrv=1
+	add_xm01bc_support
+	;;
     G20-)
-		wiz_model_cpu=G20
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1c
-		wiz_model_busif=7
-		add_z001_io_support
-		;;
+	wiz_model_cpu=G20
+	wiz_model_smb=SMBPCI_ICH
+	G_primPciPath=0x1c
+	wiz_model_busif=7
+	add_z001_io_support
+	;;
     G22-)
-		wiz_model_cpu=G20
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1c
-		wiz_model_busif=7
-		add_z001_io_support
-		;;
+	wiz_model_cpu=G20
+	wiz_model_smb=SMBPCI_ICH
+	G_primPciPath=0x1c
+	wiz_model_busif=7
+	add_z001_io_support
+	;;
     *)
-		echo "No F1x CPU type found!"
-		;;
+	echo "No F1x CPU type found!"
+	;;
 esac
 
 debug_print "Using _WIZ_MODEL = $wiz_model_cpu"
 
 if [ "$main_cpu" == "SC24" ]; then
-	map_sc24_fpga
-	cat $DSC_TPL_DIR/sc24.tpl >> $DSC_FILE
-	cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE
+    map_sc24_fpga
+    cat $DSC_TPL_DIR/sc24.tpl >> $DSC_FILE
+    cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE
 else
     #all other CPUs: detect PCI boards, start with CPU/SMB drivers
-	create_entry_dsc_cpu_type $DSC_TPL_DIR $wiz_model_cpu
-	create_entry_dsc_smb_type $DSC_TPL_DIR $G_SmBusNumber $wiz_model_smb $wiz_model_busif
-	if [ $bCreateXm01bcDrv == 1 ]; then
-		create_entry_dsc_smb_drv  $DSC_TPL_DIR $G_SmBusNumber xm01bc_1 XM01BC XM01BC
-	fi
-	if [ $bCreateF14bcDrv == 1 ]; then
-		create_entry_dsc_smb_drv  $DSC_TPL_DIR $G_SmBusNumber f14bc_1 F14BC F14BC
-	fi
+    create_entry_dsc_cpu_type $DSC_TPL_DIR $wiz_model_cpu
+    create_entry_dsc_smb_type $DSC_TPL_DIR $G_SmBusNumber $wiz_model_smb $wiz_model_busif
+    if [ $bCreateXm01bcDrv == 1 ]; then
+	create_entry_dsc_smb_drv  $DSC_TPL_DIR $G_SmBusNumber xm01bc_1 XM01BC XM01BC
+    fi
+    if [ $bCreateF14bcDrv == 1 ]; then
+	create_entry_dsc_smb_drv  $DSC_TPL_DIR $G_SmBusNumber f14bc_1 F14BC F14BC
+    fi
     # add the SMB2 userland API too
-	G_makefileUsrLibs+=" SMB2_API/COM/library.mak"
-	echo " Scanning for MEN PCI devices: "
-	scan_for_pci_devs $G_primPciPath
+    G_makefileUsrLibs+=" SMB2_API/COM/library.mak"
+    echo " Scanning for MEN PCI devices: "
+    scan_for_pci_devs $G_primPciPath
 
     # dsc section build done, now create the Makefile
-	create_makefile
+    create_makefile
 fi
 echo "finished."
 sudo chmod 777 *
