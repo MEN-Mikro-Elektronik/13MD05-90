@@ -39,7 +39,7 @@ MOD_DIR=/lib/modules/`uname -r`
 
 # currently detected CPU boards. ADD NEW BOARDS HERE!
 # also take care for special (native) driver adding etc.
-CPU_KNOWN_BOARDS="SC24 F011 F11S F14- F014 F15- F015 F17- F017 F075 F19P F19C F019 F21P F22P F23P F21C F021 XM01 MM01 G20- G22-"
+CPU_KNOWN_BOARDS="SC25 SC24 F011 F11S F14- F014 F15- F015 F17- F017 F075 F19P F19C F019 F21P F22P F23P F21C F021 XM01 MM01 G20- G22-"
 
 # which SMB adresses to scan for CPU ID eeproms
 ID_EEPROM_ADRESSES="0x57 0x55"
@@ -934,9 +934,13 @@ bCreateF14bcDrv=0
 #unfortunately some F-cards seem to be have IDs with and without '0' (marketing name)
 case $main_cpu in
     SC24)
-	wiz_model_cpu=SC24_BC2_BCxx
+	wiz_model_cpu=Bx50x
 	wiz_model_smb=SMBPCI_FCH
 	;;
+    SC25)
+        wiz_model_cpu=Bx70x
+        wiz_model_smb=SMBPCI_FCH
+        ;;
     F011)
 	wiz_model_cpu=F11S
 	wiz_model_smb=SMBPCI_SCH
@@ -1032,14 +1036,14 @@ case $main_cpu in
 	G_primPciPath=0x1e
 	wiz_model_busif=0
 	;;
-    F23P)
-        wiz_model_cpu=F23P
+    F22P)
+        wiz_model_cpu=F22P
         wiz_model_smb=SMBPCI_ICH
         G_primPciPath=0x1e
         wiz_model_busif=0
         ;;
-    F22P)
-        wiz_model_cpu=F22P
+    F23P)
+        wiz_model_cpu=F23P
         wiz_model_smb=SMBPCI_ICH
         G_primPciPath=0x1e
         wiz_model_busif=0
@@ -1085,9 +1089,14 @@ esac
 
 debug_print "Using _WIZ_MODEL = $wiz_model_cpu"
 
+# create SC24 based Bx50x CPU model
 if [ "$main_cpu" == "SC24" ]; then
     map_sc24_fpga
-    cat $DSC_TPL_DIR/sc24.tpl >> $DSC_FILE
+    cat $DSC_TPL_DIR/sc24.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
+    cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE
+# create SC25 based Bx70x CPU model - no FPGA mapping necessary here
+elif  [ "$main_cpu" == "SC25" ]; then 
+    cat $DSC_TPL_DIR/sc24.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
     cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE
 else
     #all other CPUs: detect PCI boards, start with CPU/SMB drivers
