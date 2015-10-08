@@ -2,8 +2,7 @@
 /*!
  *        \file  vme4l-tsi148.c
  *
- *      \author  Stephan Vogel / Ralf Trübenbach
- *        $Date: 2010/10/22 11:36:12 $
+ *      \author  Ralf Truebenbach / T. Schnuerer
  *
  *        \brief MEN VME bridge driver for Tundra TSI148 (A17/A19/A20...).
  *
@@ -14,6 +13,9 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation; version 2 of the License.
  *-------------------------------[ History ]---------------------------------
+ *
+ * 
+ * ------------- now maintained in git ----------------
  * $Log: vme4l-tsi148.c,v $
  * Revision 1.7  2010/10/22 11:36:12  rt
  * R: 1) Cosmetics.
@@ -80,11 +82,8 @@
  * Revision 1.1  2009/02/27 13:59:11  rt
  * Initial Revision (by sv)
  *---------------------------------------------------------------------------
- * (c) Copyright 2008-2009 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
+ * (c) Copyright 2008-2016 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ****************************************************************************/
-#ifndef AUTOCONF_INCLUDED
- #include <linux/config.h>
-#endif
 #include <linux/version.h>
 #include <linux/module.h>
 #include <linux/kernel.h> /* printk() */
