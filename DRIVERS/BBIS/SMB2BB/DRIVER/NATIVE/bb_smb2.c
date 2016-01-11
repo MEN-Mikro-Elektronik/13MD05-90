@@ -607,11 +607,11 @@ static int32 SMB2BB_Init(OSS_HANDLE *osHdl, DESC_SPEC *descSpec,
     spin_lock_init(&G_smb2Lock);
     INIT_LIST_HEAD( &G_smb2ListHead );
 
-	smb2_wq = create_workqueue(BBNAME);
+    smb2_wq = create_workqueue(BBNAME);
 
     /*------------------------------+
-	 |  prepare debugging           |
-	 +------------------------------*/
+     |  prepare debugging           |
+     +------------------------------*/
     DBG_MYLEVEL = OSS_DBG_DEFAULT;	/* set OS specific debug level */
     DBGINIT((NULL,&DBH));
 
@@ -687,9 +687,10 @@ static int32 SMB2BB_BrdExit( BBIS_HANDLE *h )
     /*-----------------------------+
       | detach SMBus clients 	   |
       +-----------------------------*/
+
     i2c_del_driver(&smb2_driver);
-
-
+    flush_workqueue(smb2_wq);
+    destroy_workqueue(smb2_wq);
     return 0;
 }
 
@@ -1321,7 +1322,7 @@ static int oss_smb2_remove(struct i2c_client *client)
     SMB2_I2C_DATA *data = client->data;
 #endif
 
-    printk( KERN_INFO "removing SMBus client: 0x%02x\n", client->addr );
+    printk( KERN_INFO "remove SMB client 0x%02x\n", client->addr );
 
     list_del(&data->node);
     kfree(data);
@@ -1400,8 +1401,8 @@ int32 OSS_GetSmbHdl( OSS_HANDLE *oss, u_int32 busNr, void **smbHdlP)
     /*-----------------------------+
 	 |  populate the SMB functions |
 	 +-----------------------------*/
-    newHdl->Ident  			= 	SMB2BB_Ident;
-    newHdl->Exit 			= 	OSS_SmbExit;
+    newHdl->Ident  		= 	SMB2BB_Ident;
+    newHdl->Exit 		= 	OSS_SmbExit;
     newHdl->QuickComm 		= 	SMB2BB_QuickComm;
     newHdl->WriteByte 		= 	SMB2BB_WriteByte;
     newHdl->ReadByte 		= 	SMB2BB_ReadByte;
@@ -1412,7 +1413,7 @@ int32 OSS_GetSmbHdl( OSS_HANDLE *oss, u_int32 busNr, void **smbHdlP)
     newHdl->WriteBlockData	=	SMB2BB_WriteBlockData;
     newHdl->ReadBlockData	= 	SMB2BB_ReadBlockData;
     newHdl->ProcessCall		= 	SMB2BB_ProcessCall;
-    newHdl->BlockProcessCall= 	SMB2BB_BlockProcessCall;
+    newHdl->BlockProcessCall	= 	SMB2BB_BlockProcessCall;
     newHdl->AlertResponse	= 	NULL;
     newHdl->AlertCbInstall 	= 	NULL;
     newHdl->AlertCbRemove	= 	NULL;
@@ -2042,18 +2043,21 @@ static int32 OSS_SmbExit( void **smbHdlP )
 {
 
     SMB_HANDLE *smbH = (SMB_HANDLE*)*smbHdlP;
-
+    printk("-> OSS_SmbExit called\n");
     /*-----------------------------+
      | detach clients and driver   |
      +-----------------------------*/
     i2c_del_driver(&smb2_driver);
-	destroy_workqueue(smb2_wq);
+
+    flush_workqueue(smb2_wq);
+
+    destroy_workqueue(smb2_wq);
 
     /* free my allocated Memory */
     if (smbH)
-		kfree((void*)smbH);
+	kfree((void*)smbH);
 
-	smbH = NULL;
+    smbH = NULL;
     return(ERR_SUCCESS);
 }
 
