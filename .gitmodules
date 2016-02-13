@@ -1,6 +1,39 @@
 [submodule "TOOLS/MDIS_API"]
 	path = TOOLS/MDIS_API
-	url = http://tschnuerer:AzByCx44@192.168.1.166:7990/scm/mct/mdis_api.git
+	url = ../../mct/mdis_api.git
 [submodule "DRIVERS/BBIS/A12"]
 	path = DRIVERS/BBIS/A12
-	url = http://tschnuerer@192.168.1.166:7990/scm/mc/bbis_drv_a12.git
+	url = ../../mc/bbis_drv_a12.git
+[submodule "DRIVERS/BBIS/A21"]
+	path = DRIVERS/BBIS/A21
+	url = ../../mc/bbis_drv_a21.git
+[submodule "DRIVERS/BBIS/A201"]
+	path = DRIVERS/BBIS/A201
+	url = ../../mc/bbis_drv_a201.git
+[submodule "DRIVERS/BBIS/A203N"]
+	path = DRIVERS/BBIS/A203N
+	url = ../../mc/bbis_drv_a203n.git
+[submodule "DRIVERS/BBIS/CHAMELEON"]
+	path = DRIVERS/BBIS/CHAMELEON
+	url = ../../mc/bbis_drv_chameleon.git
+[submodule "DRIVERS/BBIS/D201"]
+	path = DRIVERS/BBIS/D201
+	url = ../../mc/bbis_drv_d201.git
+[submodule "DRIVERS/BBIS/D203N"]
+	path = DRIVERS/BBIS/D203N
+	url = ../../mc/bbis_drv_d203n.git
+[submodule "DRIVERS/BBIS/D302"]
+	path = DRIVERS/BBIS/D302
+	url = ../../mc/bbis_drv_d302.git
+[submodule "DRIVERS/BBIS/ISA"]
+	path = DRIVERS/BBIS/ISA
+	url = ../../mc/bbis_drv_isa.git
+[submodule "DRIVERS/BBIS/PCI"]
+	path = DRIVERS/BBIS/PCI
+	url = ../../mc/bbis_drv_pci.git
+[submodule "DRIVERS/BBIS/SMBPCI"]
+	path = DRIVERS/BBIS/SMBPCI
+	url = ../../mc/bbis_drv_smbpci.git
+[submodule "INCLUDE/COM/MEN"]
+	path = INCLUDE/COM/MEN
+	url = ../../mc/mdis_inc.git
