@@ -206,7 +206,8 @@ function detect_board_id {
     fi
 }
 
-
+# ts: no more needed on SC24 with new IRQ map/FPGA window opening BIOS, left
+#     for informational purpose (and old prototype hardware out there) 
 ############################################################################
 # Map SC24 FPGA (in case old BIOS is present)
 # the IRQ settings are switched on loading BBIS driver
@@ -263,7 +264,6 @@ function create_entry_dsc_pp04 {
 # $5    WIZ_MODEL
 function create_entry_dsc_smb_drv {
     echo "creating CPU SMB driver section: _WIZ_MODEL = $3, SM Bus nr. = $2"
-
     cat $1/smb_drv.tpl | \
         sed "s/SCAN_DEVNAME/$3/g;s/SCAN_HWTYPE/$4/g;s/SCAN_WIZMODEL/$5/g;s/SCAN_SMBNR/$2/g" >> $DSC_FILE
 }
@@ -1091,12 +1091,12 @@ debug_print "Using _WIZ_MODEL = $wiz_model_cpu"
 
 # create SC24 based Bx50x CPU model
 if [ "$main_cpu" == "SC24" ]; then
-    map_sc24_fpga
+    map_sc24_fpga  # ts: no more needed for new BIOSes but stay compatible with old boards
     cat $DSC_TPL_DIR/sc24.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
     cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE
 # create SC25 based Bx70x CPU model - no FPGA mapping necessary here
 elif  [ "$main_cpu" == "SC25" ]; then 
-    cat $DSC_TPL_DIR/sc24.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
+    cat $DSC_TPL_DIR/sc25.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
     cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE
 else
     #all other CPUs: detect PCI boards, start with CPU/SMB drivers

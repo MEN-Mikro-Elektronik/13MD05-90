@@ -154,4 +154,3 @@ ALL_NATIVE_TOOLS =
 ALL_DESC = system
 
 include $(MEN_LIN_DIR)/BUILD/MDIS/TPL/rules.mak
-
