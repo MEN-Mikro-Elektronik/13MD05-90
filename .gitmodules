@@ -37,3 +37,6 @@
 [submodule "INCLUDE/COM/MEN"]
 	path = INCLUDE/COM/MEN
 	url = ../../mc/mdis_inc.git
+[submodule "LIBSRC/CHAMELEON/COM"]
+	path = LIBSRC/CHAMELEON/COM
+	url = ssh://git@192.168.1.166:7999/mc/libsrc_chameleon.git

@@ -1,0 +1,77 @@
+Function Description
+====================
+Wed Jun  9 09:08:52 CEST 2004
+ 
+Overview of all Functions
+-------------------------
+
+DBG_Init               - Initializes the debug output, allocates and returns debug 
+DBG_Exit               - Terminate the debug output 
+DBG_Memdump            - Print a formatted hex dump 
+ 
+
+Function DBG_Init()
+-------------------
+
+Syntax:
+    int32 DBG_Init( char *name, DBG_HANDLE **dbgP )
+
+Description:
+    Initializes the debug output, allocates and returns debug
+    handle.
+    Does nothing on Linux 
+
+Input:
+    name    name of debug output data module or NULL
+    dbgP    pointer to variable where debug handle will stored
+
+Output:
+    *dbgP   debug handle
+    return  success (0) or error code
+
+
+Function DBG_Exit()
+-------------------
+
+Syntax:
+    int32  DBG_Exit( DBG_HANDLE **dbgP )
+
+Description:
+    Terminate the debug output
+
+Input:
+    dbgP    pointer to variable where debug handle is stored
+
+Output:
+    return  0 
+
+
+Function DBG_Memdump()
+----------------------
+
+Syntax:
+    int32  DBG_Memdump
+    (
+       DBG_HANDLE *dbg,
+       char    *txt,
+       void    *buf,
+       u_int32 len,
+       u_int32 fmt
+    )
+
+Description:
+    Print a formatted hex dump
+
+    Trailing blanks in the description string define the
+    indention of all following debug lines.
+
+Input:
+    txt     description string or NULL (first line)
+    buf     memory to dump
+    len     nr of bytes
+    fmt     dump format [bytes]
+            1=byte, 2=word, 4=long, 8=64bit 
+
+Output:
+    return  0
+
