@@ -1,9 +1,6 @@
 [submodule "TOOLS/MDIS_API"]
 	path = TOOLS/MDIS_API
 	url = ../../mct/mdis_api.git
-[submodule "DRIVERS/BBIS/A12"]
-	path = DRIVERS/BBIS/A12
-	url = ../../mc/bbis_drv_a12.git
 [submodule "DRIVERS/BBIS/A21"]
 	path = DRIVERS/BBIS/A21
 	url = ../../mc/bbis_drv_a21.git
@@ -39,4 +36,37 @@
 	url = ../../mc/mdis_inc.git
 [submodule "LIBSRC/CHAMELEON/COM"]
 	path = LIBSRC/CHAMELEON/COM
-	url = ssh://git@192.168.1.166:7999/mc/libsrc_chameleon.git
+	url = ../../mc/libsrc_chameleon.git
+[submodule "DRIVERS/BBIS/A12"]
+	path = DRIVERS/BBIS/A12
+	url = ../../mc/bbis_drv_a12.git
+[submodule "LIBSRC/DESC/COM"]
+	path = LIBSRC/DESC/COM
+	url = ../../mc/libsrc_desc.git
+[submodule "LIBSRC/ID/COM"]
+	path = LIBSRC/ID/COM
+	url = ../../mc/libsrc_id.git
+[submodule "LIBSRC/MBUF/COM"]
+	path = LIBSRC/MBUF/COM
+	url = ../../mc/libsrc_mbuf.git
+[submodule "LIBSRC/PLD/COM"]
+	path = LIBSRC/PLD/COM
+	url = ../../mc/libsrc_pld.git
+[submodule "LIBSRC/SMB2/COM"]
+	path = LIBSRC/SMB2/COM
+	url = ../../mc/libsrc_smb2.git
+[submodule "LIBSRC/SMB"]
+	path = LIBSRC/SMB
+	url = ../../mc/libsrc_smb.git
+[submodule "LIBSRC/USR_UTL/COM"]
+	path = LIBSRC/USR_UTL/COM
+	url = ../../mc/libsrc_usr_utl.git
+[submodule "LIBSRC/USR_OSS/COM"]
+	path = LIBSRC/USR_OSS/COM
+	url = ../../mc/libsrc_usr_oss.git
+[submodule "TOOLS/WDOG"]
+	path = TOOLS/WDOG
+	url = ../../mct/wdog.git
+[submodule "TOOLS/M_TMR"]
+	path = TOOLS/M_TMR
+	url = ssh://git@192.168.1.166:7999/mct/m_tmr.git
