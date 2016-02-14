@@ -69,4 +69,4 @@
 	url = ../../mct/wdog.git
 [submodule "TOOLS/M_TMR"]
 	path = TOOLS/M_TMR
-	url = ssh://git@192.168.1.166:7999/mct/m_tmr.git
+	url = ../../mct/m_tmr.git
