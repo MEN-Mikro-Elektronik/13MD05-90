@@ -17,7 +17,7 @@
 	path = DRIVERS/BBIS/D201
 	url = ../../mc/bbis_drv_d201.git
 [submodule "DRIVERS/BBIS/D203N"]
-	path = DRIVERS/BBIS/D203N
+	path = DRIVERS/BBIS/D203
 	url = ../../mc/bbis_drv_d203n.git
 [submodule "DRIVERS/BBIS/D302"]
 	path = DRIVERS/BBIS/D302
