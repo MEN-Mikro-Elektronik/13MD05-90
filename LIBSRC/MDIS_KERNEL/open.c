@@ -604,19 +604,18 @@ int32 MapAddressSpaces(MK_DEV *dev, DESC_HANDLE *devDescHdl)
 		/*------------------------------------------+
         |  claim memory or I/O region				|
         +------------------------------------------*/
-		if( dev->space[n].type == OSS_ADDRSPACE_MEM ){
-			if( check_mem_region( (unsigned long) dev->space[n].physAddr,
-								  dev->space[n].reqSize )){
-				DBGWRT_ERR((DBH," *** MapAddressSpaces: can't request mem "
-							"space[%d] addr 0x%p size 0x%x\n",n,dev->space[n].physAddr,
+		if( dev->space[n].type == OSS_ADDRSPACE_MEM )
+		{
+#if LINUX_VERSION_CODE < VERSION_CODE(4,0,0)
+			if( check_mem_region( (unsigned long) dev->space[n].physAddr, dev->space[n].reqSize ))
+			{
+				DBGWRT_ERR((DBH," *** MapAddressSpaces: can't request mem space[%d] addr 0x%p size 0x%x\n",n,dev->space[n].physAddr,
 							dev->space[n].reqSize));
 				error = ERR_OSS_BUSY_RESOURCE;
 				return error;
 			}
-
-			request_mem_region( (unsigned long) dev->space[n].physAddr,
-								dev->space[n].reqSize,
-								dev->devName );
+#endif
+			request_mem_region( (unsigned long) dev->space[n].physAddr,	dev->space[n].reqSize, dev->devName);
 		}
 		else {
 			if( check_region( (unsigned long) dev->space[n].physAddr,

@@ -172,18 +172,16 @@ int mdis_open_external_dev(
 		goto errexit;
 	}
 
+#if LINUX_VERSION_CODE < VERSION_CODE(4,0,0)
 	/* claim memory region */
-	if( check_mem_region( (unsigned long) dev->space[0].physAddr,
-						  dev->space[0].reqSize )){
-		DBGWRT_ERR((DBH," *** %scan't request mem "
-					"space[0] addr 0x%p\n",fname,dev->space[0].physAddr));
+	if( check_mem_region( (unsigned long) dev->space[0].physAddr, dev->space[0].reqSize ))
+	{
+		DBGWRT_ERR((DBH," *** %scan't request mem space[0] addr 0x%p\n",fname,dev->space[0].physAddr));
 		error = -EBUSY;
 		goto errexit;
 	}
-
-	request_mem_region( (unsigned long) dev->space[0].physAddr,
-						dev->space[0].reqSize,
-						dev->devName );
+#endif
+	request_mem_region( (unsigned long) dev->space[0].physAddr, dev->space[0].reqSize,dev->devName );
 	dev->space[0].flags |= MK_REQUESTED;
 
 	/* map address space */

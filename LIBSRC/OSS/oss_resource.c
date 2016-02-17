@@ -61,13 +61,14 @@ int32 OSS_AssignResources(
 		switch( r->type ){
 
 		case OSS_RES_MEM:
-			DBGWRT_2((DBH," MEM: phys=0x%p size=0x%x\n",
-					  r->u.mem.physAddr, r->u.mem.size ));
-			if( check_mem_region( (unsigned long)r->u.mem.physAddr,
-								  r->u.mem.size )){
+			DBGWRT_2((DBH," MEM: phys=0x%p size=0x%x\n", r->u.mem.physAddr, r->u.mem.size ));
+#if LINUX_VERSION_CODE < VERSION_CODE(4,0,0)
+			if( check_mem_region( (unsigned long)r->u.mem.physAddr, r->u.mem.size ))
+			{
 				error = ERR_OSS_BUSY_RESOURCE;
 				break;
 			}
+#endif
 			request_mem_region( (unsigned long)r->u.mem.physAddr,
 								r->u.mem.size, oss->instName );
 			break;
