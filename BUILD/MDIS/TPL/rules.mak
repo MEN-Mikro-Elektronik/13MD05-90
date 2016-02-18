@@ -417,20 +417,10 @@ $(THIS_DIR)/.kernelsettings: Makefile $(LIN_KERNEL_DIR)/Makefile
 $(THIS_DIR)/.endian: Makefile $(LIN_KERNEL_DIR)/Makefile
 	@$(ECHO) "Getting Compiler/Linker settings from Linux Kernel Makefile"
 
-IS_26 := $(shell expr $(LINUX_PLAIN_VERSION) \>= 2.6 )
-
-ifeq ($(IS_26),1)
-	VERSION_SUFFIX := 26
-else
-	VERSION_SUFFIX := 24
-endif
-
-export VERSION_SUFFIX
 
 printit:
 	@echo LINUX_PLAIN_VERSION is !$(LINUX_PLAIN_VERSION)!
 	@echo LINUX_VERSION is !$(LINUX_VERSION)!
-
 
 #
 # For gcov code coverage set LIB_MODE = static in MAKEFILE
@@ -439,6 +429,139 @@ printit:
 #export CODE_COVERAGE := -fprofile-arcs -ftest-coverage
 #export CODE_COVERAGE := -pg
 
+# ts@men: previous conditional include of rules_24.mak and _26.mak was removed,
+#         no 2.4 support anymore. 
+# include $(TPL_DIR)rules_$(VERSION_SUFFIX).mak
 
-include $(TPL_DIR)rules_$(VERSION_SUFFIX).mak
+export COMP_MAK    := $(TPL_DIR)component.mak
+
+#----------------------------------------
+# Rules
+#
+.PHONY: buildmods builddbgs \
+		all_kernel all_ll all_bb all_core all_raw  \
+		installmods 
+		$(ALL_DBGS) $(ALL_LL_DRIVERS) \
+		$(ALL_BB_DRIVERS) $(ALL_CORE) $(ALL_KERNEL)
+		$(ALL_RAW) $(ALL_NATIVE_DRIVERS) 
+
+# rule to build debug and/or non-debug version of all modules
+buildmods: $(ALL_DBGS)
+
+$(ALL_DBGS): 
+	$(MAKEIT) RULE=$(RULE) DEBUG=$@ buildfordbg
+
+buildfordbg: kernelsettings kernelsubdirs all_kernel all_core  \
+			 all_ll all_bb all_raw callkernelbuild
+
+
+clean: 
+	@$(ECHO) "Removing all objects, modules, binaries, libraries, descriptors"
+	rm -rf .kernelsettings .kernelsubdirs OBJ BIN LIB DESC
+	rm -f $(_DESCGEN_OBJ)/*
+	rm -f /lib/udev/devices/mdis
+
+# install non-debug modules when ALL_DBGS is set to "nodbg" (or via command
+# line paramter "DEBUG="
+# install debug modules in any other case.
+installmods: 
+ifeq ($(ALL_DBGS),nodbg)
+	$(MAKEIT) all_kernel all_core all_raw all_ll all_bb \
+	 RULE=installmods DEBUG=nodbg
+else
+	$(MAKEIT) all_kernel all_core all_raw all_ll all_bb \
+     RULE=installmods DEBUG=dbg
+endif
+ifeq ($(WIZ_CDK),Selfhosted)
+	@$(ECHO) "Updating module dependencies"
+	/sbin/depmod
+else 
+	@$(ECHO) "=== You should now rebuild module dependencies on target using depmod"
+endif
+
+
+all_ll:			$(ALL_LL_DRIVERS) 
+all_bb:			$(ALL_BB_DRIVERS)
+all_core: 		$(ALL_CORE)
+all_kernel:		$(ALL_KERNEL)
+all_raw: 		$(ALL_RAW) $(ALL_NATIVE_DRIVERS)
+
+
+$(ALL_LL_DRIVERS):
+	$(MAKEIT) -f $(COMP_MAK) $(RULE) \
+		COMMAKE=$(LL_PATH)/$@ \
+		DEBUG=$(DEBUG) COMP_PREFIX=men_ll_ \
+		LLDRV=-D_LL_DRV_ MODULE_COM=ll_module.o
+
+$(ALL_BB_DRIVERS):
+	$(MAKEIT) -f $(COMP_MAK) $(RULE) \
+		COMMAKE=$(BB_PATH)/$@ \
+		DEBUG=$(DEBUG) COMP_PREFIX=men_bb_ \
+		LLDRV=-D_LL_DRV_ MODULE_COM=bb_module.o
+		
+$(_ALL_CORE1):
+	$(MAKEIT) -f $(COMP_MAK) $(RULE) \
+		COMMAKE=$(LS_PATH)/$@ \
+		DEBUG=$(DEBUG) COMP_PREFIX=men_ MODULE_COM=module.o
+
+$(_ALL_CORE2):
+	$(MAKEIT) -f $(COMP_MAK) $(RULE) \
+		COMMAKE=$(LS_PATH)/$@ \
+		DEBUG=$(DEBUG) COMP_PREFIX=men_ MODULE_COM=nat_module.o
+	
+$(_ALL_CORE_COM_X86):
+	$(MAKEIT) -f $(COMP_MAK) $(RULE) \
+		COMMAKE=$(LS_PATH)/$@ \
+		DEBUG=$(DEBUG) COMP_PREFIX=men_ MODULE_COM=nat_module.o
+
+$(ALL_KERNEL):
+	$(MAKEIT) -f $(COMP_MAK) $(RULE) \
+		COMMAKE=$(LS_PATH)/$@ \
+		DEBUG=$(DEBUG) COMP_PREFIX=men_ MODULE_COM= SYMS=y
+
+$(ALL_RAW) $(ALL_NATIVE_DRIVERS):
+	$(MAKEIT) -f $(COMP_MAK) $(RULE) \
+		COMMAKE=$(MEN_LIN_DIR)/$@ \
+		DEBUG=$(DEBUG) COMP_PREFIX=men_ LLDRV= MODULE_COM=
+
+#
+# .kernelsubdirs contains a list of subdirs to be passed to linux
+# kernel build 
+# Each invokation of MDIS/component.mak adds one line to this file
+#
+.PHONY: kernelsubdirs $(THIS_DIR)/.kernelsubdirs
+
+kernelsubdirs: $(THIS_DIR)/.kernelsubdirs
+
+$(THIS_DIR)/.kernelsubdirs:
+	@$(ECHO) "Cleaning .kernelsubdirs"
+	@$(ECHO) -n >$@
+
+#
+# The actual call to the kernel build 
+# This will work only with Linux >=2.6.6
+
+.PHONY: callkernelbuild
+
+callkernelbuild:
+	@$(ECHO) "++++++++ Building kernel modules ++++++++++"
+	@$(ECHO) -n "obj-m +=" >OBJ/Makefile
+	cat $(THIS_DIR)/.kernelsubdirs >>OBJ/Makefile
+	$(Q)$(MAKE) -C $(LIN_KERNEL_DIR) SUBDIRS=$(THIS_DIR)/OBJ
+
+
+#	$(Q)$(MAKE) -C $(LIN_KERNEL_DIR) \
+#	 "SUBDIRS=$(shell cat $(THIS_DIR)/.kernelsubdirs)" modules
+
+
+
+
+
+
+
+
+
+
+
+
 
