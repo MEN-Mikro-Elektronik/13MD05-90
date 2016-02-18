@@ -225,13 +225,23 @@ endif
 # set default MAK_SWITCH
 MAK_SWITCH=-DMAC_MEM_MAPPED
 
-
 # Get the linux version
 ifdef LIN_INC_DIR
-export LINUX_PLAIN_VERSION = $(shell \
-	$(CC) -I$(LIN_INC_DIR) -E $(TPL_DIR)/getlinuxversion.c | \
-	awk  '/VERSION/ \
-	{ print int(($$2/65536)%256) "." int($$2/256)%256 "." int($$2%256) }')
+
+KERN_MAJOR=$(shell uname -r | cut -f1 -d.)
+KERN_MINOR=$(shell uname -r | cut -f2 -d.)
+KERN_PATCH_FULL=$(shell uname -r | cut -f3 -d.)
+# the 3rd (patch) number is often followed by
+# release info, like "3.14.5-generic-34..." . split this off too.
+KERN_PATCH=$(shell echo $(KERN_PATCH_FULL) | cut -f1 -d-)
+
+# $(warning result of splitting uname-r to major/minor/patch: )
+#$(warning KERN_MAJOR= $(KERN_MAJOR))
+#$(warning KERN_MINOR= $(KERN_MINOR))
+#$(warning KERN_PATCH= $(KERN_PATCH))
+
+export LINUX_PLAIN_VERSION=$(KERN_MAJOR).$(KERN_MINOR).$(KERN_PATCH)
+$(warning LINUX_PLAIN_VERSION=$(LINUX_PLAIN_VERSION))
 
 # this returns the version string, depending on selfhosted or ElinOS
 ifeq ($(WIZ_CDK),Selfhosted)
@@ -241,7 +251,6 @@ export LINUX_VERSION = $(shell \
 	$(CC) -I$(LIN_INC_DIR) -E $(TPL_DIR)/getlinuxversion.c | \
     awk -F\" '/REL/ {print $$2}' )
 endif
-
 
 else
 # no LIN_INC_DIR defined
@@ -347,6 +356,7 @@ installdesc:
 	$(MAKEIT) -f $(DESC_MAK) installdesc
 
 installdevnode:
+
 ifeq ($(HASDEVFS),1)
 else
  ifdef DEVNODE_INSTALL_DIR
