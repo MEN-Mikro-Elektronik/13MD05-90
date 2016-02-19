@@ -108,7 +108,6 @@ ifndef MEN_LIN_DIR
 	MEN_LIN_DIR = /opt/menlinux
 endif
 
-
 export MEN_LIN_DIR
 export NAT_PATH		:= $(MEN_LIN_DIR)/DRIVERS
 export LL_PATH		:= $(MEN_LIN_DIR)/DRIVERS/MDIS_LL
@@ -228,24 +227,17 @@ MAK_SWITCH=-DMAC_MEM_MAPPED
 # Get the linux version
 ifdef LIN_INC_DIR
 
-KERN_MAJOR=$(shell uname -r | cut -f1 -d.)
-KERN_MINOR=$(shell uname -r | cut -f2 -d.)
-KERN_PATCH_FULL=$(shell uname -r | cut -f3 -d.)
-# the 3rd (patch) number is often followed by
-# release info, like "3.14.5-generic-34..." . split this off too.
-KERN_PATCH=$(shell echo $(KERN_PATCH_FULL) | cut -f1 -d-)
+# ts@men: the gcc 5.2 in Ubuntu 15.10 showed -E dump different, breaking the previous awk statement.
+#         So, made it robust by extracting the RELEASE element of the dump 
 
-# $(warning result of splitting uname-r to major/minor/patch: )
-#$(warning KERN_MAJOR= $(KERN_MAJOR))
-#$(warning KERN_MINOR= $(KERN_MINOR))
-#$(warning KERN_PATCH= $(KERN_PATCH))
+export LINUX_PLAIN_VERSION = $(shell \
+	$(CC) -I$(LIN_INC_DIR) -E $(TPL_DIR)/getlinuxversion.c | grep "RELEASE" | awk '{print $$2}' | sed 's/"//g' )
 
-export LINUX_PLAIN_VERSION=$(KERN_MAJOR).$(KERN_MINOR).$(KERN_PATCH)
-$(warning LINUX_PLAIN_VERSION=$(LINUX_PLAIN_VERSION))
+# $(warning the LINUX_PLAIN_VERSION of kernel headers in $(LIN_INC_DIR) is $(LINUX_PLAIN_VERSION))
 
 # this returns the version string, depending on selfhosted or ElinOS
 ifeq ($(WIZ_CDK),Selfhosted)
-export LINUX_VERSION = $(shell uname -r)
+export LINUX_VERSION = $(LINUX_PLAIN_VERSION)
 else
 export LINUX_VERSION = $(shell \
 	$(CC) -I$(LIN_INC_DIR) -E $(TPL_DIR)/getlinuxversion.c | \
@@ -261,16 +253,15 @@ endif
 
 # check if CONFIG_DEVFS_FS is defined
 ifdef LIN_INC_DIR
-NEW_INCLUDE_STRUCTURE := $(shell expr $(LINUX_PLAIN_VERSION) \>= 2.6.33 )
-
+NEW_INCLUDE_STRUCTURE := $(shell expr "$(LINUX_PLAIN_VERSION)" \>= "2.6.33" )
+#$(warning NEW_INCLUDE_STRUCTURE = $(NEW_INCLUDE_STRUCTURE))
 ifeq ($(NEW_INCLUDE_STRUCTURE),1)
 	GEN_INCLUDE_DIR := "generated"
 else
 	GEN_INCLUDE_DIR := "linux"
 endif
 
-export HASDEVFS = $(shell grep 'define CONFIG_DEVFS_FS' \
-			       $(LIN_INC_DIR)/$(GEN_INCLUDE_DIR)/autoconf.h | wc -l | sed 's/ //g')
+export HASDEVFS = $(shell grep 'define CONFIG_DEVFS_FS' $(LIN_INC_DIR)/$(GEN_INCLUDE_DIR)/autoconf.h | wc -l | sed 's/ //g')
 endif
 
 
@@ -409,7 +400,6 @@ $(ALL_DEV_TOOLS):
 $(ALL_DESC):
 	$(MAKEIT) -f $(DESC_MAK) $(RULE) DESC=$@
 
-
 include $(THIS_DIR)/.kernelsettings
 
 #
@@ -418,6 +408,7 @@ include $(THIS_DIR)/.kernelsettings
 .PHONY: kernelsettings endian
 
 kernelsettings: $(THIS_DIR)/.kernelsettings
+
 
 $(THIS_DIR)/.kernelsettings: Makefile $(LIN_KERNEL_DIR)/Makefile
 	@$(ECHO) "Getting Compiler/Linker settings from Linux Kernel Makefile"
@@ -448,7 +439,7 @@ export COMP_MAK    := $(TPL_DIR)component.mak
 #----------------------------------------
 # Rules
 #
-.PHONY: buildmods builddbgs \
+.PHONY: prepare_kernelsettings buildmods builddbgs \
 		all_kernel all_ll all_bb all_core all_raw  \
 		installmods 
 		$(ALL_DBGS) $(ALL_LL_DRIVERS) \
@@ -456,6 +447,9 @@ export COMP_MAK    := $(TPL_DIR)component.mak
 		$(ALL_RAW) $(ALL_NATIVE_DRIVERS) 
 
 # rule to build debug and/or non-debug version of all modules
+prepare_kernelsettings:
+	touch $(THIS_DIR)/.kernelsettings
+
 buildmods: $(ALL_DBGS)
 
 $(ALL_DBGS): 
@@ -463,7 +457,6 @@ $(ALL_DBGS):
 
 buildfordbg: kernelsettings kernelsubdirs all_kernel all_core  \
 			 all_ll all_bb all_raw callkernelbuild
-
 
 clean: 
 	@$(ECHO) "Removing all objects, modules, binaries, libraries, descriptors"
@@ -489,13 +482,11 @@ else
 	@$(ECHO) "=== You should now rebuild module dependencies on target using depmod"
 endif
 
-
 all_ll:			$(ALL_LL_DRIVERS) 
 all_bb:			$(ALL_BB_DRIVERS)
 all_core: 		$(ALL_CORE)
 all_kernel:		$(ALL_KERNEL)
 all_raw: 		$(ALL_RAW) $(ALL_NATIVE_DRIVERS)
-
 
 $(ALL_LL_DRIVERS):
 	$(MAKEIT) -f $(COMP_MAK) $(RULE) \
@@ -508,7 +499,7 @@ $(ALL_BB_DRIVERS):
 		COMMAKE=$(BB_PATH)/$@ \
 		DEBUG=$(DEBUG) COMP_PREFIX=men_bb_ \
 		LLDRV=-D_LL_DRV_ MODULE_COM=bb_module.o
-		
+
 $(_ALL_CORE1):
 	$(MAKEIT) -f $(COMP_MAK) $(RULE) \
 		COMMAKE=$(LS_PATH)/$@ \
@@ -518,7 +509,7 @@ $(_ALL_CORE2):
 	$(MAKEIT) -f $(COMP_MAK) $(RULE) \
 		COMMAKE=$(LS_PATH)/$@ \
 		DEBUG=$(DEBUG) COMP_PREFIX=men_ MODULE_COM=nat_module.o
-	
+
 $(_ALL_CORE_COM_X86):
 	$(MAKEIT) -f $(COMP_MAK) $(RULE) \
 		COMMAKE=$(LS_PATH)/$@ \
