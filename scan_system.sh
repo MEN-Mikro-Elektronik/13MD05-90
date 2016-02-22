@@ -32,14 +32,14 @@
 
 # proc entry to scan pci devs
 PROC_PCI_DEV=/proc/bus/pci/devices
-# where the linux kernel sources/headers are expected
+# where the linux kernel sources/headers are expected. Create symlink if kernel headers are stored under different name
 LIN_SRC_DIR=/usr/src/linux
 # where are the SMBus controller drivers located ?
 MOD_DIR=/lib/modules/`uname -r`
 
 # currently detected CPU boards. ADD NEW BOARDS HERE!
 # also take care for special (native) driver adding etc.
-CPU_KNOWN_BOARDS="SC25 SC24 F011 F11S F14- F014 F15- F015 F17- F017 F075 F19P F19C F019 F21P F22P F23P F21C F021 XM01 MM01 G20- G22-"
+CPU_KNOWN_BOARDS="SC25 SC24 F011 F11S F14- F014 F15- F015 F17- F017 F075 F19P F19C F019 F21P F22P F23P F21C F021 XM01 MM01 G20- G22- G23- G25-"
 
 # which SMB adresses to scan for CPU ID eeproms
 ID_EEPROM_ADRESSES="0x57 0x55"
@@ -942,100 +942,100 @@ case $main_cpu in
         wiz_model_smb=SMBPCI_FCH
         ;;
     F011)
-	wiz_model_cpu=F11S
-	wiz_model_smb=SMBPCI_SCH
-	G_primPciPath=0x3c
-	bCreateXm01bcDrv=1
-	add_xm01bc_support
-	;;
+		wiz_model_cpu=F11S
+		wiz_model_smb=SMBPCI_SCH
+		G_primPciPath=0x3c
+		bCreateXm01bcDrv=1
+		add_xm01bc_support
+		;;
     F11S)
-	wiz_model_cpu=F11S
-	wiz_model_smb=SMBPCI_SCH
-	G_primPciPath=0x3c
-	bCreateXm01bcDrv=1
-	add_xm01bc_support
-	;;
+		wiz_model_cpu=F11S
+		wiz_model_smb=SMBPCI_SCH
+		G_primPciPath=0x3c
+		bCreateXm01bcDrv=1
+		add_xm01bc_support
+		;;
     F14)
-	wiz_model_cpu=F14
-	wiz_model_smb=SMBPCI_ICH
-	G_primPciPath=0x1e
-	add_xm01bc_support
-	bCreateXm01bcDrv=1
-	;;
+		wiz_model_cpu=F14
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1e
+		add_xm01bc_support
+		bCreateXm01bcDrv=1
+		;;
     F014)
-	wiz_model_cpu=F14
-	wiz_model_smb=SMBPCI_ICH
-	G_primPciPath=0x1e
-	bCreateXm01bcDrv=1
-	add_xm01bc_support
-	;;
+		wiz_model_cpu=F14
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1e
+		bCreateXm01bcDrv=1
+		add_xm01bc_support
+		;;
     F15)
-	wiz_model_cpu=F15
-	wiz_model_smb=SMBPCI_ICH
-	G_primPciPath=0x1e
-	bCreateXm01bcDrv=1
-	add_xm01bc_support
-	;;
+		wiz_model_cpu=F15
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1e
+		bCreateXm01bcDrv=1
+		add_xm01bc_support
+		;;
     F015)
-	wiz_model_cpu=F15
-	wiz_model_smb=SMBPCI_ICH
-	G_primPciPath=0x1e
-	bCreateXm01bcDrv=1
-	add_xm01bc_support
-	;;
+		wiz_model_cpu=F15
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1e
+		bCreateXm01bcDrv=1
+		add_xm01bc_support
+		;;
     F17)
-	wiz_model_cpu=F17
-	wiz_model_smb=SMBPCI_ICH
-	G_primPciPath=0x1e
-	bCreateF14bcDrv=1
-	add_f14bc_support
-	;;
+		wiz_model_cpu=F17
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1e
+		bCreateF14bcDrv=1
+		add_f14bc_support
+		;;
     F017)
-	wiz_model_cpu=F17
-	wiz_model_smb=SMBPCI_ICH
-	G_primPciPath=0x1e
-	bCreateF14bcDrv=1
-	add_f14bc_support
-	;;
+		wiz_model_cpu=F17
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1e
+		bCreateF14bcDrv=1
+		add_f14bc_support
+		;;
     F19P)
-	wiz_model_cpu=F19P_F19C
-	wiz_model_smb=SMBPCI_ICH
-	G_primPciPath=0x1e
-	bCreateXm01bcDrv=1
-	add_xm01bc_support
-	;;
+		wiz_model_cpu=F19P_F19C
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1e
+		bCreateXm01bcDrv=1
+		add_xm01bc_support
+		;;
     F19C)
-	wiz_model_cpu=F19P_F19C
-	wiz_model_smb=SMBPCI_ICH
-	G_primPciPath=0x1e
-	bCreateXm01bcDrv=1
-	add_xm01bc_support
-	;;
+		wiz_model_cpu=F19P_F19C
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1e
+		bCreateXm01bcDrv=1
+		add_xm01bc_support
+		;;
     F019)
-	wiz_model_cpu=F19P_F19C
-	wiz_model_smb=SMBPCI_ICH
-	G_primPciPath=0x1e
-	bCreateXm01bcDrv=1
-	add_xm01bc_support
-	;;
+		wiz_model_cpu=F19P_F19C
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1e
+		bCreateXm01bcDrv=1
+		add_xm01bc_support
+		;;
     F21P)
-	wiz_model_cpu=F21P_F21C
-	wiz_model_smb=SMBPCI_ICH
-	G_primPciPath=0x1e
-	wiz_model_busif=0
-	;;
+		wiz_model_cpu=F21P_F21C
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1e
+		wiz_model_busif=0
+		;;
     F21C)
-	wiz_model_cpu=F21P_F21C
-	wiz_model_smb=SMBPCI_ICH
-	G_primPciPath=0x1e
-	wiz_model_busif=0
+		wiz_model_cpu=F21P_F21C
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1e
+		wiz_model_busif=0
 	;;
     F021)
-	wiz_model_cpu=F21P_F21C
-	wiz_model_smb=SMBPCI_ICH
-	G_primPciPath=0x1e
-	wiz_model_busif=0
-	;;
+		wiz_model_cpu=F21P_F21C
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1e
+		wiz_model_busif=0
+		;;
     F22P)
         wiz_model_cpu=F22P
         wiz_model_smb=SMBPCI_ICH
@@ -1049,41 +1049,55 @@ case $main_cpu in
         wiz_model_busif=0
         ;;
     F075)
-	wiz_model_cpu=F75P
-	wiz_model_smb=SMBPCI_SCH
-	G_primPciPath=0x18
-	bCreateXm01bcDrv=1
-	add_xm01bc_support
-	;;
+		wiz_model_cpu=F75P
+		wiz_model_smb=SMBPCI_SCH
+		G_primPciPath=0x18
+		bCreateXm01bcDrv=1
+		add_xm01bc_support
+		;;
     XM01)
-	wiz_model_cpu=XM1
-	wiz_model_smb=SMBPCI_SCH
-	bCreateXm01bcDrv=1
-	add_xm01bc_support
-	;;
+		wiz_model_cpu=XM1
+		wiz_model_smb=SMBPCI_SCH
+		bCreateXm01bcDrv=1
+		add_xm01bc_support
+		;;
     MM01)
-	wiz_model_cpu=MM1
-	wiz_model_smb=SMBPCI_SCH
-	G_primPciPath=0x1c
-	bCreateXm01bcDrv=1
-	add_xm01bc_support
-	;;
+		wiz_model_cpu=MM1
+		wiz_model_smb=SMBPCI_SCH
+		G_primPciPath=0x1c
+		bCreateXm01bcDrv=1
+		add_xm01bc_support
+		;;
     G20-)
-	wiz_model_cpu=G20
-	wiz_model_smb=SMBPCI_ICH
-	G_primPciPath=0x1c
-	wiz_model_busif=7
-	add_z001_io_support
-	;;
+		wiz_model_cpu=G20
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1c
+		wiz_model_busif=7
+		add_z001_io_support
+		;;
     G22-)
-	wiz_model_cpu=G20
-	wiz_model_smb=SMBPCI_ICH
-	G_primPciPath=0x1c
-	wiz_model_busif=7
-	add_z001_io_support
+		wiz_model_cpu=G22
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1c
+		wiz_model_busif=7
+		add_z001_io_support
+		;;
+    G23-)
+		wiz_model_cpu=G23
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1c
+		wiz_model_busif=7
+		add_z001_io_support
 	;;
+    G25-)
+		wiz_model_cpu=G25A
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1c
+		wiz_model_busif=7
+		add_z001_io_support
+		;;
     *)
-	echo "No F1x CPU type found!"
+	echo "No valid CPU type found or ident EEPROM not programmed! check EEPROM content manually (i2cdump [SMBus nr] [0x55 or 0x57])"
 	;;
 esac
 

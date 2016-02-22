@@ -145,7 +145,8 @@ ALL_COM_TOOLS = \
 	MDIS_API/M_SETSTAT_BLK/COM/program.mak \
 	MDIS_API/M_WRITE/COM/program.mak
 
-ALL_NATIVE_DRIVERS = 
+# from kernel 3.14 on unnecessary but leave in by default...
+ALL_NATIVE_DRIVERS = DRIVERS/I2C_BUSSES/i2cpiix4/driver.mak
 
 ALL_NATIVE_LIBS = 
 
