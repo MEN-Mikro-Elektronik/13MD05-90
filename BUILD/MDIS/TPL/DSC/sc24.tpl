@@ -230,4 +230,131 @@ qspim_1 {
     DEBUG_LEVEL_OSS = U_INT32 0xc0008000
     DEBUG_LEVEL_DESC = U_INT32 0xc0008000
 }
+smb2_bus0 {
+
+    # ------------------------------------------------------------------------
+    #        general parameters (don't modify)
+    # ------------------------------------------------------------------------
+    DESC_TYPE = U_INT32 0x2
+    HW_TYPE = STRING SMB2
+    _WIZ_MODEL = STRING SMBPCI_FCH
+    _WIZ_BUSIF = STRING cpu,1
+
+    # ------------------------------------------------------------------------
+    #  		SMBus parameters
+    # ------------------------------------------------------------------------
+    SMB_BUSNBR = U_INT32 0x0
+    SMBDEV_0 {
+        NAME = STRING xm01bc_1
+    }
+
+    # ------------------------------------------------------------------------
+    #        debug levels (optional)
+    #        these keys have only effect on debug drivers
+    # ------------------------------------------------------------------------
+    DEBUG_LEVEL = U_INT32 0xc0008000
+    DEBUG_LEVEL_BK = U_INT32 0xc0008000
+    DEBUG_LEVEL_OSS = U_INT32 0xc0008000
+    DEBUG_LEVEL_DESC = U_INT32 0xc0008000
+}
+xm01bc_1 {
+
+    # ------------------------------------------------------------------------
+    #        general parameters (don't modify)
+    # ------------------------------------------------------------------------
+    DESC_TYPE = U_INT32 0x1
+    HW_TYPE = STRING XM01BC
+    _WIZ_MODEL = STRING XM01BC
+
+    # ------------------------------------------------------------------------
+    #        reference to base board
+    # ------------------------------------------------------------------------
+    BOARD_NAME = STRING smb2_bus0
+    DEVICE_SLOT = U_INT32 0x0
+
+    # ------------------------------------------------------------------------
+    #        device parameters
+    # ------------------------------------------------------------------------
+
+    # ------------------------------------------------------------------------
+    #  		SMBus parameters
+    # ------------------------------------------------------------------------
+
+    # SMBus bus number
+	SMB_BUSNBR = U_INT32 0
+
+    # SMBus address of XM1BC
+    SMB_DEVADDR = U_INT32 0x9a
+
+    # ------------------------------------------------------------------------
+    #        debug levels (optional)
+    #        these keys have only effect on debug drivers
+    # ------------------------------------------------------------------------
+    DEBUG_LEVEL = U_INT32 0xc0008000
+    DEBUG_LEVEL_MK = U_INT32 0xc0008000
+    DEBUG_LEVEL_OSS = U_INT32 0xc0008000
+    DEBUG_LEVEL_DESC = U_INT32 0xc0008000
+}
+smb2_bus1 {
+
+    # ------------------------------------------------------------------------
+    #        general parameters (don't modify)
+    # ------------------------------------------------------------------------
+    DESC_TYPE = U_INT32 0x2
+    HW_TYPE = STRING SMB2
+    _WIZ_MODEL = STRING SMBPCI_FCH
+    _WIZ_BUSIF = STRING cpu,1
+
+    # ------------------------------------------------------------------------
+    #  		SMBus parameters
+    # ------------------------------------------------------------------------
+	SMB_BUSNBR = U_INT32 0x1
+    SMBDEV_0 {
+        NAME = STRING smb2_1
+    }
+
+    # ------------------------------------------------------------------------
+    #        debug levels (optional)
+    #        these keys have only effect on debug drivers
+    # ------------------------------------------------------------------------
+    DEBUG_LEVEL = U_INT32 0xc0008000
+    DEBUG_LEVEL_BK = U_INT32 0xc0008000
+    DEBUG_LEVEL_OSS = U_INT32 0xc0008000
+    DEBUG_LEVEL_DESC = U_INT32 0xc0008000
+}
+smb2_1 {
+
+    # ------------------------------------------------------------------------
+    #        general parameters (don't modify)
+    # ------------------------------------------------------------------------
+    DESC_TYPE = U_INT32 0x1
+    HW_TYPE = STRING SMB2
+    _WIZ_MODEL = STRING SMB2
+
+    # ------------------------------------------------------------------------
+    #        reference to base board
+    # ------------------------------------------------------------------------
+    BOARD_NAME = STRING smb2_bus1
+    DEVICE_SLOT = U_INT32 0x0
+
+    # ------------------------------------------------------------------------
+    #        device parameters
+    # ------------------------------------------------------------------------
+
+    # ------------------------------------------------------------------------
+    #  		SMBus parameters
+    # ------------------------------------------------------------------------
+
+    # SMBus bus number
+SMB_BUSNBR = U_INT32 1	
+
+    # ------------------------------------------------------------------------
+    #        debug levels (optional)
+    #        these keys have only effect on debug drivers
+    # ------------------------------------------------------------------------
+    DEBUG_LEVEL = U_INT32 0xc0008000
+    DEBUG_LEVEL_MK = U_INT32 0xc0008000
+    DEBUG_LEVEL_OSS = U_INT32 0xc0008000
+    DEBUG_LEVEL_DESC = U_INT32 0xc0008000
+}
 # EOF

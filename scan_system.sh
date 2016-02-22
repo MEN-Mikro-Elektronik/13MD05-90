@@ -934,12 +934,16 @@ bCreateF14bcDrv=0
 #unfortunately some F-cards seem to be have IDs with and without '0' (marketing name)
 case $main_cpu in
     SC24)
-	wiz_model_cpu=Bx50x
-	wiz_model_smb=SMBPCI_FCH
-	;;
+		wiz_model_cpu=Bx50x
+		wiz_model_smb=SMBPCI_FCH
+		bCreateXm01bcDrv=1
+		add_xm01bc_support
+		;;
     SC25)
         wiz_model_cpu=Bx70x
         wiz_model_smb=SMBPCI_FCH
+		bCreateXm01bcDrv=1
+		add_xm01bc_support
         ;;
     F011)
 		wiz_model_cpu=F11S
