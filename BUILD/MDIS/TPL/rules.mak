@@ -120,6 +120,8 @@ export LIB_OUTPUT_DIR := LIB
 
 export TPL_DIR	   	:= $(MEN_LIN_DIR)/BUILD/MDIS/TPL/
 
+export DEVNODE_NR	:=
+
 # older MDIS packages used LIN_INC_DIR. Newer ones use LIN_KERNEL_DIR
 # make this compatible with both versions
 #
@@ -353,10 +355,14 @@ else
  ifdef DEVNODE_INSTALL_DIR
   ifdef MDIS_MAJOR_NUMBER
 	$(Q)install --directory $(DEVNODE_INSTALL_DIR)
-	$(Q)rm -f $(DEVNODE_INSTALL_DIR)/mdis
-	$(MKNOD) $(DEVNODE_INSTALL_DIR)/mdis c $(MDIS_MAJOR_NUMBER) 0
-	$(Q)chmod 666 $(DEVNODE_INSTALL_DIR)/mdis
-	$(Q)if test -d /lib/udev/devices; then cp -a $(DEVNODE_INSTALL_DIR)/mdis /lib/udev/devices/; fi
+	@$(ECHO) "loading men_mdis_kernel module to check assigned major number..."
+	dmesg -c > /dev/null
+	modprobe men_mdis_kernel
+	$(eval devnodenr := $(shell dmesg | grep "mk: using major" | awk '{print $$NF}'))
+	if [ ! -e /dev/mdis ] ; then mknod /dev/mdis c $(devnodenr) 0 ; fi
+	@$(ECHO) "========================================================================="
+	@$(ECHO) "=> Warning: before running make install again, unload all MEN modules! <="
+	@$(ECHO) "========================================================================="
   endif
  endif
 endif
@@ -430,9 +436,6 @@ printit:
 #export CODE_COVERAGE := -fprofile-arcs -ftest-coverage
 #export CODE_COVERAGE := -pg
 
-# ts@men: previous conditional include of rules_24.mak and _26.mak was removed,
-#         no 2.4 support anymore. 
-# include $(TPL_DIR)rules_$(VERSION_SUFFIX).mak
 
 export COMP_MAK    := $(TPL_DIR)component.mak
 
@@ -473,7 +476,7 @@ ifeq ($(ALL_DBGS),nodbg)
 	 RULE=installmods DEBUG=nodbg
 else
 	$(MAKEIT) all_kernel all_core all_raw all_ll all_bb \
-     RULE=installmods DEBUG=dbg
+	RULE=installmods DEBUG=dbg
 endif
 ifeq ($(WIZ_CDK),Selfhosted)
 	@$(ECHO) "Updating module dependencies"
@@ -482,11 +485,11 @@ else
 	@$(ECHO) "=== You should now rebuild module dependencies on target using depmod"
 endif
 
-all_ll:			$(ALL_LL_DRIVERS) 
-all_bb:			$(ALL_BB_DRIVERS)
-all_core: 		$(ALL_CORE)
-all_kernel:		$(ALL_KERNEL)
-all_raw: 		$(ALL_RAW) $(ALL_NATIVE_DRIVERS)
+all_ll:		$(ALL_LL_DRIVERS) 
+all_bb:		$(ALL_BB_DRIVERS)
+all_core: 	$(ALL_CORE)
+all_kernel:	$(ALL_KERNEL)
+all_raw: 	$(ALL_RAW) $(ALL_NATIVE_DRIVERS)
 
 $(ALL_LL_DRIVERS):
 	$(MAKEIT) -f $(COMP_MAK) $(RULE) \
@@ -538,7 +541,7 @@ $(THIS_DIR)/.kernelsubdirs:
 	@$(ECHO) "Cleaning .kernelsubdirs"
 	@$(ECHO) -n >$@
 
-#
+
 # The actual call to the kernel build 
 # This will work only with Linux >=2.6.6
 
@@ -549,20 +552,3 @@ callkernelbuild:
 	@$(ECHO) -n "obj-m +=" >OBJ/Makefile
 	cat $(THIS_DIR)/.kernelsubdirs >>OBJ/Makefile
 	$(Q)$(MAKE) -C $(LIN_KERNEL_DIR) SUBDIRS=$(THIS_DIR)/OBJ
-
-
-#	$(Q)$(MAKE) -C $(LIN_KERNEL_DIR) \
-#	 "SUBDIRS=$(shell cat $(THIS_DIR)/.kernelsubdirs)" modules
-
-
-
-
-
-
-
-
-
-
-
-
-
