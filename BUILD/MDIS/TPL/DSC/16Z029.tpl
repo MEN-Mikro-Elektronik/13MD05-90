@@ -4,7 +4,7 @@ can_SCAN_MDIS_INSTANCE {
     #        general parameters (don't modify)
     # ------------------------------------------------------------------------
     DESC_TYPE = U_INT32 0x1
-    HW_TYPE = STRING BOROMIR
+    HW_TYPE = STRING Z15
     _WIZ_MODEL = STRING 16Z029_CAN
 
     # ------------------------------------------------------------------------
