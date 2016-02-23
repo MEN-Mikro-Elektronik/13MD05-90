@@ -1106,9 +1106,8 @@ debug_print "Using _WIZ_MODEL = $wiz_model_cpu"
 
 # create SC24 based Bx50x CPU model
 if [ "$main_cpu" == "SC24" ]; then
-    	echo "SC24: unloading original i2c-piix4 driver. Load generated men_i2c-piix4.ko module after build before opening SMB2 devices !"
-        rmmod i2c-piix4
-    fi
+    echo "SC24: unloading original i2c-piix4 driver. Load generated men_i2c-piix4.ko module after build before opening SMB2 devices !"
+    rmmod i2c-piix4
     map_sc24_fpga  # ts: no more needed for new BIOSes but stay compatible with old boards
     cat $DSC_TPL_DIR/sc24.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
     cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE
