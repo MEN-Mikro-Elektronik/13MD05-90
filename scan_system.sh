@@ -169,9 +169,6 @@ function detect_board_id {
     if [ -e "$MOD_DIR/kernel/drivers/i2c/busses/i2c-isch.ko" ]; then
         modprobe i2c-isch
     fi
-    if [ -e "$MOD_DIR/kernel/drivers/i2c/busses/i2c-piix4.ko" ]; then
-        modprobe i2c-piix4 # SC24 SMB controller. Use 13SC24-90 modified driver!
-    fi
 
     G_cpu=""
     for adrs in $ID_EEPROM_ADRESSES; do
@@ -1109,6 +1106,11 @@ debug_print "Using _WIZ_MODEL = $wiz_model_cpu"
 
 # create SC24 based Bx50x CPU model
 if [ "$main_cpu" == "SC24" ]; then
+    if [ -e "$MOD_DIR/kernel/drivers/i2c/busses/i2c-piix4.ko" ]; then
+		echo "SC24 detected: try to unload/remove original i2c-piix4 driver. Load generated men_i2c-piix4.ko module after build !!!"
+        rmmod i2c-piix4
+		rm $MOD_DIR/kernel/drivers/i2c/busses/i2c-piix4.ko
+    fi
     map_sc24_fpga  # ts: no more needed for new BIOSes but stay compatible with old boards
     cat $DSC_TPL_DIR/sc24.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
     cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE

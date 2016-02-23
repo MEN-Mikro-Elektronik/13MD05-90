@@ -172,7 +172,7 @@
 
 /*--- Module parameters ---*/
 static int mk_major 	= 	MK_MAJOR; 	/* major device number for /dev/mdis */
-static int mk_nbufs 	= 	16;			/* number of static users buffers to allocate*/
+static int mk_nbufs 	= 	16;		/* number of static users buffers to allocate*/
 int mk_dbglevel 	=	OSS_DBG_DEFAULT;/* debug level */
 
 #if LINUX_VERSION_CODE < VERSION_CODE(2,6,14)
@@ -191,14 +191,13 @@ module_param( mk_dbglevel, int, 0664 );
 MODULE_PARM_DESC(mk_dbglevel, "MDIS kernel debug level");
 #endif
 
-OSS_HANDLE		*G_osh;							/* MK's OSS handle */
-DBG_HANDLE 		*G_dbh;							/* debug handle */
-OSS_SEM_HANDLE  *G_mkLockSem; 					/* global MK sempahore */
-OSS_SEM_HANDLE  *G_mkIoctlSem; 					/* MK ioctl sempahore */
-OSS_DL_LIST		G_drvList;						/* list of reg. LL drivers */
-OSS_DL_LIST		G_devList;						/* list of devices */
-
-OSS_DL_LIST		G_freeUsrBufList;				/* list of free user buffers */
+OSS_HANDLE	*G_osh;			/* MK's OSS handle */
+DBG_HANDLE 	*G_dbh;			/* debug handle */
+OSS_SEM_HANDLE  *G_mkLockSem; 		/* global MK sempahore */
+OSS_SEM_HANDLE  *G_mkIoctlSem; 		/* MK ioctl sempahore */
+OSS_DL_LIST	G_drvList;		/* list of reg. LL drivers */
+OSS_DL_LIST	G_devList;		/* list of devices */
+OSS_DL_LIST	G_freeUsrBufList;	/* list of free user buffers */
 
 #ifdef CONFIG_DEVFS_FS
 # if LINUX_VERSION_CODE < VERSION_CODE(2,6,0)
@@ -1631,42 +1630,15 @@ int init_module(void)
 
 	printk( KERN_INFO "MEN MDIS Kernel init_module\n");
 
-	if ( (result = register_chrdev (mk_major, "mdis_kernel", &mk_fops)) < 0) {
+	if ( (result = register_chrdev (0 /*mk_major*/ , "mdis_kernel", &mk_fops)) < 0) {
           printk (KERN_ERR "mk: unable to get major %d\n", mk_major);
           return -EIO;
-     }
+	}
 
 	if( mk_major == 0 )
 		mk_major = result;
 	
-	DBGWRT_1((DBH,"mk: using major %d\n", mk_major));
-
-#ifdef CONFIG_DEVFS_FS
-# if LINUX_VERSION_CODE >= VERSION_CODE(2,6,0)
-	 if (devfs_mk_cdev( MKDEV( mk_major, 0), S_IFCHR | S_IRUSR | S_IWUSR,
-						"/mdis", 0))
-		 printk	(KERN_ERR "devfs_mk_cdev: cant register 'mdis' major %d\n",
-				 mk_major);
-#  else
-	if( (result = devfs_register_chrdev(mk_major, "mdisKernel",
-										&mk_fops)) < 0 	) {
-		printk("mk: unable to get major %d\n", mk_major);
-		return -EIO;
-	}
-# endif
-	if( mk_major == 0 )
-		mk_major = result;
-
-	DBGWRT_1((DBH,"mk: using major %d\n", mk_major));
-	/*
-	 * Create /dev/mdis
-	 */
-
-	devfs_handle = devfs_register(NULL, "mdis", DEVFS_FL_DEFAULT,
-								  mk_major, 0,
-								  S_IFCHR | S_IRUSR | S_IWUSR,
-								  &mk_fops, NULL);
-#endif /* version 2.6 */
+	printk( KERN_INFO "mk: using major %d\n", mk_major);
 
 	/* init OSS */
 	if( OSS_Init( "MDIS_KERNEL", &OSH )){
