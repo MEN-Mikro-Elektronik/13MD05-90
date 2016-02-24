@@ -36,7 +36,6 @@ sc24_fpga {
     DEVICE_ID_5 = U_INT32 0xff00
     DEVICE_ADDR = U_INT32 0xe000e000
     DEVICE_ADDR_IO = U_INT32 0x0
-    IRQ_NUMBER = U_INT32 0x650000
 
     # ------------------------------------------------------------------------
     #        debug levels (optional)

@@ -105,10 +105,13 @@ MDIS_MAJOR_NUMBER = 248
 
 ALL_LL_DRIVERS = \
 	Z017/DRIVER/COM/driver.mak \
-	MSCAN/DRIVER/COM/driver_boromir.mak \
-	QSPIM/DRIVER/COM/driver_z76.mak
+	XM01BC/DRIVER/COM/driver.mak \
+	SMB2/DRIVER/COM/driver.mak \
+	MSCAN/DRIVER/COM/driver_z15.mak \
+	Z082/DRIVER/COM/driver.mak
 
-ALL_BB_DRIVERS = CHAMELEON/DRIVER/COM/driver_isa.mak
+ALL_BB_DRIVERS = CHAMELEON/DRIVER/COM/driver_isa.mak \
+		 SMB2BB/DRIVER/NATIVE/driver.mak
 
 ALL_USR_LIBS = \
 	USR_OSS/library.mak \
@@ -127,9 +130,7 @@ ALL_LL_TOOLS = \
 	MSCAN/TOOLS/MSCAN_ALYZER/COM/program.mak \
 	MSCAN/TOOLS/MSCAN_LOOPB/COM/program.mak \
 	MSCAN/TOOLS/MSCAN_MENU/COM/program.mak \
-	QSPIM/EXAMPLE/QSPIM_A4N/COM/program.mak \
-	QSPIM/EXAMPLE/QSPIM_SIG/COM/program.mak \
-	QSPIM/EXAMPLE/QSPIM_BC02/COM/program.mak
+	Z082/EXAMPLE/Z82_SIMP/COM/program.mak
 
 ALL_COM_TOOLS = \
 	MDIS_API/M_ERRSTR/COM/program.mak \
@@ -145,7 +146,6 @@ ALL_COM_TOOLS = \
 	MDIS_API/M_SETSTAT_BLK/COM/program.mak \
 	MDIS_API/M_WRITE/COM/program.mak
 
-# from kernel 3.14 on unnecessary but leave in by default...
 ALL_NATIVE_DRIVERS = DRIVERS/I2C_BUSSES/i2cpiix4/driver.mak
 
 ALL_NATIVE_LIBS = 
