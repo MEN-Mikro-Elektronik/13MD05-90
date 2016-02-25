@@ -333,7 +333,7 @@ function create_entry_dsc_bbis_cham {
     #      PCI_BUS_SLOT = G_cPciRackSerialSlot
     #      busif = "cpu,"$G_cPciRackSerialSlot
     #      G_cPciRackSerialSlot ++;
-    
+
     is_F2xx=`echo $bbis_name | awk '{print substr($1,1,1)}'`
 
     if [ "$is_F2xx"=="f"  ] ; then
@@ -355,7 +355,7 @@ function create_entry_dsc_bbis_cham {
 
     bbis_name=`echo $3 | awk '{print tolower($1)}'`
     # calculate bus_slot from given PCI devnr. on standard backplanes
-       
+
     # cat template to temp file that gets DEVICE_IDV2_xx added after IPcore scan
     # unfortunately some FPGA BBIS models dont match the IC file name. E.g. on MM1
     # the IC filename starts with "MM01-IC..." but modelname is just 'fpga'
@@ -658,20 +658,18 @@ function scan_for_pci_devs {
         # state actions
         if [ "$state_check_f223" == "1" ]; then
             # previous line was a Pericom bridge. Are now 4 subsequent USB bridges following?
-            if [ "$pcivend" == "0x12d8" ] && [ "$pcidevid" == "0x400a" ]; then
+            if [ "$pcivend" == "0x12d8" ] && [ "$pcidevid" == "0x400e" ]; then
                 count_usb_devs=`expr $count_usb_devs + 1`
             else # other device showed up in between -> its no F223.
                 state_check_f223=0
-                count_usb_devs=0
             fi
 
-            if [ "$count_usb_devs" == "4" ] && [ "$pcidevid" == "0x400a" ]; then
+            if [ "$count_usb_devs" == "2" ] && [ "$pcidevid" == "0x400f" ]; then
                 count_instance_f223=`expr $count_instance_f223 + 1`
                 echo " -> F223 nr. $count_instance_f223 found, adding to system descriptor"
-                count_usb_devs=0
+                count_usb_devs=0  # here we may clear USB devs count
                 state_check_f223=0
-                create_entry_dsc_f223 $DSC_TPL_DIR $count_instance_f223 \
-                    $bus_path_prim $bus_path_sec_f223
+                create_entry_dsc_f223 $DSC_TPL_DIR $count_instance_f223 $bus_path_prim $bus_path_sec_f223
             fi
         fi
 
@@ -688,13 +686,11 @@ function scan_for_pci_devs {
             fi
         fi
 
-
         ############################
         # state events
 
 	# check if a F223 starts here
-        if [ "$pcivend" == "0x12d8" ] && [ "$pcidevid" == "0xe110" ]; then
-            echo "Found Pericom PCI bridge. Keep looking if F223 appears"
+        if [ "$pcivend" == "0x12d8" ] && [ "$pcidevid" == "0x400a" ]; then
             # store PCI devnr. in case its a F223
             bus_path_sec_f223=$pcidevnr
             state_check_f223=1
@@ -710,7 +706,7 @@ function scan_for_pci_devs {
         fi
 
         # any other F2xx/G2xx carrier (mezzanine chameleon) ?
-        if [ "$pcivend" == "0x1172" ] && [ "$pcidevid" == "0x4d45" ] || [ "$pcivend" == "0x1a88" ]; then
+        if ( [ "$pcivend" == "0x1172" ] && [ "$pcidevid" == "0x4d45" ] ) || [ "$pcivend" == "0x1a88" ]; then
             count_instance_f2xx=`expr $count_instance_f2xx + 1`
             echo "Found possible MEN chameleon device(s), checking."
             check_for_cham_devs $MEN_LIN_DIR \
