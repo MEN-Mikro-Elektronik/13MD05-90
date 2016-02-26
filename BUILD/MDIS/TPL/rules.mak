@@ -159,6 +159,9 @@ _ALL_CORE2 		:= \
 					SMB/PORT/COM/library.mak \
 					SMB/PORT/COM/library_io.mak
 
+SC24_I2C_DRIVER		:=		DRIVERS/I2C_BUSSES/i2cpiix4/driver.mak
+
+
 # includable / excludable libraries 
 # native: add to _ALL_CORE1 
 # common: add to _ALL_CORE2			
@@ -453,6 +456,8 @@ export COMP_MAK    := $(TPL_DIR)component.mak
 prepare_kernelsettings:
 	touch $(THIS_DIR)/.kernelsettings
 
+sc24i2cmod: $(ALL_NATIVE_DRIVERS)
+
 buildmods: $(ALL_DBGS)
 
 $(ALL_DBGS): 
@@ -489,7 +494,9 @@ all_ll:		$(ALL_LL_DRIVERS)
 all_bb:		$(ALL_BB_DRIVERS)
 all_core: 	$(ALL_CORE)
 all_kernel:	$(ALL_KERNEL)
+i2c_sc24:	$(ALL_RAW) $(SC24_I2C_DRIVER)
 all_raw: 	$(ALL_RAW) $(ALL_NATIVE_DRIVERS)
+all_native: 	$(ALL_RAW) $(ALL_NATIVE_DRIVERS)
 
 $(ALL_LL_DRIVERS):
 	$(MAKEIT) -f $(COMP_MAK) $(RULE) \
@@ -517,6 +524,11 @@ $(_ALL_CORE_COM_X86):
 	$(MAKEIT) -f $(COMP_MAK) $(RULE) \
 		COMMAKE=$(LS_PATH)/$@ \
 		DEBUG=$(DEBUG) COMP_PREFIX=men_ MODULE_COM=nat_module.o
+
+#$(SC24_I2C_DRIVER):
+#	$(MAKEIT) -f $(COMP_MAK) $(RULE) \
+#		COMMAKE=$(LS_PATH)/$@ \
+#		DEBUG=$(DEBUG) COMP_PREFIX=men_ MODULE_COM= SYMS=y
 
 $(ALL_KERNEL):
 	$(MAKEIT) -f $(COMP_MAK) $(RULE) \
