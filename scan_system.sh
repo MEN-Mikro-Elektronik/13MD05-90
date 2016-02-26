@@ -63,6 +63,8 @@ VERBOSE_PRINT=0
 # run drytest with test PCI device list ?
 PCI_DRYTEST=""
 
+MDIS_TMPDIR=mdis_tmp
+
 # really writing pcitree/temp. cham table or use simulation data ?
 # 0 = normal operation, scan and write PCI devices
 # 1 = use predefined /tmp/men_pci_devs.tmp file to run tests
@@ -1100,11 +1102,24 @@ esac
 
 debug_print "Using _WIZ_MODEL = $wiz_model_cpu"
 
+
 # create SC24 based Bx50x CPU model
 if [ "$main_cpu" == "SC24" ]; then
-    echo "SC24 found. Unload driver i2c-piix4. ATTENTION: run 'modprobe men_i2c-piix4' after make install."
-    echo "(predelivered i2c-piix4 driver does not support both I2C controllers on every kernel)."
+    echo "Found SC24 based CPU -> rebuild driver i2c-piix4 with version supporting both I2C busses"
     rmmod i2c-piix4
+    mkdir $MDIS_TMPDIR
+    echo "building driver using a temporary MDIS project.."
+    cp $DSC_TPL_DIR/Makefile.sc24i2cpiix4   $MDIS_TMPDIR/Makefile
+    cp $DSC_TPL_DIR/system.dsc.sc24i2cpiix4 $MDIS_TMPDIR/system.dsc
+    cd $MDIS_TMPDIR
+    make i2c_sc24
+    make callkernelbuild
+    rm $MOD_DIR/kernel/drivers/i2c/busses/i2c-piix4.ko
+    cp OBJ/nodbg/men_i2c-piix4/men_i2c-piix4.ko $MOD_DIR/kernel/drivers/i2c/busses/i2c-piix4.ko
+    depmod
+    modprobe i2c-piix4
+    cd ..
+    rm -rf $MDIS_TMPDIR
     map_sc24_fpga  # ts: no more needed for new BIOSes but stay compatible with old boards
     cat $DSC_TPL_DIR/sc24.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
     cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE
