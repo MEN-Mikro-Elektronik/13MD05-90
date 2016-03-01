@@ -32,7 +32,7 @@
 
 # proc entry to scan pci devs
 PROC_PCI_DEV=/proc/bus/pci/devices
-# where the linux kernel sources/headers are expected. Create symlink if kernel headers are stored under different name
+# where the linux kernel sources/headers are expected
 LIN_SRC_DIR=/usr/src/linux
 # where are the SMBus controller drivers located ?
 MOD_DIR=/lib/modules/`uname -r`
@@ -62,8 +62,6 @@ FPGA_LOAD=fpga_load_x86-32
 VERBOSE_PRINT=0
 # run drytest with test PCI device list ?
 PCI_DRYTEST=""
-
-MDIS_TMPDIR=mdis_tmp
 
 # really writing pcitree/temp. cham table or use simulation data ?
 # 0 = normal operation, scan and write PCI devices
@@ -171,6 +169,9 @@ function detect_board_id {
     if [ -e "$MOD_DIR/kernel/drivers/i2c/busses/i2c-isch.ko" ]; then
         modprobe i2c-isch
     fi
+    if [ -e "$MOD_DIR/kernel/drivers/i2c/busses/i2c-piix4.ko" ]; then
+        modprobe i2c-piix4 # SC24 SMB controller. Use 13SC24-90 modified driver!
+    fi
 
     G_cpu=""
     for adrs in $ID_EEPROM_ADRESSES; do
@@ -205,8 +206,7 @@ function detect_board_id {
     fi
 }
 
-# ts: no more needed on SC24 with new IRQ map/FPGA window opening BIOS, left
-#     for informational purpose (and old prototype hardware out there) 
+
 ############################################################################
 # Map SC24 FPGA (in case old BIOS is present)
 # the IRQ settings are switched on loading BBIS driver
@@ -263,6 +263,7 @@ function create_entry_dsc_pp04 {
 # $5    WIZ_MODEL
 function create_entry_dsc_smb_drv {
     echo "creating CPU SMB driver section: _WIZ_MODEL = $3, SM Bus nr. = $2"
+
     cat $1/smb_drv.tpl | \
         sed "s/SCAN_DEVNAME/$3/g;s/SCAN_HWTYPE/$4/g;s/SCAN_WIZMODEL/$5/g;s/SCAN_SMBNR/$2/g" >> $DSC_FILE
 }
@@ -335,7 +336,7 @@ function create_entry_dsc_bbis_cham {
     #      PCI_BUS_SLOT = G_cPciRackSerialSlot
     #      busif = "cpu,"$G_cPciRackSerialSlot
     #      G_cPciRackSerialSlot ++;
-
+    
     is_F2xx=`echo $bbis_name | awk '{print substr($1,1,1)}'`
 
     if [ "$is_F2xx"=="f"  ] ; then
@@ -357,7 +358,7 @@ function create_entry_dsc_bbis_cham {
 
     bbis_name=`echo $3 | awk '{print tolower($1)}'`
     # calculate bus_slot from given PCI devnr. on standard backplanes
-
+       
     # cat template to temp file that gets DEVICE_IDV2_xx added after IPcore scan
     # unfortunately some FPGA BBIS models dont match the IC file name. E.g. on MM1
     # the IC filename starts with "MM01-IC..." but modelname is just 'fpga'
@@ -660,18 +661,20 @@ function scan_for_pci_devs {
         # state actions
         if [ "$state_check_f223" == "1" ]; then
             # previous line was a Pericom bridge. Are now 4 subsequent USB bridges following?
-            if [ "$pcivend" == "0x12d8" ] && [ "$pcidevid" == "0x400e" ]; then
+            if [ "$pcivend" == "0x12d8" ] && [ "$pcidevid" == "0x400a" ]; then
                 count_usb_devs=`expr $count_usb_devs + 1`
             else # other device showed up in between -> its no F223.
                 state_check_f223=0
+                count_usb_devs=0
             fi
 
-            if [ "$count_usb_devs" == "2" ] && [ "$pcidevid" == "0x400f" ]; then
+            if [ "$count_usb_devs" == "4" ] && [ "$pcidevid" == "0x400a" ]; then
                 count_instance_f223=`expr $count_instance_f223 + 1`
                 echo " -> F223 nr. $count_instance_f223 found, adding to system descriptor"
-                count_usb_devs=0  # here we may clear USB devs count
+                count_usb_devs=0
                 state_check_f223=0
-                create_entry_dsc_f223 $DSC_TPL_DIR $count_instance_f223 $bus_path_prim $bus_path_sec_f223
+                create_entry_dsc_f223 $DSC_TPL_DIR $count_instance_f223 \
+                    $bus_path_prim $bus_path_sec_f223
             fi
         fi
 
@@ -688,11 +691,13 @@ function scan_for_pci_devs {
             fi
         fi
 
+
         ############################
         # state events
 
 	# check if a F223 starts here
-        if [ "$pcivend" == "0x12d8" ] && [ "$pcidevid" == "0x400a" ]; then
+        if [ "$pcivend" == "0x12d8" ] && [ "$pcidevid" == "0xe110" ]; then
+            echo "Found Pericom PCI bridge. Keep looking if F223 appears"
             # store PCI devnr. in case its a F223
             bus_path_sec_f223=$pcidevnr
             state_check_f223=1
@@ -708,7 +713,7 @@ function scan_for_pci_devs {
         fi
 
         # any other F2xx/G2xx carrier (mezzanine chameleon) ?
-        if ( [ "$pcivend" == "0x1172" ] && [ "$pcidevid" == "0x4d45" ] ) || [ "$pcivend" == "0x1a88" ]; then
+        if [ "$pcivend" == "0x1172" ] && [ "$pcidevid" == "0x4d45" ] || [ "$pcivend" == "0x1a88" ]; then
             count_instance_f2xx=`expr $count_instance_f2xx + 1`
             echo "Found possible MEN chameleon device(s), checking."
             check_for_cham_devs $MEN_LIN_DIR \
@@ -931,14 +936,10 @@ case $main_cpu in
     SC24)
 		wiz_model_cpu=Bx50x
 		wiz_model_smb=SMBPCI_FCH
-		bCreateXm01bcDrv=1
-		add_xm01bc_support
 		;;
     SC25)
         wiz_model_cpu=Bx70x
         wiz_model_smb=SMBPCI_FCH
-		bCreateXm01bcDrv=1
-		add_xm01bc_support
         ;;
     F011)
 		wiz_model_cpu=F11S
@@ -954,19 +955,12 @@ case $main_cpu in
 		bCreateXm01bcDrv=1
 		add_xm01bc_support
 		;;
-    F14)
+    F14|F014)
 		wiz_model_cpu=F14
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
 		add_xm01bc_support
 		bCreateXm01bcDrv=1
-		;;
-    F014)
-		wiz_model_cpu=F14
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1e
-		bCreateXm01bcDrv=1
-		add_xm01bc_support
 		;;
     F15)
 		wiz_model_cpu=F15
@@ -982,71 +976,44 @@ case $main_cpu in
 		bCreateXm01bcDrv=1
 		add_xm01bc_support
 		;;
-    F17)
+    F17|F017)
 		wiz_model_cpu=F17
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
 		bCreateF14bcDrv=1
 		add_f14bc_support
 		;;
-    F017)
-		wiz_model_cpu=F17
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1e
-		bCreateF14bcDrv=1
-		add_f14bc_support
-		;;
-    F19P)
+    F19P|F19C|F019)
 		wiz_model_cpu=F19P_F19C
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
 		bCreateXm01bcDrv=1
 		add_xm01bc_support
 		;;
-    F19C)
-		wiz_model_cpu=F19P_F19C
+    F21P|F21C|F021)
+		wiz_model_cpu=F21P_F21C
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
-		bCreateXm01bcDrv=1
+		wiz_model_busif=0
 		add_xm01bc_support
-		;;
-    F019)
-		wiz_model_cpu=F19P_F19C
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1e
 		bCreateXm01bcDrv=1
-		add_xm01bc_support
-		;;
-    F21P)
-		wiz_model_cpu=F21P_F21C
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1e
-		wiz_model_busif=0
-		;;
-    F21C)
-		wiz_model_cpu=F21P_F21C
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1e
-		wiz_model_busif=0
-	;;
-    F021)
-		wiz_model_cpu=F21P_F21C
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1e
-		wiz_model_busif=0
 		;;
     F22P)
-        wiz_model_cpu=F22P
-        wiz_model_smb=SMBPCI_ICH
-        G_primPciPath=0x1e
-        wiz_model_busif=0
-        ;;
+		wiz_model_cpu=F22P
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1e
+		wiz_model_busif=0
+		add_xm01bc_support
+		bCreateXm01bcDrv=1
+		;;
     F23P)
-        wiz_model_cpu=F23P
-        wiz_model_smb=SMBPCI_ICH
-        G_primPciPath=0x1e
-        wiz_model_busif=0
-        ;;
+		wiz_model_cpu=F23P
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1e
+		wiz_model_busif=0
+		add_xm01bc_support
+		bCreateXm01bcDrv=1
+		;;
     F075)
 		wiz_model_cpu=F75P
 		wiz_model_smb=SMBPCI_SCH
@@ -1073,59 +1040,39 @@ case $main_cpu in
 		G_primPciPath=0x1c
 		wiz_model_busif=7
 		add_z001_io_support
+		bCreateXm01bcDrv=1
 		;;
     G22-)
-		wiz_model_cpu=G22
+		wiz_model_cpu=G20
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1c
 		wiz_model_busif=7
 		add_z001_io_support
+		bCreateXm01bcDrv=1
 		;;
-    G23-)
-		wiz_model_cpu=G23
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1c
-		wiz_model_busif=7
-		add_z001_io_support
-	;;
     G25-)
-		wiz_model_cpu=G25A
-		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1c
-		wiz_model_busif=7
-		add_z001_io_support
-		;;
+        wiz_model_cpu=G25A
+        wiz_model_smb=SMBPCI_ICH
+        G_primPciPath=0x1c
+        wiz_model_busif=7
+        add_z001_io_support
+		bCreateXm01bcDrv=1
+        ;;
     *)
-	echo "No valid CPU type found or ident EEPROM not programmed! check EEPROM content manually (i2cdump [SMBus nr] [0x55 or 0x57])"
-	;;
+		echo "No MEN CPU type found!"
+		;;
 esac
 
 debug_print "Using _WIZ_MODEL = $wiz_model_cpu"
 
-
 # create SC24 based Bx50x CPU model
 if [ "$main_cpu" == "SC24" ]; then
-    echo "Found SC24 based CPU -> rebuild driver i2c-piix4 with version supporting both I2C busses"
-    rmmod i2c-piix4
-    mkdir $MDIS_TMPDIR
-    echo "building driver using a temporary MDIS project.."
-    cp $DSC_TPL_DIR/Makefile.sc24i2cpiix4   $MDIS_TMPDIR/Makefile
-    cp $DSC_TPL_DIR/system.dsc.sc24i2cpiix4 $MDIS_TMPDIR/system.dsc
-    cd $MDIS_TMPDIR
-    make i2c_sc24
-    make callkernelbuild
-    rm $MOD_DIR/kernel/drivers/i2c/busses/i2c-piix4.ko
-    cp OBJ/nodbg/men_i2c-piix4/men_i2c-piix4.ko $MOD_DIR/kernel/drivers/i2c/busses/i2c-piix4.ko
-    depmod
-    modprobe i2c-piix4
-    cd ..
-    rm -rf $MDIS_TMPDIR
-    map_sc24_fpga  # ts: no more needed for new BIOSes but stay compatible with old boards
+    map_sc24_fpga
     cat $DSC_TPL_DIR/sc24.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
     cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE
 # create SC25 based Bx70x CPU model - no FPGA mapping necessary here
 elif  [ "$main_cpu" == "SC25" ]; then 
-    cat $DSC_TPL_DIR/sc25.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
+    cat $DSC_TPL_DIR/sc24.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
     cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE
 else
     #all other CPUs: detect PCI boards, start with CPU/SMB drivers
