@@ -356,17 +356,10 @@ installdevnode:
 ifeq ($(HASDEVFS),1)
 else
  ifdef DEVNODE_INSTALL_DIR
-  ifdef MDIS_MAJOR_NUMBER
 	$(Q)install --directory $(DEVNODE_INSTALL_DIR)
-	@$(ECHO) "loading men_mdis_kernel module to check assigned major number..."
-	dmesg -c > /dev/null
-	modprobe men_mdis_kernel
-	$(eval devnodenr := $(shell dmesg | grep "mk: using major" | awk '{print $$NF}'))
-	if [ ! -e /dev/mdis ] ; then mknod /dev/mdis c $(devnodenr) 0 ; fi
-	@$(ECHO) "========================================================================="
-	@$(ECHO) "=> Warning: before running make install again, unload all MEN modules! <="
-	@$(ECHO) "========================================================================="
-  endif
+	@$(ECHO) "============================================================================"
+	@$(ECHO) "=> When rebuilding modified modules rmmod old modules before new modprobe <="
+	@$(ECHO) "============================================================================"
  endif
 endif
 

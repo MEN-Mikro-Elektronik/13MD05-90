@@ -125,11 +125,14 @@
 
 #include "mk_intern.h"
 #include <linux/module.h>
+#include <linux/version.h>
+#include <linux/kernel.h>
+#include <linux/types.h>
+#include <linux/kdev_t.h>
+#include <linux/fs.h>
+#include <linux/device.h>
+#include <linux/cdev.h>
 #include <linux/moduleparam.h>
-
-#ifdef CONFIG_DEVFS_FS
-#include <linux/devfs_fs_kernel.h>
-#endif
 
 /*--------------------------------------+
 |   DEFINES                             |
@@ -147,11 +150,8 @@
 /* Sanity check: ElinOS allows devfs still
  * to be selected in the elk even for kernels 2.6.x where its gone
  */
-#if defined(CONFIG_DEVFS_FS) && (LINUX_VERSION_CODE > VERSION_CODE(2,6,9))
-# error "!! kernel > 2.6.9 with device file support selected! DEVFS is"
-# error "!! removed in kernels 2.6.9 and up. If you"
-# error "!! build an MDIS Project for ElinOS, deselect devfs in 'Filesystems'"
-# error "!! Settings and select UDEV instead. "
+#if defined(CONFIG_DEVFS_FS)
+# error "DEVFS is no more supported in MDIS."
 #endif
 
 /*--------------------------------------+
@@ -171,20 +171,20 @@
 +--------------------------------------*/
 
 /*--- Module parameters ---*/
-static int mk_major 	= 	MK_MAJOR; 	/* major device number for /dev/mdis */
 static int mk_nbufs 	= 	16;		/* number of static users buffers to allocate*/
 int mk_dbglevel 	=	OSS_DBG_DEFAULT;/* debug level */
 
+static dev_t first;  		/* Global variable for the first device number */
+static struct cdev c_dev; 	/* Global variable for the character device structure */
+static struct class *cl; 	/* Global variable for the device class */
+
+
 #if LINUX_VERSION_CODE < VERSION_CODE(2,6,14)
-MODULE_PARM( mk_major, "i" );
-MODULE_PARM_DESC(mk_major, "MDIS major number");
 MODULE_PARM( mk_nbufs, "i" );
 MODULE_PARM_DESC(mk_nbufs, "number of static users buffers to allocate");
 MODULE_PARM( mk_dbglevel, "i" );
 MODULE_PARM_DESC(mk_dbglevel, "MDIS kernel debug level");
 #else
-module_param( mk_major, int, 0664 );
-MODULE_PARM_DESC(mk_major, "MDIS major number");
 module_param( mk_nbufs, int, 0664 );
 MODULE_PARM_DESC(mk_nbufs, "number of static users buffers to allocate");
 module_param( mk_dbglevel, int, 0664 );
@@ -1630,15 +1630,32 @@ int init_module(void)
 
 	printk( KERN_INFO "MEN MDIS Kernel init_module\n");
 
-	if ( (result = register_chrdev (0 /*mk_major*/ , "mdis_kernel", &mk_fops)) < 0) {
-          printk (KERN_ERR "mk: unable to get major %d\n", mk_major);
-          return -EIO;
+
+	if (alloc_chrdev_region(&first, 0, 1, "mdisKernel") < 0)
+	{
+		return -1;
 	}
 
-	if( mk_major == 0 )
-		mk_major = result;
-	
-	printk( KERN_INFO "mk: using major %d\n", mk_major);
+	if ((cl = class_create(THIS_MODULE, "chardrv")) == NULL)
+	{
+		unregister_chrdev_region(first, 1);
+		return -1;
+	}
+
+	if (device_create(cl, NULL, first, NULL, "mdis") == NULL)
+	{
+		class_destroy(cl);
+		unregister_chrdev_region(first, 1);
+		return -1;
+	}
+	cdev_init(&c_dev, &mk_fops);
+	if (cdev_add(&c_dev, first, 1) == -1)
+	{
+		device_destroy(cl, first);
+		class_destroy(cl);
+		unregister_chrdev_region(first, 1);
+		return -1;
+	}
 
 	/* init OSS */
 	if( OSS_Init( "MDIS_KERNEL", &OSH )){
@@ -1695,8 +1712,6 @@ int init_module(void)
  clean1:
 
 
-	unregister_chrdev ( mk_major, "mdisKernel");
-
 #if LINUX_VERSION_CODE >= VERSION_CODE(2,6,0)
 # ifdef CONFIG_DEVFS_FS
 	devfs_remove ("mdis", 0);
@@ -1736,20 +1751,12 @@ void cleanup_module(void)
 	}
 	OSS_Exit(&OSH);
 
+	cdev_del(&c_dev);
+	device_destroy(cl, first);
+	class_destroy(cl);
+	unregister_chrdev_region(first, 1);
 
-#if LINUX_VERSION_CODE >= VERSION_CODE(2,6,0)
-	unregister_chrdev ( mk_major, "mdisKernel");
-# ifdef CONFIG_DEVFS_FS
-	devfs_remove ("mdis", 0);
-# endif
-#else
-# ifdef CONFIG_DEVFS_FS
-	devfs_unregister(devfs_handle);
-	devfs_unregister_chrdev(mk_major, "mdisKernel");
-# endif
-#endif /* version 2.6 */
-
-    remove_proc_entry ("mdis", 0);
+	remove_proc_entry ("mdis", 0);
 
 	DBGEXIT((&DBH));
 	printk( KERN_INFO "MEN MDIS Kernel cleanup_module\n");
@@ -1879,6 +1886,4 @@ int mdis_find_ll_handle( char *devName, LL_HANDLE **hP, LL_ENTRY *entry )
 
 MODULE_DESCRIPTION("MEN MDIS kernel");
 MODULE_AUTHOR("Klaus Popp <klaus.popp@men.de>");
-#ifdef MODULE_LICENSE
 MODULE_LICENSE("GPL");
-#endif
