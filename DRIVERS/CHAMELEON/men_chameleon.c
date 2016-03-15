@@ -929,12 +929,14 @@ static int __devinit init_one ( void )
         v0unit->phys      		= (void *)(info.offset);
 #endif
         v2unit->unitFpga.devId     = info.devId;
+        v2unit->unitFpga.group     = info.group;
         v2unit->unitFpga.revision  = info.revision;
         v2unit->unitFpga.instance  = info.instance;
         v2unit->unitFpga.variant   = info.variant;
         v2unit->unitFpga.interrupt = info.interrupt;
         v2unit->unitFpga.bar       = info.bar;
         v2unit->unitFpga.offset    = info.offset;
+        v2unit->unitFpga.size      = info.size;
 #ifdef CONFIG_PCI
         v2unit->unitFpga.addr  = (void *)(U_INT32_OR_64)(pci_resource_start(pdev,info.bar) +
 										  info.offset);
