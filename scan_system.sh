@@ -39,7 +39,8 @@ MOD_DIR=/lib/modules/`uname -r`
 
 # currently detected CPU boards. ADD NEW BOARDS HERE!
 # also take care for special (native) driver adding etc.
-CPU_KNOWN_BOARDS="SC25 SC24 F011 F11S F14- F014 F15- F015 F17- F017 F075 F19P F19C F019 F21P F22P F23P F21C F021 XM01 MM01 G20- G22- G23- G25-"
+# The first 4 characters of ID EEPROMs CPU name position are compared with each of these entries.
+CPU_KNOWN_BOARDS="SC25 SC24 F011 F11S F14- F014 F15- F015 F17- F017 F075 F19P F19C F019 F21P F22P F23P F21C F021 XM01 MM01 G20- G020 G22- G022 G23- G023 G25- G025"
 
 # which SMB adresses to scan for CPU ID eeproms
 ID_EEPROM_ADRESSES="0x57 0x55"
@@ -1034,7 +1035,7 @@ case $main_cpu in
 		bCreateXm01bcDrv=1
 		add_xm01bc_support
 		;;
-    G20-)
+    G20-|G020)
 		wiz_model_cpu=G20
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1c
@@ -1042,15 +1043,25 @@ case $main_cpu in
 		add_z001_io_support
 		bCreateXm01bcDrv=1
 		;;
-    G22-)
-		wiz_model_cpu=G20
+    G22-|G022)
+		wiz_model_cpu=G22
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1c
 		wiz_model_busif=7
 		add_z001_io_support
 		bCreateXm01bcDrv=1
 		;;
-    G25-)
+
+    G23-|G023)
+                wiz_model_cpu=G23
+                wiz_model_smb=SMBPCI_ICH
+                G_primPciPath=0x1c
+                wiz_model_busif=7
+                add_z001_io_support
+                bCreateXm01bcDrv=1
+                ;;
+
+    G25-|G025)
         wiz_model_cpu=G25A
         wiz_model_smb=SMBPCI_ICH
         G_primPciPath=0x1c
