@@ -39,8 +39,7 @@ MOD_DIR=/lib/modules/`uname -r`
 
 # currently detected CPU boards. ADD NEW BOARDS HERE!
 # also take care for special (native) driver adding etc.
-# The first 4 characters of ID EEPROMs CPU name position are compared with each of these entries.
-CPU_KNOWN_BOARDS="SC25 SC24 F011 F11S F14- F014 F15- F015 F17- F017 F075 F19P F19C F019 F21P F22P F23P F21C F021 XM01 MM01 G20- G020 G22- G022 G23- G023 G25- G025"
+CPU_KNOWN_BOARDS="SC25 SC24 F011 F11S F14- F014 F15- F015 F17- F017 F075 F75P F19P F19C F019 F21P F22P F23P F21C F021 XM01 MM01 G20- G22- G23- G25- G022 G023 G025"
 
 # which SMB adresses to scan for CPU ID eeproms
 ID_EEPROM_ADRESSES="0x57 0x55"
@@ -960,6 +959,7 @@ case $main_cpu in
 		wiz_model_cpu=F14
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
+
 		add_xm01bc_support
 		bCreateXm01bcDrv=1
 		;;
@@ -999,7 +999,7 @@ case $main_cpu in
 		add_xm01bc_support
 		bCreateXm01bcDrv=1
 		;;
-    F22P)
+    F022|F22P)
 		wiz_model_cpu=F22P
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
@@ -1007,7 +1007,7 @@ case $main_cpu in
 		add_xm01bc_support
 		bCreateXm01bcDrv=1
 		;;
-    F23P)
+    F023|F23P)
 		wiz_model_cpu=F23P
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
@@ -1015,7 +1015,7 @@ case $main_cpu in
 		add_xm01bc_support
 		bCreateXm01bcDrv=1
 		;;
-    F075)
+    F075|F75P)
 		wiz_model_cpu=F75P
 		wiz_model_smb=SMBPCI_SCH
 		G_primPciPath=0x18
@@ -1035,7 +1035,7 @@ case $main_cpu in
 		bCreateXm01bcDrv=1
 		add_xm01bc_support
 		;;
-    G20-|G020)
+    G20-)
 		wiz_model_cpu=G20
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1c
@@ -1048,25 +1048,28 @@ case $main_cpu in
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1c
 		wiz_model_busif=7
+		add_xm01bc_support
 		add_z001_io_support
 		bCreateXm01bcDrv=1
 		;;
 
     G23-|G023)
-                wiz_model_cpu=G23
-                wiz_model_smb=SMBPCI_ICH
-                G_primPciPath=0x1c
-                wiz_model_busif=7
-                add_z001_io_support
-                bCreateXm01bcDrv=1
-                ;;
-
-    G25-|G025)
-        wiz_model_cpu=G25A
+        wiz_model_cpu=G23
         wiz_model_smb=SMBPCI_ICH
         G_primPciPath=0x1c
         wiz_model_busif=7
+		add_xm01bc_support
         add_z001_io_support
+        bCreateXm01bcDrv=1
+        ;;
+
+    G25-)
+	    wiz_model_cpu=G25A
+	    wiz_model_smb=SMBPCI_ICH
+	    G_primPciPath=0x1c
+	    wiz_model_busif=7
+		add_xm01bc_support
+	    add_z001_io_support
 		bCreateXm01bcDrv=1
         ;;
     *)
