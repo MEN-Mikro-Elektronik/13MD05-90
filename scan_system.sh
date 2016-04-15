@@ -39,7 +39,7 @@ MOD_DIR=/lib/modules/`uname -r`
 
 # currently detected CPU boards. ADD NEW BOARDS HERE!
 # also take care for special (native) driver adding etc.
-CPU_KNOWN_BOARDS="SC25 SC24 F011 F11S F14- F014 F15- F015 F17- F017 F075 F75P F19P F19C F019 F21P F22P F23P F21C F021 XM01 MM01 G20- G22- G23- G25- G022 G023 G025"
+CPU_KNOWN_BOARDS="SC25 SC24 F011 F11S F14- F014 F15- F015 F17- F017 F075 F19P F19C F019 F21P F22P F23P F21C F021 XM01 MM01 G20- G22- G23- G25A"
 
 # which SMB adresses to scan for CPU ID eeproms
 ID_EEPROM_ADRESSES="0x57 0x55"
@@ -296,21 +296,21 @@ function create_entry_dsc_cpu_type {
 # Addendum 05/2015: With the new unified generic mezz_cham carrier we must check
 # if its a cPCI Serial card (G2xx, e.g. G215) or a parallel cPCI card like F2xx.
 # Based on this the position can be rougly estimated on the FPGA file name:
-#
+#  
 #  Example entries for a hybrid backplane: 
 #
 #  standard cPCI slots          cPCI Serial slots
-#
+#   
 # cpu,1 cpu,1 cpu,1 cpu,1       cpu,2 cpu,3 cpu,4 cpu,5      <- _WIZ_BUSIF = STRING ...  
 #   5     4     3     2    SYS    2     3     4     5        <- PCI_BUS_SLOT = U_INT32 ...
-#  ---   ---   ---   ---   ---
-#  | |   | |   | |   | |   | |
-#  | |   | |   | |   | |   | |
-#  | |   | |   | |   | |   | |
-#  | |   | |   | |   | |   | |
+#  ---   ---   ---   ---   ---   
+#  | |   | |   | |   | |   | | 
+#  | |   | |   | |   | |   | | 
+#  | |   | |   | |   | |   | | 
+#  | |   | |   | |   | |   | |  
 #  | |   | |   | |   | |   | |   ----  ----  ----  ----
 #  | |   | |   | |   | |   | |   |  |  |  |  |  |  |  |
-#  ---   ---   ---   ---   ---   ----  ----  ----  ----
+#  ---   ---   ---   ---   ---   ----  ----  ----  ----  
 #
 #  This results in the following algorithm described below. In this script we can 
 #  not detect the true physical slots, so we assign just incrementing slots according to
@@ -326,8 +326,8 @@ function create_entry_dsc_bbis_cham {
     pci_devnr=$5
     device_id=$6
     pcibusslot=""
-
-    # basic algorithm:
+    
+    # basic algorithm:    
     # if bbis_name[0] == 'F' then 
     #      PCI_BUS_SLOT = G_cPciRackSlotStandard
     #      busif = "cpu,1"
@@ -924,7 +924,7 @@ detect_board_id
 G_SmBusNumber=$smbus
 main_cpu=`echo $G_cpu | awk '{print substr($1,1,4)}'`
 wiz_model_cpu=""
-echo "Found CPU: $main_cpu. Using SMBus number $G_SmBusNumber for SMB2 based drivers"
+echo "Found CPU: $main_cpu. Using SMB address $G_SmBusNumber for SMB2 based drivers"
 
 #default for most F1x cards
 wiz_model_busif=1
@@ -938,9 +938,9 @@ case $main_cpu in
 		wiz_model_smb=SMBPCI_FCH
 		;;
     SC25)
-    		wiz_model_cpu=Bx70x
-    		wiz_model_smb=SMBPCI_FCH
-        	;;
+        wiz_model_cpu=Bx70x
+        wiz_model_smb=SMBPCI_FCH
+        ;;
     F011)
 		wiz_model_cpu=F11S
 		wiz_model_smb=SMBPCI_SCH
@@ -959,7 +959,6 @@ case $main_cpu in
 		wiz_model_cpu=F14
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
-
 		add_xm01bc_support
 		bCreateXm01bcDrv=1
 		;;
@@ -999,7 +998,7 @@ case $main_cpu in
 		add_xm01bc_support
 		bCreateXm01bcDrv=1
 		;;
-    F022|F22P)
+    F22P)
 		wiz_model_cpu=F22P
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
@@ -1007,7 +1006,7 @@ case $main_cpu in
 		add_xm01bc_support
 		bCreateXm01bcDrv=1
 		;;
-    F023|F23P)
+    F23P)
 		wiz_model_cpu=F23P
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
@@ -1015,7 +1014,7 @@ case $main_cpu in
 		add_xm01bc_support
 		bCreateXm01bcDrv=1
 		;;
-    F075|F75P)
+    F075)
 		wiz_model_cpu=F75P
 		wiz_model_smb=SMBPCI_SCH
 		G_primPciPath=0x18
@@ -1043,35 +1042,23 @@ case $main_cpu in
 		add_z001_io_support
 		bCreateXm01bcDrv=1
 		;;
-    G22-|G022)
-		wiz_model_cpu=G22
+    G22-)
+		wiz_model_cpu=G20
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1c
 		wiz_model_busif=7
-		add_xm01bc_support
 		add_z001_io_support
 		bCreateXm01bcDrv=1
 		;;
-
-    G23-|G023)
-  	      	wiz_model_cpu=G23
-        	wiz_model_smb=SMBPCI_ICH
-        	G_primPciPath=0x1c
-        	wiz_model_busif=7
-		add_xm01bc_support
-        	add_z001_io_support
-        	bCreateXm01bcDrv=1
-        	;;
-
-    G25-)
-	    	wiz_model_cpu=G25A
-	    	wiz_model_smb=SMBPCI_ICH
-	    	G_primPciPath=0x1c
-	    	wiz_model_busif=7
-		add_xm01bc_support
-	    	add_z001_io_support
+    G25A)
+	        wiz_model_cpu=G25A
+	        wiz_model_smb=SMBPCI_ICH
+	        G_primPciPath=0x1c
+	        wiz_model_busif=7
+	        add_z001_io_support
 		bCreateXm01bcDrv=1
-        	;;
+		add_xm01bc_support
+        ;;
     *)
 		echo "No MEN CPU type found!"
 		;;
@@ -1079,15 +1066,11 @@ esac
 
 debug_print "Using _WIZ_MODEL = $wiz_model_cpu"
 
-# create SC24 based Bx50x CPU model. Replace SMBus nr. with the actual ones
+# create SC24 based Bx50x CPU model
 if [ "$main_cpu" == "SC24" ]; then
     map_sc24_fpga
-
-    # G_SmBusNumber points to ID eeprom, one bus less is BMC
-    bmcSmBus=$((G_SmBusNumber - 1))
-    cat $DSC_TPL_DIR/sc24.tpl | sed "s/SCAN_SMBNR1/$bmcSmBus/g; s/SCAN_SMBNR2/$G_SmBusNumber/g;" >> $DSC_FILE
+    cat $DSC_TPL_DIR/sc24.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
     cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE
-
 # create SC25 based Bx70x CPU model - no FPGA mapping necessary here
 elif  [ "$main_cpu" == "SC25" ]; then 
     cat $DSC_TPL_DIR/sc24.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
