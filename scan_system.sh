@@ -39,7 +39,7 @@ MOD_DIR=/lib/modules/`uname -r`
 
 # currently detected CPU boards. ADD NEW BOARDS HERE!
 # also take care for special (native) driver adding etc.
-CPU_KNOWN_BOARDS="SC25 SC24 F011 F11S F14- F014 F15- F015 F17- F017 F075 F19P F19C F019 F21P F22P F23P F21C F021 XM01 MM01 G20- G22- G23- G25A"
+CPU_KNOWN_BOARDS="SC25 SC24 F011 F11S F14- F014 F15- F015 F17- F017 F075 F75P F19P F19C F019 F21P F22P F23P F21C F021 XM01 MM01 G20- G22- G22A G23- G23A G25- G25A "
 
 # which SMB adresses to scan for CPU ID eeproms
 ID_EEPROM_ADRESSES="0x57 0x55"
@@ -998,7 +998,7 @@ case $main_cpu in
 		add_xm01bc_support
 		bCreateXm01bcDrv=1
 		;;
-    F22P)
+    F022|F22P)
 		wiz_model_cpu=F22P
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
@@ -1006,7 +1006,7 @@ case $main_cpu in
 		add_xm01bc_support
 		bCreateXm01bcDrv=1
 		;;
-    F23P)
+    F023|F23P)
 		wiz_model_cpu=F23P
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
@@ -1014,7 +1014,7 @@ case $main_cpu in
 		add_xm01bc_support
 		bCreateXm01bcDrv=1
 		;;
-    F075)
+    F075|F75P)
 		wiz_model_cpu=F75P
 		wiz_model_smb=SMBPCI_SCH
 		G_primPciPath=0x18
@@ -1042,22 +1042,33 @@ case $main_cpu in
 		add_z001_io_support
 		bCreateXm01bcDrv=1
 		;;
-    G22-)
-		wiz_model_cpu=G20
+    G22-|G022)
+		wiz_model_cpu=G22
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1c
 		wiz_model_busif=7
+		add_xm01bc_support
 		add_z001_io_support
 		bCreateXm01bcDrv=1
 		;;
-    G25A)
-	        wiz_model_cpu=G25A
-	        wiz_model_smb=SMBPCI_ICH
-	        G_primPciPath=0x1c
-	        wiz_model_busif=7
-	        add_z001_io_support
-		bCreateXm01bcDrv=1
+    G23-|G023)
+	    wiz_model_cpu=G23
+	    wiz_model_smb=SMBPCI_ICH
+	    G_primPciPath=0x1c
+	    wiz_model_busif=7
 		add_xm01bc_support
+	    add_z001_io_support
+		bCreateXm01bcDrv=1
+	    ;;
+
+    G25-|G25A)
+	    wiz_model_cpu=G25A
+	    wiz_model_smb=SMBPCI_ICH
+	    G_primPciPath=0x1c
+	    wiz_model_busif=7
+		add_xm01bc_support
+	    add_z001_io_support
+		bCreateXm01bcDrv=1
         ;;
     *)
 		echo "No MEN CPU type found!"
@@ -1073,7 +1084,7 @@ if [ "$main_cpu" == "SC24" ]; then
     cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE
 # create SC25 based Bx70x CPU model - no FPGA mapping necessary here
 elif  [ "$main_cpu" == "SC25" ]; then 
-    cat $DSC_TPL_DIR/sc24.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
+    cat $DSC_TPL_DIR/sc25.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
     cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE
 else
     #all other CPUs: detect PCI boards, start with CPU/SMB drivers
