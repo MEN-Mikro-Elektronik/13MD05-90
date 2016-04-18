@@ -1694,7 +1694,7 @@ int init_module(void)
 	proc_create (           "mdis", 0, NULL, &mk_proc_fops);
 #endif
 
-	goto clean0;
+	goto clean1;
 
  clean3:
 	{
@@ -1710,21 +1710,6 @@ int init_module(void)
  clean2:
 	OSS_Exit( &OSH );
  clean1:
-
-
-#if LINUX_VERSION_CODE >= VERSION_CODE(2,6,0)
-# ifdef CONFIG_DEVFS_FS
-	devfs_remove ("mdis", 0);
-# endif
-#else /* kernel 2.4.x */
-# ifdef CONFIG_DEVFS_FS
-	devfs_unregister(devfs_handle);
-	devfs_unregister_chrdev(mk_major, "mdisKernel");
-# endif
-#endif /* version 2.6 */
-
- clean0:
-
 	return ret;
 }
 
