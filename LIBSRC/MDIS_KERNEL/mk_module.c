@@ -1642,7 +1642,11 @@ int init_module(void)
 		return -1;
 	}
 
+#if LINUX_VERSION_CODE >= VERSION_CODE(2,6,27)
 	if (device_create(cl, NULL, first, NULL, "mdis") == NULL)
+#else
+	if (device_create(cl, NULL, first, "mdis") == NULL)
+#endif
 	{
 		class_destroy(cl);
 		unregister_chrdev_region(first, 1);
