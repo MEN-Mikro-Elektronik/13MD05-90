@@ -110,14 +110,6 @@ DEF             :=-DLINUX -DMODULE -DCOMP_NAME=\\\"$(COMP_NAME)\\\" \
 				  -D_ONE_NAMESPACE_PER_DRIVER_ $(MDIS_EXTRA_DEFS)
 
 
-# tell MDIS kernel which major number to use 
-ifeq ($(HASDEVFS),1)
-else
- ifdef MDIS_MAJOR_NUMBER
-	DEF += -DMK_MAJOR=$(MDIS_MAJOR_NUMBER)
- endif
-endif
-
 ifndef MAK_SWITCH
     MAK_SWITCH := -DMAC_MEM_MAPPED
 endif

@@ -97,13 +97,6 @@ DESC_INSTALL_DIR = /etc/mdis
 
 DEVNODE_INSTALL_DIR = /dev
 
-# Device major number for MDIS driver. You must select an
-# unused number. Lookup the numbers in use by doing "cat
-# /proc/devices" on your target system. Value is ignored if
-# device filesystem is included in kernel
-
-MDIS_MAJOR_NUMBER = 252
-
 ALL_LL_DRIVERS = M043/DRIVER/COM/driver.mak
 
 ALL_BB_DRIVERS = \

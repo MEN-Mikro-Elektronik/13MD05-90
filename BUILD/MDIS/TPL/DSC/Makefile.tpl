@@ -96,13 +96,6 @@ DESC_INSTALL_DIR = /etc/mdis
 ##REPLNEWLINE029
 DEVNODE_INSTALL_DIR = /dev
 ##REPLNEWLINE030
-# Device major number for MDIS driver. You must select an
-# unused number. Lookup the numbers in use by doing "cat
-# /proc/devices" on your target system. Value is ignored if
-# device filesystem is included in kernel
-##REPLNEWLINE031
-MDIS_MAJOR_NUMBER = 248
-##REPLNEWLINE032
 ALL_LL_DRIVERS = \
 #SCAN_NEXT_LL_DRIVER
 ##REPLNEWLINE033

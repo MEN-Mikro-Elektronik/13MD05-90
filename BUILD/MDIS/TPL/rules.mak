@@ -285,7 +285,6 @@ export KERNEL_CC
 export KERNEL_LD
 export KERNEL_CFLAGS
 export KERNEL_LDFLAGS
-export MDIS_MAJOR_NUMBER
 export ALL_DESC
 export MDIS_EXTRA_DEFS
 
