@@ -535,6 +535,19 @@ int32 MapAddressSpaces(MK_DEV *dev, DESC_HANDLE *devDescHdl)
 							"space[%d]\n",n));
 				return(error);
 			}
+			
+			if( dev->space[n].addrMode & MDIS_MA_FLAG_NOMAP ){
+				/*------------------------------------------------+
+				|  LL driver requests not to map                  |
+				+------------------------------------------------*/
+				dev->space[n].virtAddr = dev->space[n].physAddr;
+			
+				DBGWRT_2((DBH,"  MDIS_MA_FLAG_NOMAP set in addrMode (available: addr=0x%08x size=%d)\n",
+					  dev->space[n].physAddr, dev->space[n].availSize));
+				
+				goto mapped;		/* we're done */
+			}		
+			
 		}
 		else {
 			/*----------------------------------------------+
