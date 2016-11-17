@@ -179,9 +179,9 @@ int32 OSS_SemWait(
     int32           msec)
 {
 	unsigned long flags;
-	u_int32 ticks=0, i = 0;
+	u_int32 ticks=0, i=0;
 	sigset_t oldBlocked;
-	int oldBlockedValid=FALSE;
+	int oldBlockedValid=FALSE, sigGot=FALSE;
 	int32 error=0;
     DBGCMD( static const char functionName[] = "OSS_SemWait"; )
 
@@ -195,6 +195,7 @@ int32 OSS_SemWait(
 
 	spin_lock_irqsave( &sem->lock, flags );
 
+	/* sem available? */
 	if( sem->value > 0 ){
 		sem->value--;			/* ok, got the semaphore */
 		DBGWRT_2((DBH, " got sem immediately\n"));
@@ -203,6 +204,8 @@ int32 OSS_SemWait(
 	}
 
 	/* didn't get the semaphore, now block until semaphore is released */
+	
+	/* wait until timeout? */
 	if( msec > 0 ){
 		/*--- round time, and correct for timer inaccuracy ---*/
 		ticks = (msec * HZ) / 1000;
@@ -210,8 +213,8 @@ int32 OSS_SemWait(
 
 		if( (msec * HZ) % 1000 )
 			ticks++;
-
 	}
+	/* no wait */
 	else if( msec == OSS_SEM_NOWAIT ){
 		DBGWRT_2((DBH, " sem not avail\n"));
 		spin_unlock_irqrestore( &sem->lock, flags );
@@ -224,13 +227,20 @@ int32 OSS_SemWait(
 		init_waitqueue_entry(&__wait, current);	
 
 		add_wait_queue( &sem->wq, &__wait);
+		
 		for (;;) {
 			set_current_state(TASK_INTERRUPTIBLE);
 
+			/* sem available? */
 			if( sem->value > 0 ){
+				sem->value--;			/* ok, got the semaphore */
+				sigGot = TRUE;				
 				spin_unlock_irqrestore( &sem->lock, flags );
+				DBGWRT_2((DBH, " got sem\n"));
 				break;
 			}
+			
+			/* sem NOT available */	
 			spin_unlock_irqrestore( &sem->lock, flags );
 
 			if (!signal_pending(current)) {
@@ -257,26 +267,30 @@ int32 OSS_SemWait(
 				}
 			}
 			spin_lock_irqsave( &sem->lock, flags );
-		}
+		} /* for */
+		
 		set_current_state(TASK_RUNNING);
 		remove_wait_queue( &sem->wq, &__wait);
 	}
 
-	/* sem->lock is unlocked here */
-	spin_lock_irqsave( &sem->lock, flags );
-	
-	if( sem->value > 0 ){
-		sem->value--;			/* ok, got the semaphore */
-		DBGWRT_2((DBH, " got sem\n"));
-		error = 0;
-	}
-	spin_unlock_irqrestore( &sem->lock, flags );
+	if( sigGot == FALSE ){		
+		/* sem->lock is unlocked here */
+		spin_lock_irqsave( &sem->lock, flags );
+		
+		/* sem available? */
+		if( sem->value > 0 ){
+			sem->value--;			/* ok, got the semaphore */
+			DBGWRT_2((DBH, " got sem\n"));
+			error = 0;
+		}
+		spin_unlock_irqrestore( &sem->lock, flags );
 
-	if( error == 0 && ticks == 0 && msec != OSS_SEM_WAITFOREVER){
-		DBGWRT_ERR((DBH,"*** %s timeout waiting for sem\n", functionName ));
-		error = ERR_OSS_TIMEOUT;
+		if( error == 0 && ticks == 0 && msec != OSS_SEM_WAITFOREVER){
+			DBGWRT_ERR((DBH,"*** %s timeout waiting for sem\n", functionName ));
+			error = ERR_OSS_TIMEOUT;
+		}
 	}
-
+		
 	if( oldBlockedValid ){
 		TASK_LOCK_SIGNALS( current, flags );
 		/* restore org. process signal mask */
