@@ -223,11 +223,11 @@ typedef struct {
 	VME4L_RESRC	bmShmem;		/**< bus master slave window  */
 	int  a32LongAddUsed;		/**< A32 LONGADD reg in use count  */
 	uint8_t mstrShadow;			/**< MSTR register shadow reg */
+        uint8_t reqLevel;                       /**< VME requester Level */
 	uint8_t mstrAMod;			/**< Address modifier shadow reg (A21) */
 	uint16_t addrModShadow[255]; /**< address modifiers shadow reg  */
 	uint8_t haveBerr;			/**< bus error recorded  */
-	spinlock_t lockState;		/**< spin lock for VME bridge registers
-								   and handle state */
+	spinlock_t lockState;		/**< spin lock for VME bridge registers and handle state */
 } VME4L_BRIDGE_HANDLE;
 
 #define COMPILE_VME_BRIDGE_DRIVER
@@ -948,6 +948,45 @@ static int RequesterModeSet( VME4L_BRIDGE_HANDLE *h, int state)
 }
 
 /**********************************************************************/
+/** Set VMEbus requester level
+ *  
+ */
+static int RequesterLevelSet( VME4L_BRIDGE_HANDLE *h, int lvl)
+{
+	unsigned long ps;
+
+	if ((lvl != PLDZ002_REQ_LEVEL_0 ) && (lvl != PLDZ002_REQ_LEVEL_1 ) &&
+	    (lvl != PLDZ002_REQ_LEVEL_2 ) && (lvl != PLDZ002_REQ_LEVEL_3 ))
+	{
+	    return -EINVAL;
+	}
+
+	PLDZ002_LOCK_STATE_IRQ( ps );
+	h->reqLevel = lvl;
+	VME_REG_WRITE8( PLDZ002_REQUEST_LVL, h->reqLevel );
+	PLDZ002_UNLOCK_STATE_IRQ( ps );
+	return 0;
+}
+
+/**********************************************************************/
+/** Get VMEbus requester level
+ */
+static int RequesterLevelGet( VME4L_BRIDGE_HANDLE *h )
+{
+	return h->reqLevel;
+}
+
+/**********************************************************************/
+/** Get slot nr of VME board (=GA[4:0] pins converted to slot nr.)
+ */
+static int GeoAddrGet( VME4L_BRIDGE_HANDLE *h )
+{
+
+  int slotnr = (VME_REG_READ16( PLDZ002_GEO_ADDR ) >> PLDZ002_GEO_ADDR_SHIFT) & PLDZ002_GEO_ADDR_MASK;
+  return slotnr;
+}
+
+/**********************************************************************/
 /** Get VMEbus address modifier
  */
 static int AddrModifierGet( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h )
@@ -1350,7 +1389,6 @@ static int SlaveWindowCtrlFs3(
 				h->bmShmem.size = 0;
 			}
 			break;
-
 		default:
 			break;
 		}
@@ -1498,6 +1536,9 @@ static VME4L_BRIDGE_DRV G_bridgeDrv = {
 	.busErrGet			= BusErrGet,
 	.requesterModeGet	= RequesterModeGet,
 	.requesterModeSet	= RequesterModeSet,
+	.requesterLevelSet      = RequesterLevelSet,
+	.requesterLevelGet      = RequesterLevelGet,
+	.geoAddrGet             = GeoAddrGet,
 	.addrModifierGet	= AddrModifierGet,
 	.addrModifierSet	= AddrModifierSet,
 	.postedWriteModeGet	= PostedWriteModeGet,
@@ -1744,10 +1785,10 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 static int MapRegSpace( VME4L_RESRC *res, const char *name )
 {
 	res->vaddr = NULL;
-	if( check_mem_region( res->phys, res->size ))
+	
+	if (!request_mem_region( res->phys, res->size, name )) {
 		return -EBUSY;
-
-	request_mem_region( res->phys, res->size, name );
+	}
 
 #if 0
 	/*
@@ -1954,6 +1995,9 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 	h->mstrShadow = PLDZ002_MSTR_IBERREN;
 	VME_REG_WRITE8( PLDZ002_MSTR, h->mstrShadow );
 
+	/* initialise Requester level shadow register with default value */
+	h->reqLevel = PLDZ002_REQ_LEVEL_3;
+	
 	spin_lock_init( &h->lockState );
 
 	/*--- setup function pointers depending on feature level ---*/

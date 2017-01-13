@@ -935,6 +935,59 @@ int VME4L_AddrModifierGet( int spaceFd )
 }
 
 /**********************************************************************/
+/** Get geographical address (slot nr.) of this board
+ *
+ * Counterpart to VME4L_AddrModifierSet
+ *
+ * \param spaceFd 		\IN File descriptor for VME space,
+ *					returned by VME4L_Open()
+ *
+ * \return 	slot number on success, or -1 on error\n
+ *		- \c EINVAL: Bad parameter
+ *
+ */
+int VME4L_GeoAddrGet( int spaceFd )
+{
+	return ioctl( spaceFd, VME4L_IO_GEO_ADDR_GET, 0 );
+}                              
+
+/**********************************************************************/
+/** Set VME bus requester level l address (slot nr.) of this board
+ *
+ * Counterpart to VME4L_AddrModifierSet
+ *
+ * \param spaceFd 		\IN File descriptor for VME space,
+ *					returned by VME4L_Open()
+ *
+ * \param level  		\IN requester level: 0,1,2,3 (default)
+ *					
+ * \return 	0 on success, or -1 on error\n
+ *		- \c EINVAL: Bad parameter
+ *
+ */
+int VME4L_RequesterLevelSet( int spaceFd, char level )
+{
+	return ioctl( spaceFd, VME4L_IO_REQUESTER_LVL_SET, level );
+}
+
+/**********************************************************************/
+/** Get VME bus requester level l address (slot nr.) of this board
+ *
+ * Counterpart to VME4L_AddrModifierSet
+ *
+ * \param spaceFd 		\IN File descriptor for VME space,
+ *					returned by VME4L_Open()
+ *
+ * \return 	requester level on success, or -1 on error\n
+ *		- \c EINVAL: Bad parameter
+ *
+ */
+int VME4L_RequesterLevelGet( int spaceFd )
+{
+	return ioctl( spaceFd, VME4L_IO_REQUESTER_LVL_GET, 0 );  
+}
+
+/**********************************************************************/
 /** Read data block from VME
  *
  * This transfers a data block from VME into the user's buffer.

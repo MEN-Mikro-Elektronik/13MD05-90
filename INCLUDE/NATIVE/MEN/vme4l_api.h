@@ -83,6 +83,10 @@ int VME4L_RequesterModeGet( int fd );
 int VME4L_AddrModifierSet( int spaceFd, char addrModifier);
 int VME4L_AddrModifierGet( int spaceFd );
 
+int VME4L_GeoAddrGet( int spaceFd );
+int VME4L_RequesterLevelSet( int spaceFd, char level );
+int VME4L_RequesterLevelGet( int spaceFd );
+	
 int VME4L_PostedWriteModeGet( int fd );
 int VME4L_PostedWriteModeSet( int fd, int state );
 int VME4L_IrqGenerate( int fd, int level, int vector);

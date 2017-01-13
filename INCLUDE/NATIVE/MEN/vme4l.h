@@ -84,7 +84,6 @@ typedef enum {
 	VME4L_SPC_MST5=24,			/**< master (outbound) window #5 */
 	VME4L_SPC_MST6=25,			/**< master (outbound) window #6 */
 	VME4L_SPC_MST7=26,			/**< master (outbound) window #7 */
-
 	VME4L_SPC_A64_D32=27,		/**< Long non priviledged (D32) */
 	VME4L_SPC_A64_2EVME=28,		/**< Long non priviledged (2eVME) */
 	VME4L_SPC_A64_2ESST=29,		/**< Long non priviledged (2eSST) */
@@ -277,18 +276,17 @@ typedef struct {
 
 #define VME4L_IO_RMW_CYCLE  _IOWR( VME4L_IOC_MAGIC, 24, VME4L_RMW_CYCLE )
 #define VME4L_IO_AONLY_CYCLE  _IOW( VME4L_IOC_MAGIC, 25, VME4L_AONLY_CYCLE )
-
 #define VME4L_IO_SWAP_MODE_SET  		_IO( VME4L_IOC_MAGIC, 26 )
 #define VME4L_IO_IRQ_ENABLE2	  		_IO( VME4L_IOC_MAGIC, 27 )
-
 #define VME4L_IO_SLAVE_WINDOW_CTRL		_IO( VME4L_IOC_MAGIC, 28 )
 #define VME4L_IO_MBOX_RW				_IO( VME4L_IOC_MAGIC, 29 )
 #define VME4L_IO_LOCMON_REG_RW			_IO( VME4L_IOC_MAGIC, 30 )
 #define VME4L_IO_ADDR_MOD_SET			_IO( VME4L_IOC_MAGIC, 31 )
 #define VME4L_IO_ADDR_MOD_GET 			_IO( VME4L_IOC_MAGIC, 32 )
-#define VME4L_IOC_MAXNR 	32
-
-
+#define VME4L_IO_GEO_ADDR_GET    	 _IO( VME4L_IOC_MAGIC, 33 )
+#define VME4L_IO_REQUESTER_LVL_SET   	 _IO( VME4L_IOC_MAGIC, 34 )
+#define VME4L_IO_REQUESTER_LVL_GET 	 _IO( VME4L_IOC_MAGIC, 35 )
+#define VME4L_IOC_MAXNR 	         35
 
 #  ifdef __cplusplus
        }

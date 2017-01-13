@@ -58,15 +58,16 @@ static const char RCSid[]="$Id: vme4l_ctrl.c,v 1.1 2003/12/15 15:02:39 kp Exp $"
 
 static void usage(void)
 {
-	printf("Usage: vme4l_ctrl <item> [<state>]\n"
+	printf("Usage: vme4l_ctrl <item> [<value>]\n"
 		   "Where <item> is one of:\n"
 		   " sys - system controller function\n"
 		   " res - VMEbus system reset (write-only)\n"
 		   " ato - arbitration timeout (read-only)\n"
 		   " ber - last bus error info (read-only)\n"
 		   " req - requester mode\n"
+		   " lvl - requester level (0..3, default:3)\n"
+	           " geo - read geographical address\n"
 		   " pwr - posted write mode\n");
-
 	exit(1);
 }
 
@@ -133,6 +134,19 @@ int main( int argc, char *argv[] )
 		}
 		else {
 			CHK( (state = VME4L_RequesterModeGet( fd )) >= 0 );
+		}
+	}
+
+	else if( !strcmp( item, "geo") ){
+	        CHK( (state = VME4L_GeoAddrGet( fd )) >= 0 );
+	}
+
+	else if( !strcmp( item, "lvl") ){
+		if( set ){
+			CHK( VME4L_RequesterLevelSet( fd, state ) == 0 );
+		}
+		else {
+			CHK( (state = VME4L_RequesterLevelGet( fd )) >= 0 );
 		}
 	}
 

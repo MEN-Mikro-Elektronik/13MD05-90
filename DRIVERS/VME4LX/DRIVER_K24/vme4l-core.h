@@ -528,6 +528,25 @@ typedef struct VME4L_BRIDGE_DRV {
 		VME4L_BRIDGE_HANDLE *h,
 		int state);
 
+    /**********************************************************************/
+    /** Set VMEbus requester level
+	 */
+	int (*requesterLevelSet)(
+		VME4L_BRIDGE_HANDLE *h,
+		int state);
+
+    /**********************************************************************/
+    /** Get VMEbus requester level
+	 */
+	int (*requesterLevelGet)(
+		VME4L_BRIDGE_HANDLE *h);
+
+    /**********************************************************************/
+    /** Get slot nr of VME board
+	 */
+	int (*geoAddrGet)(
+		VME4L_BRIDGE_HANDLE *h);
+  
     /***********************************************************************/
     /** Get VMEbus master write mode
      */			

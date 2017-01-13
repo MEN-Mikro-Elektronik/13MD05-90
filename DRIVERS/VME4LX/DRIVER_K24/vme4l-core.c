@@ -2030,7 +2030,9 @@ static int vme4l_mmap(
 	 * Accessing VME must be done non-cached / guarded.
 	 */
 
-	vma->vm_flags |= (VM_IO  | VM_RESERVED );
+	/* replace discontinued VM_RESERVED as stated in Torvalds' mail:
+	https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/commit/?id=547b1e81afe3119f7daf702cc03b158495535a25 */
+	vma->vm_flags |= ( VM_IO | VM_DONTEXPAND | VM_DONTDUMP /* VM_RESERVED */ );
 	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
 	/*
 	 * Setup a callback to free our window when user unmaps area
@@ -2208,6 +2210,23 @@ static long vme4l_ioctl(
 			rv = G_bDrv->requesterModeSet( G_bHandle, arg );
 		break;
 
+  	case VME4L_IO_GEO_ADDR_GET:
+		rv = -ENOTTY;
+		if( G_bDrv->geoAddrGet )
+		   rv = G_bDrv->geoAddrGet( G_bHandle );
+		break;
+
+  	case VME4L_IO_REQUESTER_LVL_SET:
+		rv = -ENOTTY;
+		if( G_bDrv->requesterLevelSet )
+		  rv = G_bDrv->requesterLevelSet( G_bHandle, arg );
+		break;
+
+	case VME4L_IO_REQUESTER_LVL_GET:
+		rv = -ENOTTY;
+		if( G_bDrv->requesterLevelGet )
+		  rv = G_bDrv->requesterLevelGet( G_bHandle );
+		break;
 
 	case VME4L_IO_ADDR_MOD_GET:
 		rv = -ENOTTY;
@@ -2897,7 +2916,8 @@ static int vme4l_read_proc( char *buffer, char **start, off_t offset,
 
 static void vme4l_cleanup(void)
 {
-	remove_proc_entry( "vme4l", 0 );
+#warning TODO replace remove_proc_entry
+  /*	remove_proc_entry( "vme4l", 0 ); */
 
 	/*-------------------------+
 	|  Cleanup device entries  |
@@ -3001,11 +3021,16 @@ static int __init vme4l_init_module(void)
 	}
 
 	/* create proc interface */
+# if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	if (!create_proc_read_entry("vme4l",0,0, vme4l_read_proc, NULL)) {
 		printk(KERN_ERR "*** vme4l: can't create /proc/vme4l\n");
 		goto CLEANUP;
 	}
+#else
 
+
+
+#endif
 
 	return 0;
 
