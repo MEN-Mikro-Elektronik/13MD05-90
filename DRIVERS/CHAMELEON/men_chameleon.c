@@ -889,7 +889,7 @@ static int __devinit init_one ( void )
 		   "Revision %d Magic 0x%04X\n", table.file, table.model, table.model,
 		   table.revision, table.magicWord );
 
-    printk( KERN_INFO " Unit                devId   Grp Rev    Inst"
+    printk( KERN_INFO " Unit                devId   Grp Rev  Var  Inst "
 			          "\tIRQ\tBAR Offset   Addr\n");
     for (i=0; i < 79; i++)
         printk("-");
@@ -907,12 +907,12 @@ static int __devinit init_one ( void )
         /* format Unit index and Name so tab spacing never breaks */
         sprintf(name, "%02d %-17s", idx, CHAM_DevIdToName( info.devId) );
         printk(KERN_INFO " %s"  			/* name 			*/
-			             "0x%04x %2d   %2d"	/* devId/Group/Rev. */
+			             "0x%04x %2d   %2d   %2d"	/* devId/Group/Rev/Var. */
                          "   0x%02x"		/* instance 		*/
                          "\t0x%02x"			/* interrupt 		*/
                          "\t%d   0x%04x"	/* BAR / offset  	*/
                          "   0x%p\n",		/* addr 			*/
-			   name, info.devId, info.group, info.revision, info.instance,
+	       name, info.devId, info.group, info.revision, info.variant, info.instance,
 			   info.interrupt, info.bar, (unsigned int)info.offset, info.addr);
 
         /* Copy the Units info */

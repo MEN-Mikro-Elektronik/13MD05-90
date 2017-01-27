@@ -77,17 +77,10 @@
 # define VERSION_CODE(vers,rel,seq) ( ((vers)<<16) | ((rel)<<8) | (seq) )
 #endif
 
-/* special check for 2.4.20-8 kernel of redhat 9 */
-#if ((LINUX_VERSION_CODE == VERSION_CODE(2,4,20)) && defined(RED_HAT_LINUX_KERNEL))
-# define VME4L_REDHAT9
-#endif
-
 /* from this version on the IRQ handler flags like SA_SHIRQ were changed */
 #define VERSION_CODE_NEW_IRQFLAGS 		VERSION_CODE(2,6,20)
 
-
 #include <linux/module.h>
-
 #include <linux/kernel.h> 	/* printk() 		*/
 #include <linux/threads.h>
 #include <linux/blkdev.h>	/* page_cache_xxx 	*/
@@ -96,8 +89,11 @@
 #include <linux/vmalloc.h> 	/* vmalloc() 		*/
 #include <linux/fs.h>     	/* everything...	*/
 #include <linux/errno.h>  	/* error codes 		*/
-#include <linux/types.h>  	/* size_t 			*/
+#include <linux/types.h>  	/* size_t.. 		*/
 #include <linux/proc_fs.h>
+#include <linux/module.h>
+#include <linux/proc_fs.h>
+#include <linux/seq_file.h>
 #include <linux/ioport.h>
 #include <linux/fcntl.h>    /* O_ACCMODE 		*/
 #include <linux/pci.h>
@@ -109,10 +105,6 @@
 #include <asm/uaccess.h> /* put_user */
 #include <asm/io.h>
 #include <asm/pgalloc.h>
-
-#ifdef CONFIG_DEVFS_FS
-#include <linux/devfs_fs_kernel.h>
-#endif
 
 /* include men_vme_kernelif.h depending on build environment */
 #ifdef _ONE_NAMESPACE_PER_DRIVER_
