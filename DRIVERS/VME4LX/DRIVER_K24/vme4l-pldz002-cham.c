@@ -84,10 +84,13 @@
 #include <MEN/men_typs.h>
 #include <MEN/men_chameleon.h>
 #include <MEN/pldz002-cham.h>
+/* #include "vme4l-core.h" */
 
 /*--------------------------------------+
 |   DEFINES                             |
 +--------------------------------------*/
+
+#define MEN_A21
 
 /** DMA bounce buffer uses last 256K of bridge SRAM */
 #define BOUNCE_SRAM_A21ADDR	 0x0   /* 0xff000 */    /* ts: was c0000 */
@@ -100,9 +103,9 @@
 
 #define BOUNCE_SRAM_SIZE 	BOUNCE_SRAM_A21SIZE
 
-#define PLDZ002_INST_VMEA32     6  /* instance of that PLDZ002 core that represents A32 space.
-				      Always the 7th (counted from 0 to 6 ) */
-#define PLDZ002_VARIANT_VMEA32_FLEX  2
+#define PLDZ002_VAR_VMEA32      8  /* Variant of that PLDZ002 core that represents A32 space.
+				    on new Z002 core this unit's BAR can have different size
+				   depending on VHDL generic */
 
 /* Macros to lock accesses to bridge driver handle and VME bridge regs */
 #define PLDZ002_LOCK_STATE() 			spin_lock(&h->lockState)
@@ -170,12 +173,13 @@
 #if defined (MEN_A21)
 # define _PLDZ002_FS3(h) 				(0)
 # define _PLDZ002_USE_BOUNCE_DMA(h) 	(0)
+/* on A21 SRAM regs phys addr. is 0xf04ff800, so add 0x100 to reach DMA BD regs */
+# define MEN_PLDZ002_DMABD_OFFS 	((char *)h->sramRegs.vaddr + 0x100)
 #elif defined (MEN_A15)
 # define _PLDZ002_FS3(h) 				(h->chu->pdev->revision >= 99)
 # define _PLDZ002_USE_BOUNCE_DMA(h) 	(1)
-#endif
-
 # define MEN_PLDZ002_DMABD_OFFS 		((char *)h->sramRegs.vaddr + 0x100)
+#endif
 
 /** interrupter dummy ID */
 #define _PLDZ002_INTERRUPTER_ID	1
@@ -226,7 +230,7 @@ typedef struct {
         uint32_t bLongaddAdjustable;            /**< 1: new PLDZ002 Var.2 with adjustable LONGADD register
 						     0: default LONGADD register with 3bit (8x512MB) */
         uint32_t A32BARsize;                    /**< VME requester Level */
-	uint8_t mstrAMod;			/**< Address modifier shadow reg (A21) */
+        uint8_t mstrAMod;			/**< Address modifier shadow reg (A21) */
 	uint16_t addrModShadow[255]; /**< address modifiers shadow reg  */
 	uint8_t haveBerr;			/**< bus error recorded  */
 	spinlock_t lockState;		/**< spin lock for VME bridge registers and handle state */
@@ -241,8 +245,8 @@ typedef struct {
 +--------------------------------------*/
 static VME4L_BRIDGE_HANDLE G_bHandle;
 
-static const u16 G_devIdArr[] = { CHAMELEON_16Z002_VME,
-				  CHAMELEONV2_DEVID_END };
+static const u16 G_devIdArr[] = { 2,
+								  CHAMELEONV2_DEVID_END };
 
 static int vme4l_probe( CHAMELEONV2_UNIT_T *chu );
 static int vme4l_remove( CHAMELEONV2_UNIT_T *chu );
@@ -336,11 +340,11 @@ static int RequestAddrWindow(
 			rv = -EBUSY;
 			break;
 		}
-
-		/* check for [A32 BAR size] crossing in requested window */
+		
+		/* check for <A32 BAR size> crossing in requested window */
 		vmeAddr = *vmeAddrP & ( h->A32BARsize - 1 );
 		if( vmeAddr + *sizeP > h->A32BARsize )
-			break;
+		  break;
 
 		physAddr = (void *)h->spaces[CHAM_SPC_A32_D32];
 		vmeAddr  = *vmeAddrP & ~( h->A32BARsize - 1 );
@@ -352,7 +356,7 @@ static int RequestAddrWindow(
 		if ( h->bLongaddAdjustable ) {
 		  VME_REG_WRITE8( PLDZ002_LONGADD, (vmeAddr >> 24) & 0xff );
 		} else {
-		VME_REG_WRITE8( PLDZ002_LONGADD, vmeAddr >> 29 );
+		  VME_REG_WRITE8( PLDZ002_LONGADD, vmeAddr >> 29 );
 		}
 		break;
 
@@ -1296,7 +1300,9 @@ static int SlaveWindowCtrlFs3(
 				/* currently not setup, allocate a new one */
 				dma_addr_t dmaAddr = 0;
 
-				h->bmShmem.vaddr = pci_alloc_consistent(h->chu->pdev, size, &dmaAddr);
+				h->bmShmem.vaddr = pci_alloc_consistent(h->chu->pdev,
+														size,
+														&dmaAddr);
 				h->bmShmem.phys = dmaAddr;
 
 				VME4LDBG("pldz002: pci_alloc_consistent: v=%p p=%x (%llx)\n",
@@ -1903,26 +1909,25 @@ static void InitBridge( VME4L_BRIDGE_HANDLE *h )
 static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 {
 	int rv, i, irqReq=0;
-	unsigned int barA32=0;
 	VME4L_BRIDGE_HANDLE *h = &G_bHandle;
+	unsigned int barval=0, barsave=0, barsize=0, barA32=0;
 	CHAMELEONV2_UNIT_T u;
-	unsigned int barval=0, barsave=0, barsize;
+
 	printk(KERN_INFO "MEN VME4L: probing driver...\n");
-
-	memset( h, 0, sizeof(*h));	/* clear handle */
-
 	switch ( chu->unitFpga.variant ) {
-		case 0:
-			printk(KERN_ERR "Variant 0 should not be defined for VME Core\n");
-			return -EINVAL;
-	        case 1:
-		  /* control registers of classic PLDZ002, perform further init */
+		case 2: /* control registers of new PLDZ002, w/ flex. A21 space */
+		  memset( h, 0, sizeof(*h));	/* clear handle */
+		  h->bLongaddAdjustable  = 1;
+		  h->A32BARsize          = PLDZ002_A32D32_SIZE;
+		  break;
+		case 1:/* control registers of classic PLDZ002, perform further init */
+		  memset( h, 0, sizeof(*h));	/* clear handle */
 		  h->bLongaddAdjustable  = 0;
 		  h->A32BARsize          = PLDZ002_A32D32_SIZE;
 		  break;
-	        case 2: /* control registers of new PLDZ002 with adjustable A32 BAR size  */
-		  h->bLongaddAdjustable  = 1;
-		  break;
+		case 0:
+			printk(KERN_ERR "Variant 0 should not be defined for VME Core\n");
+			return -EINVAL;
 		default:
 			return 0;
 	}
@@ -1933,19 +1938,16 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 
 	/* gather all the other chameleon units */
 	for (i = 0; i < 7; i++) {
-		if (men_chameleonV2_unit_find( CHAMELEON_16Z002_VME, i, &u) != 0) {
+		if (men_chameleonV2_unit_find(2, i, &u) != 0) {
 			printk(KERN_ERR "Did not find all chameleon units\n");
 			rv = -EINVAL;
 			goto CLEANUP;
 		}
-		if (chu->unitFpga.variant >= CHAM_SPC_END) {
-			printk(KERN_ERR "Variant unexpectedly is larger than %d\n", CHAM_SPC_END);
-			rv = -EINVAL;
-		}
+		
 		h->spaces[u.unitFpga.variant] = (unsigned long) u.unitFpga.addr;
 		VME4LDBG("found chameleon unit %d, variant %d, address %p\n", i, u.unitFpga.variant,u.unitFpga.addr);
 
-		if ( i == PLDZ002_INST_VMEA32 && h->bLongaddAdjustable ) {
+		if ( u.unitFpga.variant == PLDZ002_VAR_VMEA32 && h->bLongaddAdjustable ) {
 		    barA32 = u.unitFpga.bar;
 		    /* determine BAR size. Tried using struct pci_dev.resource[] member but end addr seems not available there.. */
 		    pci_read_config_dword(  chu->pdev, PCI_BASE_ADDRESS_3, &barsave );
@@ -1956,11 +1958,14 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 		    pci_write_config_dword( chu->pdev, PCI_BASE_ADDRESS_3, barsave); /* restore BAR */
 		    h->A32BARsize = barsize;
 		}
+
 	}
-	printk( KERN_INFO "vme-pldz002-cham: found bridge (rev %d), irq %d\n", chu->unitFpga.revision, chu->pdev->irq);
+	printk( KERN_INFO "vme-pldz002-cham: found bridge (rev %d), irq %d\n",
+		   chu->unitFpga.revision, chu->pdev->irq);
 
 	h->regs.phys = (unsigned long)chu->unitFpga.addr + PLDZ002_CTRL_SPACE;
 	h->regs.size = PLDZ002_CTRL_SIZE;
+
 	h->iack.phys = (unsigned long)chu->unitFpga.addr + PLDZ002_IACK_SPACE;
 	h->iack.size = PLDZ002_IACK_SIZE;
 
@@ -1999,13 +2004,15 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 		goto CLEANUP;
 	} else {
 		/*normal linux kernel mode: PldZ002Irq is a standard linux IRQ handler */
-		if( (rv = request_irq( chu->pdev->irq, PldZ002Irq,
+		if( (rv = request_irq( chu->pdev->irq,
+						PldZ002Irq,
 #if LINUX_VERSION_CODE >= VERSION_CODE_NEW_IRQFLAGS
 						IRQF_SHARED,
 #else
 						SA_SHIRQ,
 #endif
-						"Z002_LX", h))<0 )
+						"Z002_LX",
+						h))<0 )
 			goto CLEANUP;
 	}
 	VME4LDBG("Got MSI %x\n", chu->pdev->irq);
@@ -2021,7 +2028,7 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 
 	/* initialise Requester level shadow register with default value */
 	h->reqLevel = PLDZ002_REQ_LEVEL_3;
-	
+
 	spin_lock_init( &h->lockState );
 
 	/*--- setup function pointers depending on feature level ---*/
@@ -2053,6 +2060,7 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 	printk( KERN_ERR "vme-pldz002-cham: Init error %d\n", -rv );
 
 	if( irqReq ){
+
 		free_irq( chu->pdev->irq, h );
 		pci_disable_msi(chu->pdev);
 	}
@@ -2083,9 +2091,11 @@ static void __exit vme4l_pldz002_cleanup_module(void)
 
 static int vme4l_remove( CHAMELEONV2_UNIT_T *chu )
 {
-	if (chu->unitFpga.variant == 1) {
+  int var = chu->unitFpga.variant;
+
+       if (( var == 1) || (var == 2 )) {
 		VME4L_BRIDGE_HANDLE *h = &G_bHandle;
-		printk( KERN_INFO "vme4l_pldz002_cleanup_modul\n");
+		printk( KERN_DEBUG "vme4l_pldz002_cleanup_modul\n");
 		InitBridge(h);
 
 		vme4l_unregister_bridge_driver();
@@ -2109,3 +2119,4 @@ module_exit(vme4l_pldz002_cleanup_module);
 MODULE_AUTHOR("Klaus Popp <klaus.popp@men.de>");
 MODULE_DESCRIPTION("VME4L - MEN VME PLDZ002 bridge driver");
 MODULE_LICENSE("GPL");
+

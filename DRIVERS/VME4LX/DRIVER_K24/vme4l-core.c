@@ -298,6 +298,7 @@ static DEFINE_SEMAPHORE(G_dmaMutex);
 DECLARE_MUTEX(G_dmaMutex);
 #endif
 
+
 /** number of entries in #G_spaceTbl */
 #define VME4L_SPACE_TBL_SIZE (sizeof(G_spaceTbl)/sizeof(VME4L_SPACE_ENT))
 
@@ -323,21 +324,6 @@ MODULE_PARM_DESC(major, "VME4L devices major number");
 static int vme4l_send_sig( VME4L_IRQ_ENTRY *ent, int priv);
 static void __exit vme4l_cleanup_module(void);
 void *vme4l_destroy_ioremap_region( VME4L_IOREMAP_REGION *region );
-
-/* fops struct for new proc interface  */
-# if LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
-static int vme4l_new_proc_show(struct seq_file *m, void *v);
-static int vme4l_new_proc_open(struct inode *inode, struct  file *file);
-
-/* static struct proc_dir_entry *proc_file_entry; */
-static const struct file_operations proc_file_fops = {
- .owner    = THIS_MODULE,
- .open     = vme4l_new_proc_open,
- .read     = seq_read /* vme4l_proc_read */,
- .llseek   = seq_lseek,
- .release  = single_release,
- };
-#endif
 
 
 /***********************************************************************/
@@ -2805,7 +2791,8 @@ static int vme4l_read_proc( char *buffer, char **start, off_t offset,
 			    int size, int *eof, void *data) { return 0; }
 #else
 
-/* the old proc interface required weird page bounds checks.. */
+/* This macro frees the machine specific function from bounds checking and
+ * this like that... */
 #define	PRINT_PROC(fmt,args...)							\
 	do {												\
 		*len += sprintf( buffer+*len, fmt, ##args );	\
@@ -2818,14 +2805,17 @@ static int vme4l_read_proc( char *buffer, char **start, off_t offset,
 	} while(0)
 
 
-static int vme4l_proc_infos( char *buffer, int *len, off_t *begin, off_t offset, int size )
+static int vme4l_proc_infos( char *buffer, int *len,
+							 off_t *begin, off_t offset, int size )
 {
 	VME4L_SPACE_ENT *spcEnt = G_spaceTbl;
 	struct list_head *pos, *pos2;
 	int spc;
+
+	{
 		char buf[200];
 		PRINT_PROC( "%s\n\n", vme4l_rev_info( buf ));
-
+	}
 
 	/*--- master address spaces ---*/
 	PRINT_PROC( "ADDR SPACES\n");
@@ -2907,8 +2897,8 @@ static int vme4l_proc_infos( char *buffer, int *len, off_t *begin, off_t offset,
 	return 1;
 }
 
-# if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
-static int vme4l_read_proc( char *buffer, char **start, off_t offset, int size, int *eof, void *data )
+static int vme4l_read_proc( char *buffer, char **start, off_t offset,
+							int size, int *eof, void *data )
 {
     int len = 0;
     off_t begin = 0;
@@ -2919,105 +2909,15 @@ static int vme4l_read_proc( char *buffer, char **start, off_t offset, int size, 
 		return( 0 );
     *start = buffer + (offset - begin);
     return( size < begin + len - offset ? size : begin + len - offset );
-}
-#else
-/* functions for new proc interface */
-static int vme4l_new_proc_show(struct seq_file *m, void *v)
-{
-  /* TODO: eliminate ugly code redundancy with old proc read func! */
-  char procbuf[8192];
-  memset(procbuf, 0, sizeof(procbuf));
-
-#if 0
-  int level;
-  VME4L_SPACE_ENT *spcEnt = G_spaceTbl;
-  struct list_head *pos, *pos2;
-  int spc;
-  int vector;
-  char *pBuf=procbuf;
-  unsigned long ps;
-  VME4L_IRQ_ENTRY *ent;
-
-  /*--- master address spaces ---*/
-  pBuf+=sprintf( pBuf, "ADDR SPACES\n" );
-  
-  VME4L_LOCK_MSTRLISTS();
-  for( spc=0; spc<VME4L_SPACE_TBL_SIZE; spc++, spcEnt++ )
-    {
-      
-      pBuf+=sprintf( pBuf, "SPACE %d %s\n", spc, spcEnt->devName);
-      list_for_each( pos, &spcEnt->lstAdrsWins )
-	{
-	  VME4L_ADRSWIN *win = list_entry( pos, VME4L_ADRSWIN, node );
-	  pBuf+=sprintf( pBuf, " ADRSWIN %p: vme=%llx (%x) phys=%p use=%d flg=%x\n",
-			 win, win->vmeAddr, win->size, win->physAddr, win->useCount, win->flags );
-	  list_for_each( pos2, &win->lstIoremap )
-	    {
-	      VME4L_IOREMAP_REGION *region = list_entry( pos2, VME4L_IOREMAP_REGION, winNode );
-	      pBuf+=sprintf( pBuf, "IOREMAPREGION %p: vme=%llx (%x) vaddr=%p valid=%d\n",
-			     region, region->vmeAddr, region->size, region->vaddr, region->isValid );
-	    }
-	}
-    }
-  VME4L_UNLOCK_MSTRLISTS();
-      
-  /*--- IRQ vectors ---*/
-  pBuf+=sprintf( pBuf, "\nVME VECTORS\n");
-  VME4L_LOCK_VECTORS(ps);
-  
-  for( vector=0; vector<VME4L_NUM_VECTORS; vector++ )
-    {
-      if( !list_empty( &G_vectTbl[vector] ))
-	{
-	  pBuf+=sprintf( pBuf, " Vec %d:\n", vector);
 	
-	  list_for_each( pos, &G_vectTbl[vector] )
-	    {
-	      ent = list_entry( pos, VME4L_IRQ_ENTRY, node );		
-	      pBuf+=sprintf( pBuf, "   Lev %d flg=0x%x", ent->level, ent->flags);
-	      switch(ent->entType)
-		{
-		  
-		case VME4L_USER_IRQ:
-		  pBuf+=sprintf( pBuf, "user sig=%d task=%p\n", ent->u.user.signal, ent->u.user.task);
-		  break;
-		  
-		case VME4L_KERNEL_IRQ:
-		  pBuf+=sprintf( pBuf, "kernel dev=%s id=%p\n",
-				 ent->u.kernel.device, ent->u.kernel.dev_id);
-		  break;
-		}
-	    }
-	}
-    }
-  VME4L_UNLOCK_VECTORS(ps);
-
-  /*--- IRQ levels ---*/
-  pBuf+=sprintf( pBuf, "\nVME LEVELS\n" );
-  for( level=VME4L_IRQLEV_1; level<VME4L_NUM_LEVELS; level++ )
-    {
-      pBuf+=sprintf( pBuf, "%d: %d, ", level, G_irqLevEnblCount[level] );
-    }
-  pBuf+=sprintf( pBuf, "\n" );
-#else
-# warning TODO: insert proc read function for kernels > 3.10 again!
-#endif
-  seq_printf(m, procbuf);
-
-  return 0;
 }
-#endif
-
-static int vme4l_new_proc_open(struct inode *inode, struct  file *file) {
-  return single_open(file, vme4l_new_proc_show, NULL);
-}
-
 
 #endif /* CONFIG_PROC_FS */
 
 static void vme4l_cleanup(void)
 {
-	remove_proc_entry( "vme4l", 0 );
+#warning TODO replace remove_proc_entry
+  /*	remove_proc_entry( "vme4l", 0 ); */
 
 	/*-------------------------+
 	|  Cleanup device entries  |
@@ -3048,8 +2948,10 @@ static void vme4l_cleanup(void)
 static int __init vme4l_init_module(void)
 {
 	int rv;
-	char buf[200];
-	printk( KERN_INFO "%s\n", vme4l_rev_info( buf ));
+	{
+		char buf[200];
+		printk( KERN_INFO "%s\n", vme4l_rev_info( buf ));
+	}
 	
 	/*------------------------+
 	|  Create device entries  |
@@ -3125,7 +3027,9 @@ static int __init vme4l_init_module(void)
 		goto CLEANUP;
 	}
 #else
-	proc_create("vme4l", 0, NULL, &proc_file_fops);
+
+
+
 #endif
 
 	return 0;
