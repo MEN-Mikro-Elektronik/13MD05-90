@@ -218,6 +218,9 @@
 #define DBGOUT(x...)
 #endif /* DBG */
 
+/* length of Cham. table file */
+#define CHAM_TBL_FILE_LEN    12
+
 /*
  * module parameters
  */
@@ -799,7 +802,8 @@ static int __devinit init_one ( void )
     char buf[13];
     u32	chaTableAddr;		/* address of chameleon table	*/
 #endif
-	char name[21]; 		/* buffer to keep unit name/index */
+    char name[21]; 		/* buffer to keep unit name/index */
+    char tblfile[CHAM_TBL_FILE_LEN+1];
     int rv=-ENOMEM, err = 0, idx, i;
     int32 chamResult;
     u32 value32;
@@ -856,7 +860,7 @@ static int __devinit init_one ( void )
     /* Initialize Chameleon library */
     chamResult = G_chamFctTable.InitPci( osH,
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,11)
-    									OSS_MERGE_BUS_DOMAIN(pdev->bus->number, pci_domain_nr(pdev->bus)),
+					 OSS_MERGE_BUS_DOMAIN(pdev->bus->number, pci_domain_nr(pdev->bus)),
 #else
 										pdev->bus->number,
 #endif
@@ -884,13 +888,17 @@ static int __devinit init_one ( void )
     chamResult = G_chamFctTable.TableIdent( chamHdl, 0, &table );
     h->revision = table.revision;
     h->variant  = table.model;
+   
+    
+    for (i=0; i < CHAM_TBL_FILE_LEN; i++)
+      tblfile[i] = (table.file[i] != 0) ? table.file[i] : ' ';
 
+    tblfile[CHAM_TBL_FILE_LEN]='\0';
+        
     printk(KERN_INFO "FPGA File='%s' table model=0x%02x('%c') "
-		   "Revision %d Magic 0x%04X\n", table.file, table.model, table.model,
-		   table.revision, table.magicWord );
+	   "Revision %d Magic 0x%04X\n", tblfile/*table.file*/ , table.model, table.model, table.revision, table.magicWord );
 
-    printk( KERN_INFO " Unit                devId   Grp Rev  Var  Inst "
-			          "\tIRQ\tBAR Offset   Addr\n");
+    printk( KERN_INFO " Unit                devId   Grp Rev  Var  Inst \tIRQ\tBAR Offset   Addr\n");
     for (i=0; i < 79; i++)
         printk("-");
     printk("\n");
