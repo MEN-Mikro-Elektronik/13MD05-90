@@ -1298,19 +1298,16 @@ static int SlaveWindowCtrlFs3(
 			 */
 			if( h->bmShmem.size == 0 ){
 				/* currently not setup, allocate a new one */
-				dma_addr_t dmaAddr = 0;
+			        dma_addr_t dmaAddr = 0;
 
-				h->bmShmem.vaddr = pci_alloc_consistent(h->chu->pdev,
-														size,
-														&dmaAddr);
+				h->bmShmem.vaddr = pci_alloc_consistent(h->chu->pdev, size, &dmaAddr);		
+				dmaAddr = pci_map_single( h->chu->pdev, h->bmShmem.vaddr, size, PCI_DMA_FROMDEVICE);
 				h->bmShmem.phys = dmaAddr;
+				
+				VME4LDBG("pldz002: pci_alloc_consistent: v=%p p=%x (%llx)\n", h->bmShmem.vaddr, h->bmShmem.phys, (uint64_t) size );
 
-				VME4LDBG("pldz002: pci_alloc_consistent: v=%p p=%x (%llx)\n",
-						 h->bmShmem.vaddr, h->bmShmem.phys, (uint64_t) size );
-
-				if( h->bmShmem.vaddr == NULL ){
-					VME4LDBG("*** pldz002: can't alloc BM slave window "
-							 "of 0x%llx bytes\n", (uint64_t) size );
+				if( h->bmShmem.vaddr == NULL ) {
+					VME4LDBG("*** pldz002: can't alloc BM slave window of 0x%llx bytes\n", (uint64_t) size );
 					return -ENOSPC;
 				}
 				h->bmShmem.size = size;
@@ -1395,10 +1392,15 @@ static int SlaveWindowCtrlFs3(
 				VME4LDBG("pldz002: pci_free_consistent: v=%p p=%x (%llx)\n",
 						 h->bmShmem.vaddr, h->bmShmem.phys, (uint64_t) size );
 
+				pci_unmap_single(h->chu->pdev,
+						 h->bmShmem.phys,
+						 h->bmShmem.size,
+						 PCI_DMA_FROMDEVICE );
+				
 				pci_free_consistent(h->chu->pdev,
-									h->bmShmem.size,
-									h->bmShmem.vaddr,
-									h->bmShmem.phys);
+						    h->bmShmem.size,
+						    h->bmShmem.vaddr,
+						    h->bmShmem.phys);
 				h->bmShmem.size = 0;
 			}
 			break;
