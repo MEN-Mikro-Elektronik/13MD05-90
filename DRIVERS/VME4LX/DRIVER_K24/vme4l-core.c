@@ -2117,7 +2117,13 @@ static int vme4l_mmap(
 
 	/* replace discontinued VM_RESERVED as stated in Torvalds' mail:
 	https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/commit/?id=547b1e81afe3119f7daf702cc03b158495535a25 */
-	vma->vm_flags |= ( VM_IO | VM_DONTEXPAND | VM_DONTDUMP /* VM_RESERVED */ );
+	vma->vm_flags |= ( VM_IO | VM_DONTEXPAND |
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,7,0)
+			  VM_DONTDUMP
+#else
+			  VM_RESERVED
+#endif
+			 );
 	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
 	/*
 	 * Setup a callback to free our window when user unmaps area
