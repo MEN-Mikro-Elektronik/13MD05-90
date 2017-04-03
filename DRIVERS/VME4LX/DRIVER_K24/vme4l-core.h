@@ -77,13 +77,7 @@
 # define VERSION_CODE(vers,rel,seq) ( ((vers)<<16) | ((rel)<<8) | (seq) )
 #endif
 
-/* from this version on the IRQ handler flags like SA_SHIRQ were changed */
-#define VERSION_CODE_NEW_IRQFLAGS 		VERSION_CODE(2,6,20)
-
 #include <linux/module.h>
-#include <linux/kernel.h> 	/* printk() 		*/
-#include <linux/threads.h>
-#include <linux/blkdev.h>	/* page_cache_xxx 	*/
 #include <linux/interrupt.h>
 #include <linux/slab.h> 	/* kmalloc() 		*/
 #include <linux/vmalloc.h> 	/* vmalloc() 		*/
@@ -91,20 +85,20 @@
 #include <linux/errno.h>  	/* error codes 		*/
 #include <linux/types.h>  	/* size_t.. 		*/
 #include <linux/proc_fs.h>
-#include <linux/module.h>
-#include <linux/proc_fs.h>
-#include <linux/seq_file.h>
+#include <linux/pagemap.h>
+#include <linux/sched.h>
 #include <linux/ioport.h>
-#include <linux/fcntl.h>    /* O_ACCMODE 		*/
+#include <linux/fcntl.h>        /* O_ACCMODE 		*/
 #include <linux/pci.h>
 #include <linux/init.h>
 #include <linux/list.h>
 #include <linux/delay.h>
+#include <linux/dma-mapping.h>  /* DMA-API */
+#include <linux/scatterlist.h>
+#include <linux/device.h>
 #include <linux/pci.h>
-
-#include <asm/uaccess.h> /* put_user */
+#include <asm/uaccess.h>        /* put_user */
 #include <asm/io.h>
-#include <asm/pgalloc.h>
 
 /* include men_vme_kernelif.h depending on build environment */
 #ifdef _ONE_NAMESPACE_PER_DRIVER_
@@ -637,6 +631,12 @@ typedef struct VME4L_BRIDGE_DRV {
 		int reg,
 		uint32_t val);
 
+      /********************************************************************/
+    /** Get struct pci_dev of underlaying VME bridge
+     */
+        struct pci_dev * (*pciDevGet)(
+		VME4L_BRIDGE_HANDLE *h);
+
 	/* leave space for future expansion */
 	uint32_t reserved[5];
 
@@ -659,7 +659,7 @@ typedef struct {
  */
 VME4L_SPACE_ENT G_spaceTbl[] = {
 	/* devName         isSlv isBlt  spcEnd                   width */
-	{ "vme4l_a16d16" 	, 0,  0,    0xFFFF,                    2 },
+	{ "vme4l_a16d16"    , 0,  0,    0xFFFF,                    2 },
 	{ "vme4l_a16d16_blt", 0,  1,    0xFFFF,                    2 },
 	{ "vme4l_a16d32"    , 0,  0,    0xFFFF,                    4 },
 	{ "vme4l_a16d32_blt", 0,  1,    0xFFFF,                    4 },

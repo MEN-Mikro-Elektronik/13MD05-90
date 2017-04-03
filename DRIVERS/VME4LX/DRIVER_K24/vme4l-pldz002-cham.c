@@ -74,23 +74,19 @@
  ****************************************************************************/
 
 #include <linux/version.h>
-#if !(defined AUTOCONF_INCLUDED) && (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19))
- #include <linux/config.h>
-#endif
+/* #if !(defined AUTOCONF_INCLUDED) && (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19)) */
+/*  #include <linux/config.h> */
+/* #endif */
 #include <linux/module.h>
-
 #include <linux/kernel.h> /* printk() */
 
 #include <MEN/men_typs.h>
 #include <MEN/men_chameleon.h>
 #include <MEN/pldz002-cham.h>
-/* #include "vme4l-core.h" */
 
 /*--------------------------------------+
 |   DEFINES                             |
 +--------------------------------------*/
-
-#define MEN_A21
 
 /** DMA bounce buffer uses last 256K of bridge SRAM */
 #define BOUNCE_SRAM_A21ADDR	 0x0   /* 0xff000 */    /* ts: was c0000 */
@@ -104,8 +100,14 @@
 #define BOUNCE_SRAM_SIZE 	BOUNCE_SRAM_A21SIZE
 
 #define PLDZ002_VAR_VMEA32      8  /* Variant of that PLDZ002 core that represents A32 space.
-				    on new Z002 core this unit's BAR can have different size
-				   depending on VHDL generic */
+									  on new Z002 core this unit's BAR can have different size
+									  depending on VHDL generic */
+#define PLDZ002_A32D32_SIZE_512M	0x20000000
+#define PLDZ002_A32D32_SIZE_256M	0x10000000
+#define PLDZ002_A32D32_SIZE_128M	 0x8000000
+#define PLDZ002_A32D32_SIZE_64M		 0x4000000
+#define PLDZ002_A32D32_SIZE_32M		 0x2000000
+#define PLDZ002_A32D32_SIZE_16M		 0x1000000
 
 /* Macros to lock accesses to bridge driver handle and VME bridge regs */
 #define PLDZ002_LOCK_STATE() 			spin_lock(&h->lockState)
@@ -170,15 +172,14 @@
 #define _PLDZ002_WRITETHROUGH 	0x1
 
 
-#if defined (MEN_A21)
-# define _PLDZ002_FS3(h) 				(0)
-# define _PLDZ002_USE_BOUNCE_DMA(h) 	(0)
-/* on A21 SRAM regs phys addr. is 0xf04ff800, so add 0x100 to reach DMA BD regs */
-# define MEN_PLDZ002_DMABD_OFFS 	((char *)h->sramRegs.vaddr + 0x100)
-#elif defined (MEN_A15)
+#define _PLDZ002_FS3(h) 			(0)
+#define _PLDZ002_USE_BOUNCE_DMA(h) 	(1)
+#define MEN_PLDZ002_DMABD_OFFS 		((char *)h->sramRegs.vaddr + 0x100)
+
+/* The A15 cannot perform direct VMA<->RAM DMA */
+#if defined (MEN_A15)
 # define _PLDZ002_FS3(h) 				(h->chu->pdev->revision >= 99)
-# define _PLDZ002_USE_BOUNCE_DMA(h) 	(1)
-# define MEN_PLDZ002_DMABD_OFFS 		((char *)h->sramRegs.vaddr + 0x100)
+# define _PLDZ002_USE_BOUNCE_DMA(h) 		(1)
 #endif
 
 /** interrupter dummy ID */
@@ -224,21 +225,21 @@ typedef struct {
 	/* the following two are not ioremapped */
 	VME4L_RESRC	sram;			/**< SRAM as slave window  */
 	VME4L_RESRC	bmShmem;		/**< bus master slave window  */
-	int  a32LongAddUsed;		/**< A32 LONGADD reg in use count  */
-	uint8_t mstrShadow;			/**< MSTR register shadow reg */
-        uint8_t reqLevel;                       /**< VME requester Level */
-        uint32_t bLongaddAdjustable;            /**< 1: new PLDZ002 Var.2 with adjustable LONGADD register
-						     0: default LONGADD register with 3bit (8x512MB) */
+	int  a32LongAddUsed;		        	/**< A32 LONGADD reg in use count  */
+	uint8_t mstrShadow;						/**< MSTR register shadow reg */
+        uint8_t reqLevel;                   /**< VME requester Level */
+        uint32_t bLongaddAdjustable;        /**< 1: new PLDZ002 Var.2 with adjustable LONGADD register
+											   0: default LONGADD register with 3bit (8x512MB) */
         uint32_t A32BARsize;                    /**< VME requester Level */
-        uint8_t mstrAMod;			/**< Address modifier shadow reg (A21) */
-	uint16_t addrModShadow[255]; /**< address modifiers shadow reg  */
-	uint8_t haveBerr;			/**< bus error recorded  */
-	spinlock_t lockState;		/**< spin lock for VME bridge registers and handle state */
+        uint8_t longaddWidth;                   /**< bit width of the LONGADD: 512MB=3, 256MB=4, 128MB=5... 16MB=8  */
+        uint8_t mstrAMod;				/**< Address modifier shadow reg (A21) */
+	uint16_t addrModShadow[255];        /**< address modifiers shadow reg  */
+	uint8_t haveBerr;					/**< bus error recorded  */
+	spinlock_t lockState;		        /**< spin lock for VME bridge registers and handle state */
 } VME4L_BRIDGE_HANDLE;
 
 #define COMPILE_VME_BRIDGE_DRIVER
 #include "vme4l-core.h"
-
 
 /*--------------------------------------+
 |   GLOBALS                             |
@@ -354,8 +355,10 @@ static int RequestAddrWindow(
 		/*  the new LONGADD register consists of the adress highbyte. According to IC designer
 		 *  lower address bits are unused for a certain size, so we just write the highbyte */
 		if ( h->bLongaddAdjustable ) {
+		  VME4LDBG("set LONGADD = 0x%02x\n", (vmeAddr >> 24) & 0xff );
 		  VME_REG_WRITE8( PLDZ002_LONGADD, (vmeAddr >> 24) & 0xff );
 		} else {
+		  VME4LDBG("set LONGADD 0x%02x\n", (vmeAddr >> 29 ) & 0xff );
 		  VME_REG_WRITE8( PLDZ002_LONGADD, vmeAddr >> 29 );
 		}
 		break;
@@ -742,7 +745,7 @@ static int DmaStart( VME4L_BRIDGE_HANDLE *h )
 				 VME_REG_READ8( PLDZ002_DMASTA ));
 		return -EBUSY;
 	}
-	VME4LDBG("DmaStart....\n");
+	VME4LDBG("DmaStart.....\n");
 
 	VME_REG_WRITE8( PLDZ002_DMASTA, PLDZ002_DMASTA_IRQ | PLDZ002_DMASTA_ERR );
 	/* start DMA and enable DMA interrupt */
@@ -1000,6 +1003,15 @@ static int GeoAddrGet( VME4L_BRIDGE_HANDLE *h )
 }
 
 /**********************************************************************/
+/** Get underlaying struct pci_dev * of this bridge
+ */
+static struct pci_dev * PciDevGet( VME4L_BRIDGE_HANDLE *h )
+{
+       return h->chu->pdev;
+}
+
+
+/**********************************************************************/
 /** Get VMEbus address modifier
  */
 static int AddrModifierGet( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h )
@@ -1031,13 +1043,11 @@ static int AddrModifierSet( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h, char addrMo
 	
 	PLDZ002_LOCK_STATE_IRQ(ps);
 
-	VME4LDBG("AddrModifierSet: spc = %d (%s) AM = 0x%02x\n",
-			 spc, G_spaceTbl[spc].isBlt ? "BLT" : "no BLT", h->addrModShadow[spc] );
+	VME4LDBG("AddrModifierSet: spc = %d (%s) AM = 0x%02x\n", spc, G_spaceTbl[spc].isBlt ? "BLT" : "no BLT", h->addrModShadow[spc] );
 
 	/* the AM definition is different for BLT/non BLT spaces. Non BLT AMs are
 	   set in MSTR[8:13] (or PLDZ002_AMOD), and BLT AMs are considered during DMA BD
 	   setup. */
-
 	/* 0: set supervisor , 1: supervisor flag not set (non-privileged) */
 	isSupervisor = (addrMod & 0x02) >> 1;
 
@@ -1045,22 +1055,28 @@ static int AddrModifierSet( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h, char addrMo
 		/* the non BLT spaces: write directly to AMOD */
 	case VME4L_SPC_A16_D16:
 	case VME4L_SPC_A16_D32:
-		h->mstrAMod &=~VME4l_SPC_A16_AM_MASK;
-		h->mstrAMod |= (addrMod & 0x03) << 0;
-		VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod);
+			h->mstrAMod &=~VME4l_SPC_A16_AM_MASK;
+			h->mstrAMod |= (addrMod & 0x03) << 0;	
+			VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod);
 		break;
 
 	case VME4L_SPC_A24_D16:
 	case VME4L_SPC_A24_D32:
-		h->mstrAMod &=~VME4l_SPC_A24_AM_MASK;
-		h->mstrAMod |= (addrMod & 0x03) << 2;
-		VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod);
+		if (addrMod != ADDR_MOD_CR_CSR)	{
+			h->mstrAMod &=~VME4l_SPC_A24_AM_MASK;
+			h->mstrAMod |= (addrMod & 0x03) << 2;
+			h->mstrAMod &=~PLDZ002_CR_CSR_BIT;
+			VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod);
+		} else { /* CR/CSR AM 0x2f passed, will be written by FPGA automatically */
+			h->mstrAMod |= PLDZ002_CR_CSR_BIT;
+			VME_REG_WRITE8( PLDZ002_AMOD, h->mstrShadow);
+		}
 		break;
 
 	case VME4L_SPC_A32_D32:
-		h->mstrAMod &=~VME4l_SPC_A32_AM_MASK;
-		h->mstrAMod |= (addrMod & 0x03) << 4;
-		VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod);
+			h->mstrAMod &=~VME4l_SPC_A32_AM_MASK;
+			h->mstrAMod |= (addrMod & 0x03) << 4;	   
+			VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod);
 		break;
 
 		/* the BLT spaces: take AM bit[1] (=supervisory flag) and OR in defaults */
@@ -1081,6 +1097,7 @@ static int AddrModifierSet( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h, char addrMo
 		retval = -ENOTTY;
 		break;
 	}
+
 	PLDZ002_UNLOCK_STATE_IRQ(ps);
 
 	return retval;
@@ -1315,24 +1332,6 @@ static int SlaveWindowCtrlFs3(
 				/* clear region */
 				memset( h->bmShmem.vaddr, 0, size );
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,10)
-				/*
-				 * The SetPageReserved() is an important issue!
-				 * If this is not done, remap_page_range don't work
-				 * for BM slave windows (returns 0, but maps zero pages)
-				 *
-				 * Note: SetPageReserved does the same as
-				 * mem_map_reserve(page), but exists for 2.4 and 2.6
-				 */
-				{
-					struct page *page, *pend;
-					void *rawbuf = h->bmShmem.vaddr;
-					pend = virt_to_page(rawbuf + size - 1);
-
-					for (page = virt_to_page(rawbuf); page <= pend; page++)
-						SetPageReserved(page);
-				}
-#endif
 				VME_REG_WRITE32( PLDZ002_PCI_OFFSET, h->bmShmem.phys );
 			}
 			else {
@@ -1551,9 +1550,10 @@ static VME4L_BRIDGE_DRV G_bridgeDrv = {
 	.busErrGet			= BusErrGet,
 	.requesterModeGet	= RequesterModeGet,
 	.requesterModeSet	= RequesterModeSet,
-	.requesterLevelSet      = RequesterLevelSet,
-	.requesterLevelGet      = RequesterLevelGet,
-	.geoAddrGet             = GeoAddrGet,
+	.requesterLevelSet  = RequesterLevelSet,
+	.requesterLevelGet  = RequesterLevelGet,
+	.geoAddrGet         = GeoAddrGet,
+	.pciDevGet          = PciDevGet,
 	.addrModifierGet	= AddrModifierGet,
 	.addrModifierSet	= AddrModifierSet,
 	.postedWriteModeGet	= PostedWriteModeGet,
@@ -1756,8 +1756,6 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 	struct pt_regs *regs = NULL;
 # endif /* LINUX_VERSION_CODE < VERSION_CODE(2,6,19) */
 
-
-
 	int vector=0, level=VME4L_IRQLEV_UNKNOWN;
 	VME4L_BRIDGE_HANDLE *h 	= (VME4L_BRIDGE_HANDLE *)dev_id;
 	int handled=1;
@@ -1920,20 +1918,32 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 		case 2: /* control registers of new PLDZ002, w/ flex. A21 space */
 		  memset( h, 0, sizeof(*h));	/* clear handle */
 		  h->bLongaddAdjustable  = 1;
-		  h->A32BARsize          = PLDZ002_A32D32_SIZE;
+		  h->A32BARsize          = PLDZ002_A32D32_SIZE_512M;
 		  break;
 		case 1:/* control registers of classic PLDZ002, perform further init */
 		  memset( h, 0, sizeof(*h));	/* clear handle */
 		  h->bLongaddAdjustable  = 0;
-		  h->A32BARsize          = PLDZ002_A32D32_SIZE;
+		  h->A32BARsize          = PLDZ002_A32D32_SIZE_512M;
 		  break;
 		case 0:
-			printk(KERN_ERR "Variant 0 should not be defined for VME Core\n");
-			return -EINVAL;
+		  printk(KERN_ERR "Variant 0 should not be defined for VME Core\n");
+		  return -EINVAL;
 		default:
-			return 0;
+		  return 0;
 	}
-
+	
+	/* check 64bit/32bit DMA capability */
+	rv = dma_set_mask_and_coherent(&chu->pdev->dev, DMA_BIT_MASK(64));
+	if (rv) {
+		printk(KERN_ERR "No 64bit DMA support on this CPU, trying 32bit\n" );
+		rv = dma_set_mask_and_coherent(&chu->pdev->dev, DMA_BIT_MASK(32));
+		if (rv) {
+			printk(KERN_ERR "No 32bit DMA support on this CPU, trying 32bit\n" );
+			goto CLEANUP;
+		} else
+			printk(KERN_INFO "setting 32bit DMA support\n" );
+	} else
+			printk(KERN_INFO "setting 64bit DMA support\n" );
 
 	/* save chameleon unit */
 	h->chu = chu;
@@ -1951,13 +1961,41 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 
 		if ( u.unitFpga.variant == PLDZ002_VAR_VMEA32 && h->bLongaddAdjustable ) {
 		    barA32 = u.unitFpga.bar;
-		    /* determine BAR size. Tried using struct pci_dev.resource[] member but end addr seems not available there.. */
+		    /* determine BAR size. Wanted to use struct pci_dev.resource[] member but end addr 
+			   seems not available there.. */
 		    pci_read_config_dword(  chu->pdev, PCI_BASE_ADDRESS_3, &barsave );
 		    pci_write_config_dword( chu->pdev, PCI_BASE_ADDRESS_3, 0xffffffff );
-		    pci_read_config_dword(  chu->pdev, PCI_BASE_ADDRESS_3, &barval );
+		    pci_read_config_dword(  chu->pdev, PCI_BASE_ADDRESS_3, &barval  );
 		    barsize = ~(barval & PCI_BASE_ADDRESS_MEM_MASK) + 1;
-		    VME4LDBG("adjustable LONGADD reg (BAR%d size 0x%08x)\n", barA32, barsize );
 		    pci_write_config_dword( chu->pdev, PCI_BASE_ADDRESS_3, barsave); /* restore BAR */
+		    
+		    switch (barsize) {
+		    case  PLDZ002_A32D32_SIZE_512M:
+		      h->longaddWidth = 3;
+		      break;		       
+		    case  PLDZ002_A32D32_SIZE_256M:
+		      h->longaddWidth = 4;
+		      break;
+		    case  PLDZ002_A32D32_SIZE_128M:
+		      h->longaddWidth = 5;
+		      break;
+		    case  PLDZ002_A32D32_SIZE_64M:
+		      h->longaddWidth = 6;
+		      break;
+		    case  PLDZ002_A32D32_SIZE_32M:
+		      h->longaddWidth = 7;
+		      break;
+		    case  PLDZ002_A32D32_SIZE_16M:
+		      h->longaddWidth = 8;
+		      break;
+		    default: /* something is seriously wrong with that BAR... */
+		      printk( KERN_ERR "*** invalid size of A32 space BAR3: 0x%08x\n", barsize );
+		      rv = -EINVAL;
+		      goto CLEANUP;
+		    }
+		    
+		    VME4LDBG("adjustable LONGADD Reg.: (bit width %d) (BAR%d size 0x%08x)\n",  h->longaddWidth, barA32, barsize );
+
 		    h->A32BARsize = barsize;
 		}
 
@@ -2000,15 +2038,14 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 		h->sram.size -= BOUNCE_SRAM_SIZE;
 
 	rv = pci_enable_msi(chu->pdev); /* using pci_enable_msi_block would be nicer,
-									   but powerpc linux doesn't support it... */
+					   but powerpc linux doesn't support it... */
 	if (rv != 0 ) {
 		VME4LDBG("Could not allocate enough msi interrupts: %d\n" ,rv);
 		goto CLEANUP;
 	} else {
 		/*normal linux kernel mode: PldZ002Irq is a standard linux IRQ handler */
-		if( (rv = request_irq( chu->pdev->irq,
-						PldZ002Irq,
-#if LINUX_VERSION_CODE >= VERSION_CODE_NEW_IRQFLAGS
+		if( (rv = request_irq( chu->pdev->irq, PldZ002Irq,
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,20)
 						IRQF_SHARED,
 #else
 						SA_SHIRQ,

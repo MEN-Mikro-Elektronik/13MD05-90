@@ -83,7 +83,6 @@
 # include <linux/ioport.h>
 # include <linux/pci.h>
 # include <linux/signal.h>
-# include <MEN/sysdep.h>
 #else /* Userspace OSS... */
 # include <stdlib.h>
 # include <stdio.h>

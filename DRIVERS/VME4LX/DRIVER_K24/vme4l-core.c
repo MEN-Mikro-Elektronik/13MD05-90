@@ -146,18 +146,7 @@
 #define VME4L_UNLOCK_MSTRLISTS() spin_unlock(&G_lockMstrLists);
 
 /* page remapping changed to remap_pfn_range - use correct page parameter! */
-#if LINUX_VERSION_CODE >= VERSION_CODE(2,6,10)
-# define VME4L_REMAP(a,b,c,d,e) remap_pfn_range((a),(b),(c)>>PAGE_SHIFT,(d),(e))
-#elif LINUX_VERSION_CODE<VERSION_CODE(2,5,3)
-# define VME4L_REMAP(a,b,c,d,e) remap_page_range((b),(c),(d),(e))
-#else
-# define VME4L_REMAP(a,b,c,d,e) remap_page_range((a),(b),(c),(d),(e))
-#endif
-
-/* paranoia check, this shouldnt happen..  */
-#ifndef VME4L_REMAP
-# error VME4L_REMAP not defined!
-#endif
+#define VME4L_REMAP(a,b,c,d,e) remap_pfn_range((a),(b),(c)>>PAGE_SHIFT,(d),(e))
 
 /* Macros to disable hard irqs. */
 
@@ -166,12 +155,8 @@
 # define SAVE_FLAGS_AND_CLI(__flags)  spin_lock_irqsave(&G_lockFlags, __flags)
 # define RESTORE_FLAGS(__flags)  spin_unlock_irqrestore(&G_lockFlags, __flags)
 #else /* UP machine */
-# if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,11)
-#  define SAVE_FLAGS_AND_CLI(__flags) local_irq_save(__flags)
-# else
-#  define SAVE_FLAGS_AND_CLI(__flags) { local_save_flags(__flags); cli(); }
-# endif
-#define RESTORE_FLAGS(__flags)       local_irq_restore(__flags)
+# define SAVE_FLAGS_AND_CLI(__flags) local_irq_save(__flags)
+# define RESTORE_FLAGS(__flags)       local_irq_restore(__flags)
 #endif /* CONFIG_SMP */
 
 /*--------------------------------------+
@@ -206,7 +191,7 @@ typedef struct {
 	struct list_head cacheNode;	/**< list node within G_lstIoremapCache */
 	vmeaddr_t vmeAddr;			/**< VME start address of this region  */
 	size_t size;				/**< size of region (bytes) */
-	void *vaddr;				/**< ioremapped address */	
+	void *vaddr;				/**< ioremapped address */
 	int isValid;				/**< true if valid  */
 } VME4L_IOREMAP_REGION;
 
@@ -222,7 +207,7 @@ typedef struct {
 		struct {
 			struct task_struct *task;	/**< where signal will be send */
 			struct file *file;			/**< associated file number  */
-			int	   signal;              /**< user installed signal */	
+			int	   signal;              /**< user installed signal */
 		} user;
 
 		/** for entType == VME4L_KERNEL_IRQ or VME4L_RTAI_IRQ **/
@@ -269,7 +254,7 @@ static VME4L_BRIDGE_DRV 	*G_bDrv; 	/**< current bridge driver 		 */
 static VME4L_BRIDGE_HANDLE	*G_bHandle;	/**< bridge driver's data  		 */
 
 /** address window pool  */
-static VME4L_ADRSWIN		G_adrsWinPool[VME4L_MAX_ADRS_WINS]; 	
+static VME4L_ADRSWIN		G_adrsWinPool[VME4L_MAX_ADRS_WINS];
 static struct list_head		G_freeAdrsWins;
 
 /** ioremap cache */
@@ -298,7 +283,6 @@ static DEFINE_SEMAPHORE(G_dmaMutex);
 DECLARE_MUTEX(G_dmaMutex);
 #endif
 
-
 /** number of entries in #G_spaceTbl */
 #define VME4L_SPACE_TBL_SIZE (sizeof(G_spaceTbl)/sizeof(VME4L_SPACE_ENT))
 
@@ -311,11 +295,7 @@ static int G_irqLevEnblCount[VME4L_NUM_LEVELS];
 static int G_postedWriteMode; 	 /** for old VME4L compat  */
 static int major = VME4L_MAJOR;  /**< major device number for /dev/vme4l_xx */
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,10)
-MODULE_PARM( major, "i" );
-#else
 module_param( major, int, 0664 );
-#endif
 MODULE_PARM_DESC(major, "VME4L devices major number");
 
 /*--------------------------------------+
@@ -341,19 +321,13 @@ void *vme4l_destroy_ioremap_region( VME4L_IOREMAP_REGION *region );
  */
 static int vme4l_send_sig( VME4L_IRQ_ENTRY *ent, int priv)
 {
-#if LINUX_VERSION_CODE < VERSION_CODE(2,6,9)
-	return send_sig( ent->u.user.signal, ent->u.user.task, priv);
-#else
+
 	if (ent->u.user.task->state < EXIT_ZOMBIE )
 		return send_sig( ent->u.user.signal, ent->u.user.task, priv);
 	else
 		return -EINVAL;
-#endif
 
 }
-
-
-
 
 /***********************************************************************/
 /** Enable VME IRQ level or special level
@@ -377,8 +351,6 @@ static int vme4l_irqlevel_enable( int level )
 
 	return rv;
 }
-
-
 
 /***********************************************************************/
 /** Find address window for VME space and addr
@@ -439,7 +411,7 @@ static void vme4l_discard_adrswin( VME4L_ADRSWIN *win )
 	VME4L_LOCK_MSTRLISTS();
 	list_del( &win->node );
 	VME4L_UNLOCK_MSTRLISTS();
-	
+
 	if( G_bDrv )
 		G_bDrv->releaseAddrWindow(
 			G_bHandle,
@@ -448,7 +420,7 @@ static void vme4l_discard_adrswin( VME4L_ADRSWIN *win )
 			win->size,
 			win->flags,
 			win->bDrvData);
-	
+
 	VME4L_LOCK_MSTRLISTS();
 
 	/*--- free all ioremapped regions ---*/
@@ -469,7 +441,7 @@ static void vme4l_discard_adrswin( VME4L_ADRSWIN *win )
 			list_del( &region->cacheNode );
 			list_add_tail( &region->cacheNode, &G_lstIoremapCache );
 		}
-		
+
 	}
 	list_add_tail( &win->node, &G_freeAdrsWins);
 	VME4L_UNLOCK_MSTRLISTS();
@@ -507,14 +479,14 @@ static void vme4l_release_unused_adrswins(void)
 
 		list_for_each_safe( pos, tmpPos, &spcEnt->lstAdrsWins ) {
 			VME4L_ADRSWIN *win = list_entry( pos, VME4L_ADRSWIN, node );
-			
+
 			if( win->useCount == 0 ){
 				VME4L_UNLOCK_MSTRLISTS();
 				vme4l_discard_adrswin( win );
 				VME4L_LOCK_MSTRLISTS();
 			}
 		}
-	}	
+	}
 	VME4L_UNLOCK_MSTRLISTS();
 }
 
@@ -568,7 +540,7 @@ static int vme4l_try_request_adrswin(
 
 	if( (win = vme4l_alloc_adrswin()) == NULL )
 		return -ENOSPC;
-			
+
 	/*--- ask bridge driver to setup address window ---*/
 	win->vmeAddr = vmeAddr;
 	win->size = size;
@@ -594,7 +566,7 @@ static int vme4l_try_request_adrswin(
 	win->spc 		= spc;
 	win->flags 		= flags;
 	win->useCount 	= 1;
-	
+
 	/*--- add window to list of available windows for space ---*/
 	VME4L_LOCK_MSTRLISTS();
 	list_add_tail( &win->node, &G_spaceTbl[spc].lstAdrsWins );
@@ -636,7 +608,7 @@ static int vme4l_request_adrswin(
 
 	/* try to find an already mapped VME window */
 	if( (win = vme4l_find_adrswin( spc, vmeAddr, size, flags )) == NULL ){
-		
+
 		/* not found, try to setup a new one */
 		if( vme4l_try_request_adrswin( spc, vmeAddr, size, flags, &win ) < 0){
 			/* perhaps all windows already setup */
@@ -682,7 +654,6 @@ void *vme4l_destroy_ioremap_region( VME4L_IOREMAP_REGION *region )
 	}
 	return vaddr;
 }
-	
 
 /***********************************************************************/
 /** Create an ioremap region
@@ -713,7 +684,7 @@ static int vme4l_make_ioremap_region(
 
 	VME4LDBG( "vme4l_make_ioremap_region: vmeAddr %llx size %llx\n",
 			  vmeAddr, (uint64_t) size );
-	
+
 	VME4L_LOCK_MSTRLISTS();
 	/* get the least recently used region */
 	region = list_entry( G_lstIoremapCache.prev,
@@ -746,14 +717,14 @@ static int vme4l_make_ioremap_region(
 	useSize = size + (vmeAddr - vmeStart); /* make shure whole area requested
 											  by user is mapped */
 	maxSize = win->vmeAddr + win->size - vmeStart;
-	
+
 	if( useSize < G_ioremapRegSize )
 		useSize = G_ioremapRegSize;
 
 	if( useSize > maxSize )
 		useSize = maxSize;
 
-	physAddr = (vmeStart - win->vmeAddr) + (uint32_t)win->physAddr;
+	physAddr = (vmeStart - win->vmeAddr) + (unsigned long /*uint32_t*/ )win->physAddr;
 
 	VME4LDBG( "vme4l_make_ioremap_region: requested: 0x%llx (0x%llx). "
 			  "Map vme=0x%llx (0x%llx) pa=0x%x\n", vmeAddr, (uint64_t) size,
@@ -762,12 +733,12 @@ static int vme4l_make_ioremap_region(
 	if( (region->vaddr = ioremap_nocache( physAddr, useSize )) != NULL ){
 		VME4LDBG( "ioremap ok: Mapped 0x%08x to 0x%p\n",
 				  physAddr, region->vaddr );
-		
+
 		/* remap ok, add it to window list and in front of cache list */
 		region->vmeAddr = vmeStart;
 		region->size	= useSize;
 		region->isValid	= 1;
-		
+
 		VME4L_LOCK_MSTRLISTS();
 		list_add( &region->winNode, &win->lstIoremap );
 		list_add( &region->cacheNode, &G_lstIoremapCache );
@@ -782,7 +753,7 @@ static int vme4l_make_ioremap_region(
 	}
 	return rv;
 }
-	
+
 /***********************************************************************/
 /** Find cached ioremap region for \a win
  *
@@ -806,7 +777,7 @@ static VME4L_IOREMAP_REGION *vme4l_find_ioremap_region(
 
 	list_for_each( pos, &win->lstIoremap ){
 		region = list_entry( pos, VME4L_IOREMAP_REGION, winNode );
-		
+
 		if( (region->vmeAddr <= vmeAddr) &&
 			(region->vmeAddr + region->size) >= (vmeAddr+size)){
 
@@ -816,7 +787,7 @@ static VME4L_IOREMAP_REGION *vme4l_find_ioremap_region(
 			VME4L_UNLOCK_MSTRLISTS();
 
 			return region;
-		}		
+		}
 	}
 	VME4L_UNLOCK_MSTRLISTS();
 	return NULL;
@@ -844,19 +815,19 @@ static int inline DoReadPio##size ( \
 	void *vaddr,\
 	void *dataP,\
 	size_t xsize,\
-	int swAdrSwap)\
+	long swAdrSwap)\
 {\
 	 type buf;\
      type *userSpc = (type *)dataP;\
 	 int rv=0, count;\
-     uint32_t adrSwapMask = swAdrSwap ? \
+     long adrSwapMask = swAdrSwap ? \
        ((sizeof(type)==1) ? 1 : 0 ) : 0;\
      VME4LDBG("vme4l_do_read_pio%d xsize=%x\n", size, xsize);\
      if( !G_bDrv->readPio##size ) return -EINVAL; \
 	 for( count=0; count<xsize; count+=sizeof(type), \
 			  vaddr+=sizeof(type), userSpc++ ){\
 		 if( (rv = G_bDrv->readPio##size ( \
-				  G_bHandle, (void *)((uint32_t)vaddr^adrSwapMask), &buf, 0,\
+				  G_bHandle, (void *)((unsigned long /*uint32_t*/)vaddr^adrSwapMask), &buf, 0, \
 				  win->bDrvData)) < 0 )\
 			 break;\
 		 __put_user( buf, userSpc );\
@@ -883,7 +854,7 @@ static int inline DoWritePio##size ( \
 			  vaddr+=sizeof(type), userSpc++ ){\
          if( __get_user( buf, userSpc ) ) return -EFAULT;\
 		 if( (rv = G_bDrv->writePio##size ( \
-				  G_bHandle, (void *)((uint32_t)vaddr^adrSwapMask), &buf, 0,\
+				  G_bHandle, (void *)((unsigned long/*uint32_t*/)vaddr^adrSwapMask), &buf, 0, \
 				  win->bDrvData)) < 0 )\
 			 break;\
 	 }\
@@ -936,13 +907,13 @@ static int vme4l_setup_pio(
 
 	/*--- find/request a ususable VME mapping window ---*/
 	if( (rv = vme4l_request_adrswin( spc, vmeAddr, size,
-									 winFlags, &win )) < 0 ){		
+									 winFlags, &win )) < 0 ){
 		return rv;
 	}
 
 	/*--- ioremap this region (or use it from the ioremap cache) ---*/
 	if( (region = vme4l_find_ioremap_region( win, vmeAddr, size )) == NULL ){
-		
+
 		/* not cached, setup a new one */
 		if( (rv = vme4l_make_ioremap_region( win, vmeAddr, size,
 											 &region )) < 0 ){
@@ -1040,12 +1011,12 @@ static int vme4l_start_wait_dma(void)
 	unsigned long ps;
 	uint32_t ticks = 5 * HZ;
 	wait_queue_t __wait;
-	
+
 	VME4L_LOCK_DMA(ps);
 
 	/* start DMA */
 	if( (rv = G_bDrv->dmaStart( G_bHandle )) < 0 ){
-		VME4L_UNLOCK_DMA(ps);	
+		VME4L_UNLOCK_DMA(ps);
 		goto ABORT;
 	}
 
@@ -1076,14 +1047,14 @@ static int vme4l_start_wait_dma(void)
 		}
 		VME4LDBG("vme4l_start_wait_dma: remaining %d ticks\n", ticks );
 	}
-	
+
 	set_current_state(TASK_RUNNING);
 	remove_wait_queue(&G_dmaWq, &__wait);
-	VME4L_UNLOCK_DMA(ps);	
+	VME4L_UNLOCK_DMA(ps);
 
  ABORT:
 	VME4LDBG("vme4l_start_wait_dma: exit %d\n", rv);
-	
+
 	return rv;
 }
 
@@ -1122,8 +1093,7 @@ static int vme4l_perform_zc_dma(
 			swapMode,
 			&vmeAddr);
 
-		VME4LDBG( "vme4l_perform_dma: dmaSetup rv=%d, next vmeAddr=0x%llx\n",
-				  rv, vmeAddr );
+		VME4LDBG( "vme4l_perform_zc_dma: dmaSetup rv=%d, next vmeAddr=0x%llx\n", rv, vmeAddr );
 
 		if( rv < 0 )
 			goto ABORT;
@@ -1132,23 +1102,21 @@ static int vme4l_perform_zc_dma(
 			rv = -EINVAL;		/* bug in bridge driver... */
 			goto ABORT;
 		}
-		
+
 		sgNelems -= rv;
 		sgList += rv;
-		
+
 		/* start&wait for DMA */
 		rv = vme4l_start_wait_dma();
-		
+
 		if( rv < 0 )
 			goto ABORT;
 	}
-	
+
  ABORT:
 	up( &G_dmaMutex );
 	return rv;
 }
-	
-	
 
 /***********************************************************************/
 /** Handler for VME4L_IO_RW_BLOCK zero-copy DMA transfers
@@ -1158,31 +1126,43 @@ static int vme4l_perform_zc_dma(
  * \param swapMode		window swapping mode
  * \return >=0 number of bytes transferred, or negative error number
  */
-static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk,
-						 int swapMode)
+static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 {
-
-	/*---------------------------+
-	|  LINUX 2.6 implementation  |
-	+---------------------------*/
 
 	/*
 	 * see drivers/scsi/sg.c::st_map_user_pages()
 	 * and http://lwn.net/Articles/28548
+	 *
+	 * ts@men update 2017: see also	 https://gist.github.com/17twenty/2930467 and
+     *                               https://lwn.net/Articles/75780/ (about dma_sync_single_for_device/cpu )
 	 */
+
 	int rv = 0, i;
-	unsigned long uaddr = (unsigned long)blk->dataP;
-	size_t count 		= blk->size;
-	unsigned int nr_pages;
-	struct page **pages = NULL;
-	uint32_t totlen=0;
-	int offset;
-	int locked=0;
+	unsigned long uaddr 	= (unsigned long)blk->dataP;
+	size_t count 			= blk->size;
+	unsigned int nr_pages	= 0;
+	struct page **pages 	= NULL;
+	uint32_t totlen			= 0;
+	int offset 				= 0;
+	int direction 			= 0;
+	struct pci_dev *pciDev	= NULL;
+	struct device *pDev		= NULL;
+	void *pDma				= NULL;
+	void *pKmalloc			= NULL;
+	char *pBaseDma			= NULL;
+	int locked				= 0;
+	dma_addr_t dmaAddr 		= 0; 
 	VME4L_SCATTER_ELEM *sgListStart = NULL, *sgList;
+
+	/* direction as seen from  DMA API context */
+	direction = ( blk->direction == READ ) ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
 
 	/* Hmm? */
 	if (count == 0)
 		return 0;
+
+	pciDev = G_bDrv->pciDevGet( G_bHandle );
+	pDev = &pciDev->dev;
 
 	/*--- Allocate array to hold page pointers ---*/
 	nr_pages = ((uaddr & ~PAGE_MASK) + count + ~PAGE_MASK) >> PAGE_SHIFT;
@@ -1196,23 +1176,23 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk,
 
 	/* allocate scatter list */
 	sgListStart = sgList = kmalloc(sizeof(*sgList) * nr_pages, GFP_ATOMIC);
-	if( sgListStart == NULL ){
+	if( sgListStart == NULL ) {
 		rv = -ENOMEM;
 		goto CLEANUP;
 	}
 
-	/*--- Try to fault in all of the necessary pages ---*/
+	/* Ensure that all userspace pages are locked in memory for the */
+	/* duration of the DMA transfer */
+
+	pKmalloc = kmalloc( 4096, GFP_ATOMIC );
+	pBaseDma = (char*)pKmalloc;
+
 	down_read(&current->mm->mmap_sem);
-	
-	rv = get_user_pages(
-		current,
-		current->mm,
-		uaddr,
-		nr_pages,
-		blk->direction == READ,/* rw==READ means write into memory area */
-		0, /* don't force */
-		pages,
-		NULL);
+#if LINUX_VERSION_CODE < VERSION_CODE(4,8,0)
+	rv = get_user_pages( current, current->mm, uaddr, nr_pages,	blk->direction == READ,	0, pages, NULL );
+#else
+	rv = get_user_pages( uaddr, nr_pages, blk->direction == READ ? FOLL_WRITE : 0, pages, NULL );
+#endif
 	up_read(&current->mm->mmap_sem);
 
 	if( rv < nr_pages )
@@ -1225,49 +1205,97 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk,
 	offset = uaddr & ~PAGE_MASK;
 
 	for (i = 0; i < nr_pages; ++i, sgList++){
-		/* be carefully, pages are from user space, and can be in highmem */
+
 		struct page *page = pages[i];
-		/* we assume that phys addr = PCI bus addr (true for all supported boards),
-		   otherwise we had to use dma_map_sg() or similar */
-		uint32_t dmaAddr = page_to_phys(page) + offset;
-		sgList->dmaAddress = dmaAddr;
+#if 0
+		/* uint32_t dmaAddr = page_to_phys(page) + offset; */
+		pDma = dma_alloc_coherent( pDev, count, &dmaAddr,  GFP_DMA);
+		if (!pDma ) {
+			return -ENOMEM;
+		}
+		pBaseDma = (char*)pDma;
+		VME4LDBG("dma_alloc_coherent: pDma = %p, dmaAddr = %llx\n", pDma, dmaAddr );
+#endif
 		sgList->dmaLength  = PAGE_SIZE - offset;
-		
+		dmaAddr = dma_map_single( pDev, page, sgList->dmaLength, direction ); 
+		if ( dma_mapping_error(pDev, dmaAddr )) {
+			printk( KERN_ERR "error mapping DMA space with dma_map_page\n" );
+                goto CLEANUP;
+        }
+	
+		sgList->dmaAddress = dmaAddr;
+
 		if( totlen + sgList->dmaLength > count )
 			sgList->dmaLength = count - totlen;
 
 		offset = 0;
 		totlen += sgList->dmaLength;
+		
+		dma_sync_single_for_device( pDev, sgList->dmaAddress, sgList->dmaLength, 
+									( blk->direction == READ ) ? DMA_FROM_DEVICE : DMA_TO_DEVICE );
 
-		VME4LDBG(" sglist %d: page=%p off=%lx dma=%x dmalen=%x\n",
-				 i, page, uaddr & ~PAGE_MASK, dmaAddr, sgList->dmaLength);
+		VME4LDBG(" sglist %d: page=%p off=%lx dma=%x dmalen=%x\n", i, page, uaddr & ~PAGE_MASK, dmaAddr, sgList->dmaLength);
 	}
-	
-	/*--- now do DMA ---*/
-	rv = vme4l_perform_zc_dma( spc, sgListStart, nr_pages,
-							   blk->direction, blk->vmeAddr, swapMode );
-	
+
+	/* dma_sync_single_for_cpu() gives ownership of the DMA buffer back to the processor. 
+	   After that call, driver code can read or modify the buffer, but the device should not touch it. 
+	   A call to dma_sync_single_for_device() is required to allow the device to access the buffer again."
+
+	   Notes:  You must do this:	   
+	   - Before reading values that have been written by DMA from the device
+	   (use the DMA_FROM_DEVICE direction)
+	   - After writing values that will be written to the device using DMA
+	   (use the DMA_TO_DEVICE) direction */
+
+	/*--- now do DMA in HW ---*/
+	rv = vme4l_perform_zc_dma( spc, sgListStart, nr_pages, blk->direction, blk->vmeAddr, swapMode );
+
 	/* mark pages as dirty */
-	if( blk->direction == READ ){
-		for (i = 0; i < nr_pages; ++i )
+	if( blk->direction == READ ) {
+		for (i = 0; i < nr_pages; ++i ) {
 			if ( !PageReserved( pages[i] ))
-				SetPageDirty( pages[i] );		
+				SetPageDirty( pages[i] );
+		}
 	}
+
+	/* allow CPU access to pages again, device is finished */
+	sgList = sgListStart;
+	for (i = 0; i < nr_pages; i++, sgList++) {
+		dma_sync_single_for_cpu( pDev, 
+								 sgList->dmaAddress, 
+								 sgList->dmaLength, 
+								 blk->direction == READ ? DMA_FROM_DEVICE : DMA_TO_DEVICE );
+	}
+
+#if 0
+	/* here I should be able to read the virtual memory range */
+	printk("got DMA Data:\n");
+	for (i = 0; i < 0x40; i++) {
+		if (!(i % 16))
+			printk("\n");
+		printk("%02x\n", *pBaseDma++);
+	}
+#endif
 
  CLEANUP:
-	
-
 	/*--- free pages ---*/
-	if( locked ){
-		
-		for (i = 0; i < nr_pages; ++i )
+	if( locked ) {
+		sgList = sgListStart;
+		for (i = 0; i < nr_pages; i++, sgList++)
+		{
+			dma_unmap_page( pDev, sgList->dmaAddress, sgList->dmaLength, direction);
+#if LINUX_VERSION_CODE < VERSION_CODE(4,6,0)
 			page_cache_release( pages[i] );
+#endif
+		}
 	}
 
 	if( sgListStart )
 		kfree( sgListStart );
 	if( pages )
 		kfree( pages );
+	if (pKmalloc)
+		kfree ( pKmalloc );
 
 	return rv >= 0 ? totlen : rv;
 }
@@ -1290,6 +1318,8 @@ static int vme4l_bounce_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk,
 
 	if( down_interruptible( &G_dmaMutex ))
 		return -ERESTARTSYS;
+
+	VME4LDBG("-> vme4l_bounce_dma\n");
 
 	while( len > 0 ){
 		void *bounceBuf;
@@ -1315,21 +1345,21 @@ static int vme4l_bounce_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk,
 			goto ABORT;
 		}
 		curLen = rv;
-		
+
 		/* for VME writes, copy user's data to bounce buffer */
 		if( blk->direction == WRITE ){
-			__copy_from_user( bounceBuf, userSpc, curLen );			
+			__copy_from_user( bounceBuf, userSpc, curLen );
 		}
 
 		/* start&wait for DMA */
 		if( (rv = vme4l_start_wait_dma()) < 0 )
-			goto ABORT;
+		  goto ABORT;
 
 		/* for VME reads, copy data to user space */
 		if( blk->direction == READ ){
-			__copy_to_user( userSpc, bounceBuf, curLen );			
+			__copy_to_user( userSpc, bounceBuf, curLen );
 		}
-		
+
 		/* release bounce buffer (if needed) */
 		if( G_bDrv->dmaBounceBufRelease )
 			G_bDrv->dmaBounceBufRelease( G_bHandle, bounceBuf );
@@ -1341,7 +1371,7 @@ static int vme4l_bounce_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk,
 	}
  ABORT:
 	up( &G_dmaMutex );
-
+	VME4LDBG("<- vme4l_bounce_dma\n");
 	return rv < 0 ? rv : blk->size;
 }
 
@@ -1350,6 +1380,28 @@ static int vme4l_bounce_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk,
  *
  * \param spc			VME4L space number
  * \param blk			ioctl argument from user
+
+#ifdef DBG
+{         / * gigigi * /
+		  int i=0;
+		  char *pDat = (char*)bounceBuf;
+
+		  if( blk->direction == READ )
+		    {
+		      VME4LDBG("DMA read done. bounce buffer content:\n" );
+		      / * ts@men: dump whats in the bounce Buffer * /
+
+		      for ( i=0; i < curLen; i++) {
+			if (!(i % 16))
+			  VME4LDBG("\n %04x | ", i );
+
+			VME4LDBG("%02x ", *pDat++ );
+		    }
+		  }
+		}
+
+#endif
+
  * \return >=0 number of bytes transferred, or negative error number
  * \param swapMode		window swapping mode
  */
@@ -1370,10 +1422,12 @@ static int vme4l_rw( VME4L_SPACE spc, VME4L_RW_BLOCK *blk,
 				goto ABORT;
 			}
 			/* bounce buffer DMA */
+			VME4LDBG("calling vme4l_bounce_dma()\n" );
 			rv = vme4l_bounce_dma( spc, blk, swapMode );
 		}
 		else {
 			/* zero copy DMA */
+		        VME4LDBG("calling vme4l_zc_dma()\n" );
 			rv = vme4l_zc_dma( spc, blk, swapMode );
 		}
 	}
@@ -1415,9 +1469,9 @@ static int vme4l_rmw_cycle( VME4L_SPACE spc, VME4L_RMW_CYCLE *blk,
 								   blk->accWidth,
 								   winFlags, &win, &vaddr )) < 0)
 			goto ABORT;
-		
+
 		physAddr = blk->vmeAddr - win->vmeAddr + win->physAddr;
-		
+
 		if( G_bDrv->rmwCycle )
 			rv = G_bDrv->rmwCycle( G_bHandle, vaddr, physAddr, blk->accWidth,
 								   blk->mask, &blk->rv );
@@ -1460,7 +1514,7 @@ static int vme4l_aonly_cycle( VME4L_SPACE spc, VME4L_AONLY_CYCLE *blk,
 		if( (rv = vme4l_setup_pio( spc, blk->vmeAddr, 1, 1,
 								   winFlags, &win, &vaddr )) < 0)
 			goto ABORT;
-		
+
 		if( G_bDrv->aOnlyCycle )
 			rv = G_bDrv->aOnlyCycle( G_bHandle, vaddr );
 		else
@@ -1501,7 +1555,7 @@ static int vme4l_slave_window_ctrl( VME4L_SPACE spc, vmeaddr_t vmeAddr,
 		return -ENOTTY;			/* must be a slave window space */
 	}
 
-	
+
 	VME4L_LOCK_MSTRLISTS();
 
 	/* get the window that was previously setup (if any) */
@@ -1514,7 +1568,7 @@ static int vme4l_slave_window_ctrl( VME4L_SPACE spc, vmeaddr_t vmeAddr,
 
 		/* new opened window or size change request */
 		if( list_empty( &spcEnt->lstAdrsWins ) ){
-			
+
 			/* new opened */
 			if( (win = vme4l_alloc_adrswin()) == NULL ){
 				VME4LDBG("*** vme4l_slave_window_ctrl: ERROR: no Space\n");
@@ -1543,7 +1597,7 @@ static int vme4l_slave_window_ctrl( VME4L_SPACE spc, vmeaddr_t vmeAddr,
 			VME4LDBG("*** vme4l_slave_window_ctrl: ERROR: window in use\n");
 			return -EBUSY;
 		}
-		
+
 		/* advise bridge driver to setup window */
 		rv = G_bDrv->slaveWindowCtrl( G_bHandle,
 									  spc,
@@ -1554,14 +1608,14 @@ static int vme4l_slave_window_ctrl( VME4L_SPACE spc, vmeaddr_t vmeAddr,
 		if( rv == 0 ){
 			win->vmeAddr 	= vmeAddr;
 			win->size 		= size;
-			win->physAddr 	= physAddr;			
+			win->physAddr 	= physAddr;
 			VME4LDBG(" win paddr=%p\n", win->physAddr );
 		}
 	}
-		
+
 
 	VME4L_LOCK_MSTRLISTS();
-	
+
 	if( size == 0 && win){
 		/* back to free list */
 		list_del ( &win->node );
@@ -1662,7 +1716,7 @@ static int vme4l_signal_install( VME4L_SIG_INSTALL2 *blk, struct file *file )
 	if( (rv = vme4l_irq_install( ent, blk->vector )) < 0 )
 		kfree( ent );
 
-	return rv;	
+	return rv;
 }
 
 
@@ -1692,30 +1746,26 @@ static int vme4l_signal_uninstall( int vector, struct file *file )
 	list_for_each_safe( pos, tmp, &G_vectTbl[vector] ){
 		ent = list_entry( pos, VME4L_IRQ_ENTRY, node );
 		if( ent->entType == VME4L_USER_IRQ ){
-			if( ent->u.user.task == current && ent->u.user.file == file ){	
-#if 0
-				/*??? This would also disable any other user of that level! */
-				if( ent->flags & VME4L_IRQ_ENBL )
-					vme4l_irqlevel_disable( ent->level );
-#endif
+			if( ent->u.user.task == current && ent->u.user.file == file ){
+
 				/* remove entry */
 				list_del( &ent->node );
-				
+
 				VME4L_UNLOCK_VECTORS(ps);
 				kfree( ent );
 				VME4L_LOCK_VECTORS(ps);
 			}
 		}
-	}	
+	}
 	VME4L_UNLOCK_VECTORS(ps);
-	return 0;	
+	return 0;
 }
 
 
 /***********************************************************************/
 /** vme4l Interrupt handler
- *	
- * This should be called from the bridge drivers interrupt routine		
+ *
+ * This should be called from the bridge drivers interrupt routine
  *
  * The special interrupts >= VME4L_IRQLEV7 must be cleared
  * by the bridge driver before calling this function.
@@ -1751,7 +1801,6 @@ void vme4l_irq( int level, int vector, struct pt_regs *regs)
 		/* wake up waiting task */
 		wake_up( &G_dmaWq );
 		VME4L_UNLOCK_DMA(ps);
-
 	}
 	else
 	{  /* brace2 */
@@ -1766,7 +1815,7 @@ void vme4l_irq( int level, int vector, struct pt_regs *regs)
 		list_for_each( pos, &G_vectTbl[vector] )
 		{
 			ent = list_entry( pos, VME4L_IRQ_ENTRY, node );
-			switch( ent->entType ){				
+			switch( ent->entType ){
 
 			case VME4L_KERNEL_IRQ:
 
@@ -1799,7 +1848,7 @@ void vme4l_irq( int level, int vector, struct pt_regs *regs)
 
 			default:
 				printk( KERN_WARNING "VME4L: unknown handler type"
-						"lev %d vec %d\n", level, vector);				
+						"lev %d vec %d\n", level, vector);
 				break;
 			} /* /switch */
 		}/* /list_for_each */
@@ -1815,20 +1864,14 @@ void vme4l_irq( int level, int vector, struct pt_regs *regs)
 	} /* /brace2 */
 }
 
-/*---------------------------------------------------------------------+
-|                                                                      |
-|              LINUX DRIVER ENTRY POINTS                               |
-|																	   |
-|                                                                      |
-+---------------------------------------------------------------------*/
-
+/* -- LINUX DRIVER ENTRY POINTS -- */
 
 /***********************************************************************/
 /** Open entry point of VME4L driver
  *
  * \param inode			pointer to inode structure
  * \param file			pointer to file structure
- * \return 0=ok, or negative error number			
+ * \return 0=ok, or negative error number
  */
 static int vme4l_open(
 	struct inode  *inode,
@@ -1852,7 +1895,7 @@ static int vme4l_open(
 	if( ( fp = kmalloc( sizeof( VME4L_FILE_PRIV ),
 						GFP_KERNEL )) == NULL )
 		return -ENOMEM;
-	
+
 	fp->minor = minor;
 	fp->swapMode = VME4L_NO_SWAP;
 	file->private_data = fp;
@@ -1866,7 +1909,7 @@ static int vme4l_open(
  *
  * \param inode			pointer to inode structure
  * \param file			pointer to file structure
- * \return 0=ok, or negative error number			
+ * \return 0=ok, or negative error number
  */
 static int vme4l_release(
 	struct inode  *inode,
@@ -1875,7 +1918,7 @@ static int vme4l_release(
 {
 #ifdef DBG
 	int minor = MINOR(inode->i_rdev);
-#endif	
+#endif
 	int vector;
 
 	VME4LDBG("vme4l_close %s\n", G_spaceTbl[minor].devName );
@@ -1950,7 +1993,7 @@ static struct vm_operations_struct vme4l_remap_vm_ops = {
  *
  * \param file			pointer to file structure
  * \param vma			vm_area_struct
- * \return 				0=ok, or negative error number			
+ * \return 				0=ok, or negative error number
  */
 static int vme4l_mmap(
 	struct file * file,
@@ -1982,7 +2025,7 @@ static int vme4l_mmap(
 		VME4LDBG("vme4l_mmap %s vmeAddr=%lx (%lx) swapMode=%x\n",
 				 G_spaceTbl[spc].devName,
 				 vmeAddr, size, fp->swapMode );
-	
+
 		if( (rv = vme4l_request_adrswin( spc, vmeAddr, size,
 										 (fp->swapMode & VME4L_HW_SWAP1) ?
 										 VME4L_AW_HW_SWAP1 : 0,
@@ -2005,7 +2048,7 @@ static int vme4l_mmap(
 			win = list_entry( spcEnt->lstAdrsWins.next, VME4L_ADRSWIN, node );
 
 		VME4L_UNLOCK_MSTRLISTS();
-		
+
 		VME4LDBG("vme4l_mmap %s for slave win win=%p off=%lx (%lx)\n",
 				 G_spaceTbl[spc].devName, win,
 				 offset, size );
@@ -2043,7 +2086,7 @@ static int vme4l_mmap(
 	if( VME4L_REMAP(vma,
 					vma->vm_start,
 					physAddr,
-					size,	
+					size,
 					vma->vm_page_prot )) {
 		rv = -EAGAIN;
 		goto ABORT;
@@ -2068,12 +2111,9 @@ static int vme4l_mmap(
  * \param cmd			ioctl number
  * \param arg			argument to ioctl
  *
- * \return 0=ok, or negative error number			
+ * \return 0=ok, or negative error number
  */
 static long vme4l_ioctl(
-#if LINUX_VERSION_CODE <= VERSION_CODE(2,6,11)
-	struct inode  *inode,
-#endif
 	struct file *file,
 	unsigned int  cmd,
 	unsigned long arg
@@ -2097,7 +2137,7 @@ static long vme4l_ioctl(
 
 
 	switch( cmd ){
-	
+
 	case VME4L_IO_RW_BLOCK:
 	{
 		VME4L_RW_BLOCK blk;
@@ -2112,7 +2152,7 @@ static long vme4l_ioctl(
 			rv = -EFAULT;
 			break;
 		}
-		
+
 		rv = vme4l_rw( spc, &blk, fp->swapMode );
 		break;
 	}
@@ -2156,19 +2196,19 @@ static long vme4l_ioctl(
 		if( G_bDrv->sysCtrlFuncGet )
 			rv = G_bDrv->sysCtrlFuncGet( G_bHandle );
 		break;
-			
+
 	case VME4L_IO_SYS_CTRL_FUNCTION_SET:
 		rv = -ENOTTY;
 		if( G_bDrv->sysCtrlFuncSet )
 			rv = G_bDrv->sysCtrlFuncSet( G_bHandle, arg );
 		break;
-			
+
 	case VME4L_IO_SYS_RESET:
 		rv = -ENOTTY;
 		if( G_bDrv->sysReset )
 			rv = G_bDrv->sysReset( G_bHandle );
 		break;
-			
+
 	case VME4L_IO_ARBITRATION_TIMEOUT_GET:
 		rv = -ENOTTY;
 		if( G_bDrv->arbToutGet )
@@ -2187,7 +2227,7 @@ static long vme4l_ioctl(
 		rv 			 = -ENOTTY;
 		blk.space 	 = VME4L_SPC_INVALID;
 		blk.addr	 = 0xffffffff;
-	
+
 		if( G_bDrv->busErrGet )
 			rv = G_bDrv->busErrGet( G_bHandle, &blk.space,
 									  &blk.addr, blk.clear );
@@ -2203,7 +2243,7 @@ static long vme4l_ioctl(
 		if( G_bDrv->requesterModeGet )
 			rv = G_bDrv->requesterModeGet( G_bHandle );
 		break;
-			
+
 	case VME4L_IO_REQUESTER_MODE_SET:
 		rv = -ENOTTY;
 		if( G_bDrv->requesterModeSet )
@@ -2233,19 +2273,19 @@ static long vme4l_ioctl(
 		if( G_bDrv->addrModifierGet )
 			rv = G_bDrv->addrModifierGet( spc, G_bHandle );
 		break;
-			
+
 	case VME4L_IO_ADDR_MOD_SET:
 		rv = -ENOTTY;
 		if( G_bDrv->addrModifierSet )
 			rv = G_bDrv->addrModifierSet( spc, G_bHandle, arg );
 		break;
-			
+
 	case VME4L_IO_POSTED_WRITE_MODE_GET:
 		rv = -ENOTTY;
 		if( G_bDrv->postedWriteModeGet )
 			rv = G_bDrv->postedWriteModeGet( G_bHandle );
 		break;
-	
+
 	case VME4L_IO_IRQ_GENERATE2:
 		rv = -ENOTTY;
 		if( G_bDrv->irqGenerate )
@@ -2253,7 +2293,7 @@ static long vme4l_ioctl(
 									  VME4L_LEVEL_GET(arg),
 									  VME4L_VECTOR_GET(arg));
 		break;
-		
+
 	case VME4L_IO_IRQ_GEN_ACKED:
 		rv = -ENOTTY;
 		if( G_bDrv->irqGenAcked )
@@ -2391,12 +2431,12 @@ static long vme4l_ioctl(
 		rv = -ENOTTY;
 		if( G_bDrv->postedWriteModeSet )
 			rv = G_bDrv->postedWriteModeSet( G_bHandle, arg );
-		
+
 		G_postedWriteMode = arg;
 
 		VME4L_UNLOCK_VECTORS(ps);
 		break;
-			
+
 
 	/*------------------------------+
 	|  Old VME4L compatible ioctls  |
@@ -2415,7 +2455,7 @@ static long vme4l_ioctl(
 			 * for the current task (to emulate behaviour of old VME4L)
 			 */
 			VME4L_SIG_INSTALL2 blk;
-		
+
 			blk.vector 	= VME4L_IRQVEC_BUSERR;
 			blk.level 	= VME4L_IRQLEV_BUSERR;
 			blk.signal	= SIGBUS;
@@ -2429,7 +2469,7 @@ static long vme4l_ioctl(
 			}
 			else
 				rv = vme4l_signal_uninstall( blk.vector, file );
-				
+
 			break;
 		}
 
@@ -2461,7 +2501,7 @@ static long vme4l_ioctl(
 		blk.size		= prb.size;
 		blk.dataP		= prb.buf;
 		blk.flags		= 0;
-			
+
 		rv = vme4l_rw( spc, &blk, VME4L_NO_SWAP );
 		if( rv >= 0 )
 			rv = 0;
@@ -2503,9 +2543,7 @@ static long vme4l_ioctl(
 	case VME4L_IO_IRQ_GENERATE:
 		rv = -ENOTTY;
 		if( G_bDrv->irqGenerate )
-			rv = G_bDrv->irqGenerate( G_bHandle,
-									  VME4L_LEVEL_GET(arg),
-									  VME4L_VECTOR_GET(arg));
+			rv = G_bDrv->irqGenerate( G_bHandle, VME4L_LEVEL_GET(arg), VME4L_VECTOR_GET(arg));
 		if( rv >= 0 )
 			rv = 0;
 		break;
@@ -2522,7 +2560,7 @@ static long vme4l_ioctl(
 				rv = -EFAULT;
 			else
 				rv = 0;
-		}		
+		}
 		break;
 
 #endif /* __powerpc__ */
@@ -2536,7 +2574,7 @@ static long vme4l_ioctl(
 
 /***********************************************************************/
 /** Register VME bridge driver to VME4L core
- *			
+ *
  * \return 	0=ok, negative error number on error
  *
  */
@@ -2560,7 +2598,7 @@ int vme4l_register_bridge_driver(
 
 /***********************************************************************/
 /** Unregister VME bridge driver to VME4L core
- *			
+ *
  */
 void vme4l_unregister_bridge_driver(void)
 {
@@ -2663,7 +2701,7 @@ int vme_request_irq(
 
 	if( (ent = kmalloc( sizeof( *ent ), GFP_KERNEL )) == NULL )
 		return -ENOMEM;
-	
+
 	memset( ent, 0, sizeof(*ent));
 
 	ent->flags 					= VME4L_IRQ_ROAK*0;
@@ -2702,7 +2740,7 @@ void vme_free_irq(unsigned int vme_irq, void *dev_id)
 		return;
 
 	VME4L_LOCK_VECTORS(ps);
-	
+
 	list_for_each_safe( pos, tmp, &G_vectTbl[vme_irq] ){
 		ent = list_entry( pos, VME4L_IRQ_ENTRY, node );
 
@@ -2710,13 +2748,13 @@ void vme_free_irq(unsigned int vme_irq, void *dev_id)
 			if( ent->u.kernel.dev_id == dev_id ){
 				/* remove entry */
 				list_del( &ent->node );
-				
+
 				VME4L_UNLOCK_VECTORS(ps);
 				kfree( ent );
 				VME4L_LOCK_VECTORS(ps);
 			}
 		}
-	}				
+	}
 	VME4L_UNLOCK_VECTORS(ps);
 	return;
 }
@@ -2733,16 +2771,16 @@ int vme_ilevel_control( int level, int enable )
 {
 	int rv;
 	unsigned long ps;
-	
+
 	VME4LDBG("vme_ilevel_control: %sable level %d\n",
 			 enable ? "en":"dis", level );
-	
+
 	VME4L_LOCK_VECTORS(ps);
-	
+
 	rv = enable ? vme4l_irqlevel_enable(level) : vme4l_irqlevel_disable(level);
-	
+
 	VME4L_UNLOCK_VECTORS(ps);
-	
+
 	return rv;
 }
 
@@ -2751,11 +2789,7 @@ int vme_ilevel_control( int level, int enable )
  */
 static struct file_operations vme4l_fops = {
     .open           = vme4l_open,
-    #if LINUX_VERSION_CODE >= VERSION_CODE(2,6,11)
     .unlocked_ioctl = vme4l_ioctl,
-    #else
-    .ioctl          = vme4l_ioctl,
-    #endif
     .release        = vme4l_release,
     .mmap           = vme4l_mmap
 };
@@ -2822,7 +2856,7 @@ static int vme4l_proc_infos( char *buffer, int *len,
 
 	VME4L_LOCK_MSTRLISTS();
 	for( spc=0; spc<VME4L_SPACE_TBL_SIZE; spc++, spcEnt++ ){
-		
+
 		PRINT_PROC( "SPACE %d %s\n", spc, spcEnt->devName);
 		list_for_each( pos, &spcEnt->lstAdrsWins ){
 			VME4L_ADRSWIN *win = list_entry( pos, VME4L_ADRSWIN, node );
@@ -2855,11 +2889,11 @@ static int vme4l_proc_infos( char *buffer, int *len,
 		VME4L_LOCK_VECTORS(ps);
 
 		for( vector=0; vector<VME4L_NUM_VECTORS; vector++ ){
-			if( !list_empty( &G_vectTbl[vector] )) {				
+			if( !list_empty( &G_vectTbl[vector] )) {
 				PRINT_PROC( " Vec %d:\n", vector);
 
 				list_for_each( pos, &G_vectTbl[vector] ) {
-					ent = list_entry( pos, VME4L_IRQ_ENTRY, node );		
+					ent = list_entry( pos, VME4L_IRQ_ENTRY, node );
 					PRINT_PROC( "   Lev %d flg=0x%x",
 								ent->level, ent->flags);
 
@@ -2909,7 +2943,7 @@ static int vme4l_read_proc( char *buffer, char **start, off_t offset,
 		return( 0 );
     *start = buffer + (offset - begin);
     return( size < begin + len - offset ? size : begin + len - offset );
-	
+
 }
 
 #endif /* CONFIG_PROC_FS */
@@ -2952,7 +2986,7 @@ static int __init vme4l_init_module(void)
 		char buf[200];
 		printk( KERN_INFO "%s\n", vme4l_rev_info( buf ));
 	}
-	
+
 	/*------------------------+
 	|  Create device entries  |
 	+------------------------*/
@@ -3021,14 +3055,12 @@ static int __init vme4l_init_module(void)
 	}
 
 	/* create proc interface */
-# if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	if (!create_proc_read_entry("vme4l",0,0, vme4l_read_proc, NULL)) {
 		printk(KERN_ERR "*** vme4l: can't create /proc/vme4l\n");
 		goto CLEANUP;
 	}
 #else
-
-
 
 #endif
 

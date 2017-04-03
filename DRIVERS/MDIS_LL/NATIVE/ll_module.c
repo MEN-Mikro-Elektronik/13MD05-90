@@ -37,7 +37,6 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <MEN/men_typs.h>
-#include <MEN/sysdep.h>
 #include <MEN/oss.h>
 #include <MEN/desc.h>
 #include <MEN/maccess.h>

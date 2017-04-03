@@ -198,10 +198,6 @@
 #include <MEN/oss.h>
 #include <MEN/chameleon.h>
 
-#ifndef CONFIG_PCI
-#include <MEN/sysparam2.h>
-#endif
-
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
 #include <linux/semaphore.h>
 #endif
@@ -212,7 +208,9 @@
 # define __devinitdata
 #endif
 
-#ifdef DBG
+#undef DEBUG_CHAM_LX
+
+#ifdef DEBUG_CHAM_LX
 #define DBGOUT(x...) printk(KERN_DEBUG x)
 #else
 #define DBGOUT(x...)
@@ -221,9 +219,7 @@
 /* length of Cham. table file */
 #define CHAM_TBL_FILE_LEN    12
 
-/*
- * module parameters
- */
+/* module parameters */
 static int usePciIrq = 1; /* true for all ESMs except EM8, ... */
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14)
@@ -231,9 +227,7 @@ MODULE_PARM( usePciIrq, "i" );
 #else
 module_param( usePciIrq, int, 0664 );
 #endif
-MODULE_PARM_DESC( usePciIrq, "usePciIrq=1: Use IRQ from PCI header"
-				  " instead from Chameleon table. usePciIrq=0: Use "
-				  " IRQ number info from IP cores unit entry");
+MODULE_PARM_DESC( usePciIrq, "usePciIrq=1: IRQ# from PCI header. usePciIrq=0: Use IP Core IRQ#");
 
 /*--------------------------------------+
 |   DEFINES & CONSTS                    |
@@ -437,10 +431,10 @@ int men_chameleon_register_driver( CHAMELEON_DRIVER_T *drv )
 
         for( i=0; i < h->numUnits; i++ ){
 /* --leo 27.08.2007 10:07 */
-            DBGOUT("reg_driver, modCode: %d\n", h->v0Unit[i].modCode);
+            /* DBGOUT("reg_driver, modCode: %d\n", h->v0Unit[i].modCode); */
             if (chameleon_announce( &h->v0Unit[i], drv )) {
 /* --leo 27.08.2007 10:15 */
-                DBGOUT("\t-->\t accepted\n");
+                /* DBGOUT("\t-->\t accepted\n"); */
                 count++;
             }
         }
@@ -523,7 +517,6 @@ void men_chameleon_unregister_driver( CHAMELEON_DRIVER_T *drv )
  * Deletes the driver structure from the list of registered chameleon drivers,
  * gives it a chance to clean up by calling its remove() function for
  * each device it was responsible for, and marks those devices as
- * driverless.
  *
  *
  * \param drv       \IN the driver structure to register. Must be kept
@@ -782,81 +775,56 @@ int men_chameleonV2_unit_find(
  *  \return     0 when the driver has accepted the device or
  *              an error code (negative number) otherwise.
  */
-#ifdef CONFIG_PCI
+
 static int __devinit pci_init_one (
     struct pci_dev *pdev,
     const struct pci_device_id *ent)
-#else
-static int __devinit init_one ( void )
-#endif
 {
 
-    OSS_HANDLE *osH = NULL;
-    CHAMELEON_HANDLE_T *h=NULL;  	/* this is the native struct */
-    CHAMELEONV2_UNIT 	info;
-    CHAMELEON_UNIT_T 	*v0unit;
-    CHAMELEONV2_UNIT_T 	*v2unit;
-    CHAMELEONV2_TABLE   table;
-    CHAMELEONV2_HANDLE 	*chamHdl;
-#ifndef CONFIG_PCI
-    char buf[13];
-    u32	chaTableAddr;		/* address of chameleon table	*/
-#endif
+    OSS_HANDLE *osH 		= NULL;
+    CHAMELEON_HANDLE_T *h	= NULL;  	/* this is the native struct */
+    CHAMELEONV2_UNIT 		info;
+    CHAMELEON_UNIT_T 		*v0unit;
+    CHAMELEONV2_UNIT_T 		*v2unit;
+    CHAMELEONV2_TABLE   	table;
+    CHAMELEONV2_HANDLE 		*chamHdl;
     char name[21]; 		/* buffer to keep unit name/index */
     char tblfile[CHAM_TBL_FILE_LEN+1];
     int rv=-ENOMEM, err = 0, idx, i;
     int32 chamResult;
     u32 value32;
 
-	if ((err = OSS_Init("men_chameleon", &osH ))) {
+	if ( ( err = OSS_Init( "men_chameleon", &osH ) ) ) {
 		printk( KERN_ERR "*** Error during OSS_Init!()\n");
 		return err;
 	}
-
-#ifdef CONFIG_PCI
-    DBGOUT("men_chameleon:pci_init_one (vendor=0x%x device=0x%x)\n",
-           pdev->vendor, pdev->device);
-#else
-    DBGOUT("men_chameleon:init_one \n");
-#endif
 
 	/* allocate internal handles */
     if( (h = kmalloc( sizeof(*h), GFP_KERNEL )) == NULL )
         goto CLEANUP;
     memset( h, 0, sizeof(*h));  /* clear handle */
 
-#ifdef CONFIG_PCI
-    printk( KERN_INFO "\nFound MEN Chameleon FPGA at bus %d dev %02x\n",
-			pdev->bus->number, pdev->devfn>>3);
-#else
-    printk( KERN_INFO "\nFound MEN Chameleon FPGA\n");
-#endif
+    printk( KERN_INFO "\nFound MEN Chameleon FPGA at bus %d dev %02x\n", pdev->bus->number, pdev->devfn >> 3);
 
-#ifdef CONFIG_PCI
-    /* initialize Chameleon handle */
-    // check if chameleon table is IO or Mem Mapped
+    /* initialize Chameleon handle depending on IO or mem mapped BAR0 */
     pci_read_config_dword( pdev, PCI_BASE_ADDRESS_0, &value32 );
 
-    // now call the matching init method
     if ( value32 & PCI_BASE_ADDRESS_SPACE_IO ) {  /* io mapped */
 #ifndef CONFIG_PPC
     	chamResult = CHAM_InitIo( &G_chamFctTable );
 #else
-		// for PPCs, no I/O Mapping is supported; init as Mem mapped
+		/* for PPCs, no I/O Mapping is supported; init as Mem mapped */
 		chamResult = CHAM_InitMem( &G_chamFctTable );
 #endif
     } else {
     	chamResult = CHAM_InitMem( &G_chamFctTable );
     }
-#else
-    chamResult = CHAM_INIT( &G_chamFctTable );
-#endif
 
     if(chamResult != CHAMELEON_OK){
         printk(KERN_ERR "*** Error during Chameleon_Init!\n");
         return chamResult;
     }
-#ifdef CONFIG_PCI
+
     /* Initialize Chameleon library */
     chamResult = G_chamFctTable.InitPci( osH,
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,11)
@@ -869,36 +837,21 @@ static int __devinit init_one ( void )
         printk( KERN_ERR "*** Error during Chameleon_Init (InitPci)!\n");
         return chamResult;
     }
-#else
-    SysParamGet("chameleon_base", buf, 13);
-	sscanf(buf, "%X", &chaTableAddr);
-
-    /* Initialize Chameleon library */
-    chamResult = G_chamFctTable.InitInside( osH,
-											(void *)chaTableAddr,
-											&chamHdl );
-    if( chamResult != CHAMELEON_OK ) {
-        printk( KERN_ERR "*** Error during Chameleon_Init (InitInside)!\n");
-        G_chamFctTable.Term( &chamHdl );
-        return chamResult;
-    }
-#endif
 
     /* Ident Table */
     chamResult = G_chamFctTable.TableIdent( chamHdl, 0, &table );
     h->revision = table.revision;
     h->variant  = table.model;
-   
-    
+
     for (i=0; i < CHAM_TBL_FILE_LEN; i++)
-      tblfile[i] = (table.file[i] != 0) ? table.file[i] : ' ';
+    	tblfile[i] = (table.file[i] != 0) ? table.file[i] : ' ';
 
     tblfile[CHAM_TBL_FILE_LEN]='\0';
-        
-    printk(KERN_INFO "FPGA File='%s' table model=0x%02x('%c') "
-	   "Revision %d Magic 0x%04X\n", tblfile/*table.file*/ , table.model, table.model, table.revision, table.magicWord );
 
-    printk( KERN_INFO " Unit                devId   Grp Rev  Var  Inst \tIRQ\tBAR Offset   Addr\n");
+    printk(KERN_INFO "FPGA File='%s' table model=0x%02x('%c') "
+	   "Revision %d Magic 0x%04X\n", tblfile , table.model, table.model, table.revision, table.magicWord );
+
+    printk( KERN_INFO " Unit                devId   Grp Rev  Var  Inst IRQ   BAR  Offset       Addr\n");
     for (i=0; i < 79; i++)
         printk("-");
     printk("\n");
@@ -906,53 +859,40 @@ static int __devinit init_one ( void )
     /* gather all IP cores until end marker found */
     idx = 0;
 
-	while ((chamResult=G_chamFctTable.UnitIdent(chamHdl,idx,&info)) !=
-		   CHAMELEONV2_NO_MORE_ENTRIES ) {
+	while ((chamResult=G_chamFctTable.UnitIdent(chamHdl,idx,&info)) != CHAMELEONV2_NO_MORE_ENTRIES ) {
 
         v0unit = &h->v0Unit[idx];
         v2unit = &h->v2Unit[idx];
 
         /* format Unit index and Name so tab spacing never breaks */
         sprintf(name, "%02d %-17s", idx, CHAM_DevIdToName( info.devId) );
-        printk(KERN_INFO " %s"  			/* name 			*/
+        printk(KERN_INFO " %s"  					/* name 			*/
 			             "0x%04x %2d   %2d   %2d"	/* devId/Group/Rev/Var. */
-                         "   0x%02x"		/* instance 		*/
-                         "\t0x%02x"			/* interrupt 		*/
-                         "\t%d   0x%04x"	/* BAR / offset  	*/
-                         "   0x%p\n",		/* addr 			*/
-	       name, info.devId, info.group, info.revision, info.variant, info.instance,
-			   info.interrupt, info.bar, (unsigned int)info.offset, info.addr);
+                         "   0x%02x"				/* instance 		*/
+                         "\t0x%02x"					/* interrupt 		*/
+                         "   %d   0x%08x"			/* BAR / offset  	*/
+                         "   0x%p\n",				/* addr 			*/
+	       name, info.devId, info.group, info.revision, info.variant, info.instance, info.interrupt, info.bar, (unsigned int)info.offset, info.addr);
 
         /* Copy the Units info */
-        v0unit->modCode   		= CHAM_DevIdToModCode( info.devId );
-        v0unit->revision  		= info.revision;
-        v0unit->instance  		= info.instance;
-        v0unit->irq       		= info.interrupt;
-        v0unit->bar       		= info.bar;
-        v0unit->offset    		= info.offset;
-#ifdef CONFIG_PCI
-        v0unit->phys      		= (void *)(U_INT32_OR_64)(pci_resource_start(pdev,info.bar) +
-                                   info.offset);
-#else
-        v0unit->phys      		= (void *)(info.offset);
-#endif
-        v2unit->unitFpga.devId     = info.devId;
-        v2unit->unitFpga.group     = info.group;
-        v2unit->unitFpga.revision  = info.revision;
-        v2unit->unitFpga.instance  = info.instance;
-        v2unit->unitFpga.variant   = info.variant;
-        v2unit->unitFpga.interrupt = info.interrupt;
-        v2unit->unitFpga.bar       = info.bar;
-        v2unit->unitFpga.offset    = info.offset;
-        v2unit->unitFpga.size      = info.size;
-#ifdef CONFIG_PCI
-        v2unit->unitFpga.addr  = (void *)(U_INT32_OR_64)(pci_resource_start(pdev,info.bar) +
-										  info.offset);
-#else
-        v2unit->unitFpga.addr  = (void *)(info.offset);
-#endif
+        v0unit->modCode   			= CHAM_DevIdToModCode( info.devId );
+        v0unit->revision  			= info.revision;
+        v0unit->instance  			= info.instance;
+        v0unit->irq       			= info.interrupt;
+        v0unit->bar       			= info.bar;
+        v0unit->offset    			= info.offset;
+        v0unit->phys      			= (void *)(U_INT32_OR_64)(pci_resource_start(pdev,info.bar) + info.offset);
+        v2unit->unitFpga.devId     	= info.devId;
+        v2unit->unitFpga.group     	= info.group;
+        v2unit->unitFpga.revision  	= info.revision;
+        v2unit->unitFpga.instance  	= info.instance;
+        v2unit->unitFpga.variant   	= info.variant;
+        v2unit->unitFpga.interrupt 	= info.interrupt;
+        v2unit->unitFpga.bar       	= info.bar;
+        v2unit->unitFpga.offset    	= info.offset;
+        v2unit->unitFpga.size      	= info.size;
+        v2unit->unitFpga.addr  		= (void *)(U_INT32_OR_64)(pci_resource_start(pdev,info.bar) + info.offset);
 
-#ifdef CONFIG_PCI
         /* if specified use IRQ given by PCI config space */
         if( usePciIrq ) {
             v0unit->irq = pdev->irq;
@@ -963,23 +903,6 @@ static int __devinit init_one ( void )
         v0unit->chamNum   = h->chamNum;
         v2unit->pdev      = pdev;
         v2unit->chamNum   = h->chamNum;
-
-#ifdef MEN_CHAM_ONBOARD_IRQ_OFFSET
-        /* some boards need an offset to the IRQ no. at the onboard FPGA */
-        if( pdev->bus->number == MEN_CHAM_ONBOARD_BUS_NO
-        	&& PCI_SLOT(pdev->devfn) == MEN_CHAM_ONBOARD_SLOT_NO ) {
-
-        	v0unit->irq = info.interrupt + MEN_CHAM_ONBOARD_IRQ_OFFSET;
-        	v2unit->unitFpga.interrupt = v0unit->irq;
-        }
-#endif /*MEN_CHAM_ONBOARD_IRQ_OFFSET*/
-
-#else
-        v0unit->pdev      = NULL;
-        v0unit->chamNum   = h->chamNum;
-        v2unit->pdev      = NULL;
-        v2unit->chamNum   = h->chamNum;
-#endif
 
         idx++;
     }
@@ -994,6 +917,11 @@ static int __devinit init_one ( void )
     chameleon_announce_fpga( h );
 
     rv = 0;
+
+	if (pci_enable_device( pdev )) {
+		printk(KERN_ERR "failed to pci_enable_device(). Something is very wrong...\n");
+		return -ENODEV;
+	}
 
     return rv;
 
@@ -1014,40 +942,31 @@ static int __devinit init_one ( void )
     return rv;
 }
 
-
 /*
  * PCI Vendor/Device ID table.
  * Driver will handle all devices that have these codes
  */
-#ifdef CONFIG_PCI
 static struct pci_device_id G_pci_tbl[] __devinitdata = {
-    { 0x1172, 0x5104 ,  PCI_ANY_ID, PCI_ANY_ID },   /* EM04 				*/
-    { 0x1172, 0x454d ,  PCI_ANY_ID, 	0x0441 },   /* EM04A MEN PCI core	*/
-    { 0x1172, 0x0008 ,  PCI_ANY_ID, PCI_ANY_ID },   /* EM07  				*/
-    { 0x1172, 0x000a ,  PCI_ANY_ID, PCI_ANY_ID },   /* F401  				*/
-    { 0x1172, 0x000b ,  PCI_ANY_ID, PCI_ANY_ID },   /* F206  				*/
-    { 0x1172, 0x0013 ,  PCI_ANY_ID, PCI_ANY_ID },   /* F206i 				*/
-    { 0x1172, 0x0009 ,  PCI_ANY_ID, PCI_ANY_ID },   /* F206 Trainguard 		*/
-    { 0x1172, 0x4d45 ,  PCI_ANY_ID, PCI_ANY_ID },   /* Chameleon general ID */
-	/*
-	 * care for future devices with new MEN own PCI vendor ID. Look at every
-	 * PCI device with this ID.
-	 */
+    { CHAMELEON_PCI_VENID_ALTERA, 0x5104 ,  PCI_ANY_ID, PCI_ANY_ID },   /* EM04 				*/
+    { CHAMELEON_PCI_VENID_ALTERA, 0x454d ,  PCI_ANY_ID, 	0x0441 },   /* EM04A MEN PCI core	*/
+    { CHAMELEON_PCI_VENID_ALTERA, 0x0008 ,  PCI_ANY_ID, PCI_ANY_ID },   /* EM07  				*/
+    { CHAMELEON_PCI_VENID_ALTERA, 0x000a ,  PCI_ANY_ID, PCI_ANY_ID },   /* F401  				*/
+    { CHAMELEON_PCI_VENID_ALTERA, 0x000b ,  PCI_ANY_ID, PCI_ANY_ID },   /* F206  				*/
+    { CHAMELEON_PCI_VENID_ALTERA, 0x0013 ,  PCI_ANY_ID, PCI_ANY_ID },   /* F206i 				*/
+    { CHAMELEON_PCI_VENID_ALTERA, 0x0009 ,  PCI_ANY_ID, PCI_ANY_ID },   /* F206 Trainguard 		*/
+    { CHAMELEON_PCI_VENID_ALTERA, 0x4d45 ,  PCI_ANY_ID, PCI_ANY_ID },   /* Chameleon general ID */
+	/* care for future devices with new MEN own PCI vendor ID. Look at every PCI device with this ID. */
 	{ CHAMELEON_PCI_VENID_MEN, PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID },
     { 0,}
 };
-#endif
 
-
-#ifdef CONFIG_PCI
 static struct pci_driver G_pci_driver = {
     .name       =       "men-chameleon",
     .id_table   =       G_pci_tbl,
     .probe      =       pci_init_one,
 };
-#endif
 
-int __init men_chameleon_init(void)
+int men_chameleon_init(void)
 {
     int rv;
 
@@ -1055,45 +974,33 @@ int __init men_chameleon_init(void)
         return 0;               /* already initialized */
 
     printk( KERN_INFO "Init MEN Chameleon PNP subsystem\n" );
-#ifdef CONFIG_PCI
+
     if( (rv =  pci_module_init( &G_pci_driver )) < 0 )
         return rv;
-#else
-    if( (rv =  init_one()) < 0 )
-        return rv;
-#endif
 
     G_chamInit++;
-
     return 0;
 }
 
 
-void __exit men_chameleon_cleanup( void )
+void men_chameleon_cleanup( void )
 {
-    struct list_head *pos;
+    struct list_head *pos = NULL;
 
-    DBGOUT( "men_chameleon_cleanup\n" );
+    printk( KERN_INFO "men_chameleon_cleanup\n" );
 
     list_for_each( pos, &G_chamLst ) {
         CHAMELEON_HANDLE_T *h = list_entry( pos, CHAMELEON_HANDLE_T, node );
-
         if( h->cfgTblPhys ) {
             if( h->ioMapped )
                 release_region( h->cfgTblPhys, CHAMELEON_CFGTABLE_SZ );
             else
                 release_mem_region( h->cfgTblPhys, CHAMELEON_CFGTABLE_SZ );
         }
-
         kfree( h );
     }
-
     G_chamInit--;
-
-#ifdef CONFIG_PCI
     pci_unregister_driver( &G_pci_driver );
-#endif
-
 }
 
 EXPORT_SYMBOL(men_chameleon_unit_find);
@@ -1114,10 +1021,3 @@ EXPORT_SYMBOL(CHAM_DevIdToModCode);
 MODULE_LICENSE( "GPL" );
 module_init(men_chameleon_init);
 module_exit(men_chameleon_cleanup);
-
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,5,0)
-__initcall(men_chameleon_init);
-#endif
-
-
-

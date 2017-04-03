@@ -115,15 +115,14 @@ int main( int argc, char *argv[] )
 
 	CHK( (buf = malloc( size )) != NULL);
 		
-	printf("Open space %s\n", VME4L_SpaceName(spc));
+	printf("Open space %s, user buffer @ %p \n", VME4L_SpaceName(spc), buf );
 
 	CHK( (fd = VME4L_Open( spc )) >= 0 /*node /dev/vme4l_<spc> must exist*/ );
 
 	CHK( VME4L_SwapModeSet( fd, swapMode ) == 0 );
 	
 	if( doRead ){
-		CHK( (rv = VME4L_Read( fd, vmeAddr, accWidth, size, buf,
-						   VME4L_RW_NOFLAGS )) >=0);
+		CHK( (rv = VME4L_Read( fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS )) >=0);
 
 		MemDump( buf, rv, 1 );
 	}
@@ -134,8 +133,7 @@ int main( int argc, char *argv[] )
 		for( i=0; i<size; i++ )
 			*p++ = i;
 
-		CHK( (rv = VME4L_Write( fd, vmeAddr, accWidth, size, buf,
-						   VME4L_RW_NOFLAGS )) >=0);
+		CHK( (rv = VME4L_Write( fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS )) >=0);
 	}
 
 	return 0;

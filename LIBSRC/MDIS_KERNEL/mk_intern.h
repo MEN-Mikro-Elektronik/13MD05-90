@@ -112,7 +112,6 @@
 
 #include <MEN/men_typs.h>
 #include <MEN/dbg.h>
-#include <MEN/sysdep.h>
 #include <MEN/oss.h>
 #include <MEN/desc.h>
 #include <MEN/maccess.h>

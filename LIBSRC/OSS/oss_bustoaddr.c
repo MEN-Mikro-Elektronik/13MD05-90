@@ -123,7 +123,7 @@ int32 OSS_BusToPhysAddr
 	case OSS_BUSTYPE_NONE:
 		*physicalAddrP = va_arg( argptr, void* );
 		break;
-		
+
 #ifdef CONFIG_PCI
 	case OSS_BUSTYPE_PCI:
 	{
@@ -150,7 +150,7 @@ int32 OSS_BusToPhysAddr
 			error = ERR_OSS_PCI_BUS_NOTFOUND;
 			goto BUSTOPHYS_END;
 		}
-		
+
 		if( (dev = pci_find_slot( busNbr, devfn )) == NULL ){
 #endif
 			error = ERR_OSS_PCI_NO_DEVINSLOT;
@@ -158,7 +158,7 @@ int32 OSS_BusToPhysAddr
 		}
 
 		*physicalAddrP = (void *)(U_INT32_OR_64)pci_resource_start( dev, addrNbr );
-		break;										
+		break;
 	}
 #endif /*CONFIG_PCI*/
 
@@ -169,7 +169,7 @@ int32 OSS_BusToPhysAddr
 		u_int32	vmespace 	= va_arg( argptr, u_int32 );
 		/*u_int32 size		= va_arg( argptr, u_int32 );*/
 		int space=0;
-		
+
 		switch(vmespace & 0xff){
 		case OSS_VME_A16:	space |= VME_A16_SPACE; break;
 		case OSS_VME_A24:	space |= VME_A24_SPACE; break;
@@ -189,7 +189,7 @@ int32 OSS_BusToPhysAddr
 
 		if( error ) break;
 
-		error = vme_bus_to_phys( space, (u32)vmeadrs, physicalAddrP );
+		error = vme_bus_to_phys( space, (unsigned long)vmeadrs, physicalAddrP );
 
 		if( error ){
 			DBGWRT_ERR((DBH,"*** OSS_BusToPhysAddr: error %d in "
