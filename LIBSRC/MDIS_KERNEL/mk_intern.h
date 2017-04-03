@@ -91,9 +91,7 @@
  *---------------------------------------------------------------------------
  * (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuernberg, Germany
  ****************************************************************************/
-
-
-/* #include <linux/config.h> */
+#include <linux/version.h> 
 #include <linux/kernel.h> 	/* printk() 	*/
 #include <linux/slab.h> 	/* kmalloc() 	*/
 #include <linux/vmalloc.h> 	/* vmalloc() 	*/
@@ -108,6 +106,7 @@
 #include <linux/interrupt.h>
 
 #include <asm/fixmap.h>     /* fix_to_virt() */
+#include <asm/uaccess.h>     /* copy_to/from_user */
 
 
 #include <MEN/men_typs.h>
@@ -149,11 +148,6 @@
 /* SPACE.flags */
 #define MK_MAPPED		0x1
 #define MK_REQUESTED	0x2
-
-
-/* from this version on the IRQ handler flags like SA_SHIRQ were changed */
-#define VERSION_CODE_NEW_IRQFLAGS 		VERSION_CODE(2,6,20)
-
 
 /*
  * COMPRESS_ERRNO macro invokes a special routine in case we're running
@@ -290,21 +284,17 @@ MK_DEV *MDIS_FindDevByName( const char *name );
  * define the IRQ handler depending on the kernel version (arg changes.. )
  * and maintain it as one kernel-independent Macro throughout the MDIS kernel.
  */
-#ifdef LINUX_26
-# if LINUX_VERSION_CODE >= VERSION_CODE(2,6,19)
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)
 irqreturn_t MDIS_IrqHandler( int irq, void *dev_id );
 # define MDIS_IRQHANDLER(a,b,c) MDIS_IrqHandler(a,b)
 # define FUNCTYPE irqreturn_t
-# else
+#else
 irqreturn_t MDIS_IrqHandler( int irq, void *dev_id, struct pt_regs *regs );
 # define MDIS_IRQHANDLER(a,b,c) MDIS_IrqHandler(a,b,c)
 # define FUNCTYPE irqreturn_t
-# endif
-#else /* 2.4 kernels */
-void MDIS_IrqHandler( int irq, void *dev_id, struct pt_regs *regs );
-# define MDIS_IRQHANDLER(a,b,c) MDIS_IrqHandler(a,b,c)
-# define FUNCTYPE void
 #endif
+
 #define MDIS_IRQFUNC MDIS_IrqHandler
 
 int32 MDIS_DevLock( MK_PATH *mkPath, OSS_SEM_HANDLE *callSem );
@@ -354,4 +344,3 @@ extern int vme_ilevel_control( int level, int enable );
 extern void vme_free_irq(unsigned int vme_irq, void *dev_id);
 #endif
 
-#define MK_RTAI_SET_DEVLISTLOCK_FLAG(flg) {}

@@ -179,7 +179,7 @@ static struct cdev c_dev; 	/* Global variable for the character device structure
 static struct class *cl; 	/* Global variable for the device class */
 
 
-#if LINUX_VERSION_CODE < VERSION_CODE(2,6,14)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14)
 MODULE_PARM( mk_nbufs, "i" );
 MODULE_PARM_DESC(mk_nbufs, "number of static users buffers to allocate");
 MODULE_PARM( mk_dbglevel, "i" );
@@ -200,7 +200,7 @@ OSS_DL_LIST	G_devList;		/* list of devices */
 OSS_DL_LIST	G_freeUsrBufList;	/* list of free user buffers */
 
 #ifdef CONFIG_DEVFS_FS
-# if LINUX_VERSION_CODE < VERSION_CODE(2,6,0)
+# if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0)
 static devfs_handle_t devfs_handle = NULL;
 # endif
 #endif
@@ -246,11 +246,9 @@ EXPORT_SYMBOL(mdis_remove_external_irq);
  ****************************************************************************/
 int mk_open (struct inode *inode, struct file *filp)
 {
-	DBGWRT_1((DBH,"mk_open file=%p\n", filp));
 
-	filp->private_data = NULL;
-
-    MOD_INC_USE_COUNT;
+    DBGWRT_1((DBH,"mk_open file=%p\n", filp));
+    filp->private_data = NULL;
     return 0;          /* success */
 }
 
@@ -288,7 +286,7 @@ int mk_release (struct inode *inode, struct file *filp)
 
 		kfree( mkPath );		/* free path structure */
 	}
-    MOD_DEC_USE_COUNT;
+
     return ret;
 }
 
@@ -1150,10 +1148,8 @@ FUNCTYPE MDIS_IRQHANDLER(int irq, void *dev_id, struct pt_regs *regs)
 	if( dev->irqSrvExitFunc )
 		dev->brdJumpTbl.irqSrvExit( dev->brd, dev->devSlot );	
 
-
-#ifdef LINUX_26
 	return handled ? IRQ_HANDLED : IRQ_NONE;
-#endif
+
 }
 
 /****************************** MDIS_FindDevByName ***************************
@@ -1449,7 +1445,7 @@ int CompressErrno( int mdisErr )
  *				  *eof			true if all characters output
  *  Globals....:  -
  ****************************************************************************/
-#if LINUX_VERSION_CODE < VERSION_CODE(3,10,0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 static int mk_read_procmem( char *page, char **start, off_t off, int count, int *eof, void *data)
 {
   int i, error, len = 0, rv;
@@ -1612,7 +1608,7 @@ static struct file_operations mk_fops = {
 };
 
 
-#if LINUX_VERSION_CODE >= VERSION_CODE(3,10,0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
 static struct file_operations mk_proc_fops = {
      read:       	mk_read_procmem,
 };
@@ -1624,7 +1620,7 @@ static struct file_operations mk_proc_fops = {
  */
 int init_module(void)
 {
-	int result, ret=0, n;
+	int ret=0, n;
 	
 	DBGINIT((NULL,&DBH));
 
@@ -1642,7 +1638,7 @@ int init_module(void)
 		return -1;
 	}
 
-#if LINUX_VERSION_CODE >= VERSION_CODE(2,6,27)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,27)
 	if (device_create(cl, NULL, first, NULL, "mdis") == NULL)
 #else
 	if (device_create(cl, NULL, first, "mdis") == NULL)
@@ -1692,7 +1688,7 @@ int init_module(void)
 		OSS_DL_AddTail( &G_freeUsrBufList, (OSS_DL_NODE *)pg );
 	}
 
-#if LINUX_VERSION_CODE < VERSION_CODE(3,10,0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	create_proc_read_entry ("mdis", 0, NULL, mk_read_procmem, NULL);
 #else
 	proc_create (           "mdis", 0, NULL, &mk_proc_fops);
@@ -1806,7 +1802,6 @@ int mdis_register_ll_driver(
 
 	OSS_DL_AddTail( &G_drvList, &node->node );
 
-	MOD_INC_USE_COUNT;
 	MK_UNLOCK;
 	return 0;
 }
@@ -1834,7 +1829,7 @@ int mdis_unregister_ll_driver( char *llName )
 	if( node != NULL ){
 		OSS_DL_Remove( &node->node );
 		kfree(node);
-		MOD_DEC_USE_COUNT;
+
 		MK_UNLOCK;
 		return 0;
 	}

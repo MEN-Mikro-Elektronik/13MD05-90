@@ -48,7 +48,7 @@
 /* include header for original VME4L */
 #include <MEN/vme4l_old.h>
 
-typedef uint64_t vmeaddr_t;
+typedef unsigned long vmeaddr_t;
 
 /**********************************************************************/
 /** VME space definitions

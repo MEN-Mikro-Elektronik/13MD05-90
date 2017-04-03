@@ -216,11 +216,11 @@ typedef struct {
 			void *dev_id;				/**< handler's private data */
 			union {
                 /** Linux kernel handler */
- #if LINUX_VERSION_CODE >= VERSION_CODE(2,6,19)
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)
 				void (*lHandler)(int, void *);
  #else
 				void (*lHandler)(int, void *, struct pt_regs *);
- #endif /*LINUX_VERSION_CODE >= VERSION_CODE(2,6,19)*/
+ #endif /*LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)*/
 			} h;
 		} kernel;
 	} u;
@@ -1147,7 +1147,7 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 	int direction 			= 0;
 	struct pci_dev *pciDev	= NULL;
 	struct device *pDev		= NULL;
-	void *pDma				= NULL;
+	/* void *pDma			= NULL; */
 	void *pKmalloc			= NULL;
 	char *pBaseDma			= NULL;
 	int locked				= 0;
@@ -1188,7 +1188,7 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 	pBaseDma = (char*)pKmalloc;
 
 	down_read(&current->mm->mmap_sem);
-#if LINUX_VERSION_CODE < VERSION_CODE(4,8,0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,8,0)
 	rv = get_user_pages( current, current->mm, uaddr, nr_pages,	blk->direction == READ,	0, pages, NULL );
 #else
 	rv = get_user_pages( uaddr, nr_pages, blk->direction == READ ? FOLL_WRITE : 0, pages, NULL );
@@ -1284,7 +1284,7 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 		for (i = 0; i < nr_pages; i++, sgList++)
 		{
 			dma_unmap_page( pDev, sgList->dmaAddress, sgList->dmaLength, direction);
-#if LINUX_VERSION_CODE < VERSION_CODE(4,6,0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,6,0)
 			page_cache_release( pages[i] );
 #endif
 		}
@@ -1819,11 +1819,11 @@ void vme4l_irq( int level, int vector, struct pt_regs *regs)
 
 			case VME4L_KERNEL_IRQ:
 
-#if LINUX_VERSION_CODE >= VERSION_CODE(2,6,19)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)
 				ent->u.kernel.h.lHandler( vector, ent->u.kernel.dev_id );
 #else
 				ent->u.kernel.h.lHandler( vector, ent->u.kernel.dev_id, regs );
-#endif /*LINUX_VERSION_CODE >= VERSION_CODE(2,6,19)*/
+#endif /*LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)*/
 				break;
 
 
@@ -2683,7 +2683,7 @@ int vme_bus_to_phys( int space, u32 vmeadrs, void **physadrs_p )
  */
 int vme_request_irq(
 	unsigned int vme_irq,
- #if LINUX_VERSION_CODE >= VERSION_CODE(2,6,19)
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)
 	void (*handler)(int, void * ),
 #else
 	void (*handler)(int, void *, struct pt_regs * ),
@@ -2838,7 +2838,7 @@ static int vme4l_read_proc( char *buffer, char **start, off_t offset,
 		}												\
 	} while(0)
 
-
+#if 0
 static int vme4l_proc_infos( char *buffer, int *len,
 							 off_t *begin, off_t offset, int size )
 {
@@ -2945,13 +2945,12 @@ static int vme4l_read_proc( char *buffer, char **start, off_t offset,
     return( size < begin + len - offset ? size : begin + len - offset );
 
 }
+#endif
 
 #endif /* CONFIG_PROC_FS */
 
 static void vme4l_cleanup(void)
 {
-#warning TODO replace remove_proc_entry
-  /*	remove_proc_entry( "vme4l", 0 ); */
 
 	/*-------------------------+
 	|  Cleanup device entries  |

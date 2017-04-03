@@ -43,18 +43,18 @@
  * (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuernberg, Germany
  ****************************************************************************/
 
-
+#include <linux/proc_fs.h>
+#include <linux/version.h>
 #include <linux/kernel.h> 	/* printk() */
-#include <linux/slab.h> 	/* kmalloc() */
-#include <linux/fs.h>     	/* everything... */
+#include <asm/uaccess.h> 	/* copy_to_user */
 #include <linux/errno.h>  	/* error codes */
 #include <linux/types.h>  	/* size_t */
-#include <linux/pci.h>
-#include <linux/proc_fs.h>
 #include <linux/fcntl.h>    /* O_ACCMODE */
 #include <linux/kmod.h>
+#include <linux/slab.h> 	/* kmalloc() */
+#include <linux/pci.h>
+#include <linux/fs.h>
 
-#include <MEN/sysdep.h>
 #include <MEN/men_typs.h>
 #include <MEN/dbg.h>
 #include <MEN/oss.h>
@@ -65,9 +65,8 @@
 #include <MEN/bbis_bk.h>
 #include <MEN/mdis_err.h>
 
-/*-----------------------------------------+
-|  DEFINES                                 |
-+------------------------------------------*/
+/* Defines */
+
 #define DBG_MYLEVEL bk_dbglevel
 #define DBH			G_dbh
 #define OSH			G_osh
@@ -78,7 +77,7 @@
  * special patch for SC24 to map LPC space and adjust IRQ type
  */
 
-#if LINUX_VERSION_CODE >= VERSION_CODE(2,6,35)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
 # define PCI_FIND_FUNC pci_get_device
 #else
 # define PCI_FIND_FUNC pci_find_device

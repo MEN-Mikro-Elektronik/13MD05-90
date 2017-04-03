@@ -196,7 +196,6 @@ int bbis_open(
 	node->useCount++;
 	*bbHdlP = node->bb;					/* return board handle */
 	node->drv->getEntry( bbEntries ); 	/* get board function entry points */
-	MOD_INC_USE_COUNT;
 	goto xit;
 
  errexit:
@@ -415,7 +414,7 @@ int bbis_close(char *devName)
 		module_put( node->drv->module ); /* decrease module's use count */
 		kfree(node);
 	}
-	MOD_DEC_USE_COUNT;
+
  errexit:
 	DBGWRT_1((DBH,"bbis_close ex: %s ret=%d -0x%x\n", devName, ret, -ret ));
 	BK_UNLOCK;
@@ -503,7 +502,6 @@ int bbis_register_bb_driver(
 
 	OSS_DL_AddTail( &G_drvList, &node->node );
 
-	MOD_INC_USE_COUNT;
 	BK_UNLOCK;
 	return 0;
 }
@@ -531,7 +529,6 @@ int bbis_unregister_bb_driver( char *bbName )
 	if( node != NULL ){
 		OSS_DL_Remove( &node->node );
 		kfree(node);
-		MOD_DEC_USE_COUNT;
 		BK_UNLOCK;
 		return 0;
 	}
@@ -559,7 +556,7 @@ int bbis_unregister_bb_driver( char *bbName )
  *				  *eof			true if all characters output
  *  Globals....:  -
  ****************************************************************************/
-#if LINUX_VERSION_CODE < VERSION_CODE(3,10,0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 static ssize_t bk_read_procmem( char *page, 
 				char **start, 
 				off_t off,
@@ -680,7 +677,7 @@ static ssize_t bk_read_procmem( struct file *filp, char *buf, size_t count, loff
 
 
 /* since kernel 3.10 new proc entry fops are needed */
-#if LINUX_VERSION_CODE >= VERSION_CODE(3,10,0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
 static struct file_operations bk_proc_fops = {
      read:       	bk_read_procmem,
 };
@@ -714,7 +711,7 @@ int init_module(void)
 	OSS_DL_NewList( &G_drvList );
 	OSS_DL_NewList( &G_devList );
 
-#if LINUX_VERSION_CODE < VERSION_CODE(3,10,0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	create_proc_read_entry ("bbis", 0, NULL, (read_proc_t *)bk_read_procmem, NULL);
 #else
 	proc_create (           "bbis", 0, NULL, &bk_proc_fops);

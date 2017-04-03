@@ -73,10 +73,6 @@
  #include <linux/config.h>
 #endif
 
-#ifndef VERSION_CODE
-# define VERSION_CODE(vers,rel,seq) ( ((vers)<<16) | ((rel)<<8) | (seq) )
-#endif
-
 #include <linux/module.h>
 #include <linux/interrupt.h>
 #include <linux/slab.h> 	/* kmalloc() 		*/

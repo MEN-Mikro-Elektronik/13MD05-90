@@ -260,7 +260,6 @@ int32  OSS_Init( char *instName, OSS_HANDLE **ossP )
 	oss->dbgLevel = OSS_DBG_DEFAULT;
 
 	DBGWRT_1((DBH,"OSS_Init %s\n", instName));
-	MOD_INC_USE_COUNT;			/* flag OSS module being used */
 	*ossP = oss;
 
 	/* init signal masks */
@@ -296,7 +295,6 @@ int32  OSS_Exit( OSS_HANDLE **ossP )
 
 	DBGWRT_1((DBH,"OSS_Exit\n"));
 	DBGEXIT((&DBH));
-	MOD_DEC_USE_COUNT;			/* flag OSS module no longer used */
 
 	kfree( oss );
 	*ossP = NULL;

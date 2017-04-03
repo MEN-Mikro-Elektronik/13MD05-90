@@ -153,8 +153,6 @@
 #define	OSS_DL_AddTail		men_OSS_DL_AddTail
 #define	OSS_irqLock		men_OSS_irqLock
 
-
-
 /*-----------------------------------------+
 |  TYPEDEFS                                |
 +------------------------------------------*/
@@ -185,18 +183,14 @@ typedef struct OSS_LIN_SEM_HANDLE
 	int32 value;				/* semaphore's value */
 	int32 semType;				/* OSS_SEM_BIN or OSS_SEM_COUNT */
 	spinlock_t lock;			/* lock for sempahore modifications */
-#if defined(LINUX_24) || defined(LINUX_26)
+#if LINUX_VERSION_CODE > KERNEL_VERSION(3,0,0)
 	wait_queue_head_t wq;		/* wait queue for waiting processes */
 #else
 	struct wait_queue *wq;		/* wait queue for waiting processes */
 #endif
 } OSS_LIN_SEM_HANDLE;
 
-
-
 #endif /* _OSS_SEM_C */
-
-
 
 /*--- SIGNAL HANDLE ---*/
 #ifndef _OSS_SIG_C

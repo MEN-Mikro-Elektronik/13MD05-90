@@ -62,7 +62,7 @@ int32 OSS_AssignResources(
 
 		case OSS_RES_MEM:
 			DBGWRT_2((DBH," MEM: phys=0x%p size=0x%x\n", r->u.mem.physAddr, r->u.mem.size ));
-#if LINUX_VERSION_CODE < VERSION_CODE(4,0,0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,0,0)
 			if( check_mem_region( (unsigned long)r->u.mem.physAddr, r->u.mem.size ))
 			{
 				error = ERR_OSS_BUSY_RESOURCE;
@@ -76,13 +76,13 @@ int32 OSS_AssignResources(
 		case OSS_RES_IO:
 			DBGWRT_2((DBH," IO: phys=0x%p size=0x%x\n",
 					  r->u.mem.physAddr, r->u.mem.size ));
-			if( check_region( (unsigned long)r->u.mem.physAddr,
-							  r->u.mem.size )){
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,0,0)
+			if( check_region( (unsigned long)r->u.mem.physAddr, r->u.mem.size )){
 				error = ERR_OSS_BUSY_RESOURCE;
 				break;
 			}
-			request_region( (unsigned long)r->u.mem.physAddr,
-								   r->u.mem.size, oss->instName );
+#endif
+			request_region( (unsigned long)r->u.mem.physAddr, r->u.mem.size, oss->instName );
 			break;
 			
 		case OSS_RES_IRQ:

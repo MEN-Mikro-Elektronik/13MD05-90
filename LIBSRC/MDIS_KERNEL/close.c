@@ -178,9 +178,7 @@ int32 MDIS_FinalClose( MK_DEV *dev )
 	|  Deregister device in global MDIS device list  |
 	+-----------------------------------------------*/
 	if( dev->node.next ){
-		MK_RTAI_SET_DEVLISTLOCK_FLAG( TRUE ); /* sync with RTAI MDIS */
 		OSS_DL_Remove( &dev->node );
-		MK_RTAI_SET_DEVLISTLOCK_FLAG( FALSE );
 	}	
 	if( dev->osh )
 		OSS_Exit( &dev->osh );

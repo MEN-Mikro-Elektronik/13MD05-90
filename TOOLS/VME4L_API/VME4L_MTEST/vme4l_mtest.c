@@ -106,7 +106,7 @@ test_descr test[] = {
 u_int8 mode;						/* test mode, MD_xx */
 u_int32 startadr, endadr;			/* start and end address of VME memory */
 int pass;							/* test pass */
-int just_verify;					/* don't write RAM, just verify */
+long just_verify;					/* don't write RAM, just verify */
 int max_errors=(u_int32)(1<<31)-1;	/* max. errorcount until program abort */
 int tot_errors=0;					/* total errors occured */
 int accWidth=4;
@@ -116,7 +116,7 @@ int spaceFd;
 int fillInfo=1;
 char *mapStart, *mapEnd;			/* mapped startAddr/end */
 int busErrCnt=0;
-int swSwap = 0;
+long swSwap = 0;
 char G_buf[INFOSTEP<<2];
 
 char *usage_str = "\
@@ -371,7 +371,7 @@ static int berr_check(volatile void *p)
 		len -= curlen;\
 		while(curlen--){\
 			/* create a new test pattern */\
-			randval = pat_f((u_int32)p,randval,sizeof(access));\
+			randval = pat_f((unsigned long)p,randval,sizeof(access));	\
 			*p++ = (access)randval;	/* store value */\
             errorcount += berr_check(p);\
 		}\
@@ -397,9 +397,9 @@ static int berr_check(volatile void *p)
 		len -= curlen;\
 		while(curlen--){\
 			  /* create a new test pattern */\
- 			  randval = pat_f((u_int32)p,randval,sizeof(access));\
+ 			  randval = pat_f((unsigned long)p,randval,sizeof(access));\
 			  if( (rval = *p++) != (access)randval ){\
-                uint32_t vmeaddr = (u_int32)((char *)p-mapStart)+startadr;\
+                uint32_t vmeaddr = (unsigned long)((char *)p-mapStart)+startadr;\
 				int err_type=ERR_WRITE;\
 				p--;\
 				errorcount++;\
@@ -451,12 +451,10 @@ static int berr_check(volatile void *p)
 void vmeblt( void *src, void *dst, u_int32 len, int direction )
 {
 	if( direction ){
-		CHK( VME4L_Write( spaceFd, (vmeaddr_t)(uint32_t)dst, accWidth, len, src,
-						  VME4L_RW_NOFLAGS ) >= 0 );
+		CHK( VME4L_Write( spaceFd, (vmeaddr_t)(unsigned long)dst, accWidth, len, src, VME4L_RW_NOFLAGS ) >= 0 );
 	}
 	else {
-		CHK( VME4L_Read( spaceFd, (vmeaddr_t)(uint32_t)src, accWidth, len, dst,
-						  VME4L_RW_NOFLAGS ) >= 0 );
+		CHK( VME4L_Read( spaceFd, (vmeaddr_t)(unsigned long)src, accWidth, len, dst, VME4L_RW_NOFLAGS ) >= 0 );
 	}
 	return;
  ABORT:
@@ -469,10 +467,10 @@ int blk_test(int rand_pattern, void (*readfunc)(), void (*writefunc)())
 {
 	u_int32 blk_size = INFOSTEP, cur_size;
 	u_int32 pattern=0xabcdef02+pass;
-	u_int32 *buf;
-	u_int32 address, i, *p;
+	unsigned long *buf;
+	unsigned long address, i, *p;
 	int errcnt=0;
-	buf = (u_int32 *)G_buf;
+	buf = (unsigned long*)G_buf;
 	memset(buf, 0x0, sizeof(G_buf));
 
 	/*---------------+
@@ -480,7 +478,6 @@ int blk_test(int rand_pattern, void (*readfunc)(), void (*writefunc)())
 	+---------------*/
 	if( !just_verify){
 		address = startadr;
-
 
 		action_info("Filling Memory");
 		while( address < endadr ){
@@ -510,7 +507,6 @@ int blk_test(int rand_pattern, void (*readfunc)(), void (*writefunc)())
 
 	address = startadr;
 	pattern=0xabcdef02+pass;
-
 
 	/* data written to VME receiver, wipe out buf again */
 	memset(buf, 0x0, sizeof(G_buf));
@@ -554,10 +550,7 @@ int blk_test(int rand_pattern, void (*readfunc)(), void (*writefunc)())
 	/* free(buf); */
 
 	return errcnt;
- ABORT:
-	tot_errors++;
-	goaway();
-	return 0;
+
 }
 				
 int do_test(char test_id)
@@ -641,12 +634,12 @@ int main( int argc, char *argv[] )
 	total_pass = 1;
 	if( (optp=UTL_TSTOPT("n="))) total_pass=atoi(optp);
 
-	just_verify = (int)UTL_TSTOPT("v");
-	fillInfo = !(int)UTL_TSTOPT("f");
+	just_verify = (long)UTL_TSTOPT("v");
+	fillInfo = !(long)UTL_TSTOPT("f");
 	testlist = UTL_TSTOPT("t=");
 	if( !testlist ) usage(1);
 
-	swSwap = (int)UTL_TSTOPT("x");
+	swSwap = (long)UTL_TSTOPT("x");
 	if( (optp=UTL_TSTOPT("q="))) max_errors=atoi(optp);
 	if( (optp=UTL_TSTOPT("a="))) sscanf(optp, "%d", &accWidth);
 	if( (optp=UTL_TSTOPT("s="))) spaceNum=atoi(optp);

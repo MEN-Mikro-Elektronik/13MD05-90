@@ -179,7 +179,7 @@ int32 OSS_SigSend(
     DBGWRT_1((DBH,"OSS - OSS_SigSend: sig=%ld pid=%ld\n",
 			  (long)sig->sig,(long)sig->pid));	
 
-#if LINUX_VERSION_CODE < VERSION_CODE(2,6,26)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,26)
 	if (kill_proc( sig->pid, sig->sig, 1 )) {	
 #else
 	if ( send_sig(sig->sig, sig->sig_task, 1) ) {

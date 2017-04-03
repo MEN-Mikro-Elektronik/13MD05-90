@@ -172,7 +172,7 @@ int mdis_open_external_dev(
 		goto errexit;
 	}
 
-#if LINUX_VERSION_CODE < VERSION_CODE(4,0,0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,0,0)
 	/* claim memory region */
 	if( check_mem_region( (unsigned long) dev->space[0].physAddr, dev->space[0].reqSize ))
 	{

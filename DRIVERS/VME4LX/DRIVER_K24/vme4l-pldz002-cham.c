@@ -1747,14 +1747,14 @@ static int PldZ002_CheckMiscVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
  *				bus devices. From here we dispatch everything to vme4l-core
  *
  */
-#if LINUX_VERSION_CODE < VERSION_CODE(2,6,19)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19)
 static irqreturn_t PldZ002Irq(int irq, void *dev_id, struct pt_regs *regs)
 {
 #else
 static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 {
 	struct pt_regs *regs = NULL;
-# endif /* LINUX_VERSION_CODE < VERSION_CODE(2,6,19) */
+# endif /* LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19) */
 
 	int vector=0, level=VME4L_IRQLEV_UNKNOWN;
 	VME4L_BRIDGE_HANDLE *h 	= (VME4L_BRIDGE_HANDLE *)dev_id;

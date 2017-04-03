@@ -50,7 +50,6 @@ const char DBG_RCSid[]="$Id: dbg.c,v 1.6 2006/09/27 18:51:21 ts Exp $";
 #include <linux/module.h>
 
 #include <MEN/men_typs.h>
-#include <MEN/sysdep.h>
 /*--------------------------------------+
 |   DEFINES                             |
 +--------------------------------------*/
@@ -104,8 +103,7 @@ EXPORT_SYMBOL(DBG_Memdump);
  ****************************************************************************/
 int32 DBG_Init( char *name, DBG_HANDLE **dbgP )
 {
-	*dbgP = (DBG_HANDLE *)1;
-	MOD_INC_USE_COUNT;
+    *dbgP = (DBG_HANDLE *)1;
     return(0);
 }/*DBG_Init*/
 
@@ -115,13 +113,12 @@ int32 DBG_Init( char *name, DBG_HANDLE **dbgP )
  *
  *---------------------------------------------------------------------------
  *  Input......:  dbgP    pointer to variable where debug handle is stored
- *  Output.....:  return  0 
+ *  Output.....:  return  0
  *  Globals....:  -
  ****************************************************************************/
 int32  DBG_Exit( DBG_HANDLE **dbgP )
 {
     *dbgP = NULL;
-	MOD_DEC_USE_COUNT;
     return( 0 );
 }/*DBG_Exit*/
 
@@ -138,7 +135,7 @@ int32  DBG_Exit( DBG_HANDLE **dbgP )
  *                buf     memory to dump
  *                len     nr of bytes
  *                fmt     dump format [bytes]
- *                        1=byte, 2=word, 4=long, 8=64bit 
+ *                        1=byte, 2=word, 4=long, 8=64bit
  *  Output.....:  return  0
  *  Globals....:  -
  ****************************************************************************/

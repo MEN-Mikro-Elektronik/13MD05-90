@@ -66,15 +66,11 @@ static int32 InitWrapper(
 	int32 error;
 
 	error = G_orgEnt.init( osh, desc, bbP );
-	if( error == 0 ){
-		MOD_INC_USE_COUNT;
-	}
 	return error;
 }
 
 static int32 ExitWrapper( BBIS_HANDLE **bbP )
 {
-	MOD_DEC_USE_COUNT;
 	return G_orgEnt.exit( bbP );
 }
 

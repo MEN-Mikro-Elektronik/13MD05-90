@@ -124,24 +124,20 @@ typedef struct {
 #define DBG_MYLEVEL         oss->dbgLevel
 #define DBH 				oss->dbh
 
-#if defined(LINUX_24) || defined(LINUX_26)
+#if LINUX_VERSION_CODE > KERNEL_VERSION(3,0,0)
 # define TASK_SIGPENDING 	pending.signal.sig
 #else
 # define TASK_SIGPENDING 	signal.sig
 #endif
 
-#if defined(LINUX_26) || defined(LINUX_REDHAT9)
-# define TASK_LOCK_SIGNALS(t,flags)	\
-         spin_lock_irqsave(&(t)->sighand->siglock, flags);
-# define TASK_UNLOCK_SIGNALS(t,flags)	\
-         spin_unlock_irqrestore(&(t)->sighand->siglock, flags);
-# define RECALC_SIGPENDING() recalc_sigpending()
+#if LINUX_VERSION_CODE > KERNEL_VERSION(3,0,0)
+# define TASK_LOCK_SIGNALS(t,flags)	    spin_lock_irqsave(&(t)->sighand->siglock, flags);
+# define TASK_UNLOCK_SIGNALS(t,flags)	spin_unlock_irqrestore(&(t)->sighand->siglock, flags);
+# define RECALC_SIGPENDING() 			recalc_sigpending()
 #else
-# define TASK_LOCK_SIGNALS(t,flags)	\
-         spin_lock_irqsave(&(t)->sigmask_lock, flags);
-# define TASK_UNLOCK_SIGNALS(t,flags)	\
-         spin_unlock_irqrestore(&(t)->sigmask_lock, flags);
-# define RECALC_SIGPENDING() recalc_sigpending(current)
+# define TASK_LOCK_SIGNALS(t,flags)	    spin_lock_irqsave(&(t)->sigmask_lock, flags);
+# define TASK_UNLOCK_SIGNALS(t,flags)	spin_unlock_irqrestore(&(t)->sigmask_lock, flags);
+# define RECALC_SIGPENDING() 			recalc_sigpending(current)
 #endif
 
 #ifdef MAC_USERSPACE
