@@ -86,6 +86,18 @@ typedef uint32_t u_int32;
 
 #include <MEN/pldz002.h>
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0)
+#define DEVINIT     __devinit
+#define DEVINITDATA __devinitdata
+#define DEVEXIT     __devexit
+#define DEVEXIT_P   __devexit_p
+#else
+#define DEVINIT
+#define DEVINITDATA
+#define DEVEXIT
+#define DEVEXIT_P
+#endif
+
 /*--------------------------------------+
 |   DEFINES                             |
 +--------------------------------------*/
@@ -1922,7 +1934,7 @@ static void InitBridge( VME4L_BRIDGE_HANDLE *h )
  *  \return 	0 when the driver has accepted the device or
  *				an error code (negative number) otherwise.
  */
-static int __devinit pci_init_one (
+static int DEVINIT pci_init_one (
 	struct pci_dev *pdev,
 	const struct pci_device_id *ent)
 {
@@ -2069,7 +2081,7 @@ static int __devinit pci_init_one (
 }	
 
 
-static void __devexit pci_remove_one (struct pci_dev *pdev)
+static void DEVEXIT pci_remove_one (struct pci_dev *pdev)
 {
 	VME4L_BRIDGE_HANDLE *h = &G_bHandle;
 
@@ -2089,7 +2101,7 @@ static void __devexit pci_remove_one (struct pci_dev *pdev)
  * PCI Vendor/Device ID table.
  * Driver will handle all devices that have these codes
  */
-static struct pci_device_id G_pci_tbl[] __devinitdata = {
+static struct pci_device_id G_pci_tbl[] DEVINITDATA = {
 	/* PLDZ002 */
 	{ PLDZ002_VEN_ID, PLDZ002_DEV_ID, PLDZ002_SUBSYS_VEN_ID,
 	  PLDZ002_SUBSYS_ID, },
@@ -2104,7 +2116,7 @@ static struct pci_driver G_pci_driver = {
 	name:		"vme4l-pldz002",
 	id_table:	G_pci_tbl,
 	probe:		pci_init_one,
-	remove:		__devexit_p(pci_remove_one),
+	remove:		DEVEXIT_P(pci_remove_one),
 };
 
 
