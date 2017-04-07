@@ -49,6 +49,7 @@
 #define VME_A16_SPACE	1
 #define VME_A24_SPACE	2
 #define VME_A32_SPACE	3
+#define VME_CSR_SPACE	4
 
 #define VME_D16_ACCESS	0x100
 #define VME_D32_ACCESS  0x200
@@ -73,7 +74,7 @@
 +--------------------------------------*/
 extern int vme_bus_to_phys( int space, u32 vmeadrs, void **physadrs_p );
 extern int vme_request_irq(	unsigned int vme_irq,
- #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)
 							void (*handler)(int, void * ),
 #else
 							void (*handler)(int, void *, struct pt_regs *),

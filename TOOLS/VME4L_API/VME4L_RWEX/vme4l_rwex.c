@@ -97,6 +97,7 @@ int main( int argc, char *argv[] )
 	size_t size;
 	int doRead;
 	int swapMode = 0;
+	int opt_mod = 0;
 
 	if( argc < 6 )
 		usage();
@@ -104,23 +105,29 @@ int main( int argc, char *argv[] )
 
 	signal( SIGUSR1, SigHandler ); /* catch sig 10 (typical) */
 
-	spc 	= strtol( argv[1], NULL, 10 );
+	spc 	= strtol( 	argv[1], NULL, 10 );
 	vmeAddr = strtoull( argv[2], NULL, 16 );
-	size    = strtoul( argv[3], NULL, 16 );
-	accWidth= strtoul( argv[4], NULL, 16 );	
+	size    = strtoul( 	argv[3], NULL, 16 );
+	accWidth= strtoul( 	argv[4], NULL, 16 );
 	doRead = ( *argv[5] == 'w' ) ? 0:1;
-	
+	/* opt_mod = strtol(argv[6], NULL, 0);*/
+
 	if( argc > 6 )
 		swapMode = strtoul( argv[6], NULL, 16 );
 
 	CHK( (buf = malloc( size )) != NULL);
-		
+
 	printf("Open space %s, user buffer @ %p \n", VME4L_SpaceName(spc), buf );
 
 	CHK( (fd = VME4L_Open( spc )) >= 0 /*node /dev/vme4l_<spc> must exist*/ );
 
+	if( opt_mod > 0) {
+		printf("change AM to 0x%x\n", opt_mod & 0xff );
+		CHK( VME4L_AddrModifierSet( fd, (char)(opt_mod & 0xff))==0 );
+	}
+
 	CHK( VME4L_SwapModeSet( fd, swapMode ) == 0 );
-	
+
 	if( doRead ){
 		CHK( (rv = VME4L_Read( fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS )) >=0);
 

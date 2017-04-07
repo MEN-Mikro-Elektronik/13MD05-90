@@ -130,7 +130,7 @@ typedef struct {
 # define TASK_SIGPENDING 	signal.sig
 #endif
 
-#if LINUX_VERSION_CODE > KERNEL_VERSION(3,0,0)
+#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,20)
 # define TASK_LOCK_SIGNALS(t,flags)	    spin_lock_irqsave(&(t)->sighand->siglock, flags);
 # define TASK_UNLOCK_SIGNALS(t,flags)	spin_unlock_irqrestore(&(t)->sighand->siglock, flags);
 # define RECALC_SIGPENDING() 			recalc_sigpending()

@@ -767,8 +767,9 @@ static const char *G_devNameTbl[] = {
 	 "master6",		/* 25 */
 	 "master7",		/* 26 */
 	 "a64d32",		/* 27 */
-	 "a64_2evme",	/* 28 */	
-	 "a64_2esst"	/* 29 */
+	 "a64_2evme",	/* 28 */
+	 "a64_2esst",	/* 29 */
+	 "cr_csr"		/* 30 */
 };
 #define DEVNAME_TBL_SIZE (sizeof(G_devNameTbl)/sizeof(char *))
 
@@ -949,7 +950,7 @@ int VME4L_AddrModifierGet( int spaceFd )
 int VME4L_GeoAddrGet( int spaceFd )
 {
 	return ioctl( spaceFd, VME4L_IO_GEO_ADDR_GET, 0 );
-}                              
+}
 
 /**********************************************************************/
 /** Set VME bus requester level l address (slot nr.) of this board
@@ -960,7 +961,7 @@ int VME4L_GeoAddrGet( int spaceFd )
  *					returned by VME4L_Open()
  *
  * \param level  		\IN requester level: 0,1,2,3 (default)
- *					
+ *
  * \return 	0 on success, or -1 on error\n
  *		- \c EINVAL: Bad parameter
  *
@@ -984,7 +985,7 @@ int VME4L_RequesterLevelSet( int spaceFd, char level )
  */
 int VME4L_RequesterLevelGet( int spaceFd )
 {
-	return ioctl( spaceFd, VME4L_IO_REQUESTER_LVL_GET, 0 );  
+	return ioctl( spaceFd, VME4L_IO_REQUESTER_LVL_GET, 0 );
 }
 
 /**********************************************************************/

@@ -1,3 +1,6 @@
 this_Is_the_new_MDIS_system_package
 .cproject
 .project
+BUILD/MDIS/DEVTOOLS/.kernelsettings
+BUILD/MDIS/DEVTOOLS/BIN
+BUILD/MDIS/DEVTOOLS/OBJ

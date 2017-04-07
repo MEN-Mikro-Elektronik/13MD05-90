@@ -849,7 +849,7 @@ static int __devinit pci_init_one (
     tblfile[CHAM_TBL_FILE_LEN]='\0';
 
     printk(KERN_INFO "FPGA File='%s' table model=0x%02x('%c') "
-	   "Revision %d Magic 0x%04X\n", tblfile , table.model, table.model, table.revision, table.magicWord );
+		   "Revision %d.%d Magic 0x%04X\n", tblfile, table.model, table.model, table.revision,table.minRevision, table.magicWord );
 
     printk( KERN_INFO " Unit                devId   Grp Rev  Var  Inst IRQ   BAR  Offset       Addr\n");
     for (i=0; i < 79; i++)

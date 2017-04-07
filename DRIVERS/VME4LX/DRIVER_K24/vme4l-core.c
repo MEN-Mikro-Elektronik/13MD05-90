@@ -603,8 +603,7 @@ static int vme4l_request_adrswin(
 	VME4L_ADRSWIN *win;
 	int rv;
 
-	VME4LDBG("vme4l_request_adrswin spc=%d vmeAddr=0x%llx sz=0x%llx "
-			 "flg=0x%x\n", spc, vmeAddr, (uint64_t) size, flags);
+	VME4LDBG("vme4l_request_adrswin spc=%d vmeAddr=0x%llx sz=0x%llx flg=0x%x\n", spc, vmeAddr, (uint64_t) size, flags);
 
 	/* try to find an already mapped VME window */
 	if( (win = vme4l_find_adrswin( spc, vmeAddr, size, flags )) == NULL ){
@@ -827,7 +826,7 @@ static int inline DoReadPio##size ( \
 	 for( count=0; count<xsize; count+=sizeof(type), \
 			  vaddr+=sizeof(type), userSpc++ ){\
 		 if( (rv = G_bDrv->readPio##size ( \
-				  G_bHandle, (void *)((unsigned long /*uint32_t*/)vaddr^adrSwapMask), &buf, 0, \
+				  G_bHandle, (void *)((unsigned long)vaddr^adrSwapMask), &buf, 0, \
 				  win->bDrvData)) < 0 )\
 			 break;\
 		 __put_user( buf, userSpc );\
@@ -854,7 +853,7 @@ static int inline DoWritePio##size ( \
 			  vaddr+=sizeof(type), userSpc++ ){\
          if( __get_user( buf, userSpc ) ) return -EFAULT;\
 		 if( (rv = G_bDrv->writePio##size ( \
-				  G_bHandle, (void *)((unsigned long/*uint32_t*/)vaddr^adrSwapMask), &buf, 0, \
+				  G_bHandle, (void *)((unsigned long)vaddr^adrSwapMask), &buf, 0, \
 				  win->bDrvData)) < 0 )\
 			 break;\
 	 }\
@@ -896,18 +895,13 @@ static int vme4l_setup_pio(
 	VME4L_SPACE_ENT *spcEnt = &G_spaceTbl[spc];
 
 	/* check alignment and accWidth <= maxWidth */
-	if( (vmeAddr & (accWidth-1)) ||
-		(size & (accWidth-1)) ||
-		(accWidth > spcEnt->maxWidth) ){
-		VME4LDBG("vme4l_setup_pio: Bad alignment/size/width 0x%llx %d %d\n",
-				 vmeAddr, size, accWidth);
+	if( (vmeAddr & (accWidth-1)) ||	(size & (accWidth-1)) || (accWidth > spcEnt->maxWidth) ) {
+		VME4LDBG("vme4l_setup_pio: Bad alignment/size/width 0x%llx %d %d\n", vmeAddr, size, accWidth);
 		return -EINVAL;
 	}
 
-
-	/*--- find/request a ususable VME mapping window ---*/
-	if( (rv = vme4l_request_adrswin( spc, vmeAddr, size,
-									 winFlags, &win )) < 0 ){
+	/*--- find/request a usable VME mapping window ---*/
+	if( (rv = vme4l_request_adrswin( spc, vmeAddr, size, winFlags, &win )) < 0 ){
 		return rv;
 	}
 
@@ -951,23 +945,28 @@ static int vme4l_rw_pio( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode )
 	winFlags = (swapMode & VME4L_HW_SWAP1) ?
 		VME4L_AW_HW_SWAP1 : 0;
 
-	if( (rv = vme4l_setup_pio( spc, blk->vmeAddr, blk->size, blk->accWidth,
-							   winFlags, &win, &vaddr )))
+	if( (rv = vme4l_setup_pio( spc, blk->vmeAddr, blk->size, blk->accWidth, winFlags, &win, &vaddr )))
 		return rv;
 
 	/*--- perform access here ---*/
-	if( blk->direction == READ){
+	if( blk->direction == READ) {
+
+		/* CR/CSR read: set bit6 in AMOD to drive AM = 0x2f to VME bus */
+		if ( spc == VME4L_SPC_CR_CSR )
+			rv = G_bDrv->addrModifierSet( spc, G_bHandle, ADDR_MOD_CR_CSR );
 
 		/* read from VME */
-		switch( blk->accWidth ){
+		switch( blk->accWidth ) {
 
-		case 1: rv = DoReadPio8 ( win, vaddr, blk->dataP, blk->size,
-								  swAdrSwap ); break;
-		case 2: rv = DoReadPio16( win, vaddr, blk->dataP, blk->size,
-								  swAdrSwap ); break;
-		case 4: rv = DoReadPio32( win, vaddr, blk->dataP, blk->size,
-								  swAdrSwap ); break;
-
+		case 1:
+			rv = DoReadPio8 ( win, vaddr, blk->dataP, blk->size, swAdrSwap );
+			break;
+		case 2:
+			rv = DoReadPio16( win, vaddr, blk->dataP, blk->size, swAdrSwap );
+			break;
+		case 4:
+			rv = DoReadPio32( win, vaddr, blk->dataP, blk->size, swAdrSwap );
+			break;
 		default:
 			rv = -EINVAL;
 			break;
@@ -1151,7 +1150,7 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 	void *pKmalloc			= NULL;
 	char *pBaseDma			= NULL;
 	int locked				= 0;
-	dma_addr_t dmaAddr 		= 0; 
+	dma_addr_t dmaAddr 		= 0;
 	VME4L_SCATTER_ELEM *sgListStart = NULL, *sgList;
 
 	/* direction as seen from  DMA API context */
@@ -1217,12 +1216,12 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 		VME4LDBG("dma_alloc_coherent: pDma = %p, dmaAddr = %llx\n", pDma, dmaAddr );
 #endif
 		sgList->dmaLength  = PAGE_SIZE - offset;
-		dmaAddr = dma_map_single( pDev, page, sgList->dmaLength, direction ); 
+		dmaAddr = dma_map_single( pDev, page, sgList->dmaLength, direction );
 		if ( dma_mapping_error(pDev, dmaAddr )) {
 			printk( KERN_ERR "error mapping DMA space with dma_map_page\n" );
                 goto CLEANUP;
         }
-	
+
 		sgList->dmaAddress = dmaAddr;
 
 		if( totlen + sgList->dmaLength > count )
@@ -1230,18 +1229,18 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 
 		offset = 0;
 		totlen += sgList->dmaLength;
-		
-		dma_sync_single_for_device( pDev, sgList->dmaAddress, sgList->dmaLength, 
+
+		dma_sync_single_for_device( pDev, sgList->dmaAddress, sgList->dmaLength,
 									( blk->direction == READ ) ? DMA_FROM_DEVICE : DMA_TO_DEVICE );
 
 		VME4LDBG(" sglist %d: page=%p off=%lx dma=%x dmalen=%x\n", i, page, uaddr & ~PAGE_MASK, dmaAddr, sgList->dmaLength);
 	}
 
-	/* dma_sync_single_for_cpu() gives ownership of the DMA buffer back to the processor. 
-	   After that call, driver code can read or modify the buffer, but the device should not touch it. 
+	/* dma_sync_single_for_cpu() gives ownership of the DMA buffer back to the processor.
+	   After that call, driver code can read or modify the buffer, but the device should not touch it.
 	   A call to dma_sync_single_for_device() is required to allow the device to access the buffer again."
 
-	   Notes:  You must do this:	   
+	   Notes:  You must do this:
 	   - Before reading values that have been written by DMA from the device
 	   (use the DMA_FROM_DEVICE direction)
 	   - After writing values that will be written to the device using DMA
@@ -1261,9 +1260,9 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 	/* allow CPU access to pages again, device is finished */
 	sgList = sgListStart;
 	for (i = 0; i < nr_pages; i++, sgList++) {
-		dma_sync_single_for_cpu( pDev, 
-								 sgList->dmaAddress, 
-								 sgList->dmaLength, 
+		dma_sync_single_for_cpu( pDev,
+								 sgList->dmaAddress,
+								 sgList->dmaLength,
 								 blk->direction == READ ? DMA_FROM_DEVICE : DMA_TO_DEVICE );
 	}
 
@@ -2652,6 +2651,8 @@ int vme_bus_to_phys( int space, u32 vmeadrs, void **physadrs_p )
 	case VME_A24_SPACE | VME_D16_ACCESS: spc = VME4L_SPC_A24_D16; break;
 	case VME_A24_SPACE | VME_D32_ACCESS: spc = VME4L_SPC_A24_D32; break;
 	case VME_A32_SPACE | VME_D32_ACCESS: spc = VME4L_SPC_A32_D32; break;
+	case VME_CSR_SPACE | VME_D16_ACCESS: spc = VME4L_SPC_A24_D16; break;
+
 	default: return -EINVAL;
 	}
 

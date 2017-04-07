@@ -143,7 +143,7 @@ typedef struct VME4L_BRIDGE_DRV {
 
 	/***********************************************************************/
     /** Get bridge driver info string
-	 *	
+	 *
 	 * bridge driver shall sprintf HW and bridge driver revision information
 	 * into \a buf (100 bytes max)
 	 */
@@ -151,7 +151,7 @@ typedef struct VME4L_BRIDGE_DRV {
 
 	/***********************************************************************/
     /** Request VME master address window
-	 *	
+	 *
 	 * This requests a VME master window from the VME bridge. The bridge shall
 	 * locate an unused window that matches the VME space \a spc and
 	 * shall setup the window so that it is opened for at least \a *vmeAddrP
@@ -189,7 +189,7 @@ typedef struct VME4L_BRIDGE_DRV {
 
 	/***********************************************************************/
     /** Release VME master address window
-	 *	
+	 *
 	 * This releases a VME window previously requested with
 	 * requestAddrWindow().
 	 *
@@ -216,7 +216,7 @@ typedef struct VME4L_BRIDGE_DRV {
 	 * VME4L_IRQLEV_BUSERR cannot be controlled with this function.
 	 *
 	 * \param h				brigde private handle
-	 * \param level			VME irq level, see \ref VME4L_IRQLEV	
+	 * \param level			VME irq level, see \ref VME4L_IRQLEV
 	 * \param set			0=disable level, 1=enable level
 	 *
 	 * \return 0 on success, or negative error number
@@ -248,7 +248,7 @@ typedef struct VME4L_BRIDGE_DRV {
 		uint8_t *dataP,
 		int flags,
 		void *bDrvData);
-		
+
 	/***********************************************************************/
     /** Read 16 bit value from master window
 	 * \sa readPio8
@@ -259,7 +259,7 @@ typedef struct VME4L_BRIDGE_DRV {
 		uint16_t *dataP,
 		int flags,
 		void *bDrvData);
-		
+
 	/***********************************************************************/
     /** Read 32 bit value from master window
 	 * \sa readPio8
@@ -270,7 +270,7 @@ typedef struct VME4L_BRIDGE_DRV {
 		uint32_t *dataP,
 		int flags,
 		void *bDrvData);
-		
+
 	/***********************************************************************/
     /** Write 8 bit value to master window
 	 * \sa readPio8
@@ -281,7 +281,7 @@ typedef struct VME4L_BRIDGE_DRV {
 		uint8_t *dataP,
 		int flags,
 		void *bDrvData);
-		
+
 	/***********************************************************************/
     /** Write 16 bit value to master window
 	 * \sa readPio8
@@ -292,7 +292,7 @@ typedef struct VME4L_BRIDGE_DRV {
 		uint16_t *dataP,
 		int flags,
 		void *bDrvData);
-		
+
 	/***********************************************************************/
     /** Write 32 bit value to master window
 	 * \sa readPio8
@@ -307,7 +307,7 @@ typedef struct VME4L_BRIDGE_DRV {
 
 	/**********************************************************************/
 	/** Get VMEbus address modifier
-	 *	
+	 *
 	 * (this function is optional and can be NULL)
 	 *
 	 * \param spc			VME4L space number for this DMA transfer
@@ -317,7 +317,7 @@ typedef struct VME4L_BRIDGE_DRV {
 
 	/**********************************************************************/
 	/** Set VMEbus address modifier
-	 *	
+	 *
 	 * (this function is optional and can be NULL)
 	 *
 	 * \param spc			VME4L space number for this DMA transfer
@@ -326,10 +326,10 @@ typedef struct VME4L_BRIDGE_DRV {
 	 */
 	int (*addrModifierSet)( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h, char addrMod);
 
-		
+
 	/***********************************************************************/
     /** Write zero-copy DMA scatter list to DMA controller
-	 *	
+	 *
 	 * (this function is optional and can be NULL)
 	 *
 	 * \param h				brigde private handle
@@ -354,7 +354,7 @@ typedef struct VME4L_BRIDGE_DRV {
 
 	/***********************************************************************/
     /** Setup DMA for bounce buffer
-	 *	
+	 *
 	 * This function is used if dmaSetup is NULL.
 	 *
 	 * DMA bouncing is used whenever the brigde is not able to do a
@@ -389,7 +389,7 @@ typedef struct VME4L_BRIDGE_DRV {
 
 	/***********************************************************************/
     /** Free DMA bounce buffer
-	 *	
+	 *
 	 * (this function is optional and can be NULL)
 	 *
 	 * \param h				brigde private handle
@@ -403,7 +403,7 @@ typedef struct VME4L_BRIDGE_DRV {
 
 	/***********************************************************************/
     /** Start DMA with the scatter list or bounce buffer.
-	 * 	
+	 *
 	 * DMA must have been initialized by dmaSetup or dmaBounceSetup
 	 *
 	 * \param h				brigde private handle
@@ -451,19 +451,19 @@ typedef struct VME4L_BRIDGE_DRV {
  	int (*irqGenClear)(
 		VME4L_BRIDGE_HANDLE *h,
 		int id);
-	
+
 	/***********************************************************************/
     /** Check if system controller function has been enabled
 	 *	\return 0 if VME bridge is not system controller\n
 	 *			1 if VME bridge is system controller\n
 	 *			<0 on error
-	 */			
+	 */
 	int (*sysCtrlFuncGet)(
 		VME4L_BRIDGE_HANDLE *h);
 
     /***********************************************************************/
     /** Enable/Disable system controller function
-	 *			
+	 *
 	 * \param state	(0=disable,1=enable)
 	 */
 	int (*sysCtrlFuncSet)(
@@ -528,16 +528,16 @@ typedef struct VME4L_BRIDGE_DRV {
 	 */
 	int (*geoAddrGet)(
 		VME4L_BRIDGE_HANDLE *h);
-  
+
     /***********************************************************************/
     /** Get VMEbus master write mode
-     */			
+     */
 	int (*postedWriteModeGet)(
 		VME4L_BRIDGE_HANDLE *h);
 
     /***********************************************************************/
     /** Control VMEbus master write mode
-	 */	
+	 */
 	int (*postedWriteModeSet)(
 		VME4L_BRIDGE_HANDLE *h,
 		int state);
@@ -558,11 +558,11 @@ typedef struct VME4L_BRIDGE_DRV {
 	 */
 	int (*aOnlyCycle)(
 		VME4L_BRIDGE_HANDLE *h,
-		void *vAddr );	
+		void *vAddr );
 
 	/***********************************************************************/
     /** Setup VME slave window
-	 *	
+	 *
 	 * This sets up a VME slave window for the requested space.
 	 *
 	 * should setup the VME bridge address comparators so that
@@ -655,7 +655,7 @@ typedef struct {
  */
 VME4L_SPACE_ENT G_spaceTbl[] = {
 	/* devName         isSlv isBlt  spcEnd                   width */
-	{ "vme4l_a16d16"    , 0,  0,    0xFFFF,                    2 },
+	{ "vme4l_a16d16"    , 0,  0,    0xFFFF,                    2 },  /* spc 0 */
 	{ "vme4l_a16d16_blt", 0,  1,    0xFFFF,                    2 },
 	{ "vme4l_a16d32"    , 0,  0,    0xFFFF,                    4 },
 	{ "vme4l_a16d32_blt", 0,  1,    0xFFFF,                    4 },
@@ -685,6 +685,7 @@ VME4L_SPACE_ENT G_spaceTbl[] = {
 	{ "vme4l_a64d32",     0,  0,    0xFFFFFFFFFFFFFFFFULL,      4 },
 	{ "vme4l_a64_2evme",  0,  1,    0xFFFFFFFFFFFFFFFFULL,      8 },
 	{ "vme4l_a64_2esst",  0,  1,    0xFFFFFFFFFFFFFFFFULL,      8 },
+	{ "vme4l_cr_csr",     0,  0,    0xFFFFFF,                   2 } /* spc. 30 */
 };
 
 

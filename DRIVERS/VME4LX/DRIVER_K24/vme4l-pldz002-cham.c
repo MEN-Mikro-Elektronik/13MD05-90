@@ -341,7 +341,7 @@ static int RequestAddrWindow(
 			rv = -EBUSY;
 			break;
 		}
-		
+
 		/* check for <A32 BAR size> crossing in requested window */
 		vmeAddr = *vmeAddrP & ( h->A32BARsize - 1 );
 		if( vmeAddr + *sizeP > h->A32BARsize )
@@ -361,6 +361,12 @@ static int RequestAddrWindow(
 		  VME4LDBG("set LONGADD 0x%02x\n", (vmeAddr >> 29 ) & 0xff );
 		  VME_REG_WRITE8( PLDZ002_LONGADD, vmeAddr >> 29 );
 		}
+		break;
+
+	case VME4L_SPC_CR_CSR:
+		physAddr = (void *)h->spaces[CHAM_SPC_A24_D16];  /* TBD: Do I have to use own space here ? but its "same" address range like a24d16.. */
+		vmeAddr  = 0;
+		size	 = PLDZ002_A24Dxx_SIZE;
 		break;
 
 	default:
@@ -521,10 +527,8 @@ static int WritePio##size ( \
 	int rv = 0;\
                \
 	PLDZ002_LOCK_STATE_IRQ(ps);\
-    \
     /* clear bus error and disable posted writes */\
-	VME_REG_WRITE8( PLDZ002_MSTR, (h->mstrShadow | PLDZ002_MSTR_BERR)\
-                    & ~PLDZ002_MSTR_POSTWR);\
+	VME_REG_WRITE8( PLDZ002_MSTR, (h->mstrShadow | PLDZ002_MSTR_BERR) & ~PLDZ002_MSTR_POSTWR);\
 	VME_WIN_WRITE##size(vaddr,*dataP);\
 	\
 	if( VME_REG_READ8( PLDZ002_MSTR ) & PLDZ002_MSTR_BERR ){\
@@ -965,7 +969,7 @@ static int RequesterModeSet( VME4L_BRIDGE_HANDLE *h, int state)
 
 /**********************************************************************/
 /** Set VMEbus requester level
- *  
+ *
  */
 static int RequesterLevelSet( VME4L_BRIDGE_HANDLE *h, int lvl)
 {
@@ -1040,7 +1044,7 @@ static int AddrModifierSet( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h, char addrMo
 	int retval=0;
 	unsigned long ps;
 	unsigned int isSupervisor=0;
-	
+
 	PLDZ002_LOCK_STATE_IRQ(ps);
 
 	VME4LDBG("AddrModifierSet: spc = %d (%s) AM = 0x%02x\n", spc, G_spaceTbl[spc].isBlt ? "BLT" : "no BLT", h->addrModShadow[spc] );
@@ -1051,35 +1055,30 @@ static int AddrModifierSet( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h, char addrMo
 	/* 0: set supervisor , 1: supervisor flag not set (non-privileged) */
 	isSupervisor = (addrMod & 0x02) >> 1;
 
-	switch (spc) {	
-		/* the non BLT spaces: write directly to AMOD */
+	switch (spc) {
+		/* the non BLT spaces: write directly to AMOD, clear previously set CR/CSR access */
 	case VME4L_SPC_A16_D16:
 	case VME4L_SPC_A16_D32:
-			h->mstrAMod &=~VME4l_SPC_A16_AM_MASK;
-			h->mstrAMod |= (addrMod & 0x03) << 0;	
-			VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod);
+		h->mstrAMod &=~(VME4l_SPC_A16_AM_MASK | PLDZ002_CR_CSR_BIT );
+		h->mstrAMod |= (addrMod & 0x03) << 0;
+		VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod);
 		break;
 
 	case VME4L_SPC_A24_D16:
 	case VME4L_SPC_A24_D32:
-		if (addrMod != ADDR_MOD_CR_CSR)	{
-			h->mstrAMod &=~VME4l_SPC_A24_AM_MASK;
-			h->mstrAMod |= (addrMod & 0x03) << 2;
-			h->mstrAMod &=~PLDZ002_CR_CSR_BIT;
-			VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod);
-		} else { /* CR/CSR AM 0x2f passed, will be written by FPGA automatically */
-			h->mstrAMod |= PLDZ002_CR_CSR_BIT;
-			VME_REG_WRITE8( PLDZ002_AMOD, h->mstrShadow);
-		}
+		h->mstrAMod &=~(VME4l_SPC_A24_AM_MASK | PLDZ002_CR_CSR_BIT );
+		h->mstrAMod |= (addrMod & 0x03) << 2;
+		VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod);
 		break;
 
 	case VME4L_SPC_A32_D32:
-			h->mstrAMod &=~VME4l_SPC_A32_AM_MASK;
-			h->mstrAMod |= (addrMod & 0x03) << 4;	   
-			VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod);
+		h->mstrAMod &=~(VME4l_SPC_A32_AM_MASK | PLDZ002_CR_CSR_BIT );
+		h->mstrAMod |= (addrMod & 0x03) << 4;
+		VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod);
 		break;
 
-		/* the BLT spaces: take AM bit[1] (=supervisory flag) and OR in defaults */
+		/* the BLT spaces: take AM bit[1] (=supervisory flag) and OR in defaults.
+		 * CR/CSR not relevant here. */
 	case VME4L_SPC_A24_D16_BLT:
 		h->addrModShadow[spc] = PLDZ002_DMABD_AM_A24D16 | (isSupervisor << 8);
 		break;
@@ -1092,7 +1091,13 @@ static int AddrModifierSet( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h, char addrMo
 	case VME4L_SPC_A32_D64_BLT:
 		h->addrModShadow[spc] =	PLDZ002_DMABD_AM_A32D64 | (isSupervisor << 8) ;
 		break;
+	case VME4L_SPC_CR_CSR:
+		/* CR/CSR read cycle: like A24D16 but with VME AM 0x2f by setting bit[6] in AMOD. */
+		h->mstrAMod |= PLDZ002_CR_CSR_BIT;
+		VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod); /* MichaelM.: bit[6]=1 overrides other AMOD bits as long as its set */
 
+		VME4LDBG("CR/CSR: read back AMOD: 0x%02x\n",  VME_REG_READ8( PLDZ002_AMOD ) );
+		break;
 	default:
 		retval = -ENOTTY;
 		break;
@@ -1317,10 +1322,10 @@ static int SlaveWindowCtrlFs3(
 				/* currently not setup, allocate a new one */
 			        dma_addr_t dmaAddr = 0;
 
-				h->bmShmem.vaddr = pci_alloc_consistent(h->chu->pdev, size, &dmaAddr);		
+				h->bmShmem.vaddr = pci_alloc_consistent(h->chu->pdev, size, &dmaAddr);
 				dmaAddr = pci_map_single( h->chu->pdev, h->bmShmem.vaddr, size, PCI_DMA_FROMDEVICE);
 				h->bmShmem.phys = dmaAddr;
-				
+
 				VME4LDBG("pldz002: pci_alloc_consistent: v=%p p=%x (%llx)\n", h->bmShmem.vaddr, h->bmShmem.phys, (uint64_t) size );
 
 				if( h->bmShmem.vaddr == NULL ) {
@@ -1395,7 +1400,7 @@ static int SlaveWindowCtrlFs3(
 						 h->bmShmem.phys,
 						 h->bmShmem.size,
 						 PCI_DMA_FROMDEVICE );
-				
+
 				pci_free_consistent(h->chu->pdev,
 						    h->bmShmem.size,
 						    h->bmShmem.vaddr,
@@ -1798,7 +1803,7 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 static int MapRegSpace( VME4L_RESRC *res, const char *name )
 {
 	res->vaddr = NULL;
-	
+
 	if (!request_mem_region( res->phys, res->size, name )) {
 		return -EBUSY;
 	}
@@ -1858,6 +1863,10 @@ static void InitBridge( VME4L_BRIDGE_HANDLE *h )
 	h->addrModShadow[VME4L_SPC_A24_D32_BLT] = PLDZ002_DMABD_AM_A24D32;
 	h->addrModShadow[VME4L_SPC_A32_D32_BLT] = PLDZ002_DMABD_AM_A32D32;
 	h->addrModShadow[VME4L_SPC_A32_D64_BLT] = PLDZ002_DMABD_AM_A32D64;
+
+	/* CR/CSR cycle: this is the AM 0x2f as presented to VME bus by the FPGA.
+	 * internally its activated by bit[6] in AMOD => define PLDZ002_CR_CSR_BIT, 0x40 */
+	h->addrModShadow[VME4L_SPC_CR_CSR] 		= ADDR_MOD_CR_CSR;
 
 	VME_REG_WRITE8( PLDZ002_INTR, 0x00 );
 	VME_REG_WRITE8( PLDZ002_IMASK, 0x00 );
@@ -1931,7 +1940,7 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 		default:
 		  return 0;
 	}
-	
+
 	/* check 64bit/32bit DMA capability */
 	rv = dma_set_mask_and_coherent(&chu->pdev->dev, DMA_BIT_MASK(64));
 	if (rv) {
@@ -1955,24 +1964,24 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 			rv = -EINVAL;
 			goto CLEANUP;
 		}
-		
+
 		h->spaces[u.unitFpga.variant] = (unsigned long) u.unitFpga.addr;
 		VME4LDBG("found chameleon unit %d, variant %d, address %p\n", i, u.unitFpga.variant,u.unitFpga.addr);
 
 		if ( u.unitFpga.variant == PLDZ002_VAR_VMEA32 && h->bLongaddAdjustable ) {
 		    barA32 = u.unitFpga.bar;
-		    /* determine BAR size. Wanted to use struct pci_dev.resource[] member but end addr 
+		    /* determine BAR size. Wanted to use struct pci_dev.resource[] member but end addr
 			   seems not available there.. */
 		    pci_read_config_dword(  chu->pdev, PCI_BASE_ADDRESS_3, &barsave );
 		    pci_write_config_dword( chu->pdev, PCI_BASE_ADDRESS_3, 0xffffffff );
 		    pci_read_config_dword(  chu->pdev, PCI_BASE_ADDRESS_3, &barval  );
 		    barsize = ~(barval & PCI_BASE_ADDRESS_MEM_MASK) + 1;
 		    pci_write_config_dword( chu->pdev, PCI_BASE_ADDRESS_3, barsave); /* restore BAR */
-		    
+
 		    switch (barsize) {
 		    case  PLDZ002_A32D32_SIZE_512M:
 		      h->longaddWidth = 3;
-		      break;		       
+		      break;
 		    case  PLDZ002_A32D32_SIZE_256M:
 		      h->longaddWidth = 4;
 		      break;
@@ -1993,7 +2002,7 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 		      rv = -EINVAL;
 		      goto CLEANUP;
 		    }
-		    
+
 		    VME4LDBG("adjustable LONGADD Reg.: (bit width %d) (BAR%d size 0x%08x)\n",  h->longaddWidth, barA32, barsize );
 
 		    h->A32BARsize = barsize;
