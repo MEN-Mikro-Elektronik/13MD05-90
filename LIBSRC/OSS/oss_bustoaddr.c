@@ -189,7 +189,7 @@ int32 OSS_BusToPhysAddr
 
 		if( error ) break;
 
-		error = vme_bus_to_phys( space, (unsigned long)vmeadrs, physicalAddrP );
+		error = vme_bus_to_phys( space, (uintptr_t)vmeadrs, physicalAddrP );
 
 		if( error ){
 			DBGWRT_ERR((DBH,"*** OSS_BusToPhysAddr: error %d in "

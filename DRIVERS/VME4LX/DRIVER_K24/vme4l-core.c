@@ -677,7 +677,7 @@ static int vme4l_make_ioremap_region(
 	vmeaddr_t vmeStart;
 	size_t maxSize;
 	size_t useSize = 0;
-	uint32_t physAddr;
+	uintptr_t physAddr;
 	int rv=0;
 	void *vaddr;
 
@@ -723,7 +723,7 @@ static int vme4l_make_ioremap_region(
 	if( useSize > maxSize )
 		useSize = maxSize;
 
-	physAddr = (vmeStart - win->vmeAddr) + (unsigned long /*uint32_t*/ )win->physAddr;
+	physAddr = (vmeStart - win->vmeAddr) + (uintptr_t)win->physAddr;
 
 	VME4LDBG( "vme4l_make_ioremap_region: requested: 0x%llx (0x%llx). "
 			  "Map vme=0x%llx (0x%llx) pa=0x%x\n", vmeAddr, (uint64_t) size,
@@ -826,7 +826,7 @@ static int inline DoReadPio##size ( \
 	 for( count=0; count<xsize; count+=sizeof(type), \
 			  vaddr+=sizeof(type), userSpc++ ){\
 		 if( (rv = G_bDrv->readPio##size ( \
-				  G_bHandle, (void *)((unsigned long)vaddr^adrSwapMask), &buf, 0, \
+				  G_bHandle, (void *)((uintptr_t)vaddr^adrSwapMask), &buf, 0, \
 				  win->bDrvData)) < 0 )\
 			 break;\
 		 __put_user( buf, userSpc );\
@@ -853,7 +853,7 @@ static int inline DoWritePio##size ( \
 			  vaddr+=sizeof(type), userSpc++ ){\
          if( __get_user( buf, userSpc ) ) return -EFAULT;\
 		 if( (rv = G_bDrv->writePio##size ( \
-				  G_bHandle, (void *)((unsigned long)vaddr^adrSwapMask), &buf, 0, \
+				  G_bHandle, (void *)((uintptr_t)vaddr^adrSwapMask), &buf, 0, \
 				  win->bDrvData)) < 0 )\
 			 break;\
 	 }\
@@ -1137,7 +1137,7 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 	 */
 
 	int rv = 0, i;
-	unsigned long uaddr 	= (unsigned long)blk->dataP;
+	uintptr_t uaddr 	= (uintptr_t)blk->dataP;
 	size_t count 			= blk->size;
 	unsigned int nr_pages	= 0;
 	struct page **pages 	= NULL;
@@ -1207,7 +1207,7 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 
 		struct page *page = pages[i];
 #if 0
-		/* uint32_t dmaAddr = page_to_phys(page) + offset; */
+		/* uintptr_t dmaAddr = page_to_phys(page) + offset; */
 		pDma = dma_alloc_coherent( pDev, count, &dmaAddr,  GFP_DMA);
 		if (!pDma ) {
 			return -ENOMEM;
@@ -2006,9 +2006,9 @@ static int vme4l_mmap(
 	int rv=0;
 	/* hmm, vm_pgoff is unsigned long -> 32 bit at 32 bit systems, so how we
 	   can map VME addresses > 4 GB ??? */
-	unsigned long vmeAddr	= vma->vm_pgoff << PAGE_SHIFT;
+	uintptr_t vmeAddr	= vma->vm_pgoff << PAGE_SHIFT;
 	unsigned long size		= vma->vm_end - vma->vm_start;
-	unsigned long physAddr;
+	uintptr_t physAddr;
 
 	fp = (VME4L_FILE_PRIV *) file->private_data;
 	spc = fp->minor;
@@ -2031,7 +2031,7 @@ static int vme4l_mmap(
 										 &win )) < 0 )
 			goto ABORT;
 
-		physAddr = (unsigned long)win->physAddr + (vmeAddr - win->vmeAddr);
+		physAddr = (uintptr_t)win->physAddr + (vmeAddr - win->vmeAddr);
 	}
 	else
 	{
@@ -2064,7 +2064,7 @@ static int vme4l_mmap(
 			goto ABORT;
 		}
 
-		physAddr = (unsigned long)win->physAddr + offset;
+		physAddr = (uintptr_t)win->physAddr + offset;
 
 	}
 
