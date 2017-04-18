@@ -2864,7 +2864,7 @@ static char *vme4l_rev_info( char *buf )
 /**  Read entry point for /proc/vme4l file
  *
  */
-#ifndef CONFIG_PROC_FS
+#ifdef CONFIG_PROC_FS
 static int vme4l_read_proc( char *buffer, char **start, off_t offset,
 			    int size, int *eof, void *data) { return 0; }
 #else
@@ -3107,14 +3107,14 @@ static int __init vme4l_init_module(void)
 	}
 
 	/* create proc interface */
+#ifdef CONFIG_PROC_FS
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	if (!create_proc_read_entry("vme4l",0,0, vme4l_read_proc, NULL)) {
 		printk(KERN_ERR "*** vme4l: can't create /proc/vme4l\n");
 		goto CLEANUP;
 	}
-#else
-
 #endif
+#endif /* CONFIG_PROC_FS */
 
 	return 0;
 
