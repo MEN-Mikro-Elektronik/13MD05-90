@@ -662,3 +662,7 @@ void vme4l_irq( int level, int vector, struct pt_regs *regs);
 
 VME4L_SPACE_ENT* vme4l_get_space_ent(unsigned int idx);
 
+VME4L_BRIDGE_HANDLE* vme_bridge_get_handle(void);
+
+VME4L_BRIDGE_DRV* vme_bridge_get_driver(void);
+

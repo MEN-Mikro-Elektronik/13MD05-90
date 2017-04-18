@@ -2725,7 +2725,7 @@ int vme_bus_to_phys( int space, u32 vmeadrs, void **physadrs_p )
  *
  *  \return             0 | Linux error number (negative)
  */
-int vme_request_irq(
+int VME_REQUEST_IRQ(
 	unsigned int vme_irq,
  #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)
 	void (*handler)(int, void * ),
@@ -2770,7 +2770,7 @@ int vme_request_irq(
  *						vme_request_irq
  *
  */
-void vme_free_irq(unsigned int vme_irq, void *dev_id)
+void VME_FREE_IRQ(unsigned int vme_irq, void *dev_id)
 {
 	VME4L_IRQ_ENTRY *ent;
 	struct list_head *pos, *tmp;
@@ -3016,6 +3016,15 @@ static void vme4l_cleanup(void)
 
 }
 
+VME4L_BRIDGE_HANDLE* vme_bridge_get_handle(void)
+{
+    return G_bHandle;
+}
+
+VME4L_BRIDGE_DRV* vme_bridge_get_driver(void)
+{
+    return G_bDrv;
+}
 
 /***********************************************************************/
 /**  Modularized driver init function
@@ -3131,8 +3140,10 @@ EXPORT_SYMBOL(vme4l_register_bridge_driver);
 EXPORT_SYMBOL(vme4l_unregister_bridge_driver);
 EXPORT_SYMBOL(vme4l_irq);
 
-EXPORT_SYMBOL(vme_request_irq);
-EXPORT_SYMBOL(vme_free_irq);
+EXPORT_SYMBOL(VME_REQUEST_IRQ);
+EXPORT_SYMBOL(VME_FREE_IRQ);
 EXPORT_SYMBOL(vme_bus_to_phys);
 EXPORT_SYMBOL(vme_ilevel_control);
 
+EXPORT_SYMBOL(vme_bridge_get_handle);
+EXPORT_SYMBOL(vme_bridge_get_driver);
