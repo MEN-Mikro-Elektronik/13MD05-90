@@ -259,8 +259,6 @@ static CHAMELEONV2_DRIVER_T G_driver = {
     .remove   = vme4l_remove
 };
 
-extern VME4L_SPACE_ENT G_spaceTbl[];
-
 /* dma_set_mask_and_coherent() has been introduced in 3.12.27
  * http://elixir.free-electrons.com/linux/v3.12.27/source/include/linux/dma-mapping.h#L106
  */
@@ -1038,7 +1036,7 @@ static int AddrModifierGet( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h )
 
 	PLDZ002_LOCK_STATE_IRQ(ps);
 	VME4LDBG("AddrModifierGet: spc = %d (%s) AM = 0x%02x\n",
-			 spc, G_spaceTbl[spc].isBlt ? "BLT" : "no BLT", h->addrModShadow[spc] );
+			 spc, vme4l_get_space_ent(spc)->isBlt ? "BLT" : "no BLT", h->addrModShadow[spc] );
 	rv = h->addrModShadow[spc];
 	PLDZ002_UNLOCK_STATE_IRQ(ps);
 
@@ -1060,7 +1058,7 @@ static int AddrModifierSet( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h, char addrMo
 
 	PLDZ002_LOCK_STATE_IRQ(ps);
 
-	VME4LDBG("AddrModifierSet: spc = %d (%s) AM = 0x%02x\n", spc, G_spaceTbl[spc].isBlt ? "BLT" : "no BLT", h->addrModShadow[spc] );
+	VME4LDBG("AddrModifierSet: spc = %d (%s) AM = 0x%02x\n", spc, vme4l_get_space_ent(spc)->isBlt ? "BLT" : "no BLT", h->addrModShadow[spc] );
 
 	/* the AM definition is different for BLT/non BLT spaces. Non BLT AMs are
 	   set in MSTR[8:13] (or PLDZ002_AMOD), and BLT AMs are considered during DMA BD

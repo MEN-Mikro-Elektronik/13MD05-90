@@ -283,9 +283,52 @@ static DEFINE_SEMAPHORE(G_dmaMutex);
 DECLARE_MUTEX(G_dmaMutex);
 #endif
 
+/** table that maintains space specific variables.
+ * indexed by minor number
+ */
+VME4L_SPACE_ENT G_spaceTbl[] = {
+	/* devName         isSlv isBlt  spcEnd                   width */
+	{ "vme4l_a16d16"    , 0,  0,    0xFFFF,                    2 },  /* spc 0 */
+	{ "vme4l_a16d16_blt", 0,  1,    0xFFFF,                    2 },
+	{ "vme4l_a16d32"    , 0,  0,    0xFFFF,                    4 },
+	{ "vme4l_a16d32_blt", 0,  1,    0xFFFF,                    4 },
+	{ "vme4l_a24d16",     0,  0,    0xFFFFFF,                  2 },
+	{ "vme4l_a24d16_blt", 0,  1,    0xFFFFFF,                  2 },
+	{ "vme4l_a24d32",     0,  0,    0xFFFFFF,                  4 },
+	{ "vme4l_a24d32_blt", 0,  1,    0xFFFFFF,                  4 },
+	{ "vme4l_a32d32",     0,  0,    0xFFFFFFFFULL,             4 },
+	{ "vme4l_a32d32_blt", 0,  1,    0xFFFFFFFFULL,             4 },
+	{ "vme4l_a32d64_blt", 0,  1,    0xFFFFFFFFULL,             8 },
+	{ "vme4l_slave0",     1 },
+	{ "vme4l_slave1",     1 },
+	{ "vme4l_slave2",     1 },
+	{ "vme4l_slave3",     1 },
+	{ "vme4l_slave4",     1 },
+	{ "vme4l_slave5",     1 },
+	{ "vme4l_slave6",     1 },
+	{ "vme4l_slave7",     1 },
+	{ "vme4l_master0",    0,  0,    ~0,                         8 },
+	{ "vme4l_master1",    0,  0,    ~0,                         8 },
+	{ "vme4l_master2",    0,  0,    ~0,                         8 },
+	{ "vme4l_master3",    0,  0,    ~0,                         8 },
+	{ "vme4l_master4",    0,  0,    ~0,                         8 },
+	{ "vme4l_master5",    0,  0,    ~0,                         8 },
+	{ "vme4l_master6",    0,  0,    ~0,                         8 },
+	{ "vme4l_master7",    0,  0,    ~0,                         8 },
+	{ "vme4l_a64d32",     0,  0,    0xFFFFFFFFFFFFFFFFULL,      4 },
+	{ "vme4l_a64_2evme",  0,  1,    0xFFFFFFFFFFFFFFFFULL,      8 },
+	{ "vme4l_a64_2esst",  0,  1,    0xFFFFFFFFFFFFFFFFULL,      8 },
+	{ "vme4l_cr_csr",     0,  0,    0xFFFFFF,                   2 } /* spc. 30 */
+};
+
 /** number of entries in #G_spaceTbl */
 #define VME4L_SPACE_TBL_SIZE (sizeof(G_spaceTbl)/sizeof(VME4L_SPACE_ENT))
 
+VME4L_SPACE_ENT* vme4l_get_space_ent(unsigned int idx)
+{
+    return idx < VME4L_SPACE_TBL_SIZE ? &G_spaceTbl[idx] : NULL;
+}
+EXPORT_SYMBOL(vme4l_get_space_ent);
 
 /** list for each possible VME vector and pseudo vectors */
 static struct list_head		G_vectTbl[VME4L_NUM_VECTORS];
