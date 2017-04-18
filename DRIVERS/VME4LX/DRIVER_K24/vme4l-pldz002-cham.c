@@ -259,19 +259,6 @@ static CHAMELEONV2_DRIVER_T G_driver = {
     .remove   = vme4l_remove
 };
 
-/* dma_set_mask_and_coherent() has been introduced in 3.12.27
- * http://elixir.free-electrons.com/linux/v3.12.27/source/include/linux/dma-mapping.h#L106
- */
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,12,27)
-static inline int dma_set_mask_and_coherent(struct device *dev, u64 mask)
-{
-	int rc = dma_set_mask(dev, mask);
-	if (rc == 0)
-		dma_set_coherent_mask(dev, mask);
-	return rc;
-}
-#endif
-
 /*--------------------------------------+
 |   PROTOTYPES                          |
 +--------------------------------------*/
@@ -1953,10 +1940,17 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 	}
 
 	/* check 64bit/32bit DMA capability */
-	rv = dma_set_mask_and_coherent(&chu->pdev->dev, DMA_BIT_MASK(64));
+	rv = dma_set_mask(&chu->pdev->dev, DMA_BIT_MASK(64));
+	if (rv == 0)
+		dma_set_coherent_mask(&chu->pdev->dev, DMA_BIT_MASK(64));
+
 	if (rv) {
 		printk(KERN_ERR "No 64bit DMA support on this CPU, trying 32bit\n" );
-		rv = dma_set_mask_and_coherent(&chu->pdev->dev, DMA_BIT_MASK(32));
+
+		rv = dma_set_mask(&chu->pdev->dev, DMA_BIT_MASK(32));
+		if (rv == 0)
+			dma_set_coherent_mask(&chu->pdev->dev, DMA_BIT_MASK(32));
+
 		if (rv) {
 			printk(KERN_ERR "No 32bit DMA support on this CPU, trying 32bit\n" );
 			goto CLEANUP;
