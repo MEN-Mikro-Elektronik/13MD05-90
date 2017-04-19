@@ -28,3 +28,4 @@ mknod /dev/vme4l_master7 c 230 26
 mknod /dev/vme4l_a64d32 c 230 27
 mknod /dev/vme4l_a64_2evme c 230 28
 mknod /dev/vme4l_a64_2esst c 230 29
+mknod /dev/vme4l_cr_csr c 230 30
