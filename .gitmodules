@@ -1,30 +1,30 @@
 [submodule "TOOLS/MDIS_API"]
 	path = TOOLS/MDIS_API
-	url = ../../mct/mdis_api.git
+	url = ../mdis_tools_mdis_api.git
 [submodule "INCLUDE/COM/MEN"]
 	path = INCLUDE/COM/MEN
-	url = ../../mc/mdis_inc.git
+	url = ../mdis_include_com_men.git
 [submodule "LIBSRC/CHAMELEON/COM"]
 	path = LIBSRC/CHAMELEON/COM
-	url = ../../mc/libsrc_chameleon.git
+	url = ../mdis_libsrc_chameleon_com.git
 [submodule "LIBSRC/DESC/COM"]
 	path = LIBSRC/DESC/COM
-	url = ../../mc/libsrc_desc.git
+	url = ../mdis_libsrc_desc_com.git
 [submodule "LIBSRC/ID/COM"]
 	path = LIBSRC/ID/COM
-	url = ../../mc/libsrc_id.git
+	url = ../mdis_libsrc_id_com.git
 [submodule "LIBSRC/MBUF/COM"]
 	path = LIBSRC/MBUF/COM
-	url = ../../mc/libsrc_mbuf.git
+	url = ../mdis_libsrc_mbuf_com.git
 [submodule "LIBSRC/PLD/COM"]
 	path = LIBSRC/PLD/COM
-	url = ../../mc/libsrc_pld.git
+	url = ../mdis_libsrc_pld_com.git
 [submodule "LIBSRC/USR_UTL/COM"]
 	path = LIBSRC/USR_UTL/COM
-	url = ../../mc/libsrc_usr_utl.git
+	url = ../mdis_libsrc_usr_utl_com.git
 [submodule "LIBSRC/SMB/PORT/COM"]
 	path = LIBSRC/SMB/PORT/COM
-	url = ../../mc/libsrc_smb_port.git
+	url = ../mdis_libsrc_smb_port_com.git
 [submodule "LIBSRC/USR_OSS"]
 	path = LIBSRC/USR_OSS
-	url = ../../mc/libsrc_usr_oss.git
+	url = ../mdis_libsrc_usr_oss.git
