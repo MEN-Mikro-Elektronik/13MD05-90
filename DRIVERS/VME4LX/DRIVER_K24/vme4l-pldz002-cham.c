@@ -1046,8 +1046,6 @@ static int AddrModifierSet( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h, char addrMo
 
 	PLDZ002_LOCK_STATE_IRQ(ps);
 
-	VME4LDBG("AddrModifierSet: spc = %d (%s) AM = 0x%02x\n", spc, vme4l_get_space_ent(spc)->isBlt ? "BLT" : "no BLT", h->addrModShadow[spc] );
-
 	/* the AM definition is different for BLT/non BLT spaces. Non BLT AMs are
 	   set in MSTR[8:13] (or PLDZ002_AMOD), and BLT AMs are considered during DMA BD
 	   setup. */
@@ -1058,20 +1056,20 @@ static int AddrModifierSet( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h, char addrMo
 		/* the non BLT spaces: write directly to AMOD, clear previously set CR/CSR access */
 	case VME4L_SPC_A16_D16:
 	case VME4L_SPC_A16_D32:
-		h->mstrAMod &=~(VME4l_SPC_A16_AM_MASK | PLDZ002_CR_CSR_BIT );
+		h->mstrAMod &=~VME4l_SPC_A16_AM_MASK;
 		h->mstrAMod |= (addrMod & 0x03) << 0;
 		VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod);
 		break;
 
 	case VME4L_SPC_A24_D16:
 	case VME4L_SPC_A24_D32:
-		h->mstrAMod &=~(VME4l_SPC_A24_AM_MASK | PLDZ002_CR_CSR_BIT );
+		h->mstrAMod &=~VME4l_SPC_A24_AM_MASK;
 		h->mstrAMod |= (addrMod & 0x03) << 2;
 		VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod);
 		break;
 
 	case VME4L_SPC_A32_D32:
-		h->mstrAMod &=~(VME4l_SPC_A32_AM_MASK | PLDZ002_CR_CSR_BIT );
+		h->mstrAMod &=~VME4l_SPC_A32_AM_MASK;
 		h->mstrAMod |= (addrMod & 0x03) << 4;
 		VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod);
 		break;
@@ -1089,13 +1087,6 @@ static int AddrModifierSet( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h, char addrMo
 		break;
 	case VME4L_SPC_A32_D64_BLT:
 		h->addrModShadow[spc] =	PLDZ002_DMABD_AM_A32D64 | (isSupervisor << 8) ;
-		break;
-	case VME4L_SPC_CR_CSR:
-		/* CR/CSR read cycle: like A24D16 but with VME AM 0x2f by setting bit[6] in AMOD. */
-		h->mstrAMod |= PLDZ002_CR_CSR_BIT;
-		VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod); /* MichaelM.: bit[6]=1 overrides other AMOD bits as long as its set */
-
-		VME4LDBG("CR/CSR: read back AMOD: 0x%02x\n",  VME_REG_READ8( PLDZ002_AMOD ) );
 		break;
 	default:
 		retval = -ENOTTY;

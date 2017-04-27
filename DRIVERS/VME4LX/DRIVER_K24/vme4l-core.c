@@ -318,7 +318,7 @@ VME4L_SPACE_ENT G_spaceTbl[] = {
 	{ "vme4l_a64d32",     0,  0,    0xFFFFFFFFFFFFFFFFULL,      4 },
 	{ "vme4l_a64_2evme",  0,  1,    0xFFFFFFFFFFFFFFFFULL,      8 },
 	{ "vme4l_a64_2esst",  0,  1,    0xFFFFFFFFFFFFFFFFULL,      8 },
-	{ "vme4l_cr_csr",     0,  0,    0xFFFFFF,                   2 } /* spc. 30 */
+	{ "vme4l_cr_csr",     0,  0,    0xFFFFFF,                   4 } /* spc. 30 */
 };
 
 /** number of entries in #G_spaceTbl */
@@ -993,10 +993,6 @@ static int vme4l_rw_pio( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode )
 
 	/*--- perform access here ---*/
 	if( blk->direction == READ) {
-
-		/* CR/CSR read: set bit6 in AMOD to drive AM = 0x2f to VME bus */
-		if ( spc == VME4L_SPC_CR_CSR )
-			rv = G_bDrv->addrModifierSet( spc, G_bHandle, ADDR_MOD_CR_CSR );
 
 		/* read from VME */
 		switch( blk->accWidth ) {
