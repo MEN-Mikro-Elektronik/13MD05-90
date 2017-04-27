@@ -96,7 +96,7 @@
 
 #define BOUNCE_SRAM_A21SIZE	0x100000    /* 1MB SRAM  */
 #define BOUNCE_SRAM_A15SIZE	0x40000
-
+#define PLDZ002_MAX_UNITS	8
 #define BOUNCE_SRAM_SIZE 	BOUNCE_SRAM_A21SIZE
 
 #define PLDZ002_VAR_VMEA32      8  /* Variant of that PLDZ002 core that represents A32 space.
@@ -210,6 +210,7 @@ typedef enum {
 	CHAM_SPC_A24_D16,
 	CHAM_SPC_A24_D32,
 	CHAM_SPC_A32_D32,
+	CHAM_SPC_CR_CSR,	/* variant 9 = CR/CSR */
 	CHAM_SPC_END,
 } VME_SPACE_CHAM;
 
@@ -334,6 +335,12 @@ static int RequestAddrWindow(
 		size     = PLDZ002_A24Dxx_SIZE;
 		break;
 
+	case VME4L_SPC_CR_CSR:
+		physAddr = (void *)h->spaces[CHAM_SPC_CR_CSR];
+		vmeAddr  = 0;
+		size     = PLDZ002_CR_CSR_SIZE;
+		break;
+
 	case VME4L_SPC_A32_D32:
 		if( h->a32LongAddUsed ){	/* already a A32 window setup */
 			rv = -EBUSY;
@@ -359,12 +366,6 @@ static int RequestAddrWindow(
 		  VME4LDBG("set LONGADD 0x%02x\n", (vmeAddr >> 29 ) & 0xff );
 		  VME_REG_WRITE8( PLDZ002_LONGADD, vmeAddr >> 29 );
 		}
-		break;
-
-	case VME4L_SPC_CR_CSR:
-		physAddr = (void *)h->spaces[CHAM_SPC_A24_D16];  /* TBD: Do I have to use own space here ? but its "same" address range like a24d16.. */
-		vmeAddr  = 0;
-		size	 = PLDZ002_A24Dxx_SIZE;
 		break;
 
 	default:
@@ -1862,10 +1863,6 @@ static void InitBridge( VME4L_BRIDGE_HANDLE *h )
 	h->addrModShadow[VME4L_SPC_A32_D32_BLT] = PLDZ002_DMABD_AM_A32D32;
 	h->addrModShadow[VME4L_SPC_A32_D64_BLT] = PLDZ002_DMABD_AM_A32D64;
 
-	/* CR/CSR cycle: this is the AM 0x2f as presented to VME bus by the FPGA.
-	 * internally its activated by bit[6] in AMOD => define PLDZ002_CR_CSR_BIT, 0x40 */
-	h->addrModShadow[VME4L_SPC_CR_CSR] 		= ADDR_MOD_CR_CSR;
-
 	VME_REG_WRITE8( PLDZ002_INTR, 0x00 );
 	VME_REG_WRITE8( PLDZ002_IMASK, 0x00 );
 	VME_REG_WRITE8( PLDZ002_MSTR, PLDZ002_MSTR_BERR );
@@ -1962,16 +1959,18 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 	/* save chameleon unit */
 	h->chu = chu;
 
-	/* gather all the other chameleon units */
-	for (i = 0; i < 7; i++) {
-		if (men_chameleonV2_unit_find(2, i, &u) != 0) {
-			printk(KERN_ERR "Did not find all chameleon units\n");
+	/* gather all the other chameleon units. Only A25 has 8 units, A21 and others 7 */
+	/* for (i = 0; i < ( h->bLongaddAdjustable ? PLDZ002_MAX_UNITS : PLDZ002_MAX_UNITS-1 ) ; i++) { */
+	for (i = 0; i < PLDZ002_MAX_UNITS ; i++)
+	{
+		if (men_chameleonV2_unit_find( CHAMELEON_16Z002_VME, i, &u) != 0) {
+				printk(KERN_ERR "Did not find PLDZ002 unit %d\n");
 			rv = -EINVAL;
 			goto CLEANUP;
 		}
 
 		h->spaces[u.unitFpga.variant] = (unsigned long) u.unitFpga.addr;
-		VME4LDBG("found chameleon unit %d, variant %d, address %p\n", i, u.unitFpga.variant,u.unitFpga.addr);
+		VME4LDBG("found Z002 inst. %d, variant %d, address %p\n", i, u.unitFpga.variant,u.unitFpga.addr);
 
 		if ( u.unitFpga.variant == PLDZ002_VAR_VMEA32 && h->bLongaddAdjustable ) {
 		    barA32 = u.unitFpga.bar;

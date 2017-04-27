@@ -147,8 +147,6 @@ typedef enum {
 #define VME4L_NUM_LEVELS			0x30
 /*! @} */
 
-#define ADDR_MOD_CR_CSR				0x2f		/**<	special AM 0x2f	for Config ROMs	*/
-
 /**********************************************************************/
 /** \defgroup VME4L_RWFLAGS flags for VME_Read() and VME_Write()
  * The following flags can be combined (binary ORed):
