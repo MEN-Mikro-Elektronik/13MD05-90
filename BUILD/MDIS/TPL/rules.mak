@@ -462,7 +462,6 @@ clean:
 	@$(ECHO) "Removing all objects, modules, binaries, libraries, descriptors"
 	rm -rf .kernelsettings .kernelsubdirs OBJ BIN LIB DESC
 	rm -f $(_DESCGEN_OBJ)/*
-	rm -f /lib/udev/devices/mdis
 
 # install non-debug modules when ALL_DBGS is set to "nodbg" (or via command
 # line paramter "DEBUG="
