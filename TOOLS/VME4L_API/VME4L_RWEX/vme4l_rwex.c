@@ -106,9 +106,9 @@ int main( int argc, char *argv[] )
 	signal( SIGUSR1, SigHandler ); /* catch sig 10 (typical) */
 
 	spc 	= strtol( 	argv[1], NULL, 10 );
-	vmeAddr = strtoull( argv[2], NULL, 16 );
-	size    = strtoul( 	argv[3], NULL, 16 );
-	accWidth= strtoul( 	argv[4], NULL, 16 );
+	vmeAddr = strtoull( argv[2], NULL, 0 );
+	size    = strtoul( 	argv[3], NULL, 0 );
+	accWidth= strtoul( 	argv[4], NULL, 0 );
 	doRead = ( *argv[5] == 'w' ) ? 0:1;
 	/* opt_mod = strtol(argv[6], NULL, 0);*/
 
