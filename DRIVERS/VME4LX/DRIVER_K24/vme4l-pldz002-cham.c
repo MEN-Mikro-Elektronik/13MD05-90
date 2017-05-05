@@ -71,12 +71,23 @@
  *
  *---------------------------------------------------------------------------
  * (c) Copyright 2004 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
- ****************************************************************************/
+ ******************************************************************************/
+/*
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include <linux/version.h>
-/* #if !(defined AUTOCONF_INCLUDED) && (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19)) */
-/*  #include <linux/config.h> */
-/* #endif */
 #include <linux/module.h>
 #include <linux/kernel.h> /* printk() */
 
@@ -89,19 +100,16 @@
 +--------------------------------------*/
 
 /** DMA bounce buffer uses last 256K of bridge SRAM */
-#define BOUNCE_SRAM_A21ADDR	 0x0   /* 0xff000 */    /* ts: was c0000 */
-#define BOUNCE_DMABD_BASE	 0xff000
-
-#define LOCAL_SRAM_A21ADDR	0x0   /* ts: was c0000 */
-
-#define BOUNCE_SRAM_A21SIZE	0x100000    /* 1MB SRAM  */
-#define BOUNCE_SRAM_A15SIZE	0x40000
-#define PLDZ002_MAX_UNITS	8
-#define BOUNCE_SRAM_SIZE 	BOUNCE_SRAM_A21SIZE
-
-#define PLDZ002_VAR_VMEA32      8  /* Variant of that PLDZ002 core that represents A32 space.
-									  on new Z002 core this unit's BAR can have different size
-									  depending on VHDL generic */
+#define BOUNCE_SRAM_A21ADDR			0x0   /* 0xff000 */    /* ts: was c0000 */
+#define BOUNCE_DMABD_BASE	 		0xff000
+#define LOCAL_SRAM_A21ADDR			0x0   /* ts: was c0000 */
+#define BOUNCE_SRAM_A21SIZE			0x100000    /* 1MB SRAM  */
+#define BOUNCE_SRAM_A15SIZE			0x40000
+#define PLDZ002_MAX_UNITS			8
+#define BOUNCE_SRAM_SIZE 			BOUNCE_SRAM_A21SIZE
+#define PLDZ002_VAR_VMEA32      	8  /* Variant of that PLDZ002 core that represents A32 space.
+										  on new Z002 core this unit's BAR can have different size
+										  depending on VHDL generic */
 #define PLDZ002_A32D32_SIZE_512M	0x20000000
 #define PLDZ002_A32D32_SIZE_256M	0x10000000
 #define PLDZ002_A32D32_SIZE_128M	 0x8000000
@@ -170,10 +178,8 @@
 
 /** VME4L_RESRC.cache flags */
 #define _PLDZ002_WRITETHROUGH 	0x1
-
-
 #define _PLDZ002_FS3(h) 			(0)
-#define _PLDZ002_USE_BOUNCE_DMA(h) 	(1)
+#define _PLDZ002_USE_BOUNCE_DMA(h) 	(0)
 #define MEN_PLDZ002_DMABD_OFFS 		((char *)h->sramRegs.vaddr + 0x100)
 
 /* The A15 cannot perform direct VMA<->RAM DMA */
