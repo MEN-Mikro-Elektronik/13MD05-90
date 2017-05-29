@@ -994,10 +994,6 @@ static int vme4l_rw_pio( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode )
 	/*--- perform access here ---*/
 	if( blk->direction == READ) {
 
-		/* CR/CSR read: set bit6 in AMOD to drive AM = 0x2f to VME bus */
-		if ( spc == VME4L_SPC_CR_CSR )
-			rv = G_bDrv->addrModifierSet( spc, G_bHandle, ADDR_MOD_CR_CSR );
-
 		/* read from VME */
 		switch( blk->accWidth ) {
 
