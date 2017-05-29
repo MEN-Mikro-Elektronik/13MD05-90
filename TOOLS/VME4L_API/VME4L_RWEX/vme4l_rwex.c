@@ -26,8 +26,22 @@
  * Initial Revision
  *
  *---------------------------------------------------------------------------
- * (c) Copyright 2003 by MEN mikro elektronik GmbH, Nuernberg, Germany
- ****************************************************************************/
+ * (c) Copyright 2003 by MEN mikro elektronik GmbH, Nuremberg, Germany
+ ******************************************************************************/
+/*
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 static const char RCSid[]="$Id: vme4l_rwex.c,v 1.3 2009/06/03 19:19:53 rt Exp $";
 
@@ -106,9 +120,9 @@ int main( int argc, char *argv[] )
 	signal( SIGUSR1, SigHandler ); /* catch sig 10 (typical) */
 
 	spc 	= strtol( 	argv[1], NULL, 10 );
-	vmeAddr = strtoull( argv[2], NULL, 16 );
-	size    = strtoul( 	argv[3], NULL, 16 );
-	accWidth= strtoul( 	argv[4], NULL, 16 );
+	vmeAddr = strtoull( argv[2], NULL, 0 );
+	size    = strtoul( 	argv[3], NULL, 0 );
+	accWidth= strtoul( 	argv[4], NULL, 0 );
 	doRead = ( *argv[5] == 'w' ) ? 0:1;
 	/* opt_mod = strtol(argv[6], NULL, 0);*/
 

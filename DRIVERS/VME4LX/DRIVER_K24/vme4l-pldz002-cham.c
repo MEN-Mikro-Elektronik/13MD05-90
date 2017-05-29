@@ -71,12 +71,23 @@
  *
  *---------------------------------------------------------------------------
  * (c) Copyright 2004 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
- ****************************************************************************/
+ ******************************************************************************/
+/*
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include <linux/version.h>
-/* #if !(defined AUTOCONF_INCLUDED) && (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19)) */
-/*  #include <linux/config.h> */
-/* #endif */
 #include <linux/module.h>
 #include <linux/kernel.h> /* printk() */
 
@@ -89,19 +100,16 @@
 +--------------------------------------*/
 
 /** DMA bounce buffer uses last 256K of bridge SRAM */
-#define BOUNCE_SRAM_A21ADDR	 0x0   /* 0xff000 */    /* ts: was c0000 */
-#define BOUNCE_DMABD_BASE	 0xff000
-
-#define LOCAL_SRAM_A21ADDR	0x0   /* ts: was c0000 */
-
-#define BOUNCE_SRAM_A21SIZE	0x100000    /* 1MB SRAM  */
-#define BOUNCE_SRAM_A15SIZE	0x40000
-#define PLDZ002_MAX_UNITS	8
-#define BOUNCE_SRAM_SIZE 	BOUNCE_SRAM_A21SIZE
-
-#define PLDZ002_VAR_VMEA32      8  /* Variant of that PLDZ002 core that represents A32 space.
-									  on new Z002 core this unit's BAR can have different size
-									  depending on VHDL generic */
+#define BOUNCE_SRAM_A21ADDR			0x0   /* 0xff000 */    /* ts: was c0000 */
+#define BOUNCE_DMABD_BASE	 		0xff000
+#define LOCAL_SRAM_A21ADDR			0x0   /* ts: was c0000 */
+#define BOUNCE_SRAM_A21SIZE			0x100000    /* 1MB SRAM  */
+#define BOUNCE_SRAM_A15SIZE			0x40000
+#define PLDZ002_MAX_UNITS			8
+#define BOUNCE_SRAM_SIZE 			BOUNCE_SRAM_A21SIZE
+#define PLDZ002_VAR_VMEA32      	8  /* Variant of that PLDZ002 core that represents A32 space.
+										  on new Z002 core this unit's BAR can have different size
+										  depending on VHDL generic */
 #define PLDZ002_A32D32_SIZE_512M	0x20000000
 #define PLDZ002_A32D32_SIZE_256M	0x10000000
 #define PLDZ002_A32D32_SIZE_128M	 0x8000000
@@ -170,10 +178,8 @@
 
 /** VME4L_RESRC.cache flags */
 #define _PLDZ002_WRITETHROUGH 	0x1
-
-
 #define _PLDZ002_FS3(h) 			(0)
-#define _PLDZ002_USE_BOUNCE_DMA(h) 	(1)
+#define _PLDZ002_USE_BOUNCE_DMA(h) 	(0)
 #define MEN_PLDZ002_DMABD_OFFS 		((char *)h->sramRegs.vaddr + 0x100)
 
 /* The A15 cannot perform direct VMA<->RAM DMA */
@@ -1046,8 +1052,6 @@ static int AddrModifierSet( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h, char addrMo
 
 	PLDZ002_LOCK_STATE_IRQ(ps);
 
-	VME4LDBG("AddrModifierSet: spc = %d (%s) AM = 0x%02x\n", spc, vme4l_get_space_ent(spc)->isBlt ? "BLT" : "no BLT", h->addrModShadow[spc] );
-
 	/* the AM definition is different for BLT/non BLT spaces. Non BLT AMs are
 	   set in MSTR[8:13] (or PLDZ002_AMOD), and BLT AMs are considered during DMA BD
 	   setup. */
@@ -1058,20 +1062,20 @@ static int AddrModifierSet( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h, char addrMo
 		/* the non BLT spaces: write directly to AMOD, clear previously set CR/CSR access */
 	case VME4L_SPC_A16_D16:
 	case VME4L_SPC_A16_D32:
-		h->mstrAMod &=~(VME4l_SPC_A16_AM_MASK | PLDZ002_CR_CSR_BIT );
+		h->mstrAMod &=~VME4l_SPC_A16_AM_MASK;
 		h->mstrAMod |= (addrMod & 0x03) << 0;
 		VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod);
 		break;
 
 	case VME4L_SPC_A24_D16:
 	case VME4L_SPC_A24_D32:
-		h->mstrAMod &=~(VME4l_SPC_A24_AM_MASK | PLDZ002_CR_CSR_BIT );
+		h->mstrAMod &=~VME4l_SPC_A24_AM_MASK;
 		h->mstrAMod |= (addrMod & 0x03) << 2;
 		VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod);
 		break;
 
 	case VME4L_SPC_A32_D32:
-		h->mstrAMod &=~(VME4l_SPC_A32_AM_MASK | PLDZ002_CR_CSR_BIT );
+		h->mstrAMod &=~VME4l_SPC_A32_AM_MASK;
 		h->mstrAMod |= (addrMod & 0x03) << 4;
 		VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod);
 		break;
@@ -1089,13 +1093,6 @@ static int AddrModifierSet( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h, char addrMo
 		break;
 	case VME4L_SPC_A32_D64_BLT:
 		h->addrModShadow[spc] =	PLDZ002_DMABD_AM_A32D64 | (isSupervisor << 8) ;
-		break;
-	case VME4L_SPC_CR_CSR:
-		/* CR/CSR read cycle: like A24D16 but with VME AM 0x2f by setting bit[6] in AMOD. */
-		h->mstrAMod |= PLDZ002_CR_CSR_BIT;
-		VME_REG_WRITE8( PLDZ002_AMOD, h->mstrAMod); /* MichaelM.: bit[6]=1 overrides other AMOD bits as long as its set */
-
-		VME4LDBG("CR/CSR: read back AMOD: 0x%02x\n",  VME_REG_READ8( PLDZ002_AMOD ) );
 		break;
 	default:
 		retval = -ENOTTY;
