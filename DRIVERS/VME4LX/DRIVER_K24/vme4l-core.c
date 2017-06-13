@@ -3011,6 +3011,12 @@ static int vme4l_read_proc( char *buffer, char **start, off_t offset,
 
 static void vme4l_cleanup(void)
 {
+#ifdef CONFIG_PROC_FS
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
+	remove_proc_entry( "vme4l", 0 );
+
+#endif
+#endif /* CONFIG_PROC_FS */
 
 	/*-------------------------+
 	|  Cleanup device entries  |
