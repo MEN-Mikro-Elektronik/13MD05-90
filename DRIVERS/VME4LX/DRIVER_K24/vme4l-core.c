@@ -1457,8 +1457,7 @@ static int vme4l_bounce_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk,
  * \return >=0 number of bytes transferred, or negative error number
  * \param swapMode		window swapping mode
  */
-static int vme4l_rw( VME4L_SPACE spc, VME4L_RW_BLOCK *blk,
-					 int swapMode )
+int vme4l_rw(VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 {
 	int rv;
 	VME4L_SPACE_ENT *spcEnt = &G_spaceTbl[spc];
@@ -3158,6 +3157,7 @@ MODULE_AUTHOR("Klaus Popp <klaus.popp@men.de>");
 MODULE_DESCRIPTION("VME4L - MEN VME core");
 MODULE_LICENSE("GPL");
 
+EXPORT_SYMBOL(vme4l_rw);
 EXPORT_SYMBOL(vme4l_register_bridge_driver);
 EXPORT_SYMBOL(vme4l_unregister_bridge_driver);
 EXPORT_SYMBOL(vme4l_irq);
