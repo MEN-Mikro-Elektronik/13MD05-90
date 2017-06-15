@@ -342,7 +342,6 @@ VME4L_SPACE_ENT* vme4l_get_space_ent(unsigned int idx)
 {
     return idx < VME4L_SPACE_TBL_SIZE ? &G_spaceTbl[idx] : NULL;
 }
-EXPORT_SYMBOL(vme4l_get_space_ent);
 
 /** list for each possible VME vector and pseudo vectors */
 static struct list_head		G_vectTbl[VME4L_NUM_VECTORS];
@@ -3157,6 +3156,7 @@ MODULE_AUTHOR("Klaus Popp <klaus.popp@men.de>");
 MODULE_DESCRIPTION("VME4L - MEN VME core");
 MODULE_LICENSE("GPL");
 
+EXPORT_SYMBOL(vme4l_get_space_ent);
 EXPORT_SYMBOL(vme4l_rw);
 EXPORT_SYMBOL(vme4l_register_bridge_driver);
 EXPORT_SYMBOL(vme4l_unregister_bridge_driver);
