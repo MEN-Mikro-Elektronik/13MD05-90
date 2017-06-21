@@ -1171,40 +1171,36 @@ static int vme4l_perform_zc_dma(
 }
 
 /***********************************************************************/
-/** Handler for VME4L_IO_RW_BLOCK zero-copy DMA transfers
+/** prepare zero-copy DMA with VME bridge
  *
  * \param spc			VME4L space number
- * \param blk			ioctl argument from user
- * \param swapMode		window swapping mode
- * \return >=0 number of bytes transferred, or negative error number
+ * \param blk			pointer with kernel address of user buffer
+ * \param swapMode		if 1 swap Data in VME core
+ *
+ * \return 0 on success, or negative error number
  */
 static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 {
-
-	/*
-	 * see drivers/scsi/sg.c::st_map_user_pages()
-	 * and http://lwn.net/Articles/28548
-	 *
-	 * ts@men update 2017: see also	 https://gist.github.com/17twenty/2930467 and
-     *                               https://lwn.net/Articles/75780/ (about dma_sync_single_for_device/cpu )
-	 */
-
 	int rv = 0, i;
-	uintptr_t uaddr 	= (uintptr_t)blk->dataP;
+	uintptr_t uaddr 		= (uintptr_t)blk->dataP;
 	size_t count 			= blk->size;
 	unsigned int nr_pages	= 0;
 	struct page **pages 	= NULL;
 	uint32_t totlen			= 0;
 	int offset 				= 0;
 	int direction 			= 0;
+	struct page *page 		= NULL;
 	struct pci_dev *pciDev	= NULL;
 	struct device *pDev		= NULL;
-	/* void *pDma			= NULL; */
 	void *pKmalloc			= NULL;
 	char *pBaseDma			= NULL;
 	int locked				= 0;
+	char *pVirtAddr			= NULL;
 	dma_addr_t dmaAddr 		= 0;
 	VME4L_SCATTER_ELEM *sgListStart = NULL, *sgList;
+	dma_addr_t memPhysDma;
+	void *     memVirtDma = NULL;
+
 
 	/* direction as seen from  DMA API context */
 	direction = ( blk->direction == READ ) ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
@@ -1235,10 +1231,6 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 
 	/* Ensure that all userspace pages are locked in memory for the */
 	/* duration of the DMA transfer */
-
-	pKmalloc = kmalloc( 4096, GFP_ATOMIC );
-	pBaseDma = (char*)pKmalloc;
-
 	down_read(&current->mm->mmap_sem);
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4,8,0)
 	rv = get_user_pages( current, current->mm, uaddr, nr_pages,	blk->direction == READ,	0, pages, NULL );
@@ -1253,53 +1245,32 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 	/* pages are now locked in memory */
 	locked++;
 
+	memVirtDma = dma_alloc_coherent( pDev, PAGE_SIZE, &memPhysDma, GFP_KERNEL );
+
 	/*--- build scatter/gather list ---*/
-	offset = uaddr & ~PAGE_MASK;
-
-	for (i = 0; i < nr_pages; ++i, sgList++){
-
+	offset = 0; /* uaddr & ~PAGE_MASK; */
+	for (i = 0; i < nr_pages; ++i, sgList++) {
 		struct page *page = pages[i];
-#if 0
-		/* uintptr_t dmaAddr = page_to_phys(page) + offset; */
-		pDma = dma_alloc_coherent( pDev, count, &dmaAddr,  GFP_DMA);
-		if (!pDma ) {
-			return -ENOMEM;
-		}
-		pBaseDma = (char*)pDma;
-		VME4LDBG("dma_alloc_coherent: pDma = %p, dmaAddr = %llx\n", pDma, dmaAddr );
-#endif
 		sgList->dmaLength  = PAGE_SIZE - offset;
-		dmaAddr = dma_map_single( pDev, page, sgList->dmaLength, direction );
-		if ( dma_mapping_error(pDev, dmaAddr )) {
+		dmaAddr = dma_map_page( pDev, page,	0x0, PAGE_SIZE, direction );
+		if ( dma_mapping_error(pDev, dmaAddr ) ) {
 			printk( KERN_ERR "error mapping DMA space with dma_map_page\n" );
                 goto CLEANUP;
-        }
+        } else
 
-		sgList->dmaAddress = dmaAddr;
+			sgList->dmaAddress = dmaAddr;
 
 		if( totlen + sgList->dmaLength > count )
 			sgList->dmaLength = count - totlen;
 
 		offset = 0;
 		totlen += sgList->dmaLength;
-
-		dma_sync_single_for_device( pDev, sgList->dmaAddress, sgList->dmaLength,
-									( blk->direction == READ ) ? DMA_FROM_DEVICE : DMA_TO_DEVICE );
-
-		VME4LDBG(" sglist %d: page=%p off=%lx dma=%x dmalen=%x\n", i, page, uaddr & ~PAGE_MASK, dmaAddr, sgList->dmaLength);
+		VME4LDBG(" sglist %d: pageAddr=%p off=%lx dmaAddr=%p length=%x\n", 
+				 i, page_address(page), uaddr & ~PAGE_MASK, dmaAddr, sgList->dmaLength);
+		dma_sync_single_for_device( pDev, sgList->dmaAddress, sgList->dmaLength, direction );
 	}
 
-	/* dma_sync_single_for_cpu() gives ownership of the DMA buffer back to the processor.
-	   After that call, driver code can read or modify the buffer, but the device should not touch it.
-	   A call to dma_sync_single_for_device() is required to allow the device to access the buffer again."
-
-	   Notes:  You must do this:
-	   - Before reading values that have been written by DMA from the device
-	   (use the DMA_FROM_DEVICE direction)
-	   - After writing values that will be written to the device using DMA
-	   (use the DMA_TO_DEVICE) direction */
-
-	/*--- now do DMA in HW ---*/
+	/*--- now do DMA in HW (device touches memory) ---*/
 	rv = vme4l_perform_zc_dma( spc, sgListStart, nr_pages, blk->direction, blk->vmeAddr, swapMode );
 
 	/* mark pages as dirty */
@@ -1313,33 +1284,33 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 	/* allow CPU access to pages again, device is finished */
 	sgList = sgListStart;
 	for (i = 0; i < nr_pages; i++, sgList++) {
-		dma_sync_single_for_cpu( pDev,
-								 sgList->dmaAddress,
-								 sgList->dmaLength,
-								 blk->direction == READ ? DMA_FROM_DEVICE : DMA_TO_DEVICE );
+		dma_sync_single_for_cpu( pDev, sgList->dmaAddress, PAGE_SIZE, direction  );
 	}
 
-#if 0
-	/* here I should be able to read the virtual memory range */
-	printk("got DMA Data:\n");
-	for (i = 0; i < 0x40; i++) {
-		if (!(i % 16))
-			printk("\n");
-		printk("%02x\n", *pBaseDma++);
-	}
-#endif
-
- CLEANUP:
+CLEANUP:
 	/*--- free pages ---*/
 	if( locked ) {
 		sgList = sgListStart;
-		for (i = 0; i < nr_pages; i++, sgList++)
-		{
-			dma_unmap_page( pDev, sgList->dmaAddress, sgList->dmaLength, direction);
+		for (i = 0; i < nr_pages; i++, sgList++) {
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4,6,0)
 			page_cache_release( pages[i] );
 #endif
+			dma_unmap_page( pDev, sgList->dmaAddress, PAGE_SIZE, direction );
 		}
+	}
+
+#if 1
+	sgList = sgListStart;
+	for (i = 0; i < nr_pages; i++, sgList++) {
+	    page = pages[i];
+		printk("page %d: got these Data:\n", i);
+		pBaseDma = (char*)page_address( page );
+		for (i = 0; i < 0x80; i++) {
+			if (!(i % 16))
+				printk("\n");		
+			printk("%02x ", *pBaseDma++);
+		}
+#endif
 	}
 
 	if( sgListStart )
@@ -1432,28 +1403,6 @@ static int vme4l_bounce_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk,
  *
  * \param spc			VME4L space number
  * \param blk			ioctl argument from user
-
-#ifdef DBG
-{         / * gigigi * /
-		  int i=0;
-		  char *pDat = (char*)bounceBuf;
-
-		  if( blk->direction == READ )
-		    {
-		      VME4LDBG("DMA read done. bounce buffer content:\n" );
-		      / * ts@men: dump whats in the bounce Buffer * /
-
-		      for ( i=0; i < curLen; i++) {
-			if (!(i % 16))
-			  VME4LDBG("\n %04x | ", i );
-
-			VME4LDBG("%02x ", *pDat++ );
-		    }
-		  }
-		}
-
-#endif
-
  * \return >=0 number of bytes transferred, or negative error number
  * \param swapMode		window swapping mode
  */
@@ -2118,12 +2067,9 @@ static int vme4l_mmap(
 		}
 
 		physAddr = (uintptr_t)win->physAddr + offset;
-
 	}
 
-	/*
-	 * Accessing VME must be done non-cached / guarded.
-	 */
+	/* Accessing VME must be done non-cached / guarded. */
 
 	/* replace discontinued VM_RESERVED as stated in Torvalds' mail:
 	https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/commit/?id=547b1e81afe3119f7daf702cc03b158495535a25 */

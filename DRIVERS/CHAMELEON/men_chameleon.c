@@ -820,6 +820,15 @@ static int __devinit pci_init_one (
 
     printk( KERN_INFO "\nFound MEN Chameleon FPGA at bus %d dev %02x\n", pdev->bus->number, pdev->devfn >> 3);
 
+	rv = dma_set_mask_and_coherent(pdev, DMA_BIT_MASK(32));
+	if (rv) {
+		printk(KERN_ERR "No 32bit DMA support on this CPU, trying 32bit\n" );
+		goto CLEANUP;
+	} else
+		printk(KERN_INFO "setting 32bit DMA support\n" );
+
+
+
     /* initialize Chameleon handle depending on IO or mem mapped BAR0 */
     pci_read_config_dword( pdev, PCI_BASE_ADDRESS_0, &value32 );
 

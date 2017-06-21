@@ -1933,25 +1933,12 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 		  return 0;
 	}
 
-	/* check 64bit/32bit DMA capability */
-	rv = dma_set_mask(&chu->pdev->dev, DMA_BIT_MASK(64));
-	if (rv == 0)
-		dma_set_coherent_mask(&chu->pdev->dev, DMA_BIT_MASK(64));
-
-	if (rv) {
-		printk(KERN_ERR "No 64bit DMA support on this CPU, trying 32bit\n" );
-
-		rv = dma_set_mask(&chu->pdev->dev, DMA_BIT_MASK(32));
-		if (rv == 0)
-			dma_set_coherent_mask(&chu->pdev->dev, DMA_BIT_MASK(32));
-
-		if (rv) {
-			printk(KERN_ERR "No 32bit DMA support on this CPU, trying 32bit\n" );
-			goto CLEANUP;
-		} else
-			printk(KERN_INFO "setting 32bit DMA support\n" );
-	} else
-			printk(KERN_INFO "setting 64bit DMA support\n" );
+	/* rv = dma_set_mask_and_coherent(&chu->pdev->dev, DMA_BIT_MASK(32)); */
+	/* if (rv) { */
+	/* 	printk(KERN_ERR "No 32bit DMA support on this CPU, trying 32bit\n" ); */
+	/* 	goto CLEANUP; */
+	/* } else */
+	/* 	printk(KERN_INFO "setting 32bit DMA support\n" ); */
 
 	/* save chameleon unit */
 	h->chu = chu;
