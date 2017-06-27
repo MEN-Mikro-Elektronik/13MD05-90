@@ -1170,6 +1170,27 @@ static int vme4l_perform_zc_dma(
 	return rv;
 }
 
+
+static void vme4l_user_pages_print(unsigned int nr_pages,
+				   struct page **pages,
+				   unsigned int len)
+{
+	char *pBaseDma;
+	int i;
+
+	for (i = 0; i < nr_pages; i++) {
+		printk("page %d: got these Data:\n", i);
+
+		pBaseDma = (char*)page_address(pages[i]);
+		for (i = 0; i < len; i++) {
+			if (!(i % 16))
+				printk("\n");
+			printk("%02x ", *pBaseDma++);
+		}
+	}
+}
+
+
 /***********************************************************************/
 /** prepare zero-copy DMA with VME bridge
  *
@@ -1300,17 +1321,7 @@ CLEANUP:
 	}
 
 #if 1
-	sgList = sgListStart;
-	for (i = 0; i < nr_pages; i++, sgList++) {
-		page = pages[i];
-		printk("page %d: got these Data:\n", i);
-		pBaseDma = (char*)page_address( page );
-		for (i = 0; i < 0x80; i++) {
-			if (!(i % 16))
-				printk("\n");
-			printk("%02x ", *pBaseDma++);
-		}
-	}
+	vme4l_user_pages_print(nr_pages, pages, 128);
 #endif
 
 	if( sgListStart )
