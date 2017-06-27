@@ -1255,8 +1255,8 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 		dmaAddr = dma_map_page( pDev, page,	0x0, PAGE_SIZE, direction );
 		if ( dma_mapping_error(pDev, dmaAddr ) ) {
 			printk( KERN_ERR "error mapping DMA space with dma_map_page\n" );
-                goto CLEANUP;
-        } else
+			goto CLEANUP;
+		} else
 
 			sgList->dmaAddress = dmaAddr;
 
@@ -1265,8 +1265,8 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 
 		offset = 0;
 		totlen += sgList->dmaLength;
-		VME4LDBG(" sglist %d: pageAddr=%p off=%lx dmaAddr=%p length=%x\n", 
-				 i, page_address(page), uaddr & ~PAGE_MASK, dmaAddr, sgList->dmaLength);
+		VME4LDBG(" sglist %d: pageAddr=%p off=%lx dmaAddr=%p length=%x\n",
+			 i, page_address(page), uaddr & ~PAGE_MASK, dmaAddr, sgList->dmaLength);
 		dma_sync_single_for_device( pDev, sgList->dmaAddress, sgList->dmaLength, direction );
 	}
 
@@ -1302,12 +1302,12 @@ CLEANUP:
 #if 1
 	sgList = sgListStart;
 	for (i = 0; i < nr_pages; i++, sgList++) {
-	    page = pages[i];
+		page = pages[i];
 		printk("page %d: got these Data:\n", i);
 		pBaseDma = (char*)page_address( page );
 		for (i = 0; i < 0x80; i++) {
 			if (!(i % 16))
-				printk("\n");		
+				printk("\n");
 			printk("%02x ", *pBaseDma++);
 		}
 #endif
