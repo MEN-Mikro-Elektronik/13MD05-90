@@ -1191,6 +1191,35 @@ static void vme4l_user_pages_print(unsigned int nr_pages,
 }
 
 
+/**
+ * It gets the user pages from a given user buffer
+ * \param uaddr		Address for the user buffer
+ * \param nr_pages		Number of pages found
+ * \param pages		User pages for the given buffer
+ *
+ *\return 0 on success, or a negative number
+ */
+static int vme4l_get_user_pages(uintptr_t uaddr, unsigned int write,
+				unsigned int nr_pages,
+				struct page **pages)
+{
+	int rv;
+
+	/* Ensure that all userspace pages are locked in memory for the */
+	/* duration of the DMA transfer */
+	down_read(&current->mm->mmap_sem);
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,8,0)
+	rv = get_user_pages(current, current->mm,
+			    uaddr, nr_pages, write, 0, pages, NULL);
+#else
+	rv = get_user_pages(uaddr, nr_pages, write, pages, NULL);
+#endif
+	up_read(&current->mm->mmap_sem);
+
+	return rv;
+}
+
+
 /***********************************************************************/
 /** prepare zero-copy DMA with VME bridge
  *
@@ -1250,16 +1279,8 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 		goto CLEANUP;
 	}
 
-	/* Ensure that all userspace pages are locked in memory for the */
-	/* duration of the DMA transfer */
-	down_read(&current->mm->mmap_sem);
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4,8,0)
-	rv = get_user_pages( current, current->mm, uaddr, nr_pages,	blk->direction == READ,	0, pages, NULL );
-#else
-	rv = get_user_pages( uaddr, nr_pages, blk->direction == READ ? FOLL_WRITE : 0, pages, NULL );
-#endif
-	up_read(&current->mm->mmap_sem);
-
+	rv = vme4l_get_user_pages(uaddr, (direction == DMA_FROM_DEVICE),
+				  nr_pages, pages);
 	if( rv < nr_pages )
 		goto CLEANUP;
 
