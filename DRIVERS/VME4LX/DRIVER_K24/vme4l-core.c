@@ -1310,8 +1310,8 @@ CLEANUP:
 				printk("\n");
 			printk("%02x ", *pBaseDma++);
 		}
-#endif
 	}
+#endif
 
 	if( sgListStart )
 		kfree( sgListStart );
