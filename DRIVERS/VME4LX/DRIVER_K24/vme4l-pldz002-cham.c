@@ -88,6 +88,9 @@
  */
 
 #include <linux/version.h>
+/* #if !(defined AUTOCONF_INCLUDED) && (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19)) */
+/*  #include <linux/config.h> */
+/* #endif */
 #include <linux/module.h>
 #include <linux/kernel.h> /* printk() */
 
@@ -100,16 +103,19 @@
 +--------------------------------------*/
 
 /** DMA bounce buffer uses last 256K of bridge SRAM */
-#define BOUNCE_SRAM_A21ADDR			0x0   /* 0xff000 */    /* ts: was c0000 */
-#define BOUNCE_DMABD_BASE	 		0xff000
-#define LOCAL_SRAM_A21ADDR			0x0   /* ts: was c0000 */
-#define BOUNCE_SRAM_A21SIZE			0x100000    /* 1MB SRAM  */
-#define BOUNCE_SRAM_A15SIZE			0x40000
-#define PLDZ002_MAX_UNITS			8
-#define BOUNCE_SRAM_SIZE 			BOUNCE_SRAM_A21SIZE
-#define PLDZ002_VAR_VMEA32      	8  /* Variant of that PLDZ002 core that represents A32 space.
-										  on new Z002 core this unit's BAR can have different size
-										  depending on VHDL generic */
+#define BOUNCE_SRAM_A21ADDR	 0x0   /* 0xff000 */    /* ts: was c0000 */
+#define BOUNCE_DMABD_BASE	 0xff000
+
+#define LOCAL_SRAM_A21ADDR	0x0   /* ts: was c0000 */
+
+#define BOUNCE_SRAM_A21SIZE	0x100000    /* 1MB SRAM  */
+#define BOUNCE_SRAM_A15SIZE	0x40000
+#define PLDZ002_MAX_UNITS	8
+#define BOUNCE_SRAM_SIZE 	BOUNCE_SRAM_A21SIZE
+
+#define PLDZ002_VAR_VMEA32      8  /* Variant of that PLDZ002 core that represents A32 space.
+									  on new Z002 core this unit's BAR can have different size
+									  depending on VHDL generic */
 #define PLDZ002_A32D32_SIZE_512M	0x20000000
 #define PLDZ002_A32D32_SIZE_256M	0x10000000
 #define PLDZ002_A32D32_SIZE_128M	 0x8000000
@@ -178,8 +184,10 @@
 
 /** VME4L_RESRC.cache flags */
 #define _PLDZ002_WRITETHROUGH 	0x1
+
+
 #define _PLDZ002_FS3(h) 			(0)
-#define _PLDZ002_USE_BOUNCE_DMA(h) 	(0)
+#define _PLDZ002_USE_BOUNCE_DMA(h) 	(1)
 #define MEN_PLDZ002_DMABD_OFFS 		((char *)h->sramRegs.vaddr + 0x100)
 
 /* The A15 cannot perform direct VMA<->RAM DMA */
@@ -1933,25 +1941,12 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 		  return 0;
 	}
 
-	/* check 64bit/32bit DMA capability */
-	rv = dma_set_mask(&chu->pdev->dev, DMA_BIT_MASK(64));
-	if (rv == 0)
-		dma_set_coherent_mask(&chu->pdev->dev, DMA_BIT_MASK(64));
-
-	if (rv) {
-		printk(KERN_ERR "No 64bit DMA support on this CPU, trying 32bit\n" );
-
-		rv = dma_set_mask(&chu->pdev->dev, DMA_BIT_MASK(32));
-		if (rv == 0)
-			dma_set_coherent_mask(&chu->pdev->dev, DMA_BIT_MASK(32));
-
-		if (rv) {
-			printk(KERN_ERR "No 32bit DMA support on this CPU, trying 32bit\n" );
-			goto CLEANUP;
-		} else
-			printk(KERN_INFO "setting 32bit DMA support\n" );
-	} else
-			printk(KERN_INFO "setting 64bit DMA support\n" );
+	/* rv = dma_set_mask_and_coherent(&chu->pdev->dev, DMA_BIT_MASK(32)); */
+	/* if (rv) { */
+	/* 	printk(KERN_ERR "No 32bit DMA support on this CPU, trying 32bit\n" ); */
+	/* 	goto CLEANUP; */
+	/* } else */
+	/* 	printk(KERN_INFO "setting 32bit DMA support\n" ); */
 
 	/* save chameleon unit */
 	h->chu = chu;
