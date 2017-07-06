@@ -2414,7 +2414,7 @@ int men_16z077_probe( CHAMELEON_UNIT_T *chu )
 	memset((char*)(memVirtDma), 0, PAGE_SIZE);
 
 	/* store for dma_free_coherent at module remove */
-	np->bdBase = memVirtDma;
+	np->bdBase = (unsigned long)memVirtDma;
 	np->bdPhys = memPhysDma;
 	Z77WRITE_D32( Z077_BASE, Z077_REG_BDSTART, memPhysDma );
 
@@ -2512,7 +2512,7 @@ static int men_16z077_remove( CHAMELEON_UNIT_T *chu )
 	Z77DBG( ETHT_MESSAGE_LVL2, "--> men_16z077_remove\n" );
 	netif_napi_del(&np->napi);
 	cancel_work_sync(&np->reset_task);
-	dma_free_coherent(&chu->pdev->dev, PAGE_SIZE, np->bdBase, np->bdPhys );
+	dma_free_coherent(&chu->pdev->dev, PAGE_SIZE, (void *)np->bdBase, np->bdPhys );
 	unregister_netdev(dev);
 	return 0;
 }
