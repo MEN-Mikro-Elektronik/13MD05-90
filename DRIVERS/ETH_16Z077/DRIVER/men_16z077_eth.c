@@ -2273,7 +2273,7 @@ static int z77_close(struct net_device *dev)
 
 	/* Rx BDs, these don't get unmapped after each packet so do that here */
 	for (i = 0; i < Z077_RBD_NUM; i++ ) {
-		dma_unmap_single( &pcd->dev, np->txBd[i].hdlDma, Z77_ETHBUF_SIZE, DMA_TO_DEVICE);
+		dma_unmap_single( &pcd->dev, np->rxBd[i].hdlDma, Z77_ETHBUF_SIZE, DMA_TO_DEVICE);
 		dma_free_coherent( &pcd->dev, Z77_ETHBUF_SIZE, np->rxBd[i].BdAddr, np->rxBd[i].hdlDma);
 	}
 
