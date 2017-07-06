@@ -2155,7 +2155,7 @@ void z77_tx(struct net_device *dev)
 {
 	struct z77_private *np = netdev_priv(dev);
 
-	pci_unmap_single(np->pdev, np->txBd[np->txIrq].hdlDma, Z77_ETHBUF_SIZE, DMA_TO_DEVICE);
+	dma_unmap_single(&np->pdev->dev, np->txBd[np->txIrq].hdlDma, Z77_ETHBUF_SIZE, DMA_TO_DEVICE);
 	np->txIrq++;
 	np->txIrq%= Z077_TBD_NUM;
 	np->stats.tx_packets++;
