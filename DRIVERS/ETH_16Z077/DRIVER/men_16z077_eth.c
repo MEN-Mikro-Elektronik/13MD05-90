@@ -1801,6 +1801,12 @@ static int z77_send_packet(struct sk_buff *skb, struct net_device *dev)
 
 	Z77DBG(ETHT_MESSAGE_LVL2, "%s: z77_send_packet[%d] len 0x%04x\n", dev->name, idxTx, skb->len );
 	dma_handle = dma_map_single( &pcd->dev, (void*)(np->txBd[idxTx].BdAddr), Z77_ETHBUF_SIZE, DMA_TO_DEVICE );
+	if (dma_mapping_error( &pcd->dev, dma_handle)) {
+		printk( KERN_ERR "*** dma_mapping_error occured, can't dma_map_single()!\n");
+		return -ENOMEM;
+	}
+
+
 	np->txBd[idxTx].hdlDma = dma_handle;
 	Z077_SET_TBD_ADDR( idxTx, dma_handle);
 	src 	= (u8*)buf;
