@@ -97,6 +97,9 @@
 #include <linux/proc_fs.h>
 #include <linux/pagemap.h>
 #include <linux/sched.h>
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+# include <linux/sched/signal.h>
+#endif
 #include <linux/ioport.h>
 #include <linux/fcntl.h>        /* O_ACCMODE 		*/
 #include <linux/pci.h>
