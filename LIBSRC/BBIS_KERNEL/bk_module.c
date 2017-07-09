@@ -78,6 +78,8 @@
 #define EXPORT_SYMTAB
 #include <linux/module.h>
 #include <linux/interrupt.h>
+#include <linux/uaccess.h>
+
 #include "bk_intern.h"
 
 /*--------------------------------------+
