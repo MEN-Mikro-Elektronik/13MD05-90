@@ -2206,8 +2206,9 @@ static void z77_pass_packet( struct net_device *dev, unsigned int idx )
 		
 		/* tell network stack... */
 		netif_receive_skb(skb);
-
+#if LINUX_VERSION_CODE  < KERNEL_VERSION(4,10,0)
 		dev->last_rx 		= jiffies;
+#endif
 		np->stats.rx_bytes += pkt_len;
 		np->stats.rx_packets++;
 
