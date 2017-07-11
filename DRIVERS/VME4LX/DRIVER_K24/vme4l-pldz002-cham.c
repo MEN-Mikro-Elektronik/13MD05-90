@@ -187,13 +187,13 @@
 
 
 #define _PLDZ002_FS3(h) 			(0)
-#define _PLDZ002_USE_BOUNCE_DMA(h) 	(1)
+#define _PLDZ002_USE_BOUNCE_DMA(h) 	(0)
 #define MEN_PLDZ002_DMABD_OFFS 		((char *)h->sramRegs.vaddr + 0x100)
 
 /* The A15 cannot perform direct VMA<->RAM DMA */
 #if defined (MEN_A15)
 # define _PLDZ002_FS3(h) 				(h->chu->pdev->revision >= 99)
-# define _PLDZ002_USE_BOUNCE_DMA(h) 		(1)
+# define _PLDZ002_USE_BOUNCE_DMA(h) 		(0)
 #endif
 
 /** interrupter dummy ID */
