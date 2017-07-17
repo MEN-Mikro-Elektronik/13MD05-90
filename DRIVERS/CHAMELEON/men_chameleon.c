@@ -316,6 +316,26 @@ static void cham_probe_unlock(void)
     up(&cham_probe_sem);
 }
 
+
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,12,26)
+/* Function taken from the Linux kernel */
+/*
+ * Set both the DMA mask and the coherent DMA mask to the same thing.
+ * Note that we don't check the return value from dma_set_coherent_mask()
+ * as the DMA API guarantees that the coherent DMA mask can be set to
+ * the same or smaller than the streaming DMA mask.
+ */
+static inline int dma_set_mask_and_coherent(struct device *dev, u64 mask)
+{
+	int rc = dma_set_mask(dev, mask);
+	if (rc == 0)
+		dma_set_coherent_mask(dev, mask);
+	return rc;
+}
+#endif
+
+
+
 /*******************************************************************/
 /** Probes driver if it can handle the new unit
  *
@@ -820,7 +840,7 @@ static int __devinit pci_init_one (
 
     printk( KERN_INFO "\nFound MEN Chameleon FPGA at bus %d dev %02x\n", pdev->bus->number, pdev->devfn >> 3);
 
-	rv = dma_set_mask_and_coherent(pdev, DMA_BIT_MASK(32));
+	rv = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
 	if (rv) {
 		printk(KERN_ERR "No 32bit DMA support on this CPU, trying 32bit\n" );
 		goto CLEANUP;
