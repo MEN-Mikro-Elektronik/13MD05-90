@@ -934,17 +934,18 @@ static int __devinit pci_init_one (
 
     list_add_tail( &h->node, &G_chamLst);
 
+    rv = pci_enable_device(pdev);
+    if (rv) {
+        printk(KERN_ERR "failed to pci_enable_device(). Something is very wrong...\n");
+        return -ENODEV;
+    }
+
     /*--------------------------------+
     |  Inform all registered drivers  |
     +--------------------------------*/
     chameleon_announce_fpga( h );
 
     rv = 0;
-
-	if (pci_enable_device( pdev )) {
-		printk(KERN_ERR "failed to pci_enable_device(). Something is very wrong...\n");
-		return -ENODEV;
-	}
 
     return rv;
 
