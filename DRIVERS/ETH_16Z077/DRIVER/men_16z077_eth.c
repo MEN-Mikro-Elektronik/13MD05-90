@@ -2170,7 +2170,7 @@ static void z77_pass_packet( struct net_device *dev, unsigned int idx )
 	pkt_len	= Z077_GET_RBD_LEN( idx );
 
 	if (( np->rxBd[idx].BdAddr == NULL ) || ( pkt_len == 0 )) {
-		Z77DBG(ETHT_MESSAGE_LVL3, "invalid length of pkt %d (len=%d)!\n", idx, pkt_len );
+		printk(KERN_ERR "Invalid length for RX packet %d (length=%d)\n", idx, pkt_len );
 		return;
 	}
 
