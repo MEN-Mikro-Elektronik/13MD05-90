@@ -1840,12 +1840,7 @@ static int z77_send_packet(struct sk_buff *skb, struct net_device *dev)
 		Z77DBG(ETHT_MESSAGE_LVL3, "\n");
 	}
 
-	/* sync Tx buffer for write to device */
-	dma_sync_single_for_device( &pcd->dev, np->txBd[idxTx].hdlDma, Z77_ETHBUF_SIZE, DMA_TO_DEVICE);
 	/* prefetchw( (void*)(np->txBd[idxTx].BdAddr) ); */
-
-	/* sync BD buffer for write to device */
-	dma_sync_single_for_device( &pcd->dev, np->bdPhys, PAGE_SIZE, DMA_TO_DEVICE);
 
 	/* finally kick off transmission */
 	if (idxTx < 32) {
@@ -1854,9 +1849,6 @@ static int z77_send_packet(struct sk_buff *skb, struct net_device *dev)
 	else {
 		Z77WRITE_D32(Z077_BASE, Z077_REG_TXEMPTY1, 1 << (idxTx - 32));
 	}
-
-	/* sync BD buffer for write to device */
-	dma_sync_single_for_device( &pcd->dev, np->bdPhys, PAGE_SIZE, DMA_TO_DEVICE);
 
 	/* dev->trans_start = jiffies; */
 	np->stats.tx_bytes += skb->len;
@@ -2175,9 +2167,6 @@ static void z77_pass_packet( struct net_device *dev, unsigned int idx )
 
 	prefetch(np->rxBd[idx].BdAddr);		
 
-	/* sync in data from IP core */
-	dma_sync_single_for_cpu( &pcd->dev, np->rxBd[idx].hdlDma, Z77_ETHBUF_SIZE, DMA_FROM_DEVICE );
-	
 	pkt_len	= Z077_GET_RBD_LEN( idx );
 
 	if (( np->rxBd[idx].BdAddr == NULL ) || ( pkt_len == 0 )) {
@@ -2197,9 +2186,6 @@ static void z77_pass_packet( struct net_device *dev, unsigned int idx )
 		skb_put(skb, pkt_len);
 		skb->protocol = eth_type_trans (skb, dev);
 
-		/* sync in data from IP core */
-		dma_sync_single_for_cpu( &pcd->dev, np->rxBd[idx].hdlDma, Z77_ETHBUF_SIZE, DMA_FROM_DEVICE );
-		
 		/* tell network stack... */
 		netif_receive_skb(skb);
 #if LINUX_VERSION_CODE  < KERNEL_VERSION(4,10,0)
