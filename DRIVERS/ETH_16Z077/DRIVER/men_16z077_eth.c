@@ -2171,7 +2171,7 @@ static void z77_pass_packet( struct net_device *dev, unsigned int idx )
 
 	if (( np->rxBd[idx].BdAddr == NULL ) || ( pkt_len == 0 )) {
 		printk(KERN_ERR "Invalid length for RX packet %d (length=%d)\n", idx, pkt_len );
-		return;
+		goto out;
 	}
 
 	pkt_len	-= LEN_CRC;
@@ -2193,20 +2193,20 @@ static void z77_pass_packet( struct net_device *dev, unsigned int idx )
 #endif
 		np->stats.rx_bytes += pkt_len;
 		np->stats.rx_packets++;
-
-		/* clean processed Rx BD nonempty Flag */
-		if ( idx < 32 ) {
-			Z77WRITE_D32(Z077_BASE, Z077_REG_RXEMPTY0, 1 << idx );
-		}
-		else {
-			Z77WRITE_D32(Z077_BASE, Z077_REG_RXEMPTY1, 1 << (idx-32));
-		}
-		smp_mb();
-
 	} else {
 		printk (KERN_WARNING "*** %s:Mem squeeze! drop packet\n",dev->name);
 		np->stats.rx_dropped++;		
 	}
+
+out:
+	/* clean processed Rx BD nonempty Flag */
+	if ( idx < 32 ) {
+		Z77WRITE_D32(Z077_BASE, Z077_REG_RXEMPTY0, 1 << idx );
+	}
+	else {
+		Z77WRITE_D32(Z077_BASE, Z077_REG_RXEMPTY1, 1 << (idx-32));
+	}
+	smp_mb();
 }
 
 /*******************************************************************/
