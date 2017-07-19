@@ -274,6 +274,12 @@ static CHAMELEONV2_DRIVER_T G_driver = {
     .remove   = vme4l_remove
 };
 
+static int debug = DEBUG_DEFAULT;  /**< enable debug printouts */
+
+module_param(debug, int, S_IRUGO | S_IWUSR);
+MODULE_PARM_DESC(debug, "Enable debugging printouts (default " \
+			M_INT_TO_STR(DEBUG_DEFAULT) ")");
+
 /*--------------------------------------+
 |   PROTOTYPES                          |
 +--------------------------------------*/
@@ -646,8 +652,8 @@ static int DmaSetup(
 		}
 		*vmeAddr += sgList->dmaLength;
 	}
-#ifdef DBG
-    {
+
+	if (debug) {
 		int i;
 		bdVaddr = MEN_PLDZ002_DMABD_OFFS;
 		VME4LDBG("DmaBD setup for %s:\n", direction ? "write" : "read" );
@@ -661,7 +667,7 @@ static int DmaSetup(
 			bdVaddr+=0x10;
 		}
 	}
-#endif
+
  CLEANUP:
 	VME4LDBG("<- DmaSetup\n");
 	return rv < 0 ? rv : endBd;
@@ -732,7 +738,7 @@ static int DmaBounceSetup(
 						 PLDZ002_DMABD_DST( PLDZ002_DMABD_DIR_SRAM ) |
 						 bdAm | PLDZ002_DMABD_END );
 	}
-#ifdef DBG
+
 	VME4LDBG("bounce DMA BD setup:\n");
 	VME4LDBG("phys 0x%x virt 0x%08x = 0x%08x",
 			 h->bounce.phys + bdOff+0x0, h->bounce.vaddr + bdOff+0x0, VME_REG_DMABD_RD32(bdOff+0x0));
@@ -742,7 +748,6 @@ static int DmaBounceSetup(
 			 h->bounce.phys + bdOff+0x8, h->bounce.vaddr + bdOff+0x8, VME_REG_DMABD_RD32(bdOff+0x8));
 	VME4LDBG("phys 0x%x virt 0x%08x = 0x%08x",
 			 h->bounce.phys + bdOff+0xc, h->bounce.vaddr + bdOff+0xc, VME_REG_DMABD_RD32(bdOff+0xc));
-#endif
 
  CLEANUP:
 	*bounceBufP = h->bounce.vaddr;

@@ -354,6 +354,13 @@ static int major = VME4L_MAJOR;  /**< major device number for /dev/vme4l_xx */
 module_param( major, int, 0664 );
 MODULE_PARM_DESC(major, "VME4L devices major number");
 
+static int debug = DEBUG_DEFAULT;  /**< enable debug printouts */
+
+module_param(debug, int, S_IRUGO | S_IWUSR);
+MODULE_PARM_DESC(debug, "Enable debugging printouts (default " \
+			M_INT_TO_STR(DEBUG_DEFAULT) ")");
+
+
 /*--------------------------------------+
 |   PROTOTYPES                          |
 +--------------------------------------*/
@@ -1915,9 +1922,7 @@ static int vme4l_release(
 	struct file   *file
 )
 {
-#ifdef DBG
 	int minor = MINOR(inode->i_rdev);
-#endif
 	int vector;
 
 	VME4LDBG("vme4l_close %s\n", G_spaceTbl[minor].devName );
