@@ -134,14 +134,23 @@
 typedef void *VME4L_BRIDGE_HANDLE;
 #endif
 
+#define STR_HELPER(x) #x
+#define M_INT_TO_STR(x) STR_HELPER(x)
+
 #define VME_DBG_PREFIX 	printk
 
 #ifdef DBG
-# define VME4LDBG(fmt, args...) VME_DBG_PREFIX( KERN_DEBUG fmt, ## args )
+#define DEBUG_DEFAULT 1
 #else
-# define VME4LDBG(fmt, args...) do { } while(0);
+#define DEBUG_DEFAULT 0
 #endif
 
+#define VME4LDBG(fmt, args...) \
+	do { \
+		if (debug) { \
+			VME_DBG_PREFIX( KERN_DEBUG fmt, ## args ); \
+		} \
+	} while (0)
 
 /*--------------------------------------+
 |   TYPDEFS                             |
