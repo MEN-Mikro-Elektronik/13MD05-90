@@ -1248,9 +1248,6 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 	char *pVirtAddr			= NULL;
 	dma_addr_t dmaAddr 		= 0;
 	VME4L_SCATTER_ELEM *sgListStart = NULL, *sgList;
-	dma_addr_t memPhysDma;
-	void *     memVirtDma = NULL;
-
 
 	/* direction as seen from  DMA API context */
 	direction = ( blk->direction == READ ) ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
@@ -1286,8 +1283,6 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 
 	/* pages are now locked in memory */
 	locked++;
-
-	memVirtDma = dma_alloc_coherent( pDev, PAGE_SIZE, &memPhysDma, GFP_KERNEL );
 
 	/*--- build scatter/gather list ---*/
 	offset = 0; /* uaddr & ~PAGE_MASK; */
