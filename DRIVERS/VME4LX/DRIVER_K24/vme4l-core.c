@@ -1323,10 +1323,10 @@ CLEANUP:
 	if( locked ) {
 		sgList = sgListStart;
 		for (i = 0; i < nr_pages; i++, sgList++) {
+			dma_unmap_page( pDev, sgList->dmaAddress, PAGE_SIZE, direction );
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4,6,0)
 			page_cache_release( pages[i] );
 #endif
-			dma_unmap_page( pDev, sgList->dmaAddress, PAGE_SIZE, direction );
 		}
 	}
 
