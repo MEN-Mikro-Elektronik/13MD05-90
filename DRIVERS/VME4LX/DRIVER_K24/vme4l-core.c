@@ -1309,7 +1309,6 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 		totlen += sgList->dmaLength;
 		VME4LDBG(" sglist %d: pageAddr=%p off=%lx dmaAddr=%p length=%x\n",
 			 i, page_address(page), uaddr & ~PAGE_MASK, dmaAddr, sgList->dmaLength);
-		dma_sync_single_for_device( pDev, sgList->dmaAddress, sgList->dmaLength, direction );
 	}
 
 	/*--- now do DMA in HW (device touches memory) ---*/
@@ -1323,11 +1322,6 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 		}
 	}
 
-	/* allow CPU access to pages again, device is finished */
-	sgList = sgListStart;
-	for (i = 0; i < nr_pages; i++, sgList++) {
-		dma_sync_single_for_cpu( pDev, sgList->dmaAddress, PAGE_SIZE, direction  );
-	}
 
 CLEANUP:
 	/*--- free pages ---*/
