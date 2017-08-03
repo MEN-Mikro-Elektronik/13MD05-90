@@ -147,6 +147,7 @@
 #include <linux/device.h>
 #include <linux/cdev.h>
 #include <linux/moduleparam.h>
+#include <linux/uaccess.h>
 
 /*--------------------------------------+
 |   DEFINES                             |

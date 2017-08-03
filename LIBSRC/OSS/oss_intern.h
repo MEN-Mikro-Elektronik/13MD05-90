@@ -97,6 +97,9 @@
 # include <linux/ioport.h>
 # include <linux/pci.h>
 # include <linux/signal.h>
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+# include <linux/sched/signal.h>
+#endif
 #else /* Userspace OSS... */
 # include <stdlib.h>
 # include <stdio.h>

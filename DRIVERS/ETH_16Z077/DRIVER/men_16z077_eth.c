@@ -1111,7 +1111,6 @@ static int z77_bd_setup(struct net_device *dev)
 	struct z77_private *np = netdev_priv(dev);
 	dma_addr_t memPhysDma;
 	struct pci_dev *pcd = np->pdev;
-	dma_addr_t dma_handle = 0;
 	void *     memVirtDma = NULL;
 
 	memset((char*)(Z077_BDBASE + Z077_BD_OFFS), 0x00, 0x400);
@@ -1120,6 +1119,7 @@ static int z77_bd_setup(struct net_device *dev)
 	for ( i = 0; i < Z077_TBD_NUM; i++ ) {
 		memVirtDma = dma_alloc_coherent(&pcd->dev, Z77_ETHBUF_SIZE, &memPhysDma, GFP_KERNEL );
 		np->txBd[i].BdAddr = memVirtDma;
+		np->txBd[i].hdlDma = memPhysDma;
 		memset((char*)(memVirtDma), 0, Z77_ETHBUF_SIZE);
 		Z077_SET_TBD_FLAG( i, Z077_TBD_IRQ );
 		smp_wmb();
@@ -1128,11 +1128,10 @@ static int z77_bd_setup(struct net_device *dev)
 	/* Setup Receive BDs */
 	for (i = 0; i < Z077_RBD_NUM; i++ ) {
 		memVirtDma = dma_alloc_coherent( &pcd->dev, Z77_ETHBUF_SIZE, &memPhysDma, GFP_KERNEL );
-		dma_handle = dma_map_single( &pcd->dev, memVirtDma, (size_t)Z77_ETHBUF_SIZE, DMA_FROM_DEVICE);
 		np->rxBd[i].BdAddr = memVirtDma;
-		np->rxBd[i].hdlDma = dma_handle;
+		np->rxBd[i].hdlDma = memPhysDma;
 		memset((char*)(memVirtDma), 0, Z77_ETHBUF_SIZE);
-		Z077_SET_RBD_ADDR( i, dma_handle );
+		Z077_SET_RBD_ADDR( i, np->rxBd[i].hdlDma);
 		smp_wmb();
 		Z077_SET_RBD_FLAG( i, Z077_RBD_IRQ | Z077_RBD_EMP );
 		smp_wmb();
@@ -1771,7 +1770,6 @@ static int z77_send_packet(struct sk_buff *skb, struct net_device *dev)
 	unsigned int frm_len	=   0;
 	int i 					= 	0;
 	unsigned char 	idxTx 	=   0;
-	dma_addr_t dma_handle 	= 	0;
 	u8* dst = NULL;
 	u8* src = NULL;
 
@@ -1800,9 +1798,8 @@ static int z77_send_packet(struct sk_buff *skb, struct net_device *dev)
 	}
 
 	Z77DBG(ETHT_MESSAGE_LVL2, "%s: z77_send_packet[%d] len 0x%04x\n", dev->name, idxTx, skb->len );
-	dma_handle = dma_map_single( &pcd->dev, (void*)(np->txBd[idxTx].BdAddr), Z77_ETHBUF_SIZE, DMA_TO_DEVICE );
-	np->txBd[idxTx].hdlDma = dma_handle;
-	Z077_SET_TBD_ADDR( idxTx, dma_handle);
+
+	Z077_SET_TBD_ADDR( idxTx, np->txBd[idxTx].hdlDma);
 	src 	= (u8*)buf;
 	dst 	= (u8*)np->txBd[idxTx].BdAddr;
 	frm_len = skb->len;
@@ -1843,12 +1840,7 @@ static int z77_send_packet(struct sk_buff *skb, struct net_device *dev)
 		Z77DBG(ETHT_MESSAGE_LVL3, "\n");
 	}
 
-	/* sync Tx buffer for write to device */
-	dma_sync_single_for_device( &pcd->dev, dma_handle, Z77_ETHBUF_SIZE, DMA_TO_DEVICE);
 	/* prefetchw( (void*)(np->txBd[idxTx].BdAddr) ); */
-
-	/* sync BD buffer for write to device */
-	dma_sync_single_for_device( &pcd->dev, np->bdPhys, PAGE_SIZE, DMA_TO_DEVICE);
 
 	/* finally kick off transmission */
 	if (idxTx < 32) {
@@ -1857,9 +1849,6 @@ static int z77_send_packet(struct sk_buff *skb, struct net_device *dev)
 	else {
 		Z77WRITE_D32(Z077_BASE, Z077_REG_TXEMPTY1, 1 << (idxTx - 32));
 	}
-
-	/* sync BD buffer for write to device */
-	dma_sync_single_for_device( &pcd->dev, np->bdPhys, PAGE_SIZE, DMA_TO_DEVICE);
 
 	/* dev->trans_start = jiffies; */
 	np->stats.tx_bytes += skb->len;
@@ -2149,7 +2138,6 @@ void z77_tx(struct net_device *dev)
 {
 	struct z77_private *np = netdev_priv(dev);
 
-	pci_unmap_single(np->pdev, np->txBd[np->txIrq].hdlDma, Z77_ETHBUF_SIZE, DMA_TO_DEVICE);
 	np->txIrq++;
 	np->txIrq%= Z077_TBD_NUM;
 	np->stats.tx_packets++;
@@ -2179,14 +2167,11 @@ static void z77_pass_packet( struct net_device *dev, unsigned int idx )
 
 	prefetch(np->rxBd[idx].BdAddr);		
 
-	/* sync in data from IP core */
-	dma_sync_single_for_cpu( &pcd->dev, np->rxBd[idx].hdlDma, Z77_ETHBUF_SIZE, DMA_FROM_DEVICE );
-	
 	pkt_len	= Z077_GET_RBD_LEN( idx );
 
 	if (( np->rxBd[idx].BdAddr == NULL ) || ( pkt_len == 0 )) {
-		Z77DBG(ETHT_MESSAGE_LVL3, "invalid length of pkt %d (len=%d)!\n", idx, pkt_len );
-		return;
+		printk(KERN_ERR "Invalid length for RX packet %d (length=%d)\n", idx, pkt_len );
+		goto out;
 	}
 
 	pkt_len	-= LEN_CRC;
@@ -2201,29 +2186,27 @@ static void z77_pass_packet( struct net_device *dev, unsigned int idx )
 		skb_put(skb, pkt_len);
 		skb->protocol = eth_type_trans (skb, dev);
 
-		/* sync in data from IP core */
-		dma_sync_single_for_cpu( &pcd->dev, np->rxBd[idx].hdlDma, Z77_ETHBUF_SIZE, DMA_FROM_DEVICE );
-		
 		/* tell network stack... */
 		netif_receive_skb(skb);
-
+#if LINUX_VERSION_CODE  < KERNEL_VERSION(4,10,0)
 		dev->last_rx 		= jiffies;
+#endif
 		np->stats.rx_bytes += pkt_len;
 		np->stats.rx_packets++;
-
-		/* clean processed Rx BD nonempty Flag */
-		if ( idx < 32 ) {
-			Z77WRITE_D32(Z077_BASE, Z077_REG_RXEMPTY0, 1 << idx );
-		}
-		else {
-			Z77WRITE_D32(Z077_BASE, Z077_REG_RXEMPTY1, 1 << (idx-32));
-		}
-		smp_mb();
-
 	} else {
 		printk (KERN_WARNING "*** %s:Mem squeeze! drop packet\n",dev->name);
 		np->stats.rx_dropped++;		
 	}
+
+out:
+	/* clean processed Rx BD nonempty Flag */
+	if ( idx < 32 ) {
+		Z77WRITE_D32(Z077_BASE, Z077_REG_RXEMPTY0, 1 << idx );
+	}
+	else {
+		Z77WRITE_D32(Z077_BASE, Z077_REG_RXEMPTY1, 1 << (idx-32));
+	}
+	smp_mb();
 }
 
 /*******************************************************************/
@@ -2265,10 +2248,8 @@ static int z77_close(struct net_device *dev)
 		dma_free_coherent(&pcd->dev, Z77_ETHBUF_SIZE, np->txBd[i].BdAddr, np->txBd[i].hdlDma);
 
 	/* Rx BDs, these don't get unmapped after each packet so do that here */
-	for (i = 0; i < Z077_RBD_NUM; i++ ) {
-		dma_unmap_single( &pcd->dev, np->txBd[i].hdlDma, Z77_ETHBUF_SIZE, DMA_TO_DEVICE);
+	for (i = 0; i < Z077_RBD_NUM; i++ )
 		dma_free_coherent( &pcd->dev, Z77_ETHBUF_SIZE, np->rxBd[i].BdAddr, np->rxBd[i].hdlDma);
-	}
 
 	Z77DBG( ETHT_MESSAGE_LVL1, "<-- %s()\n", __FUNCTION__ );
 	return 0;
@@ -2407,7 +2388,7 @@ int men_16z077_probe( CHAMELEON_UNIT_T *chu )
 	memset((char*)(memVirtDma), 0, PAGE_SIZE);
 
 	/* store for dma_free_coherent at module remove */
-	np->bdBase = memVirtDma;
+	np->bdBase = (unsigned long)memVirtDma;
 	np->bdPhys = memPhysDma;
 	Z77WRITE_D32( Z077_BASE, Z077_REG_BDSTART, memPhysDma );
 
@@ -2505,7 +2486,7 @@ static int men_16z077_remove( CHAMELEON_UNIT_T *chu )
 	Z77DBG( ETHT_MESSAGE_LVL2, "--> men_16z077_remove\n" );
 	netif_napi_del(&np->napi);
 	cancel_work_sync(&np->reset_task);
-	dma_free_coherent(&chu->pdev->dev, PAGE_SIZE, np->bdBase, np->bdPhys );
+	dma_free_coherent(&chu->pdev->dev, PAGE_SIZE, (void *)np->bdBase, np->bdPhys );
 	unregister_netdev(dev);
 	return 0;
 }
