@@ -123,6 +123,9 @@
 #define PLDZ002_A32D32_SIZE_32M		 0x2000000
 #define PLDZ002_A32D32_SIZE_16M		 0x1000000
 
+/* convert a chameleon BAR entry to its location in PCI config space (0x10, 0x14..) */
+#define CHAM_BAR2PCI_BASE_ADDR(x) (((x)*4)+0x10)
+
 /* Macros to lock accesses to bridge driver handle and VME bridge regs */
 #define PLDZ002_LOCK_STATE() 			spin_lock(&h->lockState)
 #define PLDZ002_UNLOCK_STATE() 			spin_unlock(&h->lockState)
@@ -1946,18 +1949,10 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 		  return 0;
 	}
 
-	/* rv = dma_set_mask_and_coherent(&chu->pdev->dev, DMA_BIT_MASK(32)); */
-	/* if (rv) { */
-	/* 	printk(KERN_ERR "No 32bit DMA support on this CPU, trying 32bit\n" ); */
-	/* 	goto CLEANUP; */
-	/* } else */
-	/* 	printk(KERN_INFO "setting 32bit DMA support\n" ); */
-
 	/* save chameleon unit */
 	h->chu = chu;
 
 	/* gather all the other chameleon units. Only A25 has 8 units, A21 and others 7 */
-	/* for (i = 0; i < ( h->bLongaddAdjustable ? PLDZ002_MAX_UNITS : PLDZ002_MAX_UNITS-1 ) ; i++) { */
 	for (i = 0; i < PLDZ002_MAX_UNITS ; i++)
 	{
 		if (men_chameleonV2_unit_find( CHAMELEON_16Z002_VME, i, &u) != 0) {
@@ -1971,11 +1966,10 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 
 		if ( u.unitFpga.variant == PLDZ002_VAR_VMEA32 && h->bLongaddAdjustable ) {
 		    barA32 = u.unitFpga.bar;
-		    /* determine BAR size. Wanted to use struct pci_dev.resource[] member but end addr
-			   seems not available there.. */
-		    pci_read_config_dword(  chu->pdev, PCI_BASE_ADDRESS_3, &barsave );
-		    pci_write_config_dword( chu->pdev, PCI_BASE_ADDRESS_3, 0xffffffff );
-		    pci_read_config_dword(  chu->pdev, PCI_BASE_ADDRESS_3, &barval  );
+		    /* check BAR size. Tried using struct pci_dev.resource[] but end addr is not available there.. */
+		    pci_read_config_dword(  chu->pdev, CHAM_BAR2PCI_BASE_ADDR(barA32), &barsave );
+		    pci_write_config_dword( chu->pdev, CHAM_BAR2PCI_BASE_ADDR(barA32), 0xffffffff );
+		    pci_read_config_dword(  chu->pdev, CHAM_BAR2PCI_BASE_ADDR(barA32), &barval  );
 		    barsize = ~(barval & PCI_BASE_ADDRESS_MEM_MASK) + 1;
 		    pci_write_config_dword( chu->pdev, PCI_BASE_ADDRESS_3, barsave); /* restore BAR */
 

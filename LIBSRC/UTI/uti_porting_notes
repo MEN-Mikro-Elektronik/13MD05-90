@@ -1,0 +1,33 @@
+Supported functions for different OSes
+
+			HPUX	LINUX   HPRT	OS9		WIN32 	Lynx	DOS 
+					        		UltraC	VC4.0
+ask			*		*       *		*		*
+cntarg		*		*       *		*		*
+cntopt		*		*       *		*		*
+dirname		*		*       *		*		*
+dl_list		*		*       *		*		*
+dump		*		*       *		*		*
+echo		*		-       *		*		1)
+fdump		*		*       *		*		*
+filename	*		*       *		*		*
+ftw			*		*       *		*		*
+getint		*		*       *		*		*
+getshorter.	*		*       *		*		*
+getstr		*		*       *		*		*
+line_args	*		*       *		*		*
+look_string	*		*       *		*		*
+macro_ex	*		*       *		*		*
+make_path	*		*       *		*		*
+panic 		*		*       *		*		*
+printtime	*		*       *		*		*
+smatch		*		*       *		*		*
+str_to_up.	*		*       *		*		*
+str_to_lo.	*		*       *		*		*
+strsave		*		*       *		*		*
+termio		-		-       -		*		-
+topt		-		-       -		*		-
+tstopt		*		*       *		*		*
+
+
+1) available, but without functionality
