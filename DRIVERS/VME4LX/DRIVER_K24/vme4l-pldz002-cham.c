@@ -1258,36 +1258,37 @@ static int SlaveWindowCtrlFs3(
 {
 	u16 val16;
 	u32 val32;
+	u32 idx=0;
 
 	const struct {
-		u32 minSize;
-		u32 maxSize;
+		size_t minSize;
+		size_t maxSize;
 		vmeaddr_t maxAddr;
 	} sizeTbl[] = {
-		{   0x1000,     0x1000,     0x10000 },		/* ctrl 		*/
-		{  0x10000,   0x100000,   0x1000000 },		/* a24 sram 	*/
-		{ 0x100000,   0x100000, 0x100000000LL },	/* a32 sram 	*/
-		{  0x10000,   0x100000,   0x1000000 },		/* a24 ram 		*/
-		{ 0x100000, 0x10000000, 0x100000000LL },	/* a32 ram 		*/
+		{   0x1000,     0x1000,     0x10000 },	/* ctrl 		*/
+		{  0x10000,   0x100000,   0x1000000 },	/* a24 sram 	*/
+		{ 0x100000,   0x100000,  0xFFFFFFFF },	/* a32 sram 	*/
+		{  0x10000,   0x100000,   0x1000000 },	/* a24 ram 		*/
+		{ 0x100000, 0x10000000,  0xFFFFFFFF },	/* a32 ram 		*/
 	};
 
 	VME4LDBG("pldz002::SlaveWindowCtrlFs3 vmeAddr=%llx size=%llx\n",
-			 vmeAddr, (uint64_t) size);
+			 vmeAddr, size);
 
 	if( (spc < VME4L_SPC_SLV0) || (spc > VME4L_SPC_SLV4 ) )
 		return -ENOTTY;
 
+	idx = spc-VME4L_SPC_SLV0;
+
 	if( size ){
 
 		/* enable slave access */
-		if( (size < sizeTbl[spc-VME4L_SPC_SLV0].minSize) ||
-			(size > sizeTbl[spc-VME4L_SPC_SLV0].maxSize) ||
-			(vmeAddr >= sizeTbl[spc-VME4L_SPC_SLV0].maxAddr) ||
+		if( (size < sizeTbl[idx].minSize) ||
+			(size > sizeTbl[idx].maxSize) ||
+			(vmeAddr >= sizeTbl[idx].maxAddr) ||
 			(vmeAddr & (size-1)) ) {
 
-			VME4LDBG("*** SlaveWindowCtrlFs3: size=%llx out of range!\n",
-					 (uint64_t) size);
-
+			printk( KERN_ERR "*** SlaveWindowCtrlFs3: size=%lx out of range!\n", size );
 			return -EINVAL;
 		}
 
@@ -1332,29 +1333,30 @@ static int SlaveWindowCtrlFs3(
 			 */
 			if( h->bmShmem.size == 0 ){
 				/* currently not setup, allocate a new one */
-			        dma_addr_t dmaAddr = 0;
+				dma_addr_t dmaAddr = 0;
 
-				h->bmShmem.vaddr = pci_alloc_consistent(h->chu->pdev, size, &dmaAddr);
-				dmaAddr = pci_map_single( h->chu->pdev, h->bmShmem.vaddr, size, PCI_DMA_FROMDEVICE);
+				h->bmShmem.vaddr = dma_alloc_coherent(&h->chu->pdev->dev, size, &dmaAddr, GFP_KERNEL);
+				if (dma_mapping_error( &h->chu->pdev->dev, dmaAddr )) {
+					printk( KERN_ERR "*** pldz002::dma_alloc_coherent failed, exiting.\n");
+					return -ENOMEM;
+				}
 				h->bmShmem.phys = dmaAddr;
 
-				VME4LDBG("pldz002: pci_alloc_consistent: v=%p p=%x (%llx)\n", h->bmShmem.vaddr, h->bmShmem.phys, (uint64_t) size );
+				VME4LDBG("pldz002: dma_alloc_coherent: v=%p p=%x (%llx)\n", h->bmShmem.vaddr, h->bmShmem.phys, size );
 
 				if( h->bmShmem.vaddr == NULL ) {
-					VME4LDBG("*** pldz002: can't alloc BM slave window of 0x%llx bytes\n", (uint64_t) size );
+					printk( KERN_ERR "*** pldz002: can't alloc BM slave window of 0x%llx bytes\n", (uint64_t) size );
 					return -ENOSPC;
 				}
 				h->bmShmem.size = size;
 
 				/* clear region */
 				memset( h->bmShmem.vaddr, 0, size );
-
 				VME_REG_WRITE32( PLDZ002_PCI_OFFSET, h->bmShmem.phys );
 			}
 			else {
 				if( h->bmShmem.size != size ){
-					VME4LDBG("*** pldz002: won't change BM slave window if "
-							 "used\n");
+					printk( KERN_ERR "*** pldz002: won't change BM slave window if used\n");
 					return -EBUSY;
 				}
 			}
@@ -1372,7 +1374,6 @@ static int SlaveWindowCtrlFs3(
 				val32 |= PLDZ002_SLVxx_EN;
 				val32 |= (((vmeAddr >> 20) & 0xff) << 8);
 				val32 |= ((((size-1)>>20)&0xff) ^ 0xff) << 16;
-
 				VME_REG_WRITE32( PLDZ002_SLV32_PCI, val32 );
 			}
 			*physAddrP = (void *)h->bmShmem.phys;
@@ -1380,7 +1381,6 @@ static int SlaveWindowCtrlFs3(
 		default:
 			break;
 		}
-
 	}
 	else {
 		/* disable slave access */
@@ -1405,18 +1405,13 @@ static int SlaveWindowCtrlFs3(
 			if( !(VME_REG_READ16( PLDZ002_SLV24_PCI ) & PLDZ002_SLVxx_EN) &&
 				!(VME_REG_READ32( PLDZ002_SLV32_PCI ) & PLDZ002_SLVxx_EN)) {
 
-				VME4LDBG("pldz002: pci_free_consistent: v=%p p=%x (%llx)\n",
+				VME4LDBG("pldz002: dma_free_coherent: v=%p p=%x (%llx)\n",
 						 h->bmShmem.vaddr, h->bmShmem.phys, (uint64_t) size );
 
-				pci_unmap_single(h->chu->pdev,
-						 h->bmShmem.phys,
-						 h->bmShmem.size,
-						 PCI_DMA_FROMDEVICE );
-
-				pci_free_consistent(h->chu->pdev,
-						    h->bmShmem.size,
-						    h->bmShmem.vaddr,
-						    h->bmShmem.phys);
+				dma_free_coherent(&h->chu->pdev->dev,
+								  h->bmShmem.size,
+								  h->bmShmem.vaddr,
+								  h->bmShmem.phys);
 				h->bmShmem.size = 0;
 			}
 			break;
@@ -1930,7 +1925,7 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 	unsigned int barval=0, barsave=0, barsize=0, barA32=0;
 	CHAMELEONV2_UNIT_T u;
 
-	printk(KERN_INFO "MEN VME4L: probing driver...\n");
+	printk(KERN_INFO "vme4l_probe: probing 16Z002 unit\n");
 	switch ( chu->unitFpga.variant ) {
 		case 2: /* control registers of new PLDZ002, w/ flex. A21 space */
 		  memset( h, 0, sizeof(*h));	/* clear handle */
