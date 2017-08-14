@@ -888,16 +888,14 @@ static int __devinit pci_init_one (
 
     for (i=0; i < CHAM_TBL_FILE_LEN; i++)
     	tblfile[i] = (table.file[i] != 0) ? table.file[i] : ' ';
-
+	/* ensure string is terminated */
     tblfile[CHAM_TBL_FILE_LEN]='\0';
 
-    printk(KERN_INFO "FPGA File='%s' table model=0x%02x('%c') "
-		   "Revision %d.%d Magic 0x%04X\n", tblfile, table.model, table.model, table.revision,table.minRevision, table.magicWord );
-
+	printk( KERN_INFO "Information about the Chameleon FPGA:\n");
+    printk( KERN_INFO "FPGA File='%s' table model=0x%02x('%c') Revision %d.%d Magic 0x%04X\n", 
+			tblfile, table.model, table.model, table.revision,table.minRevision, table.magicWord );
     printk( KERN_INFO " Unit                devId   Grp Rev  Var  Inst IRQ   BAR  Offset       Addr\n");
-    for (i=0; i < 79; i++)
-        printk("-");
-    printk("\n");
+	printk("================================================================================\n");
 
     /* gather all IP cores until end marker found */
     idx = 0;
