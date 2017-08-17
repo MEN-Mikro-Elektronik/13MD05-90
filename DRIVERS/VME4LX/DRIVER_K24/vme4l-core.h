@@ -520,8 +520,9 @@ typedef struct VME4L_BRIDGE_DRV {
 	 */
 	int (*busErrGet)(
 		VME4L_BRIDGE_HANDLE *h,
-		VME4L_SPACE *spaceP,
-		vmeaddr_t *addrP, int clear );
+		int *attrP,
+		vmeaddr_t *addrP,
+		int clear );
 
     /**********************************************************************/
     /** Get VMEbus requester mode

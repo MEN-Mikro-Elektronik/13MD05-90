@@ -1427,15 +1427,15 @@ int VME4L_ArbitrationTimeoutGet( int fd, int clear )
  * about the faulted address, otherwise *spaceP will receive
  * #VME4L_SPC_INVALID.
  *
- * \plda12  Address/space information is not provided.
- * \pldz002 Address/space information is currently not provided.
- * \tsi148  Space information is not provided.
+ * \plda12  Address/attribute information is not provided.
+ * \pldz002 Address/attribute information is provided.
+ * \tsi148  attribute information is not provided.
  *
  * \param fd	 	\IN  File descriptor for any VME space,
  *						 returned by VME4L_Open()
- * \param spaceP	\IN  Pointer to variable that receives the VME space
- *						 info of the last bus error. If passed as NULL,
- *						 no space info is returned.
+ * \param attrP		\IN  Pointer to variable that receives attribute
+ * 						 info like AM, direction and IACK or normal state
+ * 						 of the last bus error.
  * \param addrP		\IN  Pointer to variable that receives the VME address
  *						 info of the last bus error. If passed as NULL,
  *						 no address info is returned.
@@ -1450,7 +1450,7 @@ int VME4L_ArbitrationTimeoutGet( int fd, int clear )
  */
 int VME4L_BusErrorGet(
 	int fd,
-	VME4L_SPACE *spaceP,
+	int *attrP,
 	vmeaddr_t *addrP,
 	int clear )
 {
@@ -1461,7 +1461,7 @@ int VME4L_BusErrorGet(
 
 	rv = ioctl( fd, VME4L_IO_BUS_ERROR_GET, &blk );
 
-	*spaceP = blk.space;
+	*attrP = blk.attr;
 	*addrP  = blk.addr;
 
 	return rv;

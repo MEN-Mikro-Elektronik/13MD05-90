@@ -85,7 +85,7 @@ int VME4L_SysCtrlFunctionGet( int fd );
 int VME4L_SysCtrlFunctionSet( int fd, int state );
 int VME4L_SysReset( int fd );
 int VME4L_ArbitrationTimeoutGet( int fd, int clear );
-int VME4L_BusErrorGet(int fd, VME4L_SPACE *spaceP, vmeaddr_t *addrP, int clear );
+int VME4L_BusErrorGet(int fd, int *attrP, vmeaddr_t *addrP, int clear );
 int VME4L_RequesterModeSet( int fd, int state );
 int VME4L_RequesterModeGet( int fd );
 int VME4L_AddrModifierSet( int spaceFd, char addrModifier);

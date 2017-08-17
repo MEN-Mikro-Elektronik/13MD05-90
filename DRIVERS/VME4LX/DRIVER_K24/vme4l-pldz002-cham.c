@@ -243,17 +243,20 @@ typedef struct {
 	/* the following two are not ioremapped */
 	VME4L_RESRC	sram;			/**< SRAM as slave window  */
 	VME4L_RESRC	bmShmem;		/**< bus master slave window  */
-	int  a32LongAddUsed;		        	/**< A32 LONGADD reg in use count  */
-	uint8_t mstrShadow;						/**< MSTR register shadow reg */
-        uint8_t reqLevel;                   /**< VME requester Level */
-        uint32_t bLongaddAdjustable;        /**< 1: new PLDZ002 Var.2 with adjustable LONGADD register
-											   0: default LONGADD register with 3bit (8x512MB) */
-        uint32_t A32BARsize;                    /**< VME requester Level */
-        uint8_t longaddWidth;                   /**< bit width of the LONGADD: 512MB=3, 256MB=4, 128MB=5... 16MB=8  */
-        uint8_t mstrAMod;				/**< Address modifier shadow reg (A21) */
-	uint16_t addrModShadow[255];        /**< address modifiers shadow reg  */
-	uint8_t haveBerr;					/**< bus error recorded  */
-	spinlock_t lockState;		        /**< spin lock for VME bridge registers and handle state */
+	int  a32LongAddUsed;		/**< A32 LONGADD reg in use count  */
+	uint8_t mstrShadow;			/**< MSTR register shadow reg */
+    uint8_t reqLevel;           /**< VME requester Level */
+    uint32_t bLongaddAdjustable;/**< 1: new PLDZ002 Var.2 with adjustable LONGADD register
+								  	 0: default LONGADD register with 3bit (8x512MB) */
+    uint32_t A32BARsize;        /**< VME requester Level */
+    uint8_t longaddWidth;       /**< bit width of the LONGADD: 512MB=3, 256MB=4, 128MB=5... 16MB=8  */
+    uint8_t mstrAMod;			/**< Address modifier shadow reg (A21) */
+	uint16_t addrModShadow[255];/**< address modifiers shadow reg  */
+	uint8_t haveBerr;			/**< bus error recorded */
+	uint32_t berrAddr;			/**< bus error causing address */
+	uint32_t berrAcc;			/**< bus error causing properties */
+	uint32_t hasExtBerrInfo;
+	spinlock_t lockState;		/**< spin lock for VME bridge registers and handle state */
 } VME4L_BRIDGE_HANDLE;
 
 #define COMPILE_VME_BRIDGE_DRIVER
@@ -408,6 +411,32 @@ static int RequestAddrWindow(
 	return rv;
 }
 
+/*******************************************************************/
+/** evaluate the highest Bit set in an 8bit Value
+ *
+ * \param val  Value to evaluate
+ *
+ */
+static void StoreAndClearBuserror( VME4L_BRIDGE_HANDLE *h )
+{
+	/* store error causing info */
+	h->haveBerr = 1;
+	h->berrAddr = VME_REG_READ32(PLDZ002_BERR_ADDR);
+	h->berrAcc = VME_REG_READ32(PLDZ002_BERR_ACC);
+
+	/* report it, extended or default depending on core version */
+	if ( h->hasExtBerrInfo ) {
+		VME4LDBG( "*** PldZ002Irq bus error. Cause: %s VME addr 0x%lx, AM=0x%02x (in %s state)\n",
+				(h->berrAcc & PLDZ002_BERR_RW_DIR) ? "read from" : "write to",	h->berrAddr,
+				(h->berrAcc & PLDZ002_BERR_ACC_AM_MASK), (h->berrAcc & PLDZ002_BERR_IACK) ? "IACK" : "normal" );
+	} else {
+		VME4LDBG("*** PldZ002Irq bus error\n");
+	}
+
+	/* and clear */
+	VME_REG_WRITE8( PLDZ002_MSTR, h->mstrShadow | PLDZ002_MSTR_BERR );
+}
+
 /***********************************************************************/
 /** Release VME master address window
  */
@@ -523,10 +552,9 @@ static int ReadPio##size ( \
 	*dataP = VME_WIN_READ##size(vaddr);\
 	\
 	if( VME_REG_READ8( PLDZ002_MSTR ) & PLDZ002_MSTR_BERR ){\
-        VME4LDBG("*** PLDZ002 bus error at vaddr=%p\n", vaddr );\
-		rv = -EIO;\
-		VME_REG_WRITE8( PLDZ002_MSTR, h->mstrShadow | PLDZ002_MSTR_BERR );\
+		StoreAndClearBuserror(h);\
         VME_REG_READ8( PLDZ002_MSTR ); /* dummy read to complete access */\
+        rv = -EIO;\
 	}\
 	\
 	PLDZ002_UNLOCK_STATE_IRQ(ps);\
@@ -554,10 +582,8 @@ static int WritePio##size ( \
 	VME_WIN_WRITE##size(vaddr,*dataP);\
 	\
 	if( VME_REG_READ8( PLDZ002_MSTR ) & PLDZ002_MSTR_BERR ){\
-        VME4LDBG("*** PLDZ002 bus error at vaddr=%p\n", vaddr );\
 		rv = -EIO;\
-        /* clear bus error */\
-	    VME_REG_WRITE8( PLDZ002_MSTR, h->mstrShadow | PLDZ002_MSTR_BERR );\
+		StoreAndClearBuserror(h);\
         VME_REG_READ8( PLDZ002_MSTR ); /* dummy read to complete access */\
 	}\
     /* reset posted write mode */\
@@ -637,7 +663,7 @@ static int DmaSetup(
 			/* write to VME */
 			VME_GENREG_WRITE32( bdVaddr+0x0, *vmeAddr );
 			VME_GENREG_WRITE32( bdVaddr+0x4, sgList->dmaAddress );
-			VME_GENREG_WRITE32( bdVaddr+0x8, sgList->dmaLength>>2 );
+			VME_GENREG_WRITE32( bdVaddr+0x8, (sgList->dmaLength>>2) - 1 ); /* Block Size of DMA transfer in longwords:  (x bytes / 4) -1 */
 			VME_GENREG_WRITE32( bdVaddr+0xc,
 							PLDZ002_DMABD_SRC( PLDZ002_DMABD_DIR_PCI ) |
 							PLDZ002_DMABD_DST( PLDZ002_DMABD_DIR_VME ) |
@@ -647,11 +673,11 @@ static int DmaSetup(
 			/* read from VME */
 			VME_GENREG_WRITE32( bdVaddr+0x0, sgList->dmaAddress );
 			VME_GENREG_WRITE32( bdVaddr+0x4, *vmeAddr );
-			VME_GENREG_WRITE32( bdVaddr+0x8, sgList->dmaLength>>2 );
+			VME_GENREG_WRITE32( bdVaddr+0x8, (sgList->dmaLength>>2) - 1 );
 			VME_GENREG_WRITE32( bdVaddr+0xc,
-							 PLDZ002_DMABD_SRC( PLDZ002_DMABD_DIR_VME ) |
-							 PLDZ002_DMABD_DST( PLDZ002_DMABD_DIR_PCI ) |
-							 bdAm | ((sg == endBd-1) ? PLDZ002_DMABD_END : 0 ));
+								PLDZ002_DMABD_SRC( PLDZ002_DMABD_DIR_VME ) |
+								PLDZ002_DMABD_DST( PLDZ002_DMABD_DIR_PCI ) |
+								bdAm | ((sg == endBd-1) ? PLDZ002_DMABD_END : 0 ));
 		}
 		*vmeAddr += sgList->dmaLength;
 	}
@@ -660,7 +686,7 @@ static int DmaSetup(
 		int i;
 		bdVaddr = MEN_PLDZ002_DMABD_OFFS;
 		VME4LDBG("DmaBD setup for %s:\n", direction ? "write" : "read" );
-		for(i=0; i<endBd; i++ ){
+		for(i=0; i < endBd; i++ ){
 			VME4LDBG("BD%d@%x: %08x %08x %08x %08x\n",
 					 i, bdVaddr,
 					 VME_GENREG_READ32( bdVaddr+0x0 ),
@@ -933,11 +959,10 @@ static int ArbToutGet( VME4L_BRIDGE_HANDLE *h, int clear)
 /**********************************************************************/
 /** Get information about last VME bus error
  *
- * PLDZ002 doesn't yet have a buserror space/address register
  */
 static int BusErrGet(
 	VME4L_BRIDGE_HANDLE *h,
-	VME4L_SPACE *spaceP,
+	int *attrP,
 	vmeaddr_t *addrP,
 	int clear )
 {
@@ -945,11 +970,21 @@ static int BusErrGet(
 	int rv;
 
 	PLDZ002_LOCK_STATE_IRQ(ps);
+
 	rv = h->haveBerr;
-	if( clear )
+	VME4LDBG( "BusErrGet: h->haveBerr=%d\n", h->haveBerr );
+	*attrP = h->berrAcc;
+	*addrP = h->berrAddr;
+
+	if( clear ) {
 		h->haveBerr = 0;
+		h->berrAddr = 0;
+		h->berrAcc  = 0;
+	}
+
 	PLDZ002_UNLOCK_STATE_IRQ(ps);
 
+	VME4LDBG( "BusErrGet: returning rv=%d\n", rv );
 	return rv;
 }
 
@@ -1213,11 +1248,9 @@ static int RmwCycle(
 
 	/* check for bus error */
 	if( VME_REG_READ8( PLDZ002_MSTR ) & PLDZ002_MSTR_BERR ){
-        VME4LDBG("*** PLDZ002 RMW bus error at vaddr=%p\n", vaddr );
+		StoreAndClearBuserror(h);
 		rv = -EIO;
 	}
-	/* restore org. mode */
-	VME_REG_WRITE8( PLDZ002_MSTR, h->mstrShadow | PLDZ002_MSTR_BERR );
 
 	PLDZ002_UNLOCK_STATE_IRQ(ps);
 
@@ -1598,36 +1631,37 @@ static inline int HighestBitSet( u8 val )
 	return rv;
 }
 
-
 /*******************************************************************/
 /** Check if error occured on VME Bus on interrupt occurance
  *
  * \param irq		PIC irq vector (not VME vector!)
  * \param h		  	Handle of VME4L bridge.
  *
+ * \return          0 if no bus error or 1 if error.
+ *                  -1 if handle invalid.
  */
 static int PldZ002_CheckVmeBusError( VME4L_BRIDGE_HANDLE *h,
 									 int *vecP,
 									 int *levP )
 {
 
-	uint8_t mstr;
+	uint8_t mstr=0;
 
-	if (NULL == h){
+	if (NULL == h) {
 		printk(" *** %s: Bridge handle is NULL !\n", __FUNCTION__);
+		return -1;
 	}
 
 	mstr = VME_REG_READ8( PLDZ002_MSTR );
 
-	if( (mstr & (PLDZ002_MSTR_BERR | PLDZ002_MSTR_IBERREN )) ==
-		(PLDZ002_MSTR_BERR | PLDZ002_MSTR_IBERREN ) ){
-		VME4LDBG("*** PldZ002Irq bus error\n");
+	if( (mstr & (PLDZ002_MSTR_BERR | PLDZ002_MSTR_IBERREN )) ==	(PLDZ002_MSTR_BERR | PLDZ002_MSTR_IBERREN ) )
+	{
 		/* bus error detected */
 		h->haveBerr = 1;
 		*levP 	= VME4L_IRQLEV_BUSERR;
 		*vecP 	= VME4L_IRQVEC_BUSERR;
-		/* clear bus error */
-		VME_REG_WRITE8( PLDZ002_MSTR, h->mstrShadow | PLDZ002_MSTR_BERR );
+
+		StoreAndClearBuserror(h);
 		return 1;
 	}
 	return 0;
@@ -1677,7 +1711,7 @@ static int PldZ002_ProcessPendingVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
 		/* check for bus error during IACK (spurious irq) */
 		if( VME_REG_READ8( PLDZ002_MSTR ) & PLDZ002_MSTR_BERR ){
 			/* clear bus error */
-			VME_REG_WRITE8( PLDZ002_MSTR_BERR,h->mstrShadow|PLDZ002_MSTR_BERR);
+			StoreAndClearBuserror(h);
 			*vecP = VME4L_IRQVEC_SPUR;
 		}
 		return 1;
@@ -1927,8 +1961,9 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 
 	printk(KERN_INFO "vme4l_probe: probing 16Z002 unit\n");
 	switch ( chu->unitFpga.variant ) {
-		case 2: /* control registers of new PLDZ002, w/ flex. A21 space */
+		case 2: /* control registers of new PLDZ002, w/ flex. A32 space */
 		  memset( h, 0, sizeof(*h));	/* clear handle */
+		  h->hasExtBerrInfo 	 = 1; /* this core supports also BERR address and attribute return */
 		  h->bLongaddAdjustable  = 1;
 		  h->A32BARsize          = PLDZ002_A32D32_SIZE_512M;
 		  break;

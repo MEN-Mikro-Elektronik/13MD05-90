@@ -959,7 +959,7 @@ static int vme4l_setup_pio(
 
 	/* check alignment and accWidth <= maxWidth */
 	if( (vmeAddr & (accWidth-1)) ||	(size & (accWidth-1)) || (accWidth > spcEnt->maxWidth) ) {
-		VME4LDBG("vme4l_setup_pio: Bad alignment/size/width 0x%llx %d %d\n", vmeAddr, size, accWidth);
+		VME4LDBG("vme4l_setup_pio: Bad alignment/size/width 0x%lx %d %d\n", vmeAddr, size, accWidth);
 		return -EINVAL;
 	}
 
@@ -1151,7 +1151,7 @@ static int vme4l_perform_zc_dma(
 			swapMode,
 			&vmeAddr);
 
-		VME4LDBG( "vme4l_perform_zc_dma: dmaSetup rv=%d, next vmeAddr=0x%llx\n", rv, vmeAddr );
+		VME4LDBG( "vme4l_perform_zc_dma: dmaSetup rv=%d, next vmeAddr=0x%lx\n", rv, vmeAddr );
 
 		if( rv < 0 )
 			goto ABORT;
@@ -1177,22 +1177,35 @@ static int vme4l_perform_zc_dma(
 }
 
 
+/**
+ * dump received data right after DMA
+ * \param nr_pages	Number of pages to dump
+ * \param pages		User pages for the given buffer
+ * \param len		#bytes to dump for each page
+ *
+ *\return 0 on success, or a negative number
+ */
+
 static void vme4l_user_pages_print(unsigned int nr_pages,
 				   struct page **pages,
 				   unsigned int len)
 {
-	char *pBaseDma;
+	unsigned char *pDat;
 	int i;
 
-	for (i = 0; i < nr_pages; i++) {
-		printk("page %d: got these Data:\n", i);
+	for (i = 0; i < nr_pages; i++)
+	{
+		printk("page %d first 0x%03x byte:\n", i, len );
+		pDat = (unsigned char*)page_address( pages[i] );
 
-		pBaseDma = (char*)page_address(pages[i]);
-		for (i = 0; i < len; i++) {
-			if (!(i % 16))
-				printk("\n");
-			printk("%02x ", *pBaseDma++);
+		for ( i = 0; i < len / 16; i++ ) {
+			printk("%04X | %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", i,
+				   pDat[0],pDat[1],pDat[2],pDat[3],pDat[4],pDat[5],pDat[6],pDat[7],
+				   pDat[8],pDat[9],pDat[10],pDat[11],pDat[12],pDat[13],pDat[14],pDat[15]);
+
+			pDat+=16;
 		}
+		printk( "\n\n" );
 	}
 }
 
@@ -1245,13 +1258,10 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 	uint32_t totlen			= 0;
 	int offset 				= 0;
 	int direction 			= 0;
-	struct page *page 		= NULL;
 	struct pci_dev *pciDev	= NULL;
 	struct device *pDev		= NULL;
 	void *pKmalloc			= NULL;
-	char *pBaseDma			= NULL;
 	int locked				= 0;
-	char *pVirtAddr			= NULL;
 	dma_addr_t dmaAddr 		= 0;
 	VME4L_SCATTER_ELEM *sgListStart = NULL, *sgList;
 
@@ -1291,8 +1301,9 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 	locked++;
 
 	/*--- build scatter/gather list ---*/
-	offset = 0; /* uaddr & ~PAGE_MASK; */
+	offset = uaddr & ~PAGE_MASK;
 	for (i = 0; i < nr_pages; ++i, sgList++) {
+
 		struct page *page = pages[i];
 		sgList->dmaLength  = PAGE_SIZE - offset;
 		dmaAddr = dma_map_page( pDev, page,	0x0, PAGE_SIZE, direction );
@@ -1300,7 +1311,6 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 			printk( KERN_ERR "error mapping DMA space with dma_map_page\n" );
 			goto CLEANUP;
 		} else
-
 			sgList->dmaAddress = dmaAddr;
 
 		if( totlen + sgList->dmaLength > count )
@@ -1308,8 +1318,8 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 
 		offset = 0;
 		totlen += sgList->dmaLength;
-		VME4LDBG(" sglist %d: pageAddr=%p off=%lx dmaAddr=%p length=%x\n",
-			 i, page_address(page), uaddr & ~PAGE_MASK, dmaAddr, sgList->dmaLength);
+		VME4LDBG(" sglist %d: pageAddr=%p off=0x%lx dmaAddr=%p length=0x%x\n", i, page_address(page), uaddr & ~PAGE_MASK, dmaAddr, sgList->dmaLength);
+
 	}
 
 	/*--- now do DMA in HW (device touches memory) ---*/
@@ -1337,7 +1347,7 @@ CLEANUP:
 	}
 
 #if 1
-	vme4l_user_pages_print(nr_pages, pages, 128);
+	vme4l_user_pages_print(nr_pages, pages, 32);
 #endif
 
 	if( sgListStart )
@@ -1398,7 +1408,9 @@ static int vme4l_bounce_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk,
 
 		/* for VME writes, copy user's data to bounce buffer */
 		if( blk->direction == WRITE ){
-			__copy_from_user( bounceBuf, userSpc, curLen );
+
+			if (__copy_from_user( bounceBuf, userSpc, curLen ))
+				goto ABORT;
 		}
 
 		/* start&wait for DMA */
@@ -1407,7 +1419,8 @@ static int vme4l_bounce_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk,
 
 		/* for VME reads, copy data to user space */
 		if( blk->direction == READ ){
-			__copy_to_user( userSpc, bounceBuf, curLen );
+			if (__copy_to_user( userSpc, bounceBuf, curLen ))
+				goto ABORT;
 		}
 
 		/* release bounce buffer (if needed) */
@@ -1437,12 +1450,17 @@ int vme4l_rw(VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 {
 	int rv;
 	VME4L_SPACE_ENT *spcEnt = &G_spaceTbl[spc];
-	VME4LDBG("vme4l_rw %s spc=%d vmeAddr=0x%08llx acc=%d sz=0x%llx "
-			 "dataP=0x%p swp=0x%x\n", blk->direction ? "write":"read",
-			 spc, blk->vmeAddr, blk->accWidth, (uint64_t)blk->size,
-			 blk->dataP, swapMode );
+	VME4LDBG("vme4l_rw %s spc=%d vmeAddr=0x%lx acc=%d sz=0x%lx dataP=0x%x swp=0x%x\n",
+			 blk->direction ? "write":"read",
+			 spc,
+			 blk->vmeAddr,
+			 blk->accWidth,
+			 blk->size,
+			 blk->dataP,
+			 swapMode );
 
-	if( spcEnt->isBlt || (blk->flags & VME4L_RW_USE_DMA)){
+	if( spcEnt->isBlt || (blk->flags & VME4L_RW_USE_DMA))
+	{
 		if( G_bDrv->dmaSetup == NULL ){
 			if( G_bDrv->dmaBounceSetup == NULL ){
 				rv = -EINVAL;			/* bridge has no DMA */
@@ -1483,7 +1501,7 @@ static int vme4l_rmw_cycle( VME4L_SPACE spc, VME4L_RMW_CYCLE *blk,
 	void *physAddr;
 	VME4L_SPACE_ENT *spcEnt = &G_spaceTbl[spc];
 
-	VME4LDBG("vme4l_rmw_cycle spc=%d vmeAddr=0x%08llx acc=%d mask=%x\n",
+	VME4LDBG("vme4l_rmw_cycle spc=%d vmeAddr=0x%08lx acc=%d mask=%x\n",
 			 spc, blk->vmeAddr, blk->accWidth, blk->mask);
 
 	winFlags = (swapMode & VME4L_HW_SWAP1) ?
@@ -1529,7 +1547,7 @@ static int vme4l_aonly_cycle( VME4L_SPACE spc, VME4L_AONLY_CYCLE *blk,
 	char *vaddr;
 	VME4L_SPACE_ENT *spcEnt = &G_spaceTbl[spc];
 
-	VME4LDBG("vme4l_aonly_cycle spc=%d vmeAddr=0x%08llx\n",
+	VME4LDBG("vme4l_aonly_cycle spc=%d vmeAddr=0x%08lx\n",
 			 spc, blk->vmeAddr);
 
 	winFlags = (swapMode & VME4L_HW_SWAP1) ?
@@ -1574,8 +1592,8 @@ static int vme4l_slave_window_ctrl( VME4L_SPACE spc, vmeaddr_t vmeAddr,
 	int newWin=0;
 	int rv=0;
 
-	VME4LDBG("vme4l_slave_window_ctrl spc=%d vmeAddr=0x%llx sz=0x%llx\n",
-			 spc, vmeAddr, (uint64_t) size );
+	VME4LDBG("vme4l_slave_window_ctrl spc=%d vmeAddr=0x%lx sz=0x%lx\n",
+			 spc, vmeAddr, size );
 
 	if( !spcEnt->isSlv || G_bDrv->slaveWindowCtrl==NULL ){
 		VME4LDBG("*** vme4l_slave_window_ctrl: ERROR: not a slave window\n");
@@ -2083,7 +2101,7 @@ static int vme4l_mmap(
 			goto ABORT;
 		}
 
-		VME4LDBG(" phys %p size %llx\n",  win->physAddr, (uint64_t)win->size );
+		VME4LDBG(" phys %p size 0x%lx\n",  win->physAddr, win->size );
 
 		if( offset + size > win->size ){
 			rv = -EINVAL;
@@ -2181,6 +2199,8 @@ static long vme4l_ioctl(
 			break;
 		}
 
+		VME4LDBG( "vme4l_ioctl: VME4L_IO_RW_BLOCK: %s with size 0x%lx, data @ %p\n", blk.direction ? "write" : "read", blk.size, blk.dataP );
+
 		rv = vme4l_rw( spc, &blk, fp->swapMode );
 		break;
 	}
@@ -2253,12 +2273,11 @@ static long vme4l_ioctl(
 		}
 
 		rv 			 = -ENOTTY;
-		blk.space 	 = VME4L_SPC_INVALID;
 		blk.addr	 = 0xffffffff;
+		blk.attr	 = 0;
 
 		if( G_bDrv->busErrGet )
-			rv = G_bDrv->busErrGet( G_bHandle, &blk.space,
-									  &blk.addr, blk.clear );
+			rv = G_bDrv->busErrGet( G_bHandle, &blk.attr, &blk.addr, blk.clear );
 
 		if( copy_to_user( (void *)arg, &blk, sizeof(blk)))
 			rv = -EFAULT;
@@ -2845,7 +2864,7 @@ static char *vme4l_rev_info( char *buf )
 
 	return buf;
 }
-
+#if 0
 /***********************************************************************/
 /**  Read entry point for /proc/vme4l file
  *
@@ -2868,7 +2887,7 @@ static int vme4l_read_proc( char *buffer, char **start, off_t offset,
 		}												\
 	} while(0)
 
-#if 0
+
 static int vme4l_proc_infos( char *buffer, int *len,
 							 off_t *begin, off_t offset, int size )
 {

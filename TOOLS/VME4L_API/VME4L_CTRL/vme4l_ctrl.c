@@ -43,8 +43,11 @@ static const char RCSid[]="$Id: vme4l_ctrl.c,v 1.1 2003/12/15 15:02:39 kp Exp $"
 #include <stdint.h>
 #include <signal.h>
 #include <errno.h>
+#include <MEN/men_typs.h>
 #include <MEN/vme4l.h>
 #include <MEN/vme4l_api.h>
+#include <MEN/pldz002-cham.h> /* for 16Z002 specific buserror info */
+
 
 /*--------------------------------------+
 |   DEFINES                             |
@@ -130,13 +133,20 @@ int main( int argc, char *argv[] )
 
 	else if( !strcmp( item, "ber") ){
 		if( !set ){
-			VME4L_SPACE spc;
+			int attr=0;
 			vmeaddr_t vmeaddr;
 			
-			CHK( (state = VME4L_BusErrorGet( fd, &spc, &vmeaddr, 1 )) >= 0 );
-
-			printf("Bus error info is %svalid. Space %d addr 0x%llx\n",
-				   state > 0 ? "":"in", spc, vmeaddr );
+			CHK( (state = VME4L_BusErrorGet( fd, &attr, &vmeaddr, 1 )) >= 0 );
+			if (state != 0) {
+			printf("Bus error info is %svalid. Reason: %s VME addr 0x%lx AM 0x%02x %s state.\n",
+					state > 0 ? "":"in",
+					(attr & PLDZ002_BERR_RW_DIR) ? "read from" : "write to",
+					vmeaddr,
+					(attr & PLDZ002_BERR_ACC_AM_MASK),
+					(attr & PLDZ002_BERR_IACK) ? "IACK" : "normal");
+			} else {
+				printf("No valid or new Bus error info available since last call to VME4L_BusErrorGet().\n");
+			}
 			goto DONE;
 		}
 		else goto INVAL;

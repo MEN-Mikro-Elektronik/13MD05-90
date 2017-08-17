@@ -240,7 +240,7 @@ typedef struct {
 } VME4L_SIG_INSTALL2;
 
 typedef struct {
-	VME4L_SPACE space;
+	int attr;
 	vmeaddr_t 	addr;
 	int clear;
 } VME4L_BUS_ERROR_INFO;

@@ -53,6 +53,8 @@ static const char RCSid[]="$Id: vme4l_slvwin.c,v 1.3 2009/06/03 19:30:40 rt Exp 
 #include <errno.h>
 #include <MEN/vme4l.h>
 #include <MEN/vme4l_api.h>
+#include <MEN/men_typs.h>
+#include <MEN/usr_oss.h>
 
 /*--------------------------------------+
 |   DEFINES                             |
@@ -120,8 +122,7 @@ int main( int argc, char *argv[] )
 	CHK( (rv = VME4L_SlaveWindowCtrl( fd, vmeAddr, size )) == 0 );
 	
 	/* map slave window into application space
-	   note: the vmeAddr argument of VME4L_Map() is the offset within
-	   the shared RAM here! */
+	   note: the vmeAddr argument of VME4L_Map() is the offset within the shared RAM here! */
 	CHK( VME4L_Map( fd,	0 /* offset */, 0x100 /* size */, &map) == 0 );
 
 	if( write ) {

@@ -532,7 +532,7 @@ int blk_test(int rand_pattern, void (*readfunc)(), void (*writefunc)())
 	+---------------*/
     action_info("Verify Memory");
 	while( address < endadr ){
-		/*------------------------+
+	/*------------------------+
         |  Read to buffer memory  |
         +------------------------*/
 		cur_size = blk_size;
@@ -543,7 +543,7 @@ int blk_test(int rand_pattern, void (*readfunc)(), void (*writefunc)())
 
 		(*readfunc)( address, buf, cur_size, 0 );
 
-		/*-----------------+
+	/*-----------------+
         |  Compare buffer  |
         +-----------------*/
 		for(p=buf,i=0; i<cur_size/4; p++,i++){
@@ -561,10 +561,8 @@ int blk_test(int rand_pattern, void (*readfunc)(), void (*writefunc)())
 
 		fill_info(address-startadr);
 	}
-	/* free(buf); */
 
 	return errcnt;
-
 }
 				
 int do_test(char test_id)

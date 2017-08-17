@@ -26,7 +26,7 @@
  * Initial Revision
  *
  *---------------------------------------------------------------------------
- * (c) Copyright 2003 by MEN mikro elektronik GmbH, Nuremberg, Germany
+ * (c) Copyright 2017 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/
 /*
  * This program is free software: you can redistribute it and/or modify
@@ -53,6 +53,9 @@ static const char RCSid[]="$Id: vme4l_rwex.c,v 1.3 2009/06/03 19:19:53 rt Exp $"
 #include <errno.h>
 #include <MEN/vme4l.h>
 #include <MEN/vme4l_api.h>
+#include <MEN/men_typs.h>
+#include <MEN/usr_utl.h>
+#include <MEN/usr_oss.h>
 
 /*--------------------------------------+
 |   DEFINES                             |
@@ -84,11 +87,18 @@ static void MemDump(
 	);
 
 
-static void usage(void)
+static void usage(int excode)
 {
-	printf("Usage: vme4l_rwex <spc-num> <vmeaddr> <size> <accWidth> <r/w> "
-		   "[<swpmode>]\n");
-	exit(1);
+	printf("Syntax:   vme4l_rwex [<opts>] <vmeaddr> <size> [<opts>]\n");
+	printf("Function: perform basic VME read/write from and to VME spaces\n");
+	printf("Options:\n\n");
+	printf("-s=<spc>      VME4L space number\n");
+	printf("-a=<width>    access width in bytes (1/2/4)        [4]\n");
+	printf("-v=<init.Val> initial value for write buffer fill  [0]\n");
+	printf("-x            use swap mode                        [0]\n");
+	printf("-r            read from VME space into CPU\n");
+	printf("-w            write from CPU to VME space\n");
+	exit(excode);
 }
 
 static void SigHandler( int sigNum )
@@ -103,31 +113,63 @@ static void SigHandler( int sigNum )
  */
 int main( int argc, char *argv[] )
 {
-	int fd, rv;
+	int fd, rv, i;
 	uint8_t *buf;
-	VME4L_SPACE spc;
+	VME4L_SPACE spc=0;
 	vmeaddr_t vmeAddr;
-	int accWidth;
+	u_int32 startaddr= 0xffffffff;
+	int accWidth=4;
 	size_t size;
-	int doRead;
+	char *optp=NULL;
+	int doRead=-1;
 	int swapMode = 0;
-	int opt_mod = 0;
+	int startVal = 0;
 
-	if( argc < 6 )
-		usage();
+	if( UTL_TSTOPT("?") || (argc == 1) )
+		usage(0);
 
+	/*-----------------------------+
+    |  Parse command line options  |
+    +-----------------------------*/
+	for(i=1; i<argc; i++ )
+		if( *argv[i]!='-'){
+			if( startaddr == 0xffffffff )
+				sscanf( argv[i], "%lx", &startaddr );
+			else
+				sscanf( argv[i], "%lx", &size );
+		}
+
+	if( startaddr==0xffffffff || size==0xffffffff ){
+		printf("*** missing vmeaddr or size!\n");
+		usage(1);
+	}
 
 	signal( SIGUSR1, SigHandler ); /* catch sig 10 (typical) */
 
-	spc 	= strtol( 	argv[1], NULL, 10 );
-	vmeAddr = strtoull( argv[2], NULL, 0 );
-	size    = strtoul( 	argv[3], NULL, 0 );
-	accWidth= strtoul( 	argv[4], NULL, 0 );
-	doRead = ( *argv[5] == 'w' ) ? 0:1;
-	/* opt_mod = strtol(argv[6], NULL, 0);*/
+	vmeAddr = startaddr;
 
-	if( argc > 6 )
-		swapMode = strtoul( argv[6], NULL, 16 );
+	if (UTL_TSTOPT("r"))
+		doRead = 1;
+	else if (UTL_TSTOPT("w"))
+		doRead = 0;
+
+	if( (optp=UTL_TSTOPT("a=")))
+		sscanf(optp, "%d", &accWidth);
+
+	if( (optp=UTL_TSTOPT("s=")))
+		spc=atoi(optp);
+
+	swapMode = (optp=UTL_TSTOPT("x")) ? 1 : 0;
+
+	if( (optp=UTL_TSTOPT("v=")))
+		startVal=atoi(optp);
+
+
+	if (doRead == -1) {
+		printf("*** specify either -r or -w!\n");
+		usage(1);
+	}
+
 
 	CHK( (buf = malloc( size )) != NULL);
 
@@ -135,24 +177,19 @@ int main( int argc, char *argv[] )
 
 	CHK( (fd = VME4L_Open( spc )) >= 0 /*node /dev/vme4l_<spc> must exist*/ );
 
-	if( opt_mod > 0) {
-		printf("change AM to 0x%x\n", opt_mod & 0xff );
-		CHK( VME4L_AddrModifierSet( fd, (char)(opt_mod & 0xff))==0 );
-	}
-
 	CHK( VME4L_SwapModeSet( fd, swapMode ) == 0 );
 
-	if( doRead ){
+	if( doRead )
+	{
 		CHK( (rv = VME4L_Read( fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS )) >=0);
-
 		MemDump( buf, rv, 1 );
 	}
 	else {
 		uint8_t *p = buf;
 		int i;
 
-		for( i=0; i<size; i++ )
-			*p++ = i;
+		for( i=0; i < size; i++ )
+			*p++ = (i + startVal) & 0xff;
 
 		CHK( (rv = VME4L_Write( fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS )) >=0);
 	}
@@ -171,7 +208,6 @@ static void MemDump(
 {
     uint8_t *k, *k0, *kmax = buf+n;
     int32_t i;
-
 
     for (k=k0=buf; k0<kmax; k0+=16)
     {
