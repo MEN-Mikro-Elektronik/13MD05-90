@@ -2864,12 +2864,12 @@ static char *vme4l_rev_info( char *buf )
 
 	return buf;
 }
-#if 0
+#if 1
 /***********************************************************************/
 /**  Read entry point for /proc/vme4l file
  *
  */
-#ifdef CONFIG_PROC_FS
+#ifndef CONFIG_PROC_FS
 static int vme4l_read_proc( char *buffer, char **start, off_t offset,
 			    int size, int *eof, void *data) { return 0; }
 #else
