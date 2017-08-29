@@ -412,9 +412,9 @@ static int RequestAddrWindow(
 }
 
 /*******************************************************************/
-/** evaluate the highest Bit set in an 8bit Value
+/** centralized storing and clearing of buserror events.
  *
- * \param val  Value to evaluate
+ * \param h  VME bridge driver handle
  *
  */
 static void StoreAndClearBuserror( VME4L_BRIDGE_HANDLE *h )
@@ -650,11 +650,11 @@ static int DmaSetup(
 	for( sg=0; sg<endBd; sg++, sgList++, bdVaddr+=PLDZ002_DMABD_SIZE ){
 
 		/*--- check alignment/size ---*/
-		if( (*vmeAddr & (alignVme-1)) || (sgList->dmaAddress & 3) ||
+		if( (*vmeAddr & (alignVme-1)) || (sgList->dmaDataAddress & 3) ||
 			(sgList->dmaLength > 256*1024) || (sgList->dmaLength & 3)){
 			VME4LDBG( "*** pldz002 DMA setup bad alignment/len "
 					  "%08llx %08llx %x\n", *vmeAddr,
-					  (uint64_t)sgList->dmaAddress, sgList->dmaLength );
+					  (uint64_t)sgList->dmaDataAddress, sgList->dmaLength );
 			rv = -EINVAL;
 			goto CLEANUP;
 		}
@@ -662,7 +662,7 @@ static int DmaSetup(
 		if( direction ) {
 			/* write to VME */
 			VME_GENREG_WRITE32( bdVaddr+0x0, *vmeAddr );
-			VME_GENREG_WRITE32( bdVaddr+0x4, sgList->dmaAddress );
+			VME_GENREG_WRITE32( bdVaddr+0x4, sgList->dmaDataAddress );
 			VME_GENREG_WRITE32( bdVaddr+0x8, (sgList->dmaLength>>2) - 1 ); /* Block Size of DMA transfer in longwords:  (x bytes / 4) -1 */
 			VME_GENREG_WRITE32( bdVaddr+0xc,
 							PLDZ002_DMABD_SRC( PLDZ002_DMABD_DIR_PCI ) |
@@ -671,7 +671,7 @@ static int DmaSetup(
 		}
 		else {
 			/* read from VME */
-			VME_GENREG_WRITE32( bdVaddr+0x0, sgList->dmaAddress );
+			VME_GENREG_WRITE32( bdVaddr+0x0, sgList->dmaDataAddress );
 			VME_GENREG_WRITE32( bdVaddr+0x4, *vmeAddr );
 			VME_GENREG_WRITE32( bdVaddr+0x8, (sgList->dmaLength>>2) - 1 );
 			VME_GENREG_WRITE32( bdVaddr+0xc,
@@ -783,20 +783,24 @@ static int DmaBounceSetup(
 	return rv < 0 ? rv : size;
 }
 
-
-
 /***********************************************************************/
 /** Start DMA with the scatter list setup by dmaSetup
  *
  */
 static int DmaStart( VME4L_BRIDGE_HANDLE *h )
 {
-	if( VME_REG_READ8( PLDZ002_DMASTA ) & PLDZ002_DMASTA_EN ){
-		VME4LDBG("*** pldz002: dmaStart: DMA busy! %02x\n",
-				 VME_REG_READ8( PLDZ002_DMASTA ));
+
+	uint8_t dmastat = VME_REG_READ8( PLDZ002_DMASTA );
+
+	if( dmastat  & PLDZ002_DMASTA_EN ){
+		VME4LDBG("*** pldz002: DmaStart: DMA busy! DMASTA=%02x\n", dmastat );
 		return -EBUSY;
 	}
-	VME4LDBG("DmaStart.....\n");
+	if( dmastat  & PLDZ002_DMASTA_ERR ){
+		VME4LDBG("*** pldz002: DmaStart: DMA error pending, DMASTA=%02x. Clearing it and continuing.\n", dmastat );
+	}
+
+	VME4LDBG("DmaStart..\n");
 
 	VME_REG_WRITE8( PLDZ002_DMASTA, PLDZ002_DMASTA_IRQ | PLDZ002_DMASTA_ERR );
 	/* start DMA and enable DMA interrupt */
@@ -1721,8 +1725,6 @@ static int PldZ002_ProcessPendingVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
 
 }
 
-
-
 /*******************************************************************/
 /** Check occurance of other IRQ causes
  *
@@ -1738,18 +1740,31 @@ static int PldZ002_CheckMiscVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
 										 int *vecP,
 										 int *levP)
 {
+	uint8_t dmastat = 0;
+
 	if (NULL == h){
 		printk(" *** %s: Bridge handle is NULL!\n", __FUNCTION__);
+		return -1;
 	}
 
-	/* check for DMA finished */
-	if( VME_REG_READ8( PLDZ002_DMASTA ) & PLDZ002_DMASTA_IRQ ){
-		/* reset DMA irq, leave DMA_ERR untouched */
+	/* check for DMA finished / DMA error */
+	dmastat = VME_REG_READ8( PLDZ002_DMASTA );
+	if( dmastat & ( PLDZ002_DMASTA_IRQ | PLDZ002_DMASTA_ERR) ) {
+		/* 1. check if DMA error occured ? if yes, stop DMA activity and clear DMA error & clear DMA */
+		if( dmastat & PLDZ002_DMASTA_IRQ ) {
+			/* regular finished DMA. Reset DMA irq */
 		VME_REG_WRITE8( PLDZ002_DMASTA, PLDZ002_DMASTA_IRQ );
 		*levP = VME4L_IRQLEV_DMAFINISHED;
+		} else {
+			VME4LDBG("*** DMA error occured, stop DMA and clear DMA IRQ and error\n");
+			/* clear by writing '1' to the bits, DMA also stopped by setting its bit to 0 */
+			VME_REG_WRITE8( PLDZ002_DMASTA, PLDZ002_DMASTA_IRQ | PLDZ002_DMASTA_ERR);
+			*levP = VME4L_IRQVEC_BUSERR;
+		}
 		*vecP = 0;
 		return 1;
 	}
+
 	/* check for mailbox irqs */
 	*vecP = HighestBitSet( VME_REG_READ8( PLDZ002_MAIL_IRQ_STAT ));
 	if( *vecP >= 0 ){
@@ -1781,7 +1796,6 @@ static int PldZ002_CheckMiscVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
 
 	return 0;
 }
-
 
 /***************************************************************************/
 /** Central HW dependent VME Interrupt handler, processing acknowledge flags

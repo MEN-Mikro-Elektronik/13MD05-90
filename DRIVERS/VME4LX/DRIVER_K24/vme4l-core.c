@@ -134,6 +134,9 @@
 # define VME4L_MAJOR			230 /* use 0 to auto-assign major number */
 #endif
 
+/* if defined, start of user data from dma transfers is dumped */
+#define VME4L_DBG_DMA_DATA
+
 /** max number of VME/PCI master address windows */
 #define VME4L_MAX_ADRS_WINS		16
 
@@ -1176,27 +1179,30 @@ static int vme4l_perform_zc_dma(
 	return rv;
 }
 
-
+#ifdef VME4L_DBG_DMA_DATA
 /**
- * dump received data right after DMA
+ * dump received/sent data right after DMA
  * \param nr_pages	Number of pages to dump
  * \param pages		User pages for the given buffer
  * \param len		#bytes to dump for each page
+ * \param initOffset	offset of userdata in page
  *
  *\return 0 on success, or a negative number
  */
 
 static void vme4l_user_pages_print(unsigned int nr_pages,
 				   struct page **pages,
-				   unsigned int len)
+				   unsigned int len,
+				   unsigned int initOffset )
 {
 	unsigned char *pDat;
 	int i;
+	unsigned int offset = initOffset;
 
 	for (i = 0; i < nr_pages; i++)
 	{
 		printk("page %d first 0x%03x byte:\n", i, len );
-		pDat = (unsigned char*)page_address( pages[i] );
+		pDat = (unsigned char*)page_address( pages[i] ) + offset;
 
 		for ( i = 0; i < len / 16; i++ ) {
 			printk("%04X | %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", i,
@@ -1206,9 +1212,10 @@ static void vme4l_user_pages_print(unsigned int nr_pages,
 			pDat+=16;
 		}
 		printk( "\n\n" );
+		offset = 0; /* if data amount to dump > 1 page, all other data starts at 0 then */
 	}
 }
-
+#endif
 
 /**
  * It gets the user pages from a given user buffer
@@ -1256,7 +1263,7 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 	unsigned int nr_pages	= 0;
 	struct page **pages 	= NULL;
 	uint32_t totlen			= 0;
-	int offset 				= 0;
+	unsigned int offset 	= 0;
 	int direction 			= 0;
 	struct pci_dev *pciDev	= NULL;
 	struct device *pDev		= NULL;
@@ -1264,11 +1271,14 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 	int locked				= 0;
 	dma_addr_t dmaAddr 		= 0;
 	VME4L_SCATTER_ELEM *sgListStart = NULL, *sgList;
+#ifdef VME4L_DBG_DMA_DATA
+	unsigned int initOffs 	= 0;
+#endif
 
 	/* direction as seen from  DMA API context */
 	direction = ( blk->direction == READ ) ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
 
-	/* Hmm? */
+	/* be paranoid.. */
 	if (count == 0)
 		return 0;
 
@@ -1292,8 +1302,7 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 		goto CLEANUP;
 	}
 
-	rv = vme4l_get_user_pages(uaddr, (direction == DMA_FROM_DEVICE),
-				  nr_pages, pages);
+	rv = vme4l_get_user_pages(uaddr, (direction == DMA_FROM_DEVICE), nr_pages, pages);
 	if( rv < nr_pages )
 		goto CLEANUP;
 
@@ -1301,7 +1310,9 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 	locked++;
 
 	/*--- build scatter/gather list ---*/
-	offset = uaddr & ~PAGE_MASK;
+	offset = uaddr & ~PAGE_MASK; /* ts@men this gives initial offset betw. userdata and first mapped page, often > 0 */
+	initOffs = offset;
+
 	for (i = 0; i < nr_pages; ++i, sgList++) {
 
 		struct page *page = pages[i];
@@ -1310,16 +1321,17 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 		if ( dma_mapping_error(pDev, dmaAddr ) ) {
 			printk( KERN_ERR "error mapping DMA space with dma_map_page\n" );
 			goto CLEANUP;
-		} else
-			sgList->dmaAddress = dmaAddr;
+		} else {
+			sgList->dmaDataAddress = dmaAddr + offset; /* Add offset between page begin and payload data, often > 0 */
+			sgList->dmaPageAddress = dmaAddr;	/* store page address for later dma_unmap_page */
+		}
 
 		if( totlen + sgList->dmaLength > count )
 			sgList->dmaLength = count - totlen;
 
-		offset = 0;
+		VME4LDBG(" sglist %d: pageAddr=%p off=0x%lx dmaAddr=%p length=0x%x\n", i, page_address(page), offset, dmaAddr, sgList->dmaLength);
 		totlen += sgList->dmaLength;
-		VME4LDBG(" sglist %d: pageAddr=%p off=0x%lx dmaAddr=%p length=0x%x\n", i, page_address(page), uaddr & ~PAGE_MASK, dmaAddr, sgList->dmaLength);
-
+		offset = 0;
 	}
 
 	/*--- now do DMA in HW (device touches memory) ---*/
@@ -1333,21 +1345,20 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 		}
 	}
 
-
 CLEANUP:
 	/*--- free pages ---*/
 	if( locked ) {
 		sgList = sgListStart;
 		for (i = 0; i < nr_pages; i++, sgList++) {
-			dma_unmap_page( pDev, sgList->dmaAddress, PAGE_SIZE, direction );
+			dma_unmap_page( pDev, sgList->dmaPageAddress, PAGE_SIZE, direction );
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4,6,0)
 			page_cache_release( pages[i] );
 #endif
 		}
 	}
 
-#if 1
-	vme4l_user_pages_print(nr_pages, pages, 32);
+#ifdef VME4L_DBG_DMA_DATA
+	vme4l_user_pages_print(nr_pages, pages, 32, initOffs );
 #endif
 
 	if( sgListStart )

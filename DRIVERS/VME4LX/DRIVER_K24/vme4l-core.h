@@ -159,7 +159,8 @@ typedef void *VME4L_BRIDGE_HANDLE;
 |   TYPDEFS                             |
 +--------------------------------------*/
 typedef struct {
-	dma_addr_t dmaAddress;
+	dma_addr_t dmaDataAddress;
+	dma_addr_t dmaPageAddress;
 	uint32_t dmaLength;
 } VME4L_SCATTER_ELEM;
 
