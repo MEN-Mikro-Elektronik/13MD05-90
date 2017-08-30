@@ -119,7 +119,7 @@ int main( int argc, char *argv[] )
 	vmeaddr_t vmeAddr;
 	u_int32 startaddr= 0xffffffff;
 	int accWidth=4;
-	size_t size;
+	size_t size = 0xffffffff;
 	char *optp=NULL;
 	int doRead=-1;
 	int swapMode = 0;
@@ -134,9 +134,9 @@ int main( int argc, char *argv[] )
 	for(i=1; i<argc; i++ )
 		if( *argv[i]!='-'){
 			if( startaddr == 0xffffffff )
-				sscanf( argv[i], "%lx", &startaddr );
+				startaddr = strtoul(argv[i], NULL, 0);
 			else
-				sscanf( argv[i], "%lx", &size );
+				size = strtoul(argv[i], NULL, 0);
 		}
 
 	if( startaddr==0xffffffff || size==0xffffffff ){
@@ -154,15 +154,15 @@ int main( int argc, char *argv[] )
 		doRead = 0;
 
 	if( (optp=UTL_TSTOPT("a=")))
-		sscanf(optp, "%d", &accWidth);
+		accWidth=strtoul( optp, NULL, 0 );
 
 	if( (optp=UTL_TSTOPT("s=")))
-		spc=atoi(optp);
+		spc=strtoul( optp, NULL, 0 );
 
 	swapMode = (optp=UTL_TSTOPT("x")) ? 1 : 0;
 
 	if( (optp=UTL_TSTOPT("v=")))
-		startVal=atoi(optp);
+		startVal=strtoul( optp, NULL, 0 );
 
 
 	if (doRead == -1) {
