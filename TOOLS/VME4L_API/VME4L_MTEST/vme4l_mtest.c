@@ -134,6 +134,7 @@ char *mapStart, *mapEnd;			/* mapped startAddr/end */
 int busErrCnt=0;
 long swSwap = 0;
 unsigned int G_size;
+unsigned char* G_buf;
 
 char *usage_str = "\
 Syntax:   vme4l_mtest [<opts>] <startaddr> <endaddr> [<opts>]\n\

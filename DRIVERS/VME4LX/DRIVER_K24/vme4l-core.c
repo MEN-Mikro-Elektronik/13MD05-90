@@ -135,7 +135,7 @@
 #endif
 
 /* if defined, start of user data from dma transfers is dumped */
-#define VME4L_DBG_DMA_DATA
+#undef VME4L_DBG_DMA_DATA
 
 /** max number of VME/PCI master address windows */
 #define VME4L_MAX_ADRS_WINS		16
@@ -1311,7 +1311,9 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 
 	/*--- build scatter/gather list ---*/
 	offset = uaddr & ~PAGE_MASK; /* ts@men this gives initial offset betw. userdata and first mapped page, often > 0 */
+#ifdef VME4L_DBG_DMA_DATA
 	initOffs = offset;
+#endif
 
 	for (i = 0; i < nr_pages; ++i, sgList++) {
 
