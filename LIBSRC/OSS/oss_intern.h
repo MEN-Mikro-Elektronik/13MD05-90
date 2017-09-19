@@ -141,6 +141,7 @@ typedef struct {
 #define DBG_MYLEVEL         oss->dbgLevel
 #define DBH 				oss->dbh
 
+#ifndef MAC_USERSPACE
 #if LINUX_VERSION_CODE > KERNEL_VERSION(3,0,0)
 # define TASK_SIGPENDING 	pending.signal.sig
 #else
@@ -156,6 +157,7 @@ typedef struct {
 # define TASK_UNLOCK_SIGNALS(t,flags)	spin_unlock_irqrestore(&(t)->sigmask_lock, flags);
 # define RECALC_SIGPENDING() 			recalc_sigpending(current)
 #endif
+#endif /* !MAC_USERSPACE */
 
 #ifdef MAC_USERSPACE
 #define OSS_MAX_USEC	1000000		/* max mikrodelay */

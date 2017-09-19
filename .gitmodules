@@ -76,3 +76,6 @@
 [submodule "TOOLS/FPGA_LOAD"]
 	path = TOOLS/FPGA_LOAD
 	url = ../mdis_tools_fpga_load
+[submodule "LIBSRC/pciutils"]
+	path = LIBSRC/pciutils
+	url = ssh://git@gitlab.cern.ch:7999/mendrivers/pciutils.git
