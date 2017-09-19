@@ -59,6 +59,8 @@ static const char RCSid[]="$Id: vme4l_mtest.c,v 1.5 2013/10/24 09:56:13 ts Exp $
 #include <string.h>
 #include <stdint.h>
 #include <signal.h>
+#include <unistd.h>
+#include <malloc.h>
 #include <errno.h>
 #include <MEN/vme4l.h>
 #include <MEN/vme4l_api.h>
@@ -131,7 +133,7 @@ int fillInfo=1;
 char *mapStart, *mapEnd;			/* mapped startAddr/end */
 int busErrCnt=0;
 long swSwap = 0;
-char G_buf[INFOSTEP<<2];
+unsigned int G_size;
 
 char *usage_str = "\
 Syntax:   vme4l_mtest [<opts>] <startaddr> <endaddr> [<opts>]\n\
@@ -183,7 +185,7 @@ void version(void)
 	fprintf(stderr, " (c) Copyright 1995-2013 by MEN GmbH\n");
 }
 
-void goaway(void)
+void show_test_result(void)
 {
 	printf( "\nTOTAL TEST RESULT: %d errors\n", tot_errors );
 	exit( tot_errors ? 1:0);	
@@ -248,7 +250,7 @@ void out_error( int err_type, u_int32 address, u_int32 is,
 	printf("\n");
 
 	if( ++tot_errors >= max_errors ){
-		goaway();
+		show_test_result();
 	}	
 }
 
@@ -333,11 +335,10 @@ u_int32 mk_lin_pat( u_int32 address, u_int32 oldpat, u_int8 size )
 	CHK(0);
  ABORT:
 	tot_errors++;
-	goaway();
+	show_test_result();
 	return 0;
 }
 			
-
 static int berr_check(volatile void *p)
 {
 	u_int32 vmeaddr = (u_int32)((char *)p-mapStart)+startadr;
@@ -380,7 +381,7 @@ static int berr_check(volatile void *p)
      action_info("Filling Memory");\
 	 while( len > 0){\
 		curlen = len;\
-		if( curlen > INFOSTEP ) curlen = INFOSTEP;\
+		if( curlen > G_size ) curlen = G_size;\
 		count += curlen;\
 		len -= curlen;\
 		while(curlen--){\
@@ -406,7 +407,7 @@ static int berr_check(volatile void *p)
     action_info("Verify Memory");\
 	while( len > 0){\
 		curlen = len;\
-		if( curlen > INFOSTEP ) curlen = INFOSTEP;\
+		if( curlen > G_size ) curlen = G_size;\
 		count += curlen;\
 		len -= curlen;\
 		while(curlen--){\
@@ -458,7 +459,6 @@ static int berr_check(volatile void *p)
 	}\
 }
 
-
 /*---------------------------------------------+
 | VMEbus block transfer using VME4L_Read/Write |
 +----------------------------------------------*/
@@ -473,19 +473,35 @@ void vmeblt( void *src, void *dst, u_int32 len, int direction )
 	return;
  ABORT:
 	tot_errors++;
-	goaway();
+	show_test_result();
 }
 
-
-int blk_test(int rand_pattern, void (*readfunc)(), void (*writefunc)())
+/************************************ blk_test *****************************
+ *
+ *  Description:  block test func, only for DMA spaces (/dev/vme4lxxx_blt)
+ *
+ *---------------------------------------------------------------------------
+ *  Input......:  pBuf    		- the data buffer to read to / write from
+ *				  rand_pattern  - if 1, then pseudo random pattern is used
+ *				  readfunc      - func pointer to a function reading from VME
+ *				  writefunc      - func pointer to a function reading from VME *
+ *
+ *  Output.....:  return  		- error count, 0 if successful test
+ *
+ *  Globals....:  ---
+ ****************************************************************************/
+int blk_test( unsigned char* pBuf, int rand_pattern, void (*readfunc)(), void (*writefunc)())
 {
-	u_int32 blk_size = INFOSTEP, cur_size;
+	/* 
+	 * important: blk_size represents # of bytes as in malloc call in main! 
+	 */
+	u_int32 blk_size = G_size;
+	u_int32 cur_size=0;
 	u_int32 pattern=0xabcdef02+pass;
-	unsigned long *buf;
-	unsigned long address, i, *p;
-	int errcnt=0;
-	buf = (unsigned long*)G_buf;
-	memset(buf, 0x0, sizeof(G_buf));
+	int errcnt=0, i=0;
+	unsigned long address;
+	unsigned long *p;
+	unsigned long *buf = (unsigned long *)pBuf;
 
 	/*---------------+
     |  Write memory  |
@@ -499,16 +515,17 @@ int blk_test(int rand_pattern, void (*readfunc)(), void (*writefunc)())
 			  |  Fill write buffer  |
 			  +--------------------*/
 			if( rand_pattern )
-				for(p=buf,i=0; i<blk_size/4; i++)
+				for( p=buf, i=0; i < blk_size/sizeof(long); i++)
 					*p++ = pattern = mk_rand_pat(0, pattern, 4 );
 			else
-				for(p=buf,i=0; i<blk_size/4; i++)
+				for( p=buf, i=0; i < blk_size/sizeof(long); i++)
 					*p++ = address+(i<<2);
 
 			/*----------------------+
 			  |  Write buffer to mem  |
 			  +----------------------*/
 			cur_size = blk_size;
+
 			if( cur_size > endadr-address )
 				cur_size = endadr-address;
 			(*writefunc)( buf, address, cur_size, 1);
@@ -539,14 +556,15 @@ int blk_test(int rand_pattern, void (*readfunc)(), void (*writefunc)())
 		if( cur_size > endadr-address )
 			cur_size = endadr-address;
 
-		memset( buf, 0x55, cur_size ); /* clear before reading */
+		memset( buf, 0, cur_size ); /* clear before reading */
 
+		/* here the data block with len <cur_size> is read to address <address> */
 		(*readfunc)( address, buf, cur_size, 0 );
 
 	/*-----------------+
         |  Compare buffer  |
         +-----------------*/
-		for(p=buf,i=0; i<cur_size/4; p++,i++){
+		for(p=buf,i=0; i < cur_size/sizeof(long); p++,i++){
 			if( rand_pattern )
 				pattern = mk_rand_pat(0, pattern, 4 );
 			else
@@ -565,15 +583,14 @@ int blk_test(int rand_pattern, void (*readfunc)(), void (*writefunc)())
 	return errcnt;
 }
 				
-int do_test(char test_id)
+int do_test(unsigned char *p, char test_id)
 {
 	u_int32 errorcount=0;
 	int isMapped = 0;
 	void* map2 = mapStart;
 
 	if( strchr( "bwlBWL", test_id ) != NULL ){
-		CHK( VME4L_Map( spaceFd, startadr, endadr-startadr,
-						(void **)&map2 )==0);
+		CHK( VME4L_Map( spaceFd, startadr, endadr-startadr,	(void **)&map2 )==0);
 		mapStart=map2;
 		mapEnd = mapStart + (endadr-startadr);
 		isMapped = 1;
@@ -594,9 +611,9 @@ int do_test(char test_id)
 	case 'L':
 		BWL_TEST(volatile u_int32, mk_lin_pat); break;
 	case 'v':
-		errorcount = blk_test( 1, vmeblt, vmeblt); break;
+		errorcount = blk_test( p, 1, vmeblt, vmeblt); break;
 	case 'V':
-		errorcount = blk_test( 0, vmeblt, vmeblt); break;
+		errorcount = blk_test( p, 0, vmeblt, vmeblt); break;
 	}
 	if( isMapped ){
 		CHK( VME4L_UnMap( spaceFd, mapStart, endadr-startadr ) == 0 );
@@ -604,7 +621,7 @@ int do_test(char test_id)
 	return errorcount;
  ABORT:
 	tot_errors++;
-	goaway();
+	show_test_result();
 	return 0;
 }
 
@@ -613,10 +630,12 @@ void SigBusHandler( int sigCode )
 	busErrCnt++;
 }
 
+
 int main( int argc, char *argv[] )
 {
 	int i, total_pass;
 	char *optp, *testlist;
+	unsigned char *pDat = NULL;
 	test_descr *test_p;
 	char *test_id;
 	int errors=0;
@@ -643,6 +662,11 @@ int main( int argc, char *argv[] )
 		usage(1);
 	}
 
+	G_size = endadr - startadr;
+	printf("start 0x%x end 0x%x size = 0x%x\n", startadr, endadr , G_size);
+
+	CHK( (pDat = malloc( G_size + getpagesize() )) != NULL);
+
 	total_pass = 1;
 	if( (optp=UTL_TSTOPT("n="))) total_pass=atoi(optp);
 
@@ -652,14 +676,23 @@ int main( int argc, char *argv[] )
 	if( !testlist ) usage(1);
 
 	swSwap = (long)UTL_TSTOPT("x");
-	if( (optp=UTL_TSTOPT("q="))) max_errors=atoi(optp);
-	if( (optp=UTL_TSTOPT("a="))) sscanf(optp, "%d", &accWidth);
-	if( (optp=UTL_TSTOPT("s="))) spaceNum=atoi(optp);
-	if( (optp=UTL_TSTOPT("m="))) opt_mod=atoi(optp);
-	if( (optp=UTL_TSTOPT("w="))) swapMode=atoi(optp);
+	if( (optp=UTL_TSTOPT("q=")))
+		max_errors=atoi(optp);
+
+	if( (optp=UTL_TSTOPT("a=")))
+		sscanf(optp, "%d", &accWidth);
+
+	if( (optp=UTL_TSTOPT("s=")))
+		spaceNum=atoi(optp);
+
+	if( (optp=UTL_TSTOPT("m=")))
+		opt_mod=atoi(optp);
+
+	if( (optp=UTL_TSTOPT("w=")))
+		swapMode=atoi(optp);
+
 	opt_pause = UTL_TSTOPT("p") ? 1 : 0;
 
-	
 	CHK( ((opt_mod < 4) && (opt_mod >=0)) || (opt_mod == -1));
 
 	/* open space */
@@ -674,7 +707,6 @@ int main( int argc, char *argv[] )
 		CHK( VME4L_AddrModifierSet( spaceFd, (char)(opt_mod & 0xff))==0 );
 	}
 
-	
 	/* install buserr signal */
 	signal( SIGBUS, SigBusHandler );
 
@@ -687,7 +719,6 @@ int main( int argc, char *argv[] )
     +----------------*/
 	printf("Testing VME memory %08x .. %08x\n", startadr, endadr );
 
-
 	for( pass=0; pass<total_pass || total_pass==0; pass++ ){
 		printf("PASS %d...\n", pass );
 
@@ -698,18 +729,17 @@ int main( int argc, char *argv[] )
 			if( test_p->test_id ){
 				printf( "%s\n", test_p->action_line );
 
-				errors = do_test( *test_id );
+				errors = do_test( pDat, *test_id );
 
 				test_p->errcnt += errors;
-				printf( "TEST result: %-32s %5d errors\n", test_p->action_line,
-						 test_p->errcnt);
+				printf( "TEST result: %-32s %5d errors\n", test_p->action_line, test_p->errcnt);
 			}
 		}
 	}
 
  ABORT:
 
-	goaway();
+	show_test_result();
 	return 0;
 }
 

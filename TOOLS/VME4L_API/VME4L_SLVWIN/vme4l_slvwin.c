@@ -123,14 +123,16 @@ int main( int argc, char *argv[] )
 	
 	/* map slave window into application space
 	   note: the vmeAddr argument of VME4L_Map() is the offset within the shared RAM here! */
-	CHK( VME4L_Map( fd,	0 /* offset */, 0x100 /* size */, &map) == 0 );
+	CHK( VME4L_Map( fd,	0,  size, &map) == 0 );
 
 	if( write ) {
-		/* write a sting to RAM */
-		sprintf( map, "\x12\x34\x56\x78 VME4L Slave Window at 0x%llx (spc=%d)",
-				 vmeAddr, spc );
+		/* write a string to RAM */
+		sprintf( map, "\x12\x34\x56\x78 VME4L Slave Window at 0x%llx (spc=%d)",	 vmeAddr, spc );
 	}
 	
+	printf("spc %d opened. Now send from other VME card then press ENTER:\n");
+	UOS_KeyWait();
+
 	if( read ) {
 		/* dump RAM */
 		for( i=0; i<0x100; i++ ) {
@@ -141,6 +143,8 @@ int main( int argc, char *argv[] )
 		printf( "\n" );
 	}
 	
+	CHK( VME4L_Close( fd ) >= 0 );
+
 	return 0;
 
  ABORT:

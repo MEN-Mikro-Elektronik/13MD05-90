@@ -39,7 +39,7 @@
 #include <unistd.h>
 #include <malloc.h>
 #include <errno.h>
-#include <sys/time.h>
+#include <time.h>
 #include <MEN/vme4l.h>
 #include <MEN/vme4l_api.h>
 #include <MEN/men_typs.h>
@@ -57,7 +57,7 @@
 		goto ABORT;												\
 	}
 
-#define _1M 	1000000  			/* for us->s */
+#define _1G 	1000000000 			/* for ns->s */
 #define _1MB 	(1*1024*1024)		/* for MB/s */
 
 /*--------------------------------------+
@@ -85,6 +85,8 @@ static void usage(int excode)
 	printf("-s=<spc>      VME4L space number\n");
 	printf("-a=<width>    access width in bytes (1/2/4)        [4]\n");
 	printf("-v=<init.Val> initial value for write buffer fill  [0]\n");
+	printf("-n=<# runs>     nr. of runs reading/writing is done  [1]\n");
+	printf("                (shown MB/s is average of all runs)\n");
 	printf("-x            use swap mode                        [0]\n");
 	printf("-r            read from VME space into CPU\n");
 	printf("-w            write from CPU to VME space\n");
@@ -105,7 +107,7 @@ static void SigHandler( int sigNum )
  */
 int main( int argc, char *argv[] )
 {
-	int fd, rv, i;
+	int fd=-1, rv, i;
 	void *buf=NULL;
 	VME4L_SPACE spc=0;
 	vmeaddr_t vmeAddr;
@@ -113,9 +115,10 @@ int main( int argc, char *argv[] )
 	int accWidth=4;
 	size_t size = 0xffffffff;
 	char *optp=NULL;
-	int opt_read=-1, opt_dump=1, opt_swapmode = 0, startVal = 0, opt_align=0;
-	struct timeval t1, t2;
-	float transferRate=0.0, deltaSec=0.0;
+	int opt_read=-1, opt_dump=1, opt_swapmode = 0, opt_startval = 0, opt_align=0, opt_runs=1;
+	struct timespec t1, t2;
+	double transferRate=0.0, timePerRun=0.0, timeTotal=0.0;
+
 
 	if( UTL_TSTOPT("?") || (argc == 1) )
 		usage(0);
@@ -140,6 +143,8 @@ int main( int argc, char *argv[] )
 
 	vmeAddr = startaddr;
 
+	/* Check / parse args */
+
 	if (UTL_TSTOPT("r"))
 		opt_read = 1;
 	else if (UTL_TSTOPT("w"))
@@ -154,10 +159,20 @@ int main( int argc, char *argv[] )
 		spc=strtoul( optp, NULL, 0 );
 
 	opt_swapmode = (optp=UTL_TSTOPT("x")) ? 1 : 0;
+	
 	opt_align = (optp=UTL_TSTOPT("l")) ? 1 : 0;
 
 	if( (optp=UTL_TSTOPT("v=")))
-		startVal=strtoul( optp, NULL, 0 );
+		opt_startval=strtoul( optp, NULL, 0 );
+
+	if( (optp=UTL_TSTOPT("n="))) {
+		opt_runs=strtoul( optp, NULL, 0 );
+
+		if( opt_runs <= 0 ) {
+			printf("*** nr. of runs must be at least 1 !\n");
+			usage(1);
+		}
+	}
 
 	if (opt_read == -1) {
 		printf("*** specify either -r or -w!\n");
@@ -167,49 +182,61 @@ int main( int argc, char *argv[] )
 	if ( opt_align ) {
 		CHK( posix_memalign( &buf, getpagesize(), size ) == 0 );
 	} else {
-		CHK( (buf = malloc( size )) != NULL);
+		/* add a page to <size> in case start offset is > 0 */
+		CHK( (buf = malloc( size + getpagesize() )) != NULL);
 	}
 
-	printf("Open space %s,%suser buffer @ %p\n",
-		   VME4L_SpaceName(spc), opt_align ? " page aligned " : " ", buf );
+	printf("Open space %s,%suser buffer @ %p\n", VME4L_SpaceName(spc), opt_align ? " page aligned " : " ", buf );
 
 	CHK( (fd = VME4L_Open( spc )) >= 0 /*node /dev/vme4l_<spc> must exist*/ );
 
 	CHK( VME4L_SwapModeSet( fd, opt_swapmode ) == 0 );
 
+	for ( i=1; i <= opt_runs; i++)
+	{
 	if( opt_read )
 	{
-		/* measure time right before and after VME access, mem dumps can take time */
-		gettimeofday( &t1, 0 );
+			/* measure time right before and after VME access without mem dumps */
+			clock_gettime( CLOCK_MONOTONIC, &t1 );
 		CHK( (rv = VME4L_Read( fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS )) >=0);
-		gettimeofday( &t2, 0 );
+			clock_gettime( CLOCK_MONOTONIC, &t2 );
+
 		if ( opt_dump )
 			MemDump( buf, rv, 1 );
 	}
 	else {
 		uint8_t *p = buf;
-		int i;
+			int j;
+			for( j=0; j < size; j++ )
+				*p++ = (j + opt_startval) & 0xff;
+			clock_gettime( CLOCK_MONOTONIC, &t1 );
+			CHK( (rv = VME4L_Write( fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS )) >=0);
+			clock_gettime( CLOCK_MONOTONIC, &t2 );
+		}
 
-		for( i=0; i < size; i++ )
-			*p++ = (i + startVal) & 0xff;
-
-		gettimeofday( &t1, 0 );
-		CHK( (rv = VME4L_Write( fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS )) >=0);
-		gettimeofday( &t2, 0 );
+		/* timeTotal(max) =  +1.7E+308, enough till eternity.. */
+		timePerRun = (float)((t2.tv_sec - t1.tv_sec) * _1G + (t2.tv_nsec - t1.tv_nsec))/_1G;
+		timeTotal+=timePerRun;
 	}
 
-	deltaSec = (float)((t2.tv_sec - t1.tv_sec) * _1M + (t2.tv_usec - t1.tv_usec) /* us */)/_1M;
-	transferRate = ((float)size/deltaSec)/_1MB;
+	transferRate = (((float)size * (float)opt_runs) / timeTotal) /_1MB;
 
-	printf("%s finished. Time: %.3f s => transfer rate: %.3f MB/s\n", opt_read ? "read" : "write", deltaSec, transferRate );
+	printf("%d %s access%s finished. average Time: %.3f s => average transfer rate: %.3f MB/s\n", 
+		   opt_runs, 
+		   opt_read ? "read" : "write", 
+		   (opt_runs > 1) ? "es" : "", 
+		   timeTotal / (float)opt_runs, 
+		   transferRate );
 
-	free ( buf );
+	UOS_Delay( 100 );
+	VME4L_Close( fd );
+	UOS_Delay( 100 );
 	return 0;
 
 ABORT:
-	if ( buf != NULL )
-	    free ( buf );
-
+	if (fd >=0 )
+		VME4L_Close( fd );
+	UOS_Delay( 100 );
 	return 1;
 }
 
