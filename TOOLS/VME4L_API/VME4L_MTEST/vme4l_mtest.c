@@ -540,8 +540,6 @@ int blk_test( unsigned char* pBuf, int rand_pattern, void (*readfunc)(), void (*
 	address = startadr;
 	pattern=0xabcdef02+pass;
 
-	/* data written to VME receiver, wipe out buf again */
-	memset(buf, 0x0, sizeof(G_buf));
 	if (opt_pause)
 		UOS_Delay(1000);
 
