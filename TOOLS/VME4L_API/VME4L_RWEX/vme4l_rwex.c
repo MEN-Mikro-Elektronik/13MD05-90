@@ -40,6 +40,10 @@
 #include <malloc.h>
 #include <errno.h>
 #include <time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 #include <MEN/vme4l.h>
 #include <MEN/vme4l_api.h>
 #include <MEN/men_typs.h>
@@ -92,6 +96,7 @@ static void usage(int excode)
 	printf("-w            write from CPU to VME space\n");
 	printf("-d            do *NOT* dump data (if reading big size)\n");
 	printf("-l            use page-aligned memory as buffer\n");
+	printf("-f=<file>     dump binary data into a file\n");
 	exit(excode);
 }
 
@@ -115,9 +120,12 @@ int main( int argc, char *argv[] )
 	int accWidth=4;
 	size_t size = 0xffffffff;
 	char *optp=NULL;
+	char *file_name=NULL;
+	int f_desc=-1;
 	int opt_read=-1, opt_dump=1, opt_swapmode = 0, opt_startval = 0, opt_align=0, opt_runs=1;
 	struct timespec t1, t2;
 	double transferRate=0.0, timePerRun=0.0, timeTotal=0.0;
+	ssize_t ret;
 
 
 	if( UTL_TSTOPT("?") || (argc == 1) )
@@ -174,6 +182,17 @@ int main( int argc, char *argv[] )
 		}
 	}
 
+	if( (optp=UTL_TSTOPT("f="))) {
+		file_name = optp;
+		printf("Write output to a file %s\n", file_name);
+	}
+
+	if ( file_name ) {
+		f_desc = open(file_name, O_CREAT | O_SYNC | O_TRUNC | O_WRONLY);
+		if (!f_desc)
+			printf("unable to open %s\n", file_name);
+	}
+
 	if (opt_read == -1) {
 		printf("*** specify either -r or -w!\n");
 		usage(1);
@@ -203,6 +222,15 @@ int main( int argc, char *argv[] )
 
 		if ( opt_dump )
 			MemDump( buf, rv, 1 );
+
+		if ( file_name ) {
+			ret = write(f_desc, buf, rv);
+ 			if (ret != rv) {
+				printf("Unable to write to a file %s (ret=%d)\n", file_name, ret);
+				/* print the message above only once */
+				file_name = NULL;
+				}
+		}
 	}
 	else {
 		uint8_t *p = buf;
@@ -217,6 +245,10 @@ int main( int argc, char *argv[] )
 		/* timeTotal(max) =  +1.7E+308, enough till eternity.. */
 		timePerRun = (float)((t2.tv_sec - t1.tv_sec) * _1G + (t2.tv_nsec - t1.tv_nsec))/_1G;
 		timeTotal+=timePerRun;
+	}
+
+	if ( f_desc ) {
+		close(f_desc);
 	}
 
 	transferRate = (((float)size * (float)opt_runs) / timeTotal) /_1MB;
