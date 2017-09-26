@@ -1878,9 +1878,9 @@ void vme4l_irq( int level, int vector, struct pt_regs *regs)
 			case VME4L_KERNEL_IRQ:
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)
-				ent->u.kernel.h.lHandler( vector, ent->u.kernel.dev_id );
+				ent->u.kernel.h.lHandler( level, ent->u.kernel.dev_id );
 #else
-				ent->u.kernel.h.lHandler( vector, ent->u.kernel.dev_id, regs );
+				ent->u.kernel.h.lHandler( level, ent->u.kernel.dev_id, regs );
 #endif /*LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)*/
 				break;
 
