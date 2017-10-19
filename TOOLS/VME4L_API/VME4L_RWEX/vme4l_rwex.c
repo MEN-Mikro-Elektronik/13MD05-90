@@ -75,11 +75,7 @@
 /*--------------------------------------+
   |   PROTOTYPES                          |
   +--------------------------------------*/
-static void MemDump(
-    uint8_t *buf,
-    uint32_t n,
-    uint32_t fmt
-	);
+static void MemDump(uint8_t *buf, uint32_t n, uint32_t fmt);
 
 static void usage(int excode)
 {
@@ -211,29 +207,26 @@ int main( int argc, char *argv[] )
 
 	CHK( VME4L_SwapModeSet( fd, opt_swapmode ) == 0 );
 
-	for ( i=1; i <= opt_runs; i++)
-	{
-	if( opt_read )
-	{
+	for (i=1; i <= opt_runs; i++) {
+		if (opt_read) {
 			/* measure time right before and after VME access without mem dumps */
 			clock_gettime( CLOCK_MONOTONIC, &t1 );
-		CHK( (rv = VME4L_Read( fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS )) >=0);
-			clock_gettime( CLOCK_MONOTONIC, &t2 );
+			CHK( (rv = VME4L_Read( fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS )) >=0);
+				clock_gettime( CLOCK_MONOTONIC, &t2 );
 
-		if ( opt_dump )
-			MemDump( buf, rv, 1 );
+			if ( opt_dump )
+				MemDump( buf, rv, 1 );
 
-		if ( file_name ) {
-			ret = write(f_desc, buf, rv);
- 			if (ret != rv) {
-				printf("Unable to write to a file %s (ret=%d)\n", file_name, ret);
-				/* print the message above only once */
-				file_name = NULL;
+			if ( file_name ) {
+				ret = write(f_desc, buf, rv);
+				if (ret != rv) {
+					printf("Unable to write to a file %s (ret=%d)\n", file_name, ret);
+					/* print the message above only once */
+					file_name = NULL;
 				}
-		}
-	}
-	else {
-		uint8_t *p = buf;
+			}
+		} else {
+			uint8_t *p = buf;
 			int j;
 			for( j=0; j < size; j++ )
 				*p++ = (j + opt_startval) & 0xff;
@@ -247,7 +240,7 @@ int main( int argc, char *argv[] )
 		timeTotal+=timePerRun;
 	}
 
-	if ( f_desc ) {
+	if (f_desc) {
 		close(f_desc);
 	}
 
@@ -272,40 +265,37 @@ ABORT:
 	return 1;
 }
 
-static void MemDump(
-    uint8_t *buf,
-    uint32_t n,
-    uint32_t fmt
-	)
+static void MemDump(uint8_t *buf, uint32_t n, uint32_t fmt)
 {
-    uint8_t *k, *k0, *kmax = buf+n;
-    int32_t i;
+	uint8_t *k, *k0, *kmax = buf+n;
+	int32_t i;
 
-    for (k=k0=buf; k0<kmax; k0+=16)
-    {
-        printf("%04x: ", (unsigned int)(k-buf));
+	for (k=k0=buf; k0<kmax; k0+=16) {
+		printf("%04x: ", (unsigned int)(k-buf));
 
-        switch(fmt)                                        /* dump hex: */
-        {
-		case 4 : for (k=k0,i=0; i<16; i+=4, k+=4)       /* long aligned */
-				if (k<kmax)  printf("%08lx ",*(uint32_t*)k);
-				else         printf("         ");
-			break;
-		case 2 : for (k=k0,i=0; i<16; i+=2, k+=2)       /* word aligned */
-				if (k<kmax)  printf("%04x ",*(uint16_t*)k & 0xffff);
-				else         printf("     ");
-			break;
-		default: for (k=k0,i=0; i<16; i++, k++)         /* byte aligned */
-				if (k<kmax)  printf("%02x ",*k & 0xff);
-				else         printf("   ");
-        }
+		switch(fmt) {	/* dump hex: */
+			case 4: /* long aligned */
+				for (k=k0,i=0; i<16; i+=4, k+=4)
+					if (k<kmax)  printf("%08lx ",*(uint32_t*)k);
+					else         printf("         ");
+				break;
+			case 2: /* word aligned */
+				for (k=k0,i=0; i<16; i+=2, k+=2)
+					if (k<kmax)  printf("%04x ",*(uint16_t*)k & 0xffff);
+					else         printf("     ");
+				break;
+			default: /* byte aligned */
+				for (k=k0,i=0; i<16; i++, k++)
+					if (k<kmax)  printf("%02x ",*k & 0xff);
+					else         printf("   ");
+		}
 
-        for (k=k0,i=0; i<16 && k<kmax; i++, k++)           /* dump ascii */
-            if ( *(uint8_t*)k>=32 && *(uint8_t*)k<=127 )
+		for (k=k0, i=0; i<16 && k<kmax; i++, k++)           /* dump ascii */
+			if ( *(uint8_t*)k>=32 && *(uint8_t*)k<=127 )
 				printf("%c", *k);
-            else
+			else
 				printf(".");
 
-        printf("\n");
-    }
+		printf("\n");
+	}
 }
