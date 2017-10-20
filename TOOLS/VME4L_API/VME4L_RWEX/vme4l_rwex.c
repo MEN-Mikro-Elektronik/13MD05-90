@@ -286,7 +286,7 @@ int main( int argc, char *argv[] )
 				CHK( (rv = VME4L_Read( fd, vmeAddr, accWidth, size, buf_ver, VME4L_RW_NOFLAGS )) >=0);
 
 				if ((pos = memcmp(buf, buf_ver, size))) {
-					printf("Error during write verification at the position %d.\n", pos);
+					printf("Error during write verification at the position %d.\n", abs(pos));
 					return_global = 1;
 					file_name_ver = calloc(1, strlen(file_name) + strlen(VERIFY_FILE_POSTFIX) + 1 + 9);
 					if (!file_name_ver) {
