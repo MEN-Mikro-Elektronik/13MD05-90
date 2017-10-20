@@ -64,6 +64,7 @@
 #define _1G 	1000000000 			/* for ns->s */
 #define _1MB 	(1*1024*1024)		/* for MB/s */
 
+#define VERIFY_FILE_POSTFIX ".bad"
 /*--------------------------------------+
   |   TYPDEFS                             |
   +--------------------------------------*/
@@ -92,7 +93,10 @@ static void usage(int excode)
 	printf("-w            write from CPU to VME space\n");
 	printf("-d            do *NOT* dump data (if reading big size)\n");
 	printf("-l            use page-aligned memory as buffer\n");
-	printf("-f=<file>     dump binary data into a file\n");
+	printf("-f=<file>     with -r dump binary data into a file\n");
+	printf("              with -w read binary data from a file\n");
+	printf("-c            in conjuction with -w and -f, verifies written data\n");
+	printf("              if fails, store read data in <file>"VERIFY_FILE_POSTFIX"\n");
 	exit(excode);
 }
 
@@ -110,6 +114,7 @@ int main( int argc, char *argv[] )
 {
 	int fd=-1, rv, i;
 	void *buf=NULL;
+	void *buf_ver = NULL;
 	VME4L_SPACE spc=0;
 	vmeaddr_t vmeAddr;
 	u_int32 startaddr= 0xffffffff;
@@ -117,12 +122,19 @@ int main( int argc, char *argv[] )
 	size_t size = 0xffffffff;
 	char *optp=NULL;
 	char *file_name=NULL;
+	char *file_name_ver = NULL;
 	int f_desc=-1;
+	int f_ver_desc=-1;
 	int opt_read=-1, opt_dump=1, opt_swapmode = 0, opt_startval = 0, opt_align=0, opt_runs=1;
+	int opt_verify_write = 0;
 	struct timespec t1, t2;
 	double transferRate=0.0, timePerRun=0.0, timeTotal=0.0;
 	ssize_t ret;
-
+	struct stat st;
+	uint8_t *p;
+	int j;
+	int pos;
+	int return_global = 0;
 
 	if( UTL_TSTOPT("?") || (argc == 1) )
 		usage(0);
@@ -137,11 +149,7 @@ int main( int argc, char *argv[] )
 			else
 				size = strtoul(argv[i], NULL, 0);
 		}
-
-	if( startaddr==0xffffffff || size==0xffffffff ){
-		printf("*** missing vmeaddr or size!\n");
-		usage(1);
-	}
+	/* Correctness of startaddr and size is done later */
 
 	signal( SIGUSR1, SigHandler ); /* catch sig 10 (typical) */
 
@@ -178,19 +186,45 @@ int main( int argc, char *argv[] )
 		}
 	}
 
+	if (opt_read == -1) {
+		printf("*** specify either -r or -w!\n");
+		usage(1);
+	}
+
+	if( (optp = UTL_TSTOPT("c"))) {
+		opt_verify_write = 1;
+	}
+
 	if( (optp=UTL_TSTOPT("f="))) {
 		file_name = optp;
-		printf("Write output to a file %s\n", file_name);
+		if (opt_read == 0) { /* read from file */
+			printf("Read data from a file %s\n", file_name);
+		}
+		if (opt_read == 1) { /* write to file */
+			printf("Write output to a file %s\n", file_name);
+		}
 	}
 
 	if ( file_name ) {
-		f_desc = open(file_name, O_CREAT | O_SYNC | O_TRUNC | O_WRONLY);
-		if (!f_desc)
-			printf("unable to open %s\n", file_name);
+  		if (opt_read == 1) { /* read from VME */
+			f_desc = open(file_name, O_CREAT | O_SYNC | O_TRUNC | O_WRONLY);
+		} else if (opt_read == 0) { /* write to VME */
+			f_desc = open(file_name, O_RDONLY);
+			if (size == 0xffffffff) {
+				/* get file size */
+				fstat(f_desc, &st);
+				size = st.st_size;
+			}
+			printf("Read %d bytes\n", size);
+		}
+		if (!f_desc) {
+			printf("Unable to open file %s\n", file_name);
+			exit(1);
+		}
 	}
 
-	if (opt_read == -1) {
-		printf("*** specify either -r or -w!\n");
+	if (startaddr==0xffffffff || size==0xffffffff ){
+		printf("*** missing vmeaddr or size!\n");
 		usage(1);
 	}
 
@@ -198,7 +232,25 @@ int main( int argc, char *argv[] )
 		CHK( posix_memalign( &buf, getpagesize(), size ) == 0 );
 	} else {
 		/* add a page to <size> in case start offset is > 0 */
-		CHK( (buf = malloc( size + getpagesize() )) != NULL);
+		CHK( (buf = calloc(1, size + getpagesize())) != NULL);
+		if (opt_verify_write) { /* allocate second buffer for write verification */
+			CHK( (buf_ver = calloc(1, size + getpagesize())) != NULL);
+		}
+	}
+
+	if (file_name) {
+		if (opt_read == 0) { /* write to VME, read buf from file */
+			ret = read(f_desc, buf, size);
+			if (ret != size) {
+				printf("Unable to read from a file %s (ret=%d)\n", file_name, ret);
+				exit(1);
+			}
+		}
+	} else {
+		p = buf;
+		/* if filename is not specified fill buffer */
+		for( j=0; j < size; j++ )
+			*p++ = (j + opt_startval) & 0xff;
 	}
 
 	printf("Open space %s,%suser buffer @ %p\n", VME4L_SpaceName(spc), opt_align ? " page aligned " : " ", buf );
@@ -208,7 +260,7 @@ int main( int argc, char *argv[] )
 	CHK( VME4L_SwapModeSet( fd, opt_swapmode ) == 0 );
 
 	for (i=1; i <= opt_runs; i++) {
-		if (opt_read) {
+		if (opt_read) { /* read */
 			/* measure time right before and after VME access without mem dumps */
 			clock_gettime( CLOCK_MONOTONIC, &t1 );
 			CHK( (rv = VME4L_Read( fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS )) >=0);
@@ -221,18 +273,52 @@ int main( int argc, char *argv[] )
 				ret = write(f_desc, buf, rv);
 				if (ret != rv) {
 					printf("Unable to write to a file %s (ret=%d)\n", file_name, ret);
-					/* print the message above only once */
-					file_name = NULL;
+					exit(1);
 				}
 			}
-		} else {
-			uint8_t *p = buf;
-			int j;
-			for( j=0; j < size; j++ )
-				*p++ = (j + opt_startval) & 0xff;
+		} else { /* write */
 			clock_gettime( CLOCK_MONOTONIC, &t1 );
 			CHK( (rv = VME4L_Write( fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS )) >=0);
 			clock_gettime( CLOCK_MONOTONIC, &t2 );
+
+			if (opt_verify_write) {
+				/* verify written data */
+				CHK( (rv = VME4L_Read( fd, vmeAddr, accWidth, size, buf_ver, VME4L_RW_NOFLAGS )) >=0);
+
+				if ((pos = memcmp(buf, buf_ver, size))) {
+					printf("Error during write verification at the position %d.\n", pos);
+					return_global = 1;
+					file_name_ver = calloc(1, strlen(file_name) + strlen(VERIFY_FILE_POSTFIX) + 1 + 9);
+					if (!file_name_ver) {
+						printf("Unable to allocate memory\n");
+						exit(1);
+					}
+					if (opt_runs > 1)
+						sprintf(file_name_ver, "%s" VERIFY_FILE_POSTFIX "%d", file_name, i);
+					else
+						sprintf(file_name_ver, "%s" VERIFY_FILE_POSTFIX, file_name);
+					printf("Writing read data into a file %s.\n", file_name_ver);
+					f_ver_desc = open(file_name_ver, O_CREAT | O_SYNC | O_TRUNC | O_WRONLY);
+					if (!f_ver_desc ) {
+						printf("Unable to open file %s\n", file_name_ver);
+						exit(1);
+					}
+					/* write bad data */
+					ret = write(f_ver_desc, buf_ver, rv);
+					if (ret != rv) {
+						printf("Unable to write to a file %s (ret=%d)\n", file_name_ver, ret);
+						exit(1);
+					}
+					/* close descritor */
+					if (f_ver_desc) {
+						close(f_ver_desc);
+					}
+					free(file_name_ver);
+					file_name_ver = NULL;
+				} else {
+					printf("Verification OK (%d bytes)\n", size);
+				}
+			}
 		}
 
 		/* timeTotal(max) =  +1.7E+308, enough till eternity.. */
@@ -253,10 +339,21 @@ int main( int argc, char *argv[] )
 		   timeTotal / (float)opt_runs, 
 		   transferRate );
 
+	/* Uncomment when the driver is fixed.... */
+	/* if (opt_verify_write && buf_ver) {
+		free(buf_ver);
+		buf_ver = NULL;
+	}
+
+	if (buf) {
+		free(buf);
+		buf = NULL;
+	} */
+
 	UOS_Delay( 100 );
 	VME4L_Close( fd );
 	UOS_Delay( 100 );
-	return 0;
+	return return_global;
 
 ABORT:
 	if (fd >=0 )
