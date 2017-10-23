@@ -1332,7 +1332,7 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 		if( totlen + sgList->dmaLength > count )
 			sgList->dmaLength = count - totlen;
 
-		VME4LDBG(" sglist %d: pageAddr=%p off=0x%lx dmaAddr=%p length=0x%x\n", i, page_address(page), offset, dmaAddr, sgList->dmaLength);
+		VME4LDBG(" sglist %d: pageAddr=%p off=0x%04lx dmaAddr=%p length=0x%04x\n", i, page_address(page), offset, dmaAddr, sgList->dmaLength);
 		totlen += sgList->dmaLength;
 		offset = 0;
 	}
@@ -1464,7 +1464,7 @@ int vme4l_rw(VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 {
 	int rv;
 	VME4L_SPACE_ENT *spcEnt = &G_spaceTbl[spc];
-	VME4LDBG("vme4l_rw %s spc=%d vmeAddr=0x%lx acc=%d sz=0x%lx dataP=0x%x swp=0x%x\n",
+	VME4LDBG("vme4l_rw %s spc=%d vmeAddr=0x%lx acc=%d sz=0x%lx dataP=0x%p swp=0x%x\n",
 			 blk->direction ? "write":"read",
 			 spc,
 			 blk->vmeAddr,
