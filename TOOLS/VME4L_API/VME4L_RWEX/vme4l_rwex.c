@@ -230,6 +230,9 @@ int main( int argc, char *argv[] )
 
 	if ( opt_align ) {
 		CHK( posix_memalign( &buf, getpagesize(), size ) == 0 );
+		if (opt_verify_write) { /* allocate second buffer for write verification */
+			CHK( posix_memalign(&buf_ver, getpagesize(), size) == 0);
+		}
 	} else {
 		/* add a page to <size> in case start offset is > 0 */
 		CHK( (buf = calloc(1, size + getpagesize())) != NULL);
@@ -237,6 +240,10 @@ int main( int argc, char *argv[] )
 			CHK( (buf_ver = calloc(1, size + getpagesize())) != NULL);
 		}
 	}
+
+	printf("Open space %s,%suser buffer @ %p\n", VME4L_SpaceName(spc), opt_align ? " page aligned " : " ", buf );
+	if (opt_verify_write)
+		printf("Open space %s,%suser buffer @ %p for verification\n", VME4L_SpaceName(spc), opt_align ? " page aligned " : " ", buf_ver );
 
 	if (file_name) {
 		if (opt_read == 0) { /* write to VME, read buf from file */
@@ -252,8 +259,6 @@ int main( int argc, char *argv[] )
 		for( j=0; j < size; j++ )
 			*p++ = (j + opt_startval) & 0xff;
 	}
-
-	printf("Open space %s,%suser buffer @ %p\n", VME4L_SpaceName(spc), opt_align ? " page aligned " : " ", buf );
 
 	CHK( (fd = VME4L_Open( spc )) >= 0 /*node /dev/vme4l_<spc> must exist*/ );
 
