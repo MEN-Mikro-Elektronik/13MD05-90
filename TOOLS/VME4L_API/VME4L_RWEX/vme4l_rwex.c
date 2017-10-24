@@ -207,7 +207,7 @@ int main( int argc, char *argv[] )
 
 	if ( file_name ) {
   		if (opt_read == 1) { /* read from VME */
-			f_desc = open(file_name, O_CREAT | O_SYNC | O_TRUNC | O_WRONLY);
+			f_desc = open(file_name, O_CREAT | O_SYNC | O_TRUNC | O_WRONLY, 0666);
 		} else if (opt_read == 0) { /* write to VME */
 			f_desc = open(file_name, O_RDONLY);
 			if (size == 0xffffffff) {
@@ -298,7 +298,7 @@ int main( int argc, char *argv[] )
 					else
 						sprintf(file_name_ver, "%s" VERIFY_FILE_POSTFIX, file_name);
 					printf("Writing read data into a file %s.\n", file_name_ver);
-					f_ver_desc = open(file_name_ver, O_CREAT | O_SYNC | O_TRUNC | O_WRONLY);
+					f_ver_desc = open(file_name_ver, O_CREAT | O_SYNC | O_TRUNC | O_WRONLY, 0666);
 					if (!f_ver_desc ) {
 						printf("Unable to open file %s\n", file_name_ver);
 						exit(1);
