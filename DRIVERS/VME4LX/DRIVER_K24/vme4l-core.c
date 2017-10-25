@@ -1206,7 +1206,7 @@ static void vme4l_user_pages_print(unsigned int nr_pages,
 		pDat = (unsigned char*)page_address( pages[i] ) + offset;
 
 		for ( j = 0; j < len / 16; j++ ) {
-			printk("%04X | %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", i,
+			printk("%04X | %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n", j * 16,
 				   pDat[0],pDat[1],pDat[2],pDat[3],pDat[4],pDat[5],pDat[6],pDat[7],
 				   pDat[8],pDat[9],pDat[10],pDat[11],pDat[12],pDat[13],pDat[14],pDat[15]);
 
