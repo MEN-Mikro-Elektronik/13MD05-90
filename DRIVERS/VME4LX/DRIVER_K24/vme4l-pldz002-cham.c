@@ -190,7 +190,7 @@
 
 
 #define _PLDZ002_FS3(h) 			(0)
-#define _PLDZ002_USE_BOUNCE_DMA(h) 	(0)
+#define _PLDZ002_USE_BOUNCE_DMA(h) 	(bounce_buffer)
 #define MEN_PLDZ002_DMABD_OFFS 		((char *)h->sramRegs.vaddr + 0x100)
 
 /* The A15 cannot perform direct VMA<->RAM DMA */
@@ -285,6 +285,14 @@ static int debug = DEBUG_DEFAULT;  /**< enable debug printouts */
 module_param(debug, int, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "Enable debugging printouts (default " \
 			M_INT_TO_STR(DEBUG_DEFAULT) ")");
+
+#define BOUNCE_BUFFER_DEFAULT 0 /* Use zero-copy DMA */
+static int bounce_buffer = BOUNCE_BUFFER_DEFAULT;  /**< enable bounce buffer */
+
+module_param(bounce_buffer, int, S_IRUGO);
+MODULE_PARM_DESC(debug, "Use bounce buffer DMA instead of zero-copy (default " \
+			M_INT_TO_STR(BOUNCE_BUFFER_DEFAULT) ")");
+
 
 /*--------------------------------------+
 |   PROTOTYPES                          |
