@@ -88,6 +88,7 @@ static void usage(int excode)
 	printf("-v=<init.Val> initial value for write buffer fill  [0]\n");
 	printf("-n=<# runs>     nr. of runs reading/writing is done  [1]\n");
 	printf("                (shown MB/s is average of all runs)\n");
+	printf("-e            don't rewind a file after each read/write (only with -n option)\n");
 	printf("-x            use swap mode                        [0]\n");
 	printf("-r            read from VME space into CPU\n");
 	printf("-w            write from CPU to VME space\n");
@@ -120,6 +121,7 @@ int main( int argc, char *argv[] )
 	u_int32 startaddr= 0xffffffff;
 	int accWidth=4;
 	size_t size = 0xffffffff;
+	size_t file_size = 0;
 	char *optp=NULL;
 	char *file_name=NULL;
 	char *file_name_ver = NULL;
@@ -127,6 +129,7 @@ int main( int argc, char *argv[] )
 	int f_ver_desc=-1;
 	int opt_read=-1, opt_dump=1, opt_swapmode = 0, opt_startval = 0, opt_align=0, opt_runs=1;
 	int opt_verify_write = 0;
+	int opt_disable_file_rewind = 0;
 	struct timespec t1, t2;
 	double transferRate=0.0, timePerRun=0.0, timeTotal=0.0;
 	ssize_t ret;
@@ -205,21 +208,31 @@ int main( int argc, char *argv[] )
 		}
 	}
 
+	if (opt_runs > 1 && UTL_TSTOPT("e")) {
+		opt_disable_file_rewind = 1;
+		printf("Don't rewind a file\n");
+	}
+
 	if ( file_name ) {
   		if (opt_read == 1) { /* read from VME */
 			f_desc = open(file_name, O_CREAT | O_SYNC | O_TRUNC | O_WRONLY, 0666);
 		} else if (opt_read == 0) { /* write to VME */
 			f_desc = open(file_name, O_RDONLY);
-			if (size == 0xffffffff) {
-				/* get file size */
-				fstat(f_desc, &st);
-				size = st.st_size;
-			}
-			printf("Read %d bytes\n", size);
 		}
 		if (!f_desc) {
 			printf("Unable to open file %s\n", file_name);
 			exit(1);
+		}
+
+		if (opt_read == 0) { /* write to VME */
+			/* get file size */
+			fstat(f_desc, &st);
+			file_size = st.st_size;
+			printf("file size %d bytes\n", file_size);
+
+			if (size == 0xffffffff) {
+				size = file_size;
+			}
 		}
 	}
 
@@ -230,6 +243,9 @@ int main( int argc, char *argv[] )
 
 	if ( opt_align ) {
 		CHK( posix_memalign( &buf, getpagesize(), size ) == 0 );
+		if (opt_verify_write) { /* allocate second buffer for write verification */
+			CHK( posix_memalign(&buf_ver, getpagesize(), size) == 0);
+		}
 	} else {
 		/* add a page to <size> in case start offset is > 0 */
 		CHK( (buf = calloc(1, size + getpagesize())) != NULL);
@@ -238,27 +254,27 @@ int main( int argc, char *argv[] )
 		}
 	}
 
-	if (file_name) {
-		if (opt_read == 0) { /* write to VME, read buf from file */
-			ret = read(f_desc, buf, size);
-			if (ret != size) {
-				printf("Unable to read from a file %s (ret=%d)\n", file_name, ret);
-				exit(1);
-			}
-		}
-	} else {
-		p = buf;
-		/* if filename is not specified fill buffer */
-		for( j=0; j < size; j++ )
-			*p++ = (j + opt_startval) & 0xff;
-	}
-
 	printf("Open space %s,%suser buffer @ %p\n", VME4L_SpaceName(spc), opt_align ? " page aligned " : " ", buf );
+	if (opt_verify_write)
+		printf("Open space %s,%suser buffer @ %p for verification\n", VME4L_SpaceName(spc), opt_align ? " page aligned " : " ", buf_ver );
 
 	CHK( (fd = VME4L_Open( spc )) >= 0 /*node /dev/vme4l_<spc> must exist*/ );
 
 	CHK( VME4L_SwapModeSet( fd, opt_swapmode ) == 0 );
 
+	if (f_desc > -1 && !opt_read) {
+		if (opt_disable_file_rewind && (size * opt_runs > file_size)) {
+			printf("File too small to feed %d runs! Transfer size %d (0x%x), file size %d (0x%x)\n",
+			       opt_runs, size, size, file_size, file_size);
+			exit(1);
+		}
+		if (!opt_disable_file_rewind && (size > file_size)) {
+			printf("File too small! Transfer size %d (0x%x), file size %d (0x%x)\n",
+			       size, size, file_size, file_size);
+			exit(1);
+		}
+
+	}
 	for (i=1; i <= opt_runs; i++) {
 		if (opt_read) { /* read */
 			/* measure time right before and after VME access without mem dumps */
@@ -277,6 +293,19 @@ int main( int argc, char *argv[] )
 				}
 			}
 		} else { /* write */
+			if (file_name) {
+				ret = read(f_desc, buf, size);
+				if (ret != size) {
+					printf("Unable to read from a file %s (ret=%d)\n", file_name, ret);
+					exit(1);
+				}
+			} else {
+				p = buf;
+				/* if filename is not specified fill buffer */
+				for( j=0; j < size; j++ )
+					*p++ = (j + opt_startval) & 0xff;
+			}
+
 			clock_gettime( CLOCK_MONOTONIC, &t1 );
 			CHK( (rv = VME4L_Write( fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS )) >=0);
 			clock_gettime( CLOCK_MONOTONIC, &t2 );
@@ -320,7 +349,15 @@ int main( int argc, char *argv[] )
 				}
 			}
 		}
+		if (buf)
+			memset(buf, 0, size);
+		if (buf_ver)
+			memset(buf_ver, 0, size);
 
+		if (f_desc > -1 && !opt_disable_file_rewind) {
+			/* rewind the file if an option is set */
+			lseek(f_desc, 0, SEEK_SET);
+		}
 		/* timeTotal(max) =  +1.7E+308, enough till eternity.. */
 		timePerRun = (float)((t2.tv_sec - t1.tv_sec) * _1G + (t2.tv_nsec - t1.tv_nsec))/_1G;
 		timeTotal+=timePerRun;

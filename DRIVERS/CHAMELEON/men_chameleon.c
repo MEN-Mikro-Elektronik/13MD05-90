@@ -515,12 +515,13 @@ void men_chameleon_unregister_driver( CHAMELEON_DRIVER_T *drv )
         CHAMELEON_HANDLE_T *h = list_entry( pos, CHAMELEON_HANDLE_T, node );
 
         for( i=0; i < h->numUnits; i++ ){
-            if( (h->v0Unit[i].driver == drv)
-             && (drv->remove) ){
-                drv->remove( &h->v0Unit[i] );
+            if (h->v0Unit[i].driver == drv) {
+                if (drv->remove){
+                    drv->remove( &h->v0Unit[i] );
+                }
+                h->v0Unit[i].driver = NULL;
+                h->v0Unit[i].driver_data = NULL;
             }
-            h->v0Unit[i].driver = NULL;
-            h->v0Unit[i].driver_data = NULL;
         }
     }
 }
@@ -547,12 +548,13 @@ void men_chameleonV2_unregister_driver( CHAMELEONV2_DRIVER_T *drv )
         CHAMELEON_HANDLE_T *h = list_entry( pos, CHAMELEON_HANDLE_T, node );
 
         for( i=0; i < h->numUnits; i++ ){
-            if( (h->v2Unit[i].driver == drv)
-             && (drv->remove) ){
-                drv->remove( &h->v2Unit[i] );
+            if (h->v2Unit[i].driver == drv) {
+                if (drv->remove) {
+                    drv->remove( &h->v2Unit[i] );
+                }
+                h->v2Unit[i].driver = NULL;
+                h->v2Unit[i].driver_data = NULL;
             }
-            h->v2Unit[i].driver = NULL;
-            h->v2Unit[i].driver_data = NULL;
         }
     }
 }
