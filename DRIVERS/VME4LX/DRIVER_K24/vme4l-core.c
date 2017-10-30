@@ -126,6 +126,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "vme4l-core.h"
+#include <linux/seq_file.h>
 
 /*--------------------------------------+
 |   DEFINES                             |
@@ -298,6 +299,10 @@ static spinlock_t			G_lockFlags;
 static DEFINE_SEMAPHORE(G_dmaMutex);
 #else
 DECLARE_MUTEX(G_dmaMutex);
+#endif
+
+#ifdef CONFIG_PROC_FS
+static struct proc_dir_entry *vme4l_root;
 #endif
 
 /** table that maintains space specific variables.
@@ -2878,53 +2883,42 @@ static char *vme4l_rev_info( char *buf )
 
 	return buf;
 }
-#if 1
+
 /***********************************************************************/
 /**  Read entry point for /proc/vme4l file
  *
  */
 #ifndef CONFIG_PROC_FS
-static int vme4l_read_proc( char *buffer, char **start, off_t offset,
-			    int size, int *eof, void *data) { return 0; }
+static void vme_bridge_procfs_register(void) {}
+static void vme_bridge_procfs_unregister(void) {}
 #else
 
-/* This macro frees the machine specific function from bounds checking and
- * this like that... */
-#define	PRINT_PROC(fmt,args...)							\
-	do {												\
-		*len += sprintf( buffer+*len, fmt, ##args );	\
-		if (*begin + *len > offset + size)				\
-			return( 0 );								\
-		if (*begin + *len < offset) {					\
-			*begin += *len;								\
-			*len = 0;									\
-		}												\
-	} while(0)
+static int vme4l_info_proc_show(struct seq_file *m, void *data)
+{
+	char buf[200];
 
+	seq_printf(m, "%s\n\n", vme4l_rev_info(buf));
 
-static int vme4l_proc_infos( char *buffer, int *len,
-							 off_t *begin, off_t offset, int size )
+	return 0;
+}
+
+static int vme4l_window_proc_show(struct seq_file *m, void *data)
 {
 	VME4L_SPACE_ENT *spcEnt = G_spaceTbl;
 	struct list_head *pos, *pos2;
 	int spc;
 
-	{
-		char buf[200];
-		PRINT_PROC( "%s\n\n", vme4l_rev_info( buf ));
-	}
-
 	/*--- master address spaces ---*/
-	PRINT_PROC( "ADDR SPACES\n");
+	seq_printf(m, "ADDR SPACES\n");
 
 	VME4L_LOCK_MSTRLISTS();
-	for( spc=0; spc<VME4L_SPACE_TBL_SIZE; spc++, spcEnt++ ){
+	for(spc = 0; spc < VME4L_SPACE_TBL_SIZE; spc++, spcEnt++){
 
-		PRINT_PROC( "SPACE %d %s\n", spc, spcEnt->devName);
-		list_for_each( pos, &spcEnt->lstAdrsWins ){
-			VME4L_ADRSWIN *win = list_entry( pos, VME4L_ADRSWIN, node );
+		seq_printf(m, "SPACE %d %s\n", spc, spcEnt->devName);
+		list_for_each(pos, &spcEnt->lstAdrsWins){
+			VME4L_ADRSWIN *win = list_entry(pos, VME4L_ADRSWIN, node);
 
-			PRINT_PROC( " ADRSWIN %p: vme=%llx (%x) phys=%p use=%d flg=%x\n",
+			seq_printf(m, " ADRSWIN %p: vme=%llx (%x) phys=%p use=%d flg=%x\n",
 						win, win->vmeAddr, win->size, win->physAddr,
 						win->useCount, win->flags );
 
@@ -2932,7 +2926,7 @@ static int vme4l_proc_infos( char *buffer, int *len,
 				VME4L_IOREMAP_REGION *region = list_entry(
 					pos2, VME4L_IOREMAP_REGION, winNode );
 
-				PRINT_PROC("  IOREMAPREGION %p: vme=%llx (%x) vaddr=%p "
+				seq_printf(m, "  IOREMAPREGION %p: vme=%llx (%x) vaddr=%p "
 						   "valid=%d\n",
 						   region, region->vmeAddr, region->size,
 						   region->vaddr, region->isValid );
@@ -2941,85 +2935,154 @@ static int vme4l_proc_infos( char *buffer, int *len,
 	}
 	VME4L_UNLOCK_MSTRLISTS();
 
+	return 0;
+}
+
+static int vme4l_interrupts_proc_show(struct seq_file *m, void *data)
+{
+	int vector;
+	unsigned long ps;
+	struct list_head *pos_v;
+	VME4L_IRQ_ENTRY *ent;
+
 	/*--- IRQ vectors ---*/
-	{
-		int vector;
-		unsigned long ps;
-		VME4L_IRQ_ENTRY *ent;
-		struct list_head *pos;
+	seq_printf(m, "\n");
+	seq_printf(m, "VME VECTORS\n");
+	VME4L_LOCK_VECTORS(ps);
 
-		PRINT_PROC( "\nVME VECTORS\n");
-		VME4L_LOCK_VECTORS(ps);
+	for(vector = 0; vector < VME4L_NUM_VECTORS; vector++){
+		if (!list_empty(&G_vectTbl[vector])) {
+			seq_printf(m, " Vec %d:\n", vector);
 
-		for( vector=0; vector<VME4L_NUM_VECTORS; vector++ ){
-			if( !list_empty( &G_vectTbl[vector] )) {
-				PRINT_PROC( " Vec %d:\n", vector);
+			list_for_each(pos_v, &G_vectTbl[vector]) {
+				ent = list_entry(pos_v, VME4L_IRQ_ENTRY, node);
+				seq_printf(m, "   Lev %d flg=0x%x",
+							ent->level, ent->flags);
 
-				list_for_each( pos, &G_vectTbl[vector] ) {
-					ent = list_entry( pos, VME4L_IRQ_ENTRY, node );
-					PRINT_PROC( "   Lev %d flg=0x%x",
-								ent->level, ent->flags);
+				switch(ent->entType){
 
-					switch(ent->entType){
+				case VME4L_USER_IRQ:
+					seq_printf(m, "user sig=%d task=%p\n",
+								ent->u.user.signal, ent->u.user.task);
+					break;
 
-					case VME4L_USER_IRQ:
-						PRINT_PROC( "user sig=%d task=%p\n",
-									ent->u.user.signal, ent->u.user.task);
-						break;
-
-					case VME4L_KERNEL_IRQ:
-						PRINT_PROC( "kernel dev=%s id=%p\n",
-									ent->u.kernel.device,
-									ent->u.kernel.dev_id);
-						break;
-					}
+				case VME4L_KERNEL_IRQ:
+					seq_printf(m, "kernel dev=%s id=%p\n",
+						    ent->u.kernel.device,
+						    ent->u.kernel.dev_id);
+					break;
 				}
 			}
 		}
-		VME4L_UNLOCK_VECTORS(ps);
 	}
+	VME4L_UNLOCK_VECTORS(ps);
+
+	return 0;
+}
+
+static int vme4l_irq_levels_proc_show(struct seq_file *m, void *data)
+{
+	int level;
 
 	/*--- IRQ levels ---*/
-	{
-		int level;
 
-		PRINT_PROC( "\nVME LEVELS\n");
+	seq_printf(m, "\n");
+	seq_printf(m, "VME LEVELS\n");
 
-		for( level=VME4L_IRQLEV_1; level<VME4L_NUM_LEVELS; level++ ){
+	for (level = VME4L_IRQLEV_1; level < VME4L_NUM_LEVELS; level++){
 
-			PRINT_PROC( "%d: %d, ", level, G_irqLevEnblCount[level]);
-		}
-		PRINT_PROC("\n");
+		seq_printf(m, "%d: %d\n", level, G_irqLevEnblCount[level]);
 	}
-	return 1;
+	seq_printf(m, "\n");
+
+	return 0;
 }
 
-static int vme4l_read_proc( char *buffer, char **start, off_t offset,
-							int size, int *eof, void *data )
+static int vme4l_info_proc_open(struct inode *inode, struct file *file)
 {
-    int len = 0;
-    off_t begin = 0;
+	return single_open(file, vme4l_info_proc_show, NULL);
+}
 
-	*eof = vme4l_proc_infos( buffer, &len, &begin, offset, size );
+static const struct file_operations vme4l_info_proc_ops = {
+	.open		= vme4l_info_proc_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
 
-    if (offset >= begin + len)
-		return( 0 );
-    *start = buffer + (offset - begin);
-    return( size < begin + len - offset ? size : begin + len - offset );
+static int vme4l_window_proc_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, vme4l_window_proc_show, NULL);
+}
+
+static const struct file_operations vme4l_window_proc_ops = {
+	.open		= vme4l_window_proc_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+
+static int vme4l_interrupts_proc_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, vme4l_interrupts_proc_show, NULL);
+}
+
+static const struct file_operations vme4l_interrupts_proc_ops = {
+	.open		= vme4l_interrupts_proc_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+
+static int vme4l_irq_levels_proc_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, vme4l_irq_levels_proc_show, NULL);
+}
+
+static const struct file_operations vme4l_irq_levels_proc_ops = {
+	.open		= vme4l_irq_levels_proc_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+
+static void vme_bridge_procfs_register(void)
+{
+	struct proc_dir_entry *entry;
+
+	vme4l_root = proc_mkdir("vme4l", NULL);
+
+	entry = proc_create("info", S_IFREG | S_IRUGO, vme4l_root, &vme4l_info_proc_ops);
+	if (!entry)
+		printk(KERN_WARNING "vme4l: Failed to create proc info node\n");
+
+	entry = proc_create("windows", S_IFREG | S_IRUGO, vme4l_root, &vme4l_window_proc_ops);
+	if (!entry)
+		printk(KERN_WARNING "vme4l: Failed to create proc windows node\n");
+
+	 entry = proc_create("interrupts", S_IFREG | S_IRUGO, vme4l_root, &vme4l_interrupts_proc_ops);
+	if (!entry)
+		printk(KERN_WARNING "vme4l: Failed to create proc interrupts node\n");
+
+	entry = proc_create("irq_levels", S_IFREG | S_IRUGO, vme4l_root, &vme4l_irq_levels_proc_ops);
+	if (!entry)
+		printk(KERN_WARNING "vme4l: Failed to create proc irq node\n");
 
 }
-#endif
 
+static void vme_bridge_procfs_unregister(void)
+{
+	remove_proc_entry("irq_levels", vme4l_root);
+	remove_proc_entry("interrupts", vme4l_root);
+	remove_proc_entry("windows", vme4l_root);
+	remove_proc_entry("info", vme4l_root);
+	remove_proc_entry("vme4l", NULL);
+}
 #endif /* CONFIG_PROC_FS */
 
 static void vme4l_cleanup(void)
 {
-#ifdef CONFIG_PROC_FS
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
-	remove_proc_entry( "vme4l", 0 );
-
-#endif
-#endif /* CONFIG_PROC_FS */
+	vme_bridge_procfs_unregister();
 
 	/*-------------------------+
 	|  Cleanup device entries  |
@@ -3132,14 +3195,7 @@ static int __init vme4l_init_module(void)
 	}
 
 	/* create proc interface */
-#ifdef CONFIG_PROC_FS
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
-	if (!create_proc_read_entry("vme4l",0,0, vme4l_read_proc, NULL)) {
-		printk(KERN_ERR "*** vme4l: can't create /proc/vme4l\n");
-		goto CLEANUP;
-	}
-#endif
-#endif /* CONFIG_PROC_FS */
+	vme_bridge_procfs_register();
 
 	return 0;
 
