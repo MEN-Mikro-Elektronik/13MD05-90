@@ -58,7 +58,7 @@
 		printf("\n*** Error during: %s\nfile %s\nline %d\n",	\
 			   #expression,__FILE__,__LINE__);					\
 		printf("%s\n",strerror(errno));							\
-		goto ABORT;												\
+		exit(1);												\
 	}
 
 #define _1G 	1000000000 			/* for ns->s */
@@ -98,12 +98,37 @@ static void usage(int excode)
 	printf("              with -w read binary data from a file\n");
 	printf("-c            in conjuction with -w and -f, verifies written data\n");
 	printf("              if fails, store read data in <file>"VERIFY_FILE_POSTFIX"\n");
+	printf("-m            memory map instead of using ioctl calls\n");
 	exit(excode);
 }
 
 static void SigHandler( int sigNum )
 {
 	return; /* nothing  */
+}
+
+int vme_read(int opt_mmap, void *map, int fd, vmeaddr_t vmeAddr, int accWidth, size_t size, void *buf, int flags)
+{
+	int rv = 0;
+	if (opt_mmap) {
+		memcpy(buf, map, size);
+		rv = size;
+	} else {
+		CHK( (rv = VME4L_Read( fd, vmeAddr, accWidth, size, buf, flags )) >=0);
+	}
+	return rv;
+}
+
+int vme_write(int opt_mmap, void *map, int fd, vmeaddr_t vmeAddr, int accWidth, size_t size, void *buf, int flags)
+{
+	int rv = 0;
+	if (opt_mmap) {
+		memcpy(map, buf, size);
+		rv = size;
+	} else {
+		CHK( (rv = VME4L_Write( fd, vmeAddr, accWidth, size, buf, flags )) >=0);
+	}
+	return rv;
 }
 
 /**********************************************************************/
@@ -116,6 +141,7 @@ int main( int argc, char *argv[] )
 	int fd=-1, rv, i;
 	void *buf=NULL;
 	void *buf_ver = NULL;
+	void *map;
 	VME4L_SPACE spc=0;
 	vmeaddr_t vmeAddr;
 	u_int32 startaddr= 0xffffffff;
@@ -130,6 +156,7 @@ int main( int argc, char *argv[] )
 	int opt_read=-1, opt_dump=1, opt_swapmode = 0, opt_startval = 0, opt_align=0, opt_runs=1;
 	int opt_verify_write = 0;
 	int opt_disable_file_rewind = 0;
+	int opt_mmap = 0;
 	struct timespec t1, t2;
 	double transferRate=0.0, timePerRun=0.0, timeTotal=0.0;
 	ssize_t ret;
@@ -160,6 +187,9 @@ int main( int argc, char *argv[] )
 
 	/* Check / parse args */
 
+	if( (optp=UTL_TSTOPT("m")))
+		opt_mmap = 1;
+	
 	if (UTL_TSTOPT("r"))
 		opt_read = 1;
 	else if (UTL_TSTOPT("w"))
@@ -262,6 +292,16 @@ int main( int argc, char *argv[] )
 
 	CHK( VME4L_SwapModeSet( fd, opt_swapmode ) == 0 );
 
+	if (opt_mmap) {
+		CHK( VME4L_SigInstall(fd, VME4L_IRQVEC_BUSERR,
+				      VME4L_IRQLEV_BUSERR,
+				      SIGBUS,
+				      VME4L_IRQ_NOFLAGS) == 0 );
+		printf("mmap form=%p size=0x%x\n", vmeAddr & ~(getpagesize() - 1), size + getpagesize() );
+		CHK( (rv = VME4L_Map( fd, vmeAddr & ~(getpagesize() - 1), size + getpagesize(), &map )) == 0 );
+		printf("mmap vaddr=%p rv=%d\n", map, rv );
+	}
+
 	if (f_desc > -1 && !opt_read) {
 		if (opt_disable_file_rewind && (size * opt_runs > file_size)) {
 			printf("File too small to feed %d runs! Transfer size %d (0x%x), file size %d (0x%x)\n",
@@ -279,8 +319,8 @@ int main( int argc, char *argv[] )
 		if (opt_read) { /* read */
 			/* measure time right before and after VME access without mem dumps */
 			clock_gettime( CLOCK_MONOTONIC, &t1 );
-			CHK( (rv = VME4L_Read( fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS )) >=0);
-				clock_gettime( CLOCK_MONOTONIC, &t2 );
+			rv = vme_read(opt_mmap, map, fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS);
+			clock_gettime( CLOCK_MONOTONIC, &t2 );
 
 			if ( opt_dump )
 				MemDump( buf, rv, 1 );
@@ -307,12 +347,12 @@ int main( int argc, char *argv[] )
 			}
 
 			clock_gettime( CLOCK_MONOTONIC, &t1 );
-			CHK( (rv = VME4L_Write( fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS )) >=0);
+			rv = vme_write(opt_mmap, map, fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS);
 			clock_gettime( CLOCK_MONOTONIC, &t2 );
 
 			if (opt_verify_write) {
 				/* verify written data */
-				CHK( (rv = VME4L_Read( fd, vmeAddr, accWidth, size, buf_ver, VME4L_RW_NOFLAGS )) >=0);
+				rv = vme_read(opt_mmap, map, fd, vmeAddr, accWidth, size, buf_ver, VME4L_RW_NOFLAGS);
 
 				if ((pos = memcmp(buf, buf_ver, size))) {
 					printf("Error during write verification at the position %d.\n", abs(pos));
@@ -388,15 +428,11 @@ int main( int argc, char *argv[] )
 	} */
 
 	UOS_Delay( 100 );
+	if (opt_mmap)
+		CHK( (rv = VME4L_UnMap( fd, map, size + getpagesize())) == 0 );
 	VME4L_Close( fd );
 	UOS_Delay( 100 );
 	return return_global;
-
-ABORT:
-	if (fd >=0 )
-		VME4L_Close( fd );
-	UOS_Delay( 100 );
-	return 1;
 }
 
 static void MemDump(uint8_t *buf, uint32_t n, uint32_t fmt)
