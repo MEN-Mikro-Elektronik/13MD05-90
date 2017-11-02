@@ -144,6 +144,7 @@ int main( int argc, char *argv[] )
 	void *map;
 	VME4L_SPACE spc=0;
 	vmeaddr_t vmeAddr;
+	vmeaddr_t vmeAddr_page = 0;
 	u_int32 startaddr= 0xffffffff;
 	int accWidth=4;
 	size_t size = 0xffffffff;
@@ -165,6 +166,7 @@ int main( int argc, char *argv[] )
 	int j;
 	int pos;
 	int return_global = 0;
+	int map_offset = 0;
 
 	if( UTL_TSTOPT("?") || (argc == 1) )
 		usage(0);
@@ -297,8 +299,10 @@ int main( int argc, char *argv[] )
 				      VME4L_IRQLEV_BUSERR,
 				      SIGBUS,
 				      VME4L_IRQ_NOFLAGS) == 0 );
-		printf("mmap form=%p size=0x%x\n", vmeAddr & ~(getpagesize() - 1), size + getpagesize() );
-		CHK( (rv = VME4L_Map( fd, vmeAddr & ~(getpagesize() - 1), size + getpagesize(), &map )) == 0 );
+		vmeAddr_page = vmeAddr & ~(getpagesize() - 1);
+		map_offset = vmeAddr - vmeAddr_page;
+		printf("mmap from=%p size=0x%x\n", vmeAddr_page, size + getpagesize() );
+		CHK( (rv = VME4L_Map( fd, vmeAddr_page, size + getpagesize(), &map )) == 0 );
 		printf("mmap vaddr=%p rv=%d\n", map, rv );
 	}
 
@@ -319,7 +323,7 @@ int main( int argc, char *argv[] )
 		if (opt_read) { /* read */
 			/* measure time right before and after VME access without mem dumps */
 			clock_gettime( CLOCK_MONOTONIC, &t1 );
-			rv = vme_read(opt_mmap, map, fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS);
+			rv = vme_read(opt_mmap, map + map_offset, fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS);
 			clock_gettime( CLOCK_MONOTONIC, &t2 );
 
 			if ( opt_dump )
@@ -347,12 +351,12 @@ int main( int argc, char *argv[] )
 			}
 
 			clock_gettime( CLOCK_MONOTONIC, &t1 );
-			rv = vme_write(opt_mmap, map, fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS);
+			rv = vme_write(opt_mmap, map + map_offset, fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS);
 			clock_gettime( CLOCK_MONOTONIC, &t2 );
 
 			if (opt_verify_write) {
 				/* verify written data */
-				rv = vme_read(opt_mmap, map, fd, vmeAddr, accWidth, size, buf_ver, VME4L_RW_NOFLAGS);
+				rv = vme_read(opt_mmap, map + map_offset, fd, vmeAddr, accWidth, size, buf_ver, VME4L_RW_NOFLAGS);
 
 				if ((pos = memcmp(buf, buf_ver, size))) {
 					printf("Error during write verification at the position %d.\n", abs(pos));
