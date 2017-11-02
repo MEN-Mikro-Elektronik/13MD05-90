@@ -2,13 +2,114 @@
 /*!
  *        \file  vme4l-core.c
  *
- *      \author  klaus.popp@men.de/thomas.schnuerer@men.de
+ *      \author  klaus.popp@men.de
+ *        $Date: 2013/10/24 10:08:03 $
+ *    $Revision: 1.18 $
  *
- *  	 \brief  MEN driver for 16Z002 VME IP Core
+ *  	 \brief  MENs VME core
  *
  *     Switches: VME4L_MAJOR - major number for vme4l devnodes (default 230)
  *
+ *	This program is free software; you can redistribute it and/or
+ *	modify it under the terms of the GNU General Public License
+ *	as published by the Free Software Foundation; version
+ *	2 of the License.
  *
+ */
+/*-------------------------------[ History ]---------------------------------
+ *
+ * $Log: vme4l-core.c,v $
+ * Revision 1.18  2013/10/24 10:08:03  ts
+ * R: 1. Linux 2.4 and RTAI not longer supported
+ *    2. for A21 a different driver source was used
+ * M: 1. removed Linux 2.4 and RTAI specific code
+ *    2. moved structs from c file to header which is included in other source
+ *
+ * Revision 1.17  2010/10/22 11:49:28  rt
+ * R: 1) DMA may not work if user space buffer is in highmem (check
+ *       /proc/meminfo for HighTotal>0).
+ * M: 1) Replaced page_address()/virt_to_bus().
+ *
+ * Revision 1.16  2010/06/29 13:31:59  rt
+ * R: 1) After unloading the VME4L module a subsequent modprobe may fail.
+ * M: 1) Removed #ifdef CONFIG_DEVFS_FS.
+ *
+ * Revision 1.15  2009/09/24 10:52:45  CRuff
+ * R: 1. compiler warnings on kernel 2.6.28
+ * M: 1a) do not use cli() any more on kernels > 2.6.10 (deprecated)
+ *    1b) use unsigned long variable to store the interrupt flags in
+ *        vme4l_irq()
+ *
+ * Revision 1.14  2009/07/09 13:56:21  rt
+ * R: 1.) Not compilable with kernel 2.5.3..2.6.9.
+ *    2.) Support for last address in A64 space.
+ *    3.) System may freeze if kernel is compiled with CONFIG_SMP set.
+ *    4.) Kernel access of bad area may occur if VME4L_Read/Write is
+ *        used with size>0x80000.
+ *    5.) Cosmetics
+ *    6.) Large zero-copy DMAs  (>64k at PLDZ002; >408k at TSI148)
+ *        read/write wrong data.
+ * M: 1.a) VME4L_REMAP macro changed.
+ *      b) Switch for module_param changed.
+ *      c) Switch for send_sig changed.
+ *    2.) Changed maxSize to spcEnd in VME4L_SPACE_ENT.
+ *    3.) Dead lock in vme4l_discard_adrswin removed.
+ *    4.) Determination of useSize in vme4l_make_ioremap_region() changed.
+ *    5.) printk("vme4l_rw_pio: ") removed, since not marked as debug printk.
+ *    6.) Changed vmeAddr parameter to pointer to vmeAddr in dmaSetup().
+ *
+ * Revision 1.13  2009/06/03 18:21:54  rt
+ * R: 1.) TSI148 needs physical Address to perform RMW cycle
+ * M: 1.) physAddr parameter added to rmwCycle()
+ *
+ * Revision 1.12  2009/04/30 21:57:54  rt
+ * R: 1) Support for kernel versions > 2.6.18.
+ *    2) Support for TSI148 VME bridge.
+ *    3) Wrong debug messages.
+ * M: 1) Removed parameter from IRQ handler.
+ *    2a) New address spaces added.
+ *     b) SMP support fixed.
+ *    3) Debug messages reformated, arguments added/removed.
+ *
+ * Revision 1.11  2009/02/27 14:01:39  rt
+ * R:1. Not compilable with kernel 2.6.24.
+ * M:1. Fixed permissions parameter at module_param call.
+ *
+ * Revision 1.10  2007/12/10 11:58:33  ts
+ * Cosmetics, some Debug prints added (VME4LDBG)
+ *
+ * Revision 1.9  2007/05/10 14:48:31  ts
+ * Bugfix: Make devfs dependent functions depending on CONFIG_DEVFS_FS
+ *
+ * Revision 1.8  2007/03/28 16:54:35  ts
+ * added vme4l_send_sig() to avoid sending to nonexistent tasks
+ *
+ * Revision 1.7  2006/09/26 11:00:41  ts
+ * adapted for either classic RTAI or Xenomai usage
+ * removed remap_page_range()
+ *
+ * Revision 1.6  2006/05/22 16:04:03  ts
+ * remap_page_range is removed in 2.6.11 and up
+ *
+ * Revision 1.5  2005/01/19 15:41:52  ts
+ * corrected DEVFS registering bug under Kernel 2.6
+ *
+ * Revision 1.4  2005/01/19 14:10:09  ts
+ * several bugs corrected, RTAI IRQs are processed properly now.
+ *
+ * Revision 1.3  2004/12/04 18:27:21  ts
+ * added VME RTAI support
+ *
+ * Revision 1.2  2004/07/26 16:31:23  kp
+ * intermediate alpha release
+ * - support for slave windows, mailbox, location
+ * - Linux 2.6 support (zerocopy DMA untested!)
+ *
+ * Revision 1.1  2003/12/15 15:02:09  kp
+ * Initial Revision
+ *
+ *---------------------------------------------------------------------------
+ * (c) Copyright 2003 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/
 /*
  * This program is free software: you can redistribute it and/or modify
@@ -1185,7 +1286,7 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 
 	/* be paranoid.. */
 	if (count == 0)
-		return -EINVAL;
+		return 0;
 
 	pciDev = G_bDrv->pciDevGet( G_bHandle );
 	pDev = &pciDev->dev;
@@ -1241,24 +1342,14 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 		offset = 0;
 	}
 
-#ifdef VME4L_DBG_DMA_DATA
-	if( blk->direction == WRITE ) {
-		/* if writing, dump data in page before DMA kicked off */
-		vme4l_user_pages_print(nr_pages, pages, 32, initOffs );
-	}
-#endif
-
 	/*--- now do DMA in HW (device touches memory) ---*/
 	rv = vme4l_perform_zc_dma( spc, sgListStart, nr_pages, blk->direction, blk->vmeAddr, swapMode );
 
-	/* mark pages as dirty (because they were filled with new data from VME - DMA_FROM_DEVICE) */
+	/* mark pages as dirty */
 	if( blk->direction == READ ) {
 		for (i = 0; i < nr_pages; ++i ) {
 			if ( !PageReserved( pages[i] ))
 				SetPageDirty( pages[i] );
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4,6,0)
-			page_cache_release( pages[i] );
-#endif
 		}
 	}
 
@@ -1268,15 +1359,14 @@ CLEANUP:
 		sgList = sgListStart;
 		for (i = 0; i < nr_pages; i++, sgList++) {
 			dma_unmap_page( pDev, sgList->dmaPageAddress, PAGE_SIZE, direction );
-			/* put_page( pages[i] ); */
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,6,0)
+			page_cache_release( pages[i] );
+#endif
 		}
 	}
 
 #ifdef VME4L_DBG_DMA_DATA
-	if( blk->direction == READ ) {
-		/* if reading, dump data in page after DMA kicked */
 	vme4l_user_pages_print(nr_pages, pages, 32, initOffs );
-	}
 #endif
 
 	if( sgListStart )
@@ -2412,6 +2502,134 @@ static long vme4l_ioctl(
 
 		VME4L_UNLOCK_VECTORS(ps);
 		break;
+
+
+	/*------------------------------+
+	|  Old VME4L compatible ioctls  |
+	+------------------------------*/
+#ifdef __powerpc__
+	case VME4L_IO_IRQ_ENABLE:
+	{
+		int level = arg & ~VME4L_IO_IRQ_ENABLE_DISABLE_MASK;
+
+		if( (level == VME4L_IO_IRQ_ENABLE_BUS_ERROR) ){
+			/*
+			 * Old VME4L Backward compatibility hack!
+			 *
+			 * When in non-posted write mode and the user tries
+			 * to enable bus error interrupts, install a BUSERR signal
+			 * for the current task (to emulate behaviour of old VME4L)
+			 */
+			VME4L_SIG_INSTALL2 blk;
+
+			blk.vector 	= VME4L_IRQVEC_BUSERR;
+			blk.level 	= VME4L_IRQLEV_BUSERR;
+			blk.signal	= SIGBUS;
+			blk.flags	= VME4L_IRQ_OLDHANDLER;
+
+			if( !(arg & VME4L_IO_IRQ_ENABLE_DISABLE_MASK )){
+				rv = 0;
+				if( !G_postedWriteMode ){
+					rv = vme4l_signal_install( &blk, file );
+				}
+			}
+			else
+				rv = vme4l_signal_uninstall( blk.vector, file );
+
+			break;
+		}
+
+		VME4L_LOCK_VECTORS(ps);
+
+		if( arg & VME4L_IO_IRQ_ENABLE_DISABLE_MASK )
+			rv = G_bDrv->irqLevelCtrl( G_bHandle, level, 0 );
+		else
+			rv = G_bDrv->irqLevelCtrl( G_bHandle, level, 1 );
+
+		VME4L_UNLOCK_VECTORS(ps);
+		break;
+	}
+
+	case VME4L_IO_BUS_PROBE:
+	{
+		VME4L_IO_BUS_PROBE_STRUCT prb;
+		VME4L_RW_BLOCK blk;
+
+		if( copy_from_user( &prb, (void *)arg, sizeof(prb)) ){
+			rv = -EFAULT;
+			break;
+		}
+
+
+		blk.vmeAddr 	= (vmeaddr_t)(u32)prb.vmeAddr;
+		blk.direction 	= prb.direction;
+		blk.accWidth  	= prb.size;
+		blk.size		= prb.size;
+		blk.dataP		= prb.buf;
+		blk.flags		= 0;
+
+		rv = vme4l_rw( spc, &blk, VME4L_NO_SWAP );
+		if( rv >= 0 )
+			rv = 0;
+		if( rv == -EIO )
+			rv = EACCES;
+		break;
+	}
+
+	case VME4L_IO_IRQ_SIG_INSTALL:
+	{
+		VME4L_SIG_DATA dat;
+		VME4L_SIG_INSTALL2 blk;
+
+		if( copy_from_user( &dat, (void *)arg, sizeof(dat)) ){
+			rv = -EFAULT;
+			break;
+		}
+		if( dat.signal != SIGBUS ){
+			blk.vector 	= dat.vector;
+			blk.level 	= VME4L_IRQLEV_UNKNOWN;
+			blk.flags	= dat.irqReleaseMode==VME4L_IO_IRQ_RELEASE_MODE_ROAK ?
+				VME4L_IRQ_ROAK : 0;
+		}
+		else {
+			blk.vector 	= VME4L_IRQVEC_BUSERR;
+			blk.level 	= VME4L_IRQLEV_BUSERR;
+			blk.flags	= VME4L_IRQ_OLDHANDLER;
+		}
+		blk.signal 	= dat.signal;
+
+		if( dat.install )
+			rv = vme4l_signal_install( &blk, file );
+		else
+			rv = vme4l_signal_uninstall( blk.vector, file );
+
+		break;
+
+	}
+	case VME4L_IO_IRQ_GENERATE:
+		rv = -ENOTTY;
+		if( G_bDrv->irqGenerate )
+			rv = G_bDrv->irqGenerate( G_bHandle, VME4L_LEVEL_GET(arg), VME4L_VECTOR_GET(arg));
+		if( rv >= 0 )
+			rv = 0;
+		break;
+
+	case VME4L_IO_GET_IRQ_PENDING:
+		rv = -ENOTTY;
+		if( G_bDrv->irqGenAcked )
+			/* pass default interrupter ID */
+			rv = G_bDrv->irqGenAcked( G_bHandle, 1 );
+
+		if( rv >= 0 ){
+			rv = !rv;
+			if( put_user( rv, (int *)arg ) )
+				rv = -EFAULT;
+			else
+				rv = 0;
+		}
+		break;
+
+#endif /* __powerpc__ */
 
 	default:
 		rv = -ENOTTY;
