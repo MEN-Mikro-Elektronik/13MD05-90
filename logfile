@@ -1,0 +1,1705 @@
+commit e358b9e6cb108a89b5df6a94643a83713ab262ed
+Merge: 65b0dc1 0e51b70
+Author: Thomas Schnürer <thomas.schnuerer@men.de>
+Date:   Thu Nov 2 14:39:33 2017 +0100
+
+    Merge pull request #8 from ThomasSchnuerer/adam-mmap
+    
+    TOOLS/VME4L_API/VME4L_RWEX: add -m parameter for mmap'ing
+
+commit 0e51b70314533f7e38c1bfa0f066c28c1513d85d
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Thu Nov 2 13:59:44 2017 +0100
+
+    TOOLS/VME4L_API/VME4L_RWEX: add -m parameter for mmap'ing
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 65b0dc136a561687e310a9d43cd5b2c73194012a
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Nov 2 11:14:08 2017 +0100
+
+    Updated submodule INCLUDE/COM/MEN to d07a78 with re-added serflash.h. Re-updated submodule TOOLS/FPGA_LOAD to a4f096 (missing libraries added)
+
+commit 137ed6ed20940c6ea34f7845c92334a441c8cc00
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Nov 2 10:35:05 2017 +0100
+
+    Revert last commit for non DMA transfer rate increase and cosmetics. BERR check is requested, cosmetics shall be done separately
+    
+    This reverts commit 9e019db4bd0780206209ba17a793c1065e748d4f.
+
+commit 9e019db4bd0780206209ba17a793c1065e748d4f
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Oct 30 16:32:39 2017 +0100
+
+    increased VME transfer speed for non DMA spaces by removing unnecessary BERR checks after each VME access. Increases transfer bandwith by factor 2 to 3.
+
+commit e1a83b4b26937fe780c81d72f71a9d508c1221d6
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Oct 30 11:58:00 2017 +0100
+
+    merged branch adam-master, updated INCLUDE/COM/MEN repo
+
+commit 2fcd8fd63697593c3d704cf662b82e6c15486fb5
+Merge: b93f681 673fcb5
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Oct 30 11:56:21 2017 +0100
+
+    Merge remote-tracking branch 'origin/adam-master'
+
+commit b93f681e098786a56321d37f4be4969a2fc229f4
+Merge: 4cce7e2 a48e4d7
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Oct 30 11:55:36 2017 +0100
+
+    Merge branch 'master' of github.com:ThomasSchnuerer/MDIS4Linux_systemPackage
+
+commit 673fcb5a889d682d8b60fcf17628596f31da2e33
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Mon Oct 30 10:35:28 2017 +0100
+
+    DRIVERS/VME4LX/DRIVER_K24/vme4l-core: split procfs entry into several files
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 253a29a6164f9084dd2cd607722639cff496e9e5
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Thu Oct 26 16:42:24 2017 +0200
+
+    TOOLS/VME4L_API/VME4L_RWEX: with -e option continue to read/write a given file
+    
+    Instead of rewinding after each transfer
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 50b88b9564012352f83c0528c4fa55774687f8fe
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Thu Oct 26 14:29:38 2017 +0200
+
+    DRIVERS/CHAMELEON/men_chameleon: at unregister clear pointers to specific drivers only
+    
+    In men_chameleon_unregister_driver and men_chameleonV2_unregister_driver
+    clear pointers to specific drivers only for already matched drivers.
+    Error was only seen with more than one driver.
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit d1f15b81f7ed1baad61d94b27406c08ac4287382
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Wed Oct 25 18:48:17 2017 +0200
+
+    DRIVERS/VME4LX/DRIVER_K24/vme4l-pldz002-cham: add using bounce buffer as a parameter
+    
+    It can be set only during the loading of a kernel module
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit f06f1851b9d6997b93ee06327d4e12fed99abf95
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Wed Oct 25 14:33:01 2017 +0200
+
+    DRIVERS/VME4LX/DRIVER_K24/vme4l-core: again fix function vme4l_user_pages_print
+    
+    fix commit fdf5a878
+    DRIVERS/VME4LX/DRIVER_K24/vme4l-core: fix function vme4l_user_pages_print
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 2f143964bff1e0507e11c4d5f4b4a3cd1ff49afc
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Mon Oct 23 16:32:05 2017 +0200
+
+    TOOLS/VME4L_API/VME4L_RWEX: print verification buffer address
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 1ce6574c1cba2195e3f659b4eb156173c62410de
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Tue Oct 24 18:45:04 2017 +0200
+
+    DRIVERS/VME4LX/DRIVER_K24: add vme4l-serflash.c
+    
+    Driver to read Boards Status via Serial flash indirect interface
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit a48e4d7ed1a7eecfc62bf7a0547d58b97c22c319
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Tue Oct 24 17:04:12 2017 +0200
+
+    TOOLS/VME4L_API/VME4L_RWEX: fix compilation error
+    
+    Fix compilation error on some systems
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 4cce7e2341e02b4f2a7a22c483c0b39964f1cbb3
+Merge: 32b3b19 c5e8ded
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Oct 24 14:23:08 2017 +0200
+
+    Merge branch 'master' of github.com:ThomasSchnuerer/MDIS4Linux_systemPackage
+
+commit 90ad956c6884cea323383c7f43ce64fb1308bd7d
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Mon Oct 23 17:31:18 2017 +0200
+
+    DRIVERS/VME4LX/DRIVER_K24/vme4l-core: fix printouts
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit fdf5a8780a5123d1204eed4d708b72f8c882f034
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Mon Oct 23 17:27:06 2017 +0200
+
+    DRIVERS/VME4LX/DRIVER_K24/vme4l-core: fix function vme4l_user_pages_print
+    
+    Don't use the same counter in two nested loops.
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit c5e8dedb380f16aa0036925a0e6ac53ed7142108
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Fri Oct 20 17:25:01 2017 +0200
+
+    TOOLS/VME4L_API/VME4L_RWEX: add abs on a position
+    
+    We don't care which value is bigger, the original or read, we care only
+    about a position of an error.
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit ff8ea0e1f9656099049d942f2fa5d3e34b9b022e
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Fri Oct 20 12:13:05 2017 +0200
+
+    TOOLS/VME4L_API/VME4L_RWEX: add write to VME from file and verification of a write
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 217703e487c61126a6f21460ad203ce5140af158
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Thu Oct 19 11:11:38 2017 +0200
+
+    TOOLS/VME4L_API/VME4L_RWEX: fix indentation
+    
+    no technical change
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 9eb2583594b2d9d9203b7cdc79640006e4954820
+Author: Maciej Suminski <maciej.suminski@cern.ch>
+Date:   Tue Sep 26 14:45:16 2017 +0200
+
+    Pass level instead of vector to client IRQ handler
+
+commit b8679075b2128107290df2bf33a67cc20bea23cf
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Sep 26 11:18:06 2017 +0200
+
+    updated FPGA_LOAD submodule, changed .gitmodules to use pciutils subrepo from local GitHub account as well.
+
+commit 32b3b19693c84cd14a7cb9d2d35e8b32c6dd70a9
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Sep 26 11:18:06 2017 +0200
+
+    updated FPGA_LOAD submodule, changed .gitmodules to use pciutils subrepo from local GitHub account as well.
+
+commit f9bbc2d98cdc2e6592ed93b4c75310509758d98a
+Merge: 12945dd 7938a53
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Sep 26 11:14:48 2017 +0200
+
+    Merge branch 'master' of github.com:ThomasSchnuerer/MDIS4Linux_systemPackage
+
+commit 7938a536a9396a06323e1b534864dbd7ee55d11b
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Thu Sep 21 15:11:37 2017 +0200
+
+    TOOLS/VME4L_API/VME4L_RWEX: add "-f" option to write bin data into a file
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 12945dd6d87dbf0db654e4c4e0c62ebf9142448e
+Merge: ef9865f fc873df
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Sep 21 14:27:38 2017 +0200
+
+    Merge branch 'master' of github.com:ThomasSchnuerer/MDIS4Linux_systemPackage
+
+commit fc873dfeb365d9d1131a4359d2bd7d23a3b02ec3
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Wed Sep 20 15:34:18 2017 +0200
+
+    TOOLS/VME4L_API/VME4L_MTEST: get rid of undefined and unused G_buf
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit d82a5d4c8f8301820e8a9f05543351ce79246b1a
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Wed Sep 20 15:19:13 2017 +0200
+
+    revert part of a commit: Added working vme4l_mtest tool, fixed long pointer size bug
+    
+    revert a part of a commit:
+    8da09c0c
+    Added working vme4l_mtest tool, fixed long pointer size bug
+    added option -n to vme4l_rwex to specify nr. of runs. calculate average time and transfer rate per run
+    replaced gettimeofday with more precise clock_gettime() in vme4l_rwex
+    
+    revert a rewind of a repo: TOOLS/FPGA_LOAD
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 7887ae232c39726b799f472eaed52981ec25224b
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Wed Sep 20 15:06:54 2017 +0200
+
+    TOOLS/VME4L_API/VME4L_RWEX: add -lrt during a build
+    
+    it is required due to used clock_gettime function
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit ef9865f2d04432d8b9a8958efa226dab7aec1c1a
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Sep 19 16:50:14 2017 +0200
+
+    bugfix: added missing global variable G_buf to vme4l_mtest.c
+    undefine DMA debug define to avoid large chunks of VME read data being dumped in kernel log
+
+commit 8da09c0cc1723d3c8b6cc40c494c46713c7d2001
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Sep 19 15:19:04 2017 +0200
+
+    Added working vme4l_mtest tool, fixed long pointer size bug
+    added option -n to vme4l_rwex to specify nr. of runs. calculate average time and transfer rate per run
+    replaced gettimeofday with more precise clock_gettime() in vme4l_rwex
+
+commit 2e9a887b19b00ac284bface778aec38be678b6b4
+Merge: fbc6823 efb1d46
+Author: Thomas Schnürer <thomas.schnuerer@men.de>
+Date:   Tue Sep 19 13:37:32 2017 +0200
+
+    Merge pull request #6 from ThomasSchnuerer/adam-orson-test
+    
+    merge fpga_load
+
+commit fbc6823b11a29ce0ab6db39c194d379df616a0c4
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Sep 14 14:42:54 2017 +0200
+
+    Added time and transfer rate calculation to vme4l_rwex, option -l for aligned memory and option -d to supress read memory dump
+
+commit efb1d467eecda6c2b0ad2268f61e91250c1d399b
+Author: Maciej Suminski <maciej.suminski@cern.ch>
+Date:   Wed Sep 6 17:50:59 2017 +0200
+
+    Updated fpgaload
+
+commit 2f95cf2c033c3b543865e55bb2aeee9817bc296f
+Author: Maciej Suminski <maciej.suminski@cern.ch>
+Date:   Wed Sep 6 17:27:10 2017 +0200
+
+    LIBSRC: Added pciutils submodule adapted to MDIS
+
+commit 3d08f34d097aa988c22b1b5a4bda612a1585f9f4
+Author: Maciej Suminski <maciej.suminski@cern.ch>
+Date:   Tue Jul 11 12:09:18 2017 +0200
+
+    oss: Disabled kernel version checking macros for user-space build
+    
+    Without the '#ifndef MAC_USERSPACE' code that includes oss_intern.h
+    fails to build, because of missing LINUX_VERSION_CODE and KERNEL_VERSION
+    macros (linux/version.h is included conditionally).
+
+commit a5b2f2961a3659a91f8eb7b5dbd94a8f383efc56
+Author: Maciej Suminski <maciej.suminski@cern.ch>
+Date:   Tue Jul 11 09:52:38 2017 +0200
+
+    dma_set_mask_and_coherent() compatibility fix
+
+commit c0b4524b74835649301e5a9c2ba8b10df46164c1
+Merge: 6fbd654 3561324
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Sep 12 15:00:27 2017 +0200
+
+    Merge branch 'master' of github.com:ThomasSchnuerer/MDIS4Linux_systemPackage
+
+commit 6fbd654307f385a5f5856abc27bf13f99e86b489
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Sep 12 15:00:14 2017 +0200
+
+    changed all occurences of GPL 'version 3 or later' against 'version 2 or later'.
+
+commit 3561324f0e0b2907b13e17ef0b03ff7802b4df0c
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Wed Aug 30 14:35:35 2017 +0200
+
+    TOOLS/VME4L_API/VME4L_RWEX: accept parameters as hex and decimal
+    
+    Again
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 5bac5040d67e8c3863c7e457934d6a1f8d85ba78
+Merge: 281ae91 3518e0a
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Aug 29 09:59:24 2017 +0200
+
+    Merge branch 'master' of github.com:ThomasSchnuerer/MDIS4Linux_systemPackage
+
+commit 281ae91a164b6d2c4c01708a30e0a0af7245c6c3
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Aug 29 09:51:47 2017 +0200
+
+    R: 1. data sent via DMA were not starting at data begin in 1st page, but user page begin
+    M: 1a. bugfix in sglist assembly: add initial offset to BDSTART reg. value
+       1b. made separate DMA address members in VME4L_SCATTER_ELEM to keep track of page and data address
+
+commit 3518e0ac8d65f047036e4b3dd4d9532dadbe04dd
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Wed Aug 23 11:52:30 2017 +0200
+
+    DRIVERS/VME4LX/DRIVER_K24: enable procfs
+    
+    Otherwise there were compilation errors
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 7efc2ce665c45bb05c6cf2eb49d1bfef75ab8ae5
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Aug 17 11:41:00 2017 +0200
+
+    R: 1. 16Z002 var.2 now has bus error address and attribute registers
+       2. bug in vme4l-pldz002-cham.c: always 1 longword too much was transmitted
+       3. dumped values in dmesg looked misleading on different 32bit platform
+       4. vme4l_rwex tool could only write always same buffer content, makes control of write success difficult
+    M: 1. added defines to pldz002-cham.h, enhanced driver and vme4l_ctrl tool to dump the information
+       2. write sglist->dmaLen/4 - 1 into DMA len register
+       3. use %lx instead %llx in VME4LDBG
+       4. enhanced vme4l_rwex to also use TSTOPT parsing, added option -v for buffer start value (see help msg)
+
+commit 0c406ec9b9c46ee886ae11c359a41391cc960f76
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Aug 14 15:50:02 2017 +0200
+
+    R: Cosmetics, underline under FPGA info columns was printed one '-' per line on kernel 4.9.0. replaced with one line in printk.
+
+commit 05d525f15b081a77840edfd7cd79678fb14e89b0
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Aug 14 15:40:30 2017 +0200
+
+    R: 1. VME IP core 16Z002 was upgraded for projects A25, A23
+    M: 1a. updated DMA setup for slave windows 4 and 5 in kernel memory to use dma_alloc_coherent()
+       1b. increased Z002 CTRL register size from 0x50 to 0x100 (buserror registers etc.)
+
+commit 31089a8a7c868a9fa08051381e254270ddf05e79
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Aug 10 19:16:07 2017 +0200
+
+    move HWBUG to correct folder TOOLS
+
+commit 8f68b75fd58bb954c3335a823b4ebc7e916a9496
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Aug 10 19:05:15 2017 +0200
+
+    compile of deployed MDIS package on CM10 failed, added missing TOOLS/HWBUG folder
+
+commit 76c3329036cc85b31ee2327df964c5e278286375
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Aug 10 18:41:47 2017 +0200
+
+    vme4l-pldz002-cham.c: fixed hardcoded A32D32 BAR size detection. LIBSRC: added UTI folder to be able to compile hwbug utility on CM10
+
+commit c557caf33a2357918b206a8120dff4b6f9d692a6
+Merge: 5594a65 dc9cfaa
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Aug 3 15:41:27 2017 +0200
+
+    Merge branch 'devfede-good-stuff' of https://gitlab.com/fvaga/MDIS4Linux_systemPackage
+    Contains all fixes from F.Vaga for VME4L DMA API usage and general improvements after test with new FGPA (PCIe bus protocol error removed)
+
+commit dc9cfaaa8da5a760e12e1c93be82a60d0cec94d9
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Mon Jul 17 15:44:31 2017 +0200
+
+    eth: always clear interrupt
+    
+    If we drop a packet we must clear it's EXEMPTY bit as well in order
+    to not read it again (we decided to drop it).
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit 65f04de4e48eec7d0607346d81dba4daad60b246
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Mon Jul 17 15:43:05 2017 +0200
+
+    eth: an invalid length or missing buffer is an error
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit d05bbb37976c0d7e9c3c82cf66b6c2732aab9634
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Mon Jul 17 10:02:53 2017 +0200
+
+    eth: Coherent DMA API does not need dma_sync_*
+    
+    dma_sync_* operations are not relevant when using the coherent mapping.
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit 55b50d2cc8984bd76b259c1cd4e534bb1acc646d
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Mon Jul 17 18:24:25 2017 +0200
+
+    cham: PCI device should be enabled before using it
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit 0db97a9cc9d0b6f33ed7c13ba357e27927094625
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Tue Aug 1 23:39:33 2017 +0200
+
+    vme4l: unmap DMA before cache release
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit c2716320ec89e440f9ccc2b0ad7d5e641d5890ae
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Tue Aug 1 23:33:13 2017 +0200
+
+    vme4l: remove unsued coherent DMA buffer
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit 80bf9b0fc9c7ab94b06a730306f2fd9952289fd6
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Tue Aug 1 23:20:49 2017 +0200
+
+    vme4l: no access before unmap, no need for sync
+    
+    There is no need to synchronize the buffer for device or CPU since the
+    driver does not access the buffer while the buffer is mapped.
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit 5594a65166585a0db69f1f74fcf67ffe1212aa59
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Jul 25 12:08:48 2017 +0200
+
+    added GNU GPL short license version to all .mak files
+
+commit bfbac4c2a57890f27fd0b99c33464b3134fa6b5b
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Wed Jul 19 13:24:33 2017 +0200
+
+    fix files' mode bits
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 693a9a7706488d70e6ad1ad62580e7f76fd83a76
+Merge: 5e105c3 13f1a7f
+Author: Thomas Schnürer <thomas.schnuerer@men.de>
+Date:   Wed Jul 19 12:34:08 2017 +0200
+
+    Merge pull request #5 from ThomasSchnuerer/adam-debug
+    
+    DRIVERS/VME4LX/DRIVER_K24: add a debug parameter to kernel module
+
+commit 13f1a7f00ad1a23cdcfdb04e9a8124dd6ab81c0d
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Wed Jul 19 10:33:31 2017 +0200
+
+    DRIVERS/VME4LX/DRIVER_K24: add a debug parameter to kernel module
+    
+    Add a "debug" parameter to the vme4l-core and me4l-pldz002-cham kernel
+    modules. The debug information can be on or off by setting this
+    parameter (even after load of a kernel module). The use of ALL_DBGS affects
+    the default debug setting.
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 5e105c37cce43e0b537f775e6ba3b10047b231d2
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Tue Jul 18 17:34:00 2017 +0200
+
+    fix BUILD/MDIS/DEVTOOLS/Makefile
+    
+    BUILD/MDIS/DEVTOOLS/Makefile was broken in the commit:
+    added GPL license short version to several files, like in BUILD/MDIS/
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 6a5e58a3c9be354911eb34f04fbb8ed28854a486
+Merge: b9eacdd 4d5fbd8
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Jul 18 10:41:57 2017 +0200
+
+    Merge branch 'master' of github.com:ThomasSchnuerer/MDIS4Linux_systemPackage
+
+commit b9eacdd53caa1b1121b21866792d038efc1ec52e
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Jul 18 10:40:54 2017 +0200
+
+    added GPL license short version to several files, like in BUILD/MDIS/
+
+commit a198c20b73dc8626fcba6245c24b541aa1fb27a6
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Thu Jul 6 21:38:20 2017 +0200
+
+    eth: do not map/unmap since we use consistent mapping
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit e62b829187ab10f131739333e182b625d0fa5495
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Thu Jul 6 21:54:41 2017 +0200
+
+    eth: [bugfix] cast to make GCC happy
+    
+    A better solution would be to change the data structure, but I do not
+    want to introduce invasive changes since I do not know the intention
+    behind this choice
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit c090c3df02fa54fe6aa9262bf97e4c6c34d195af
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Thu Jul 6 21:12:57 2017 +0200
+
+    eth: use the same API to map/unmap
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit 7a6f125c7f446fba00f6ba5aa80fdf89e639202b
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Thu Jul 6 21:13:40 2017 +0200
+
+    eth: [bugfix] unmap the correct buffer
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit c2803d6a5a2c1b3911ca4f849cfb5946fe42b900
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Thu Jul 6 15:30:29 2017 +0200
+
+    eth: check dma mapping errors
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit afac0c97f1b1319d1c10dd45325ae953fe3c9d95
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Tue Jun 27 09:47:55 2017 +0200
+
+    vme4l:core: wrap get_user_pages() into custum function
+    
+    It has the advantage to hide preprocess code and make the zc_dma function
+    clearer
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit e512a161db0f5aeb94d984bdb953919e86de5d67
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Tue Jun 27 16:50:30 2017 +0200
+
+    vme4l:core:dma: add function to print page content
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit 8794ff4f20e6746b322427a2b9077c127b9f5b07
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Wed Jul 12 01:28:24 2017 +0200
+
+    vme4l: do not use BOUNCE mode
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit bd94f87eba4a20b3548f1a82efd5e295961b052b
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Tue Jun 27 16:45:17 2017 +0200
+
+    vme4l:core:dma: fix preprocessor #if
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit 5e22fb179ca74fcc9e89dac6496217862169ec03
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Tue Jun 27 16:43:48 2017 +0200
+
+    vme4l:core:dma: fix indentation
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit 59a6dcfc6eb4dd37c1d402335c3bea2d2a89f9bb
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Sun Jul 9 19:31:48 2017 +0200
+
+    BBIS: need to include uaccess.h in recent kernel
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit f0d0252f3166d5c6d9cecf9703ff4fc6e8d35952
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Sun Jul 9 22:34:08 2017 +0200
+
+    *: signal_pending and related move to other header
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit 4951024d9edfbfa0dbbbbf644fb0a3f083cd57b5
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Sun Jul 9 19:27:09 2017 +0200
+
+    eth: netdevice->last_rx does not exist after 4.10
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit 9a938f3c48f71df3b817bafcb8c00c7a1c5678d4
+Author: Federico Vaga <federico.vaga@vaga.pv.it>
+Date:   Thu Jul 6 21:51:12 2017 +0200
+
+    cham: [bugfix] use device instead of pci_dev
+    
+    Signed-off-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+commit 4d5fbd820076859613b42543a3dd04180df1a443
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Mon Jul 17 11:55:53 2017 +0200
+
+    DRIVERS/CHAMELEON: define dma_set_mask_and_coherent for old kernels
+    
+    Define a function dma_set_mask_and_coherent for kernels that don't have
+    it (pre 3.12.26)
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 27f8bce6f1b26f0891f556d6e5670d39bd5f3b5c
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Thu Jul 13 10:11:09 2017 +0200
+
+    revert changes in INCLUDE/COM/MEN
+    
+    revert the revert...
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 2860a1f061d28156c8d857e9d616fac39d42a35d
+Merge: 4d3a70c 14c5849
+Author: Thomas Schnürer <thomas.schnuerer@men.de>
+Date:   Thu Jul 13 10:01:39 2017 +0200
+
+    Merge pull request #3 from ThomasSchnuerer/adam-vme4l
+    
+    Adam vme4l
+
+commit 4d3a70c2080f50cc10a984100ab95eecd6a92d95
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Jul 4 10:31:58 2017 +0200
+
+    added new rev. of INCLUDE/COM/MEN
+
+commit 2e55ce2ad5793f5b293e0eb89574046b76e75e71
+Merge: d21f462 3fefe83
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Jul 3 16:50:18 2017 +0200
+
+    Merge branch 'master' of https://github.com/ThomasSchnuerer/MDIS4Linux_systemPackage
+
+commit d21f46212838ff33e66ad19ddaf5c4beaad4bcda
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Jul 3 16:49:48 2017 +0200
+
+    Added TOOLS/FPGA_LOAD submodule to build FPGA flash utility
+
+commit 3fefe831dd121a96a929f597fb4eaa83e250c3ed
+Merge: a7041d9 7b6f862
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Wed Jun 21 15:42:22 2017 +0200
+
+    Merge branch 'master' of github.com:ThomasSchnuerer/MDIS4Linux_systemPackage
+
+commit a7041d9dc7c28aabeee2422a0a5174180e3fb00e
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Wed Jun 21 15:42:17 2017 +0200
+
+    work commit to supply external developer with latest source
+
+commit 7b6f86253bfd66b61e63d00bbd431b2bb422974e
+Merge: fb83e9c 7b8a6a3
+Author: Thomas Schnürer <thomas.schnuerer@men.de>
+Date:   Wed Jun 21 15:37:38 2017 +0200
+
+    Merge pull request #2 from ThomasSchnuerer/adam-test
+    
+    revert technical changes made in the commit 44e1d740
+
+commit 14c5849ab415ffefd3273add068e0b7da90b5565
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Thu Jun 15 13:58:59 2017 +0200
+
+    DRIVERS/VME4LX/DRIVER_K24: move exporting a symbol vme4l_get_space_ent
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit b588b035cd850cc9ff48749fe57e5954f135285f
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Thu Jun 15 13:58:00 2017 +0200
+
+    DRIVERS/VME4LX/DRIVER_K24: export vme4l_rw symbol
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 7b8a6a3669aeec6c8320ee29bd423a765a8df0cc
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Thu Jun 15 11:49:06 2017 +0200
+
+    revert technical changes made in the commit 44e1d740
+    
+    revert changes made to a file
+    DRIVERS/VME4LX/DRIVER_K24/vme4l-pldz002-cham.c
+    in a commit
+    44e1d740 added GPL license notification under every MEN document header
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit fb83e9ccaaa59685a606a3b71e59a0618658b727
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Tue Jun 13 14:51:43 2017 +0200
+
+    DRIVERS/VME4LX/DRIVER_K24: remove proc entry when driver removed
+    
+    Avoid kernel complains when the driver is removed and instered again
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit b8011b5afe207a8b003b823453b72a4e7fcef0db
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Tue Jun 6 15:38:16 2017 +0200
+
+    INCLUDE/COM/MEN: use correct commit (fix prev commit)
+    
+    fix commit to use correct commit in the submodule:
+    updated pldz002-cham.h in submodule INCLUDE/COM/MEN to use correct IACK space offset
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 2b08cb638efce2804fc841e278c837055f750d35
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon May 29 14:18:24 2017 +0200
+
+    updated pldz002-cham.h in submodule INCLUDE/COM/MEN to use correct IACK space offset
+
+commit c5651fabcdd881cedbbd812b8e3b749400d48934
+Merge: 64d4acd 12a9c45
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon May 29 14:17:08 2017 +0200
+
+    Merge branch 'master' of https://github.com/ThomasSchnuerer/MDIS4Linux_systemPackage
+
+commit 64d4acdf0d0e823aa85c0812efbe509ed1538a46
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon May 29 14:17:02 2017 +0200
+
+    vme4l-core.c: removed CSR/CS handling, is replaced by a new separate space in FPGA
+
+commit 12a9c45a3fbc9002cd2b179cca5c4cb3a7c7df85
+Merge: a01eb05 9191031
+Author: Thomas Schnürer <thomas.schnuerer@men.de>
+Date:   Fri May 5 14:55:50 2017 +0200
+
+    Merge pull request #1 from ThomasSchnuerer/adam-test
+    
+    TOOLS/VME4L_API/VME4L_RWEX: accept parameters as hex and decimal
+
+commit a01eb0512edc3b7c6ecfb0ab3912d7198bb5f56c
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri May 5 14:50:36 2017 +0200
+
+    added GPL license notification under every MEN document header, updated submodules
+
+commit 44e1d7405ca2d7e19d048d2b1ee45b5ee4e68f30
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri May 5 14:27:08 2017 +0200
+
+    added GPL license notification under every MEN document header
+
+commit 919103100eca5155ad9d6f3bb9a36bf65f0bed86
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Wed May 3 18:11:29 2017 +0200
+
+    TOOLS/VME4L_API/VME4L_RWEX: accept parameters as hex and decimal
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 013fae7c0a8b8212e8e0fcf2ef0bd1277bed89ba
+Author: ThomasSchnuerer <thomas.schnuerer@men.de>
+Date:   Fri Apr 28 12:30:20 2017 +0200
+
+    Updated README with reference cloning dump
+
+commit 469ab0a203e504c5dd93bd1e5bae5a1efd5bee63
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Apr 27 20:16:02 2017 +0200
+
+    removed usage of obsolete PLDZ002_CR_CSR_BIT in vme4l-pldz002-cham.c, set maxWidth to 4 in CR/CSR space in G_spaceTbl[]
+
+commit 29036a5a288c27173efbbfb59cced208fd02c0d8
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Apr 27 20:00:51 2017 +0200
+
+    updated submodule references for INCLUDE/COM/MEN, LIBSRC/DESC/COM, LIBSRC/MBUF/COM
+
+commit 72c22ebeabf5df238442feb27c93b053b8fcdd71
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Apr 27 19:39:11 2017 +0200
+
+    repeated git submodule add for all submodules not internally registered in .git/ folder
+
+commit b9654035dabfe8ba6712aaf0dfe2225c38cbd2ea
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Apr 27 18:33:47 2017 +0200
+
+    re-added INCLUDE/COM/MEN submodule with latest existing reference
+
+commit 8db10c9fab98292f961afe15de7b1557791d1f12
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Apr 27 18:27:10 2017 +0200
+
+    removed INCLUDE/COM/MEN submodule for readding
+
+commit 49db20f959e5d13f8ec9794b995588280915e97c
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Apr 27 17:25:19 2017 +0200
+
+    removed double entries in .gitmodules from previous commit
+
+commit 6327b745f6bcf9dd20d83e1675abde89759cb28d
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Apr 27 16:47:19 2017 +0200
+
+    updated .gitmodules with all 25 submodules of the complete core system package
+
+commit ac427e2277b28826a46dca3e55073823dc17dc57
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Apr 27 14:07:56 2017 +0200
+
+    merged in changes from branch adam-test
+
+commit a46da0fbfee928573a20bc8021416daaa2ff1c0c
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Thu Apr 27 11:41:45 2017 +0200
+
+    BUILD/MDIS/TPL/rules.mak: don't remove files from / on clean
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit dc248a9d18d2e566b0534200791351fb91df70c4
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Thu Apr 27 11:40:43 2017 +0200
+
+    BUILD/MDIS/DEVTOOLS: don't override variables in the Makefile
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit fa3b3c67d6ac64d2d05f7f918c6cf53f340de831
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Wed Apr 19 18:39:12 2017 +0200
+
+    add CR/CSR to nodes.sh
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 03dcfec8900ced236576c233609c8cbce939aabc
+Author: Maciej Suminski <maciej.suminski@cern.ch>
+Date:   Tue Apr 18 19:15:41 2017 +0200
+
+    More compatible fix for dma_set_mask_and_coherent()
+    
+    Now it is fully expanded instead of defining the function. Apparently
+    there are kernels with patches that provide the function, causing a
+    redefinition error.
+
+commit e91d8b09a494c1e25566d6234564d6cb48a25e9f
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Wed Mar 22 16:07:58 2017 +0100
+
+    make drivers compile for kernels < 3.7
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 7888fe4a1eaafd14279af6abf43a3bd90aff20ce
+Author: Maciej Suminski <maciej.suminski@cern.ch>
+Date:   Tue Apr 18 18:45:06 2017 +0200
+
+    Updated INCLUDE/COM/MEN subrepository
+
+commit 965bf9180ffde588ea35fdd751ced2898851a5eb
+Author: Maciej Suminski <maciej.suminski@cern.ch>
+Date:   Tue Apr 18 18:43:18 2017 +0200
+
+    Fixed CONFIG_PROC_FS #ifdefs
+
+commit a6e11ed59823df582ac11efd1c740db4ec72f5cc
+Author: Maciej Suminski <maciej.suminski@cern.ch>
+Date:   Tue Apr 18 16:51:47 2017 +0200
+
+    Changes for the driver wrapper (A25 to vmebridge interface)
+    
+    * Added vme_bridge_get_{handle,driver}() access lower layer driver
+      interface. The official one (INCLUDE/NATIVE/MEN/men_vme_kernelif.h) is
+      not sufficient for the job.
+    
+    * Conditionally renamed two functions (vme_{free,request}_irq()) due to
+      name conflict with vmebridge interface (vmebridge/include/vmebus.h).
+
+commit 6fa5059b23d214afb758d08e98815c1ac4410ef1
+Author: Maciej Suminski <maciej.suminski@cern.ch>
+Date:   Tue Apr 18 16:46:51 2017 +0200
+
+    Moved G_spaceTbl definition from .h to .c file
+
+commit 322a502094f48e32011670ae139bb82790afdfea
+Author: Maciej Suminski <maciej.suminski@cern.ch>
+Date:   Tue Apr 18 15:30:15 2017 +0200
+
+    64 bits compatibility patch
+    
+    There was one missing uint32_t change (physAddr).
+    I realize uintptr_t == unsigned long, but the former gives a hint about
+    the variable contents.
+
+commit 1695c669eac050994e82573326cedf1e0ed872af
+Author: Maciej Suminski <maciej.suminski@cern.ch>
+Date:   Tue Apr 4 14:04:04 2017 +0200
+
+    Fixes for kernels 3.8+
+    
+    See __dev* macros: http://elinux.org/Kernel_3.4_to_3.10_porting_guide
+
+commit 832002255ab809487074116dcc28a99aa76c217d
+Author: Maciej Suminski <maciej.suminski@cern.ch>
+Date:   Tue Apr 18 14:33:18 2017 +0200
+
+    Compatibility fix for kernels <3.12.27 (dma_set_mask_and_coherent)
+    
+    Added conditionally enabled function definition, see:
+    http://elixir.free-electrons.com/linux/v3.12.27/source/include/linux/dma-mapping.h#L106
+
+commit c2838bf252ab0e5d71610703434ffd46cc3bc15e
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Mon Apr 24 13:37:16 2017 +0200
+
+    .gitmodules: use relative paths to submodules
+    
+    It will support github and our internal setup
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 3cb66509b4009a55faac4669d07c71f7b1a172a8
+Author: Adam Wujek <adam.wujek@cern.ch>
+Date:   Thu Apr 6 15:07:00 2017 +0200
+
+    .gitmodules: remove not used modules
+    
+    Signed-off-by: Adam Wujek <adam.wujek@cern.ch>
+
+commit 8efcdf16eac52e5d973b128b4dd314f3bb7d3a95
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri Apr 7 21:55:41 2017 +0200
+
+    R: added CR/CSR space (minor nr. 30) to VME Driver
+
+commit a4af3c46a53dd385a951091db11c50924c6b5190
+Merge: b406534 0f0bab7
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Apr 3 20:52:07 2017 +0200
+
+    Merge branch 'master' of https://github.com/ThomasSchnuerer/MDIS4Linux_systemPackage
+
+commit 0f0bab764bdebc6c480a94e0fda9af0f9653bddb
+Author: ThomasSchnuerer <thomas.schnuerer@men.de>
+Date:   Mon Apr 3 20:47:43 2017 +0200
+
+    Initial commit
+
+commit b4065342a4fec266b4421abb78c3eca2ab5a4c1c
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Apr 3 20:42:08 2017 +0200
+
+    R: big code cleanup from unusual defines, outdated stuff etc.
+    M: 1. removed define VERSION_CODE and renamed all references to it with official KERNEL_VERSION everywhere
+       2. removed leftover references to LINUX_26 and other irrelevant defines
+       3. changed variable types to match 64bit where necessary and warned by compiler gcc (Ubuntu 5.4.0-6ubuntu1~16.04.4) 5.4.0 20160609
+
+commit 150b3f27b85cff1e79217273016f493aad4f0194
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Apr 3 18:23:35 2017 +0200
+
+    R: New VME board A25 was introduced with new features in Z002 VME core
+    M: 1. added flexible A32 BAR size detection in vme4l_pldz002-cham.c for Z002 Variant 2
+       2. added support for CR/CSR detection Address modifier 0x2f
+       3. TODO: implement new DMA API in vme4l_zc_dma() to allow direct RAM transfer of data.
+          Currently using bounce DMA.
+
+commit 355042b3b6b166ca9e24e5bc118dd754693eda99
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Feb 21 07:12:43 2017 +0100
+
+    R: slave inbound DMA windows used phys.address not usable for PCI DMA. Mapping address with pci_map_single first as in Z87
+
+commit c47b4142b76dc89121a54857adf0217d7bf6caa1
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Wed Feb 1 15:10:24 2017 +0100
+
+    Enhancement of displaying Cham.Table name in men_chameleon.c: display all 12 chars in field <name>, otherwise string is considered to be empty
+
+commit 8207e3aa804cc3aacaf54bafa0df5ae907b5f820
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Jan 31 17:13:10 2017 +0100
+
+    R: reverted some work in men-pldz002-cham.c because of problems with A22 FPGA and all Z002 variants set to 2
+
+commit feed5cce4a36cee2ee32d9fff303a2772a2bdd4d
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri Jan 27 12:24:11 2017 +0100
+
+    added handling for A32 VME windows < 512MB in new 16Z002_VME core for A22 in vme4l-pldz002-cham.c and vme4l-core.c
+
+commit ea0cd39976f0690bc911f4e0f5a8ff045d464932
+Merge: f077995 af1b2a1
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri Jan 13 15:24:09 2017 +0100
+
+    Merge branch 'master' of ssh://192.168.1.166:7999/l13md05_90/13md05-90
+
+commit f0779957d1c9101b256186a9aa55533679014d7b
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri Jan 13 15:18:21 2017 +0100
+
+    R: New Registers for geographical address(slot nr.) and VME requester level setting added to Z002 VME core
+    M: 1. added VME4L_API functions VME4L_GeoAddrGet, VME4L_RequesterLevelSet, VME4L_RequesterLevelGet to vme4l_api.c
+       2. added handling for registers to driver men_pldz002-cham.c
+
+commit af1b2a14a412c019d621f0c5c4ba9fe0ab26bd6d
+Author: Pfeuffer <Dieter.Pfeuffer@men.de>
+Date:   Thu Nov 17 09:21:09 2016 +0100
+
+    OSS_SemWait bugfix: erroneous spin-lock usage caused instable system at MP70S
+
+commit aeb9c84853ad2b2053239225eaa054723d51facc
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri Oct 21 13:05:28 2016 +0200
+
+    updated submodules
+
+commit 955de38b1792d1b6e5b36bac5262806b12a5fafb
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Sat Aug 27 21:54:00 2016 +0200
+
+    R: desc.c: for linux include linux/string.h, for vxWorks its just string.h
+
+commit 85852bd1503f7c34a467cc146173ca4a1d279df4
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri Aug 26 15:38:27 2016 +0200
+
+    R: removed FB_16Z044 folder, is part of separate 13Z044-90 package#
+
+commit 29669f7ce43e5617aa1195cced563343ec43e90d
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri Aug 26 15:21:15 2016 +0200
+
+    R: updated Framebuffer driver for 16Z044 unit on MP70S
+
+commit 637d54ea3318115ce9dc500d4d54034ffc37e44f
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Jul 7 10:03:41 2016 +0200
+
+    R: updated mdiswiz.exe, allow 32 SMB pseudo slots instead 4 to be able to open a large customer project
+
+commit b5290592d98f23bd4585c22309ef8218e706a01e
+Author: Dieter Pfeuffer <Dieter.Pfeuffer@men.de>
+Date:   Fri Jul 1 16:31:57 2016 +0200
+
+    support address mode MDIS_MA_FLAG_NOMAP to prevent mapping
+
+commit f6c7018aa75863523341c52ed33c82ffbd9e9542
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Wed Jun 29 12:57:17 2016 +0200
+
+    R: removed leftovers of MDIS_MAJOR_NUMBER in several Makefile templates
+
+commit 0da00913aa5c2dfd7e2150d17274988b0194bfd5
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Wed Jun 29 12:42:07 2016 +0200
+
+    R: modprobe men_mdis_kernel caused crash on kernel < 2.6.27. Fixed # of parameters in device_create() for these kernels
+
+commit 94cc5b107d2a7dcfd1e3eeecccb9c6797f7dee50
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Jun 13 12:27:13 2016 +0200
+
+    R: new mdiswiz.exe added, API change in device_create() from 2.6.27 on implemented in mk_module.c
+
+commit e4c9b875d18663b4b9ac172d87d9763a60f99cc1
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Sat Apr 30 21:03:05 2016 +0200
+
+    added newest mdiswiz.exe and nondebugging mdiswiz with A21 FPGA PCI bus bugfix
+
+commit 444321599a61146dc6a1a5e924d424244b5d96d4
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Wed Apr 27 15:03:46 2016 +0200
+
+    G25A was not proberly detected in scan_system (is named G025A in EEPROM), updated KNOWN_CPU string
+
+commit 584e9feec1ffcdf878b55ae64057aee9ba3b2a0a
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Apr 26 10:45:51 2016 +0200
+
+    update due to updated submodules with customerspecific mak files
+
+commit 7cca94025ac0457c4654afcae84c9fec9b8d056f
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Apr 25 17:05:07 2016 +0200
+
+    Customer specific A21 BBIS mak file BBIS/CHAMELEON/DRIVER/COM/driver_pcitbl_msi.mak was missing, added it
+
+commit 45593c05513b6d3f37359097d027c2bbd5739947
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Apr 21 08:48:28 2016 +0200
+
+    R: 1. A21 Models b,c contained 2xA21 in model name
+       2. MDIS major number is now automatically selected when men_mdis_kernel.ko is loaded
+    M: 1. corrected string assignment in modcpua21.cpp
+       2. removed major number setting wizard tab
+
+commit b8bb11cd151315f91a741269a6ba180ea2f2dafa
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Wed Apr 20 20:14:40 2016 +0200
+
+    R: pldz002-cham.h was missing in INCLUDE/COM/MEN, breaking compile of A21 MDIS projects
+    M: added header and updated submodule reference
+
+commit d2d842a565144df1e3717c7ca8537184b8fffbcf
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Apr 18 17:11:02 2016 +0200
+
+    R: SC24 template was used when Bx70x was scanned, use right template
+
+commit 480bf78861bc6686051bbdd7a06d40dc378e585c
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Apr 18 10:14:09 2016 +0200
+
+    R: leftover DEVFS dependent code for device node removal deleted
+
+commit 5aa4b00ac3826cb441d739d58ecc246e07f5326f
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri Apr 15 09:30:44 2016 +0200
+
+    R: scan_system didnt correctly identify G25A, changed CPU name string to G25A
+
+commit 87f237f8e32a7c9450738488b45ce22a4475bc0b
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Apr 12 15:15:32 2016 +0200
+
+    R: scan_system didnt set up 2 SMB BBIS entries for the 2 busses specific to a SC24 based board
+    M: adapted template sc24.tpl, changed scan_system to write found SMBus numbers dynamically to tpl file.
+
+commit 9cd93b3b2b4b268f0d6951342f4dbaf88ae4e9ea
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri Mar 18 09:43:02 2016 +0100
+
+    added xm01bc LL driver in Makefile for G23
+
+commit e57c200195165ee5c18a0b25512e14a95ecfb9df
+Merge: 05083c5 6d7cb44
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri Mar 18 08:38:06 2016 +0100
+
+    Merge branch 'master' of ssh://192.168.1.166:7999/l13md05_90/13md05-90
+
+commit 05083c5b31429ebf1b95ab216686fa4c76d6a4eb
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri Mar 18 08:37:05 2016 +0100
+
+    R: CPU G23 wasnt detected on a system, added G023 and case for it to scan_system.sh
+
+commit 6d7cb44593def7833772930790bbd2784592b262
+Author: David Robinson <david.robinson@men.de>
+Date:   Tue Mar 15 18:09:45 2016 +0100
+
+    Set group and size in unitFpga
+
+commit e2a628927902cef1dff1593f8a3cd0cf2890ec38
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Mar 10 11:43:59 2016 +0100
+
+    R: 1. documentation was missing from previous mcvs controlled packages
+       2. device node /dev/mdis was not automatically created upon module load
+    M: 1. added DOC and html folders were missing
+       2. removed mk_major assignment, changed to newer register_chrdev_region() API
+
+commit b09559b311dff74b0c02526ced7a177630ce68e4
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Mar 1 10:06:24 2016 +0100
+
+    R: multiple code in scan_system led to missing driver adding in one case of F21 detection. Compactified switch cases with pipes for CPUs where multiple ID EEPROM entries may exist
+
+commit 21c6ee596558311f2242806e1d2b75fcfcb2de17
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri Feb 26 11:33:13 2016 +0100
+
+    R: added missing rules.mak with targets for SC24 i2c-piix4 only build
+
+commit b625c79cd8455a617fff8266d4a37cf6c020fc38
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri Feb 26 11:26:50 2016 +0100
+
+    R: automatic build of i2c-piix4 driver on SC24 necessary to support both SMBusses in any configuretion added
+
+commit f7710ff359b7db4248f2dc1f86fe90eb70aa8d06
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Feb 25 18:02:23 2016 +0100
+
+    R: test with 2xF223 showed detection error in scan_systen, corrected state machine
+
+commit c8638d86280b3c218ac1d7cf5e6064250ac872f2
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Feb 25 12:03:24 2016 +0100
+
+    R: added mdiswiz.exe
+
+commit feb43b69fef82d3c9c0248b7fec1a53c9b7ab3f4
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Feb 25 11:28:02 2016 +0100
+
+    R: xm01bc control tool missing in SC24 scan template, added description about piix4 driver
+
+commit ae96a26634b3ea261793f15c6df18aeb9298b9cc
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Wed Feb 24 17:06:12 2016 +0100
+
+    R: generated Bx50x project contained no men_bb_smb2 and xm01bc driver M: added drivers to Makefile.sc24.tpl and removed IRQ_NUMBER from sc24.tpl
+
+commit 5610a992c6722ec5558c30fad1bd4f930c03fa81
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Feb 23 15:08:02 2016 +0100
+
+    R: build test on SC25 failed due to references to old CAN driver name. Corrected tpl files.
+
+commit d67e5ee34b1bf1bcdfd9f17a1aab99123c24af86
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Feb 23 14:32:49 2016 +0100
+
+    R: corrected syntax error in scan_system
+
+commit 8192f806b97a233e36b5b271d4c6b11abac52523
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Feb 23 14:13:52 2016 +0100
+
+    R: mdis char driver major number now assigned automatically. changed rules.mak to retrieve major from dmesg dump
+
+commit 0fdf4c38190c91a876820a47353fc882a20bd81f
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Feb 23 10:24:28 2016 +0100
+
+    R: 1. test on SC24/SC25 based BoxPCs showed problem with requesting char devices
+       2. generated SMB bus names for Bx50x were confusing
+    M: 1. pass 0 as major number to register_chrdev, making auto assignment
+       2. corrected templates sc24.tpl and sc25.tpl
+
+commit 70723d6ec490fdd31980d2736b0f9847379cf1ce
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Feb 22 09:34:18 2016 +0100
+
+    R: update for both SC24 and SC25 based BoxPCs in scan templates needed
+
+commit 187723395b011001b1648dc1834037aa97e3637e
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Feb 22 09:05:56 2016 +0100
+
+    R: 1. patched I2C driver for SC24 based Box PCs was not included
+       2. new additional CPUs G23, G25A were not recognized in scan_system
+    M: 1. added 13SC24-90 to MDIS package, added driver.mak in Box PC build
+       2. updated scan_system
+
+commit b37782b7690f6a0092f92bec8884eef5499ebffb
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri Feb 19 11:30:26 2016 +0100
+
+    R: compile of getlinuxversion.c always returned build hosts kernel, not the one in LIN_INC_DIR
+
+commit 44be3550ea35945cc88fa3c99b2d8da459d2516f
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Feb 18 16:54:00 2016 +0100
+
+    R: compile failed under Ubuntu 15.10, gcc 5.2 treated getlinuxversion.c different. Changed kernel version retrieval in rules.mak
+
+commit f22a2ee0bc937ffa1d56e43452a9c79f177049c7
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Feb 18 11:14:52 2016 +0100
+
+    updated MDIS wizard
+
+commit 0fad2897ea6114a325c782c701b478bdb37f758f
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Feb 18 11:12:57 2016 +0100
+
+    R: rules_26.mak and component_26.mak renamed, no distinction anymore between kernel 2.4 and 2.6
+
+commit 4bb06108618835f159b1b3992e1c1ac55e34b240
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Wed Feb 17 13:22:45 2016 +0100
+
+    R: buildtest under kernel 4.x failed due to obsolete check_mem_region. Made compile version dependent.
+
+commit a1523372af7ab166dc90faaf15df507fa9a6d575
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Feb 16 17:11:48 2016 +0100
+
+    R: INCLUDE/COM/MEN submodule updated with tsi148.h
+
+commit 29dad2c8321d53f425c16f6b660a9e08ed8a4372
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Feb 16 16:14:36 2016 +0100
+
+    R: updated reference to LIBSRC/USR_UTL/COM submodule due to changed permit.c,log.c,protect.c (OS9 files)
+
+commit 397b2ae772cbe5df4ef47b10cdb035a983eb354c
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Feb 16 15:54:23 2016 +0100
+
+    R: updated mdiswiz binary
+
+commit bf5033138fbd1bf9ea1c06764ae5c0e09710eb55
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Feb 16 15:52:42 2016 +0100
+
+    R: LIBSRC/USR_OSS not in right folder level, corrected submodule inherit
+
+commit b4b682735f4dcc41ffb71039b661f3c55af3f843
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Feb 15 10:23:20 2016 +0100
+
+    R: deploy-buildtest failed due to missing SMB/PORT[CB]/NATIVE folder
+    M: 1. split repo libsrc_smb up into libsrc_smb_port and libsrc_smb_portcb with PORT[CB]/COM/ folder content
+       2. added those 2 submodules as LIBSRC/SMB/PORT[CB]/COM so NATIVE folder can be kept in parallel
+
+commit a52d1f7ae4fca83470c73b30936bf40cb70eddb1
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Feb 15 09:55:31 2016 +0100
+
+    R: test build failure due to wrong folder name DRIVERS/BBIS/D203N, changed to .../D203
+
+commit 609dff707ecc503c49b21652a351f4deba5326b4
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Feb 15 09:43:44 2016 +0100
+
+    R: submodule LIBSRC/CHAMELEON/COM wasnt updated, breaking the compile
+
+commit 47bf14a533fc4cb9de2c91b934ffdaee72d6aaa2
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Sun Feb 14 23:20:10 2016 +0100
+
+    R: submodule referencing of LIBSRC/PLD/COM failed, moved files to toplevel dir to add submodule .../PLD/COM
+
+commit a4ac65997b14fa96820ac9a69c35bfb63655ad7c
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Sun Feb 14 23:13:00 2016 +0100
+
+    R: LIBSRC/OSS/library.mak was missing during build tests
+
+commit 798af205c914e943458f0f056f9df01f3d906640
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Sun Feb 14 22:49:04 2016 +0100
+
+    updated .gitmodules
+
+commit a260752c40f1ba9afe98f76a186b0f730415ab95
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Sun Feb 14 22:03:49 2016 +0100
+
+    R: parts of Linux system package still contained shared code in DRIVERS/BBIS and LIBSRC
+    M: removed BBIS driver folders and used the repos in bbis_drivers_xxx and libsrc_xxx
+
+commit 2c9163022feba3817a83f02be26059a94fe948f8
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Sun Feb 14 20:02:44 2016 +0100
+
+    R: added LIBSRC/DBG folder which is native to linux
+
+commit b4526cc1357d939ff3b747662e7ec19b8f269268
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Sat Feb 13 16:27:04 2016 +0100
+
+    R: bugfix for system.dsc created with old CPU name on Bx50x, Bx70x
+
+commit c0c1bfb157fbbf50831040a912fbebf0b53d47a5
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Sat Feb 13 16:03:36 2016 +0100
+
+    R: updated .gitmodules with relative submodule paths, added more submodules in BBIS
+
+commit 4f17034b9c3d149065fc620ad0a2228d61181fe8
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Jan 11 11:53:03 2016 +0100
+
+    R: At every call of a SMB2 utility one more kernel workqueue entry [SMB2BB] was generated
+    M: added workqueue flushing and destroying not only in OSS_SmbExit func but also in SMB2BB_BrdExit
+
+commit fc303a2f049227c1e224bddb73e426633f254023
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Oct 8 14:35:04 2015 +0200
+
+    R: build failed on test because config.h not found
+    M: removed inclusion of linux/config.h (deprecated)
+
+commit db79096c3d1f73248a2a90c17d33d81eae55f878
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Sep 24 15:03:07 2015 +0200
+
+    R: added IP core names 16Z002_VME, 16Z146/246 ARINC429, 16Z147/247 ARINC717
+
+commit 60ae0ce782b4287f9935b0bbba7496e787e7cf39
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri Jul 24 16:15:37 2015 +0200
+
+    R: 1. PR002082: several LL driver packages updated due to code cleanup/removal of deprecated macros (__DATE__, __TIME__)
+       2. PR001946: mdis_api.c::ReadDesc() didnt close file handles upon errornous exit
+       3. PR002008: usr_utl compilation failed
+       4. PR002092: kernel locking problem
+    M: 1. added new versions of LL driver packages 13z001-90, 13z077-90, 13z025-90, 13m036-90, 13m077-90, 13m072-06, 13pp04-06, 13xc02-06
+       2. corrected mdis_api.c to close file handles in any case.
+       3. removed unnecessary OS9 specific files
+       4. added changes attached in PR patch
+
+commit a0c347d9867746332a1d04d4e02500addaf9448d
+Author: Thomas Schnuerer <thomas.schnuerer@men.de>
+Date:   Mon Jun 1 11:25:26 2015 +0200
+
+    R: scan_system.sh on SC25 based board resulted in wrong system.dsc, corrected handling of SC25 board
+
+commit e0099909599436f07a9dd7af6779a7e7cdf6c1a2
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Sat May 30 14:34:02 2015 +0200
+
+    R: 1. check between different include folders for utsrelease.h in getlinuxversion.c didnt work for kernels < 2.6.33
+       2. F22P was not handled by scan_system.sh
+    M: 1. reworked getlinuxversion.c to include <linux/utsrelease.h> if kernel < 2.6.33 or <generated/utsrelease.h> if newer.
+       2. added F22P, used settings according to F23P
+
+commit 155aba0a9d4f161e499684cd41af8f4f307c0b93
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue May 26 16:58:23 2015 +0200
+
+    R: old mdiswiz binary still present in repo. Updated with newest wizard
+
+commit 45cd10c8d8a37c859d10a1a70b06b781f0b40e1d
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Wed May 20 18:29:36 2015 +0200
+
+    R: file handles run out of resources after running M_open in a loop (PR0001946)
+    M: added additional fclose() when ReadDesc() is exited without error
+
+commit b3cf70439a67f9f789941ea8af8149539bdcf3c8
+Author: Thomas Schnuerer <thomas.schnuerer@men.de>
+Date:   Wed May 20 16:14:15 2015 +0200
+
+    R: automatic scanning of G2xx cards produced system.dsc file that couldnt be loaded in mdiswiz
+    M: changed scan to differentiate between F2xx and G2xx cards (other BUSIF handling)
+
+commit d2d6be9f5147cbdcb519a814d9279ebfb9095ab8
+Author: Thomas Schnuerer <thomas.schnuerer@men.de>
+Date:   Mon May 18 22:28:03 2015 +0200
+
+    R: 1. cPCI serial cards can only be identified using PCI bus and serial number
+       2. new CPU type F23P introduced
+    M: 1. change detection of chameleon carrier cards in scan_system.sh to PCI_BUS_NUMBER and PCI_DEVICE_NUMBER
+       2. added F23P to scan_system.sh
+
+commit 8a43e8897980f48e5fe218c922ec26071014ba57
+Author: Thomas Schnuerer <thomas.schnuerer@men.de>
+Date:   Mon May 18 13:41:11 2015 +0200
+
+    R: test on F23P failed due to scan_system using still old name of 13Z025 driver
+
+commit f26dba955abd37c6b5998f9080149ad070b2d718
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Sun May 17 20:20:57 2015 +0200
+
+    R: build test with a 3.10 kernel failed due to variable i removed (from previous remove of warnings in create_proc_read_entry for older kernels)
+    M: added i to proc entry create function for kernels >= 3.10
+
+commit 92455ce835df98429cdc0b25620472f89b2e9dca
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri May 15 12:41:20 2015 +0200
+
+    removed unnecessary code from MDIS_KERNEL/mk_module.c which could confuse /proc/mdis readout
+
+commit 4a3fa83717c5e86f8051ca798f465a2f16897710
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri May 15 12:38:28 2015 +0200
+
+    R: 1. buildtests under 64bit windows showed several type cast warnings
+    M: 1. type casts corrected, data types exchanged to unsigned long where appropreate
+
+commit 7fbf79323cc822b6cb7044edea83318cd3b54754
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Wed May 13 09:50:49 2015 +0200
+
+    R: build under 10A021-90 MDIS test failed due to including nonexisting MEN_rtai_shirq.h. Removed include
+
+commit 35234c340b6b34648d7501ddd297915681502e3e
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue May 12 12:46:32 2015 +0200
+
+    R: 1. pointer type warning im bk_module.c for create_proc_read_entry 2. added _MAC_OFF_ also in mac_linux_generic.h
+
+commit d7f9edde147f54f51d9e681b19bca84dec074d64
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue May 12 09:58:48 2015 +0200
+
+    R: build failure upon MDIS_FULLTEST buildtest, nat_module.c files were missing
+
+commit c28562f9c62e22885373827704d80a3c72054449
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon May 11 22:51:36 2015 +0200
+
+    R: compiletest failed due to missing file LIBSRC/CHAMELEON/NATIVE/nat_module.c. Added folder/file.
+
+commit 5440a8427bcde2d4c56e0e1d96a1f009cecce8d9
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Mar 17 15:08:23 2015 +0100
+
+    R: removed LIBSRC folders which were added as separate repos
+
+commit fe7f0d28d4cde19a604dc393d57fe0bd176046ce
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Mar 17 10:35:42 2015 +0100
+
+    R: removed unnecessary tools for USR_UTL and USR_OSS test
+
+commit 59f6753f6fb7945ce3fac558d48e9b41c311549d
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Mar 17 09:59:11 2015 +0100
+
+    R: removed LIBSRC/CHAMELEON folder. Moved to repo MDIS_COMMON/libsrc_chameleon
+
+commit be51b4dcbfca7cfb352cf54ca970993704604485
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Mar 17 09:28:30 2015 +0100
+
+    R: removed UNITTEST folder from LIBSRC/CHAMELEON
+
+commit a7e39312ad0f1186e3ea9de277472e1058456cf6
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Mar 17 09:25:08 2015 +0100
+
+    R: removed complete MDIS_DOCS folder.. primarily the 21MD05-90.pdf documentation is valid
+
+commit 5989b709a77079f44e9bcfab00579a8b03f1472c
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Mar 17 09:24:05 2015 +0100
+
+    R: MDIS_DOCS folder cleaned
+
+commit 45187264aef41a8c75a65b6b6e44f91b2d25984d
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Mar 17 09:18:38 2015 +0100
+
+    R: leftover RTAI include files removed
+
+commit dd190f06c96377c97c0b8ea64862bfa0213b7339
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Mon Mar 16 16:05:39 2015 +0100
+
+    R: BBIS drivers were physically present in the checkin
+    M: moved BBIS drivers into repos in project MDIS_COMMON/bbis_drv_xxx
+
+commit 3f65e3648c3f5db02a5dc6555edfecd18971be39
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri Mar 13 17:21:49 2015 +0100
+
+    R: corrected A12 BBIS driver submodule structure
+
+commit 84a63302b6c40cc86f909f7785a760b73ee98645
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri Mar 13 16:57:23 2015 +0100
+
+    R: M043 LL package was packed together with MDIS package
+    M: put M43 LL driver into 13XXXX-06/13m043-06 repo
+
+commit 58b7819217067b656b99ed82242eeb4036943869
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Mar 12 17:48:25 2015 +0100
+
+    R: MDIS_API common tool folder existed physically to repo, caused redundancy with other MDIS packages
+    M: replaced TOOLS/MDIS_API with submodule repo from MDIS_COM_TOOLS/mdis_api
+
+commit 75a6204e84de0cb297f9ca6ec0c040b286cca8a9
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Fri Mar 6 11:29:54 2015 +0100
+
+    R: when removing RTAI mode parameter, persist parameter was removed too accidentally
+    M: re-added persist parameter where necessary. Needed e.g. for mdis_createdev (persistant BBIS usage)
+
+commit 1a4014844110daa1e871acec387a8ac14fe33143
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Mar 5 17:41:23 2015 +0100
+
+    R: 1. customer specific Variant with MSI support was needed
+       2. customer specific DMA Variant of QSPIM driver was needed
+    M: 1. added Model A21_MSI_b to MDIS wizard
+       2. updated package 13Z010-06 with DMA Variant and additional MSI enabling driver
+
+commit fe74de3cec4a4d9bbb648524845267994d4c246b
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Mar 5 10:41:59 2015 +0100
+
+    added changes in scan_system.sh and nat_module.c
+
+commit 541a654ab4df1e7db9439f8c83bb290550c07a9b
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Thu Mar 5 10:38:32 2015 +0100
+
+    A21 MSI native driver necessary for customer specific A21 variant, added DRIVER/A21_MSI folder
+    LIBSRC/DRIVERS/NATIVE/nat_module.c still contained MSI activation code, removed
+
+commit 8b0681bb63c326d78b599a9d169352b28446e7fc
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Mar 3 15:29:38 2015 +0100
+
+    R: made additional A21 MSI changes depending on define A21_USE_MSI
+
+commit a57a3649218e8c55355cba9ab052c65a69839e1c
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Tue Mar 3 15:02:44 2015 +0100
+
+    R: 1. customer project required special MSI setup of A21 and QSPI driver
+       2. F75P wasnt using correct primary PCI bus path in scan_system.sh
+    M: 1a: added model A21_MSI to MDIS wizard
+       1b: added MSI enabling helper driver to QSPI LL package and DMA model
+       2. corrected scan_system.sh as described in PR002070
+
+commit c47ad6a2e95f8d065127805346972acc3745bb5a
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Wed Feb 25 14:26:41 2015 +0100
+
+    intermediate work checkin
+
+commit 7625671dd2010960605b05dfc52b4f9d9d57f30a
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Wed Feb 18 17:04:41 2015 +0100
+
+    R: 1. newer compilers dont support __DATE__ and __TIME__ macros anymore (PR0002082)
+       2. USR_UTL library dodnt compile under linux anymore (PR0002008)
+    M: 1. removed all occurances of build time info
+       2. removed 3 C files which were added for OS9 only in LIBSRC/USR_UTL
+
+commit 489a450e865fd22e5c551200528a703b72659b23
+Author: thomas.schnuerer <thomas.schnuerer@men>
+Date:   Wed Feb 18 15:32:32 2015 +0100
+
+    Initial commit starting from bazaar rev. 50
