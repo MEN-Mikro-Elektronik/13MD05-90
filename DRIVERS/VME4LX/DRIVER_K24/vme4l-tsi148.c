@@ -185,11 +185,30 @@ typedef	struct {
 #define COMPILE_VME_BRIDGE_DRIVER
 #include "vme4l-core.h"
 
+
+static int debug = DEBUG_DEFAULT;  /**< enable debug printouts */
+
+module_param(debug, int, S_IRUGO | S_IWUSR);
+MODULE_PARM_DESC(debug, "Enable debugging printouts (default " \
+			M_INT_TO_STR(DEBUG_DEFAULT) ")");
+
 /*--------------------------------------+
 |   DEFINES                             |
 +--------------------------------------*/
 #define	TSI148_ERROR   (-1)
 #define	TSI148_OK	   (0)
+
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0)
+#define DEVINIT     __devinit
+#define DEVINITDATA __devinitdata
+#define DEVEXIT     __devexit
+#define DEVEXIT_P   __devexit_p
+#else
+#define DEVINIT
+#define DEVINITDATA
+#define DEVEXIT
+#define DEVEXIT_P
+#endif
 
 /**********************************************************************/
 /** \defgroup TSI148_SLVx_TARGET Settings for slave windows.
@@ -789,8 +808,7 @@ static irqreturn_t Tsi148_IrqHandler( int irq, void *dev_id )
 	else {
 		switch( istat ) {	
 			case TSI148_INTEX_PERR:
-				VME4LDBG( "vme4l(%s): PCI exception at 0x%08x_%08x (edpat="
-						  "0x%08x)\n", __FUNCTION__,
+				VME4LDBG( "vme4l(%s): PCI exception at 0x%08x_%08x (edpat=0x%08x)\n", __FUNCTION__,
 						  TSI148_CTRL_READ(lcsr.edpau),
 						  TSI148_CTRL_READ(lcsr.edpal),
 						  TSI148_CTRL_READ(lcsr.edpat) );
@@ -873,14 +891,12 @@ static int Tsi148_AllocRegSpace(
 	VME4LDBG( "vme4l(%s): BAR0=0x%llx (size=0x%llx)\n",
 			__FUNCTION__, ba, (uint64_t) resourceP->size );
 
-	if( check_mem_region( ba, resourceP->size) ){
+	if( !request_mem_region( ba, resourceP->size, nameP )) {
 		printk( KERN_ERR "*** vme4l(%s): memory already in use\n",
 				__FUNCTION__);
 		return -EBUSY;
 	}
 	
-	request_mem_region( ba, resourceP->size, nameP );
-
 	/* map 4K register space into the kernel */
 	if( (resourceP->vaddr = ioremap(ba, resourceP->size)) == NULL ) {
 		printk( KERN_ERR "*** vme4l(%s): register ioremap failed\n",
@@ -1023,11 +1039,11 @@ static int Tsi148_OutboundWinSet(
 
 	/* set-up registers */
 	VME4LDBG( "vme4l(%s):\n", __FUNCTION__ );
-	VME4LDBG( "\tOTSA 0x%08lx_%08lx\n", win.otsau, win.otsal );
-	VME4LDBG( "\tOTEA 0x%08lx_%08lx\n", win.oteau, win.oteal );
-	VME4LDBG( "\tOTOF 0x%08lx_%08lx\n", win.otofu, win.otofl );
-	VME4LDBG( "\tOTBS 0x%08lx\n", win.otbs );
-	VME4LDBG( "\tOTAT 0x%08lx\n", win.otat );
+	VME4LDBG( "\tOTSA 0x%x_%x\n", win.otsau, win.otsal );
+	VME4LDBG( "\tOTEA 0x%x_%x\n", win.oteau, win.oteal );
+	VME4LDBG( "\tOTOF 0x%x_%x\n", win.otofu, win.otofl );
+	VME4LDBG( "\tOTBS 0x%x\n", win.otbs );
+	VME4LDBG( "\tOTAT 0x%x\n", win.otat );
 
 	/* disable window first */
 	TSI148_CTRL_CLRMASK( lcsr.outbound[winNo].otat, TSI148_OTAT_EN );
@@ -1104,10 +1120,10 @@ static int Tsi148_InboundWinSet(
 
 	/* set-up registers */
 	VME4LDBG( "vme4l(%s):\n", __FUNCTION__ );
-	VME4LDBG( "\tITSA 0x%08lx_%08lx\n", win.itsau, win.itsal );
-	VME4LDBG( "\tITEA 0x%08lx_%08lx\n", win.iteau, win.iteal );
-	VME4LDBG( "\tITOF 0x%08lx_%08lx\n", win.itofu, win.itofl );
-	VME4LDBG( "\tITAT 0x%08lx\n", win.itat );
+	VME4LDBG( "\tITSA 0x%08x_%08x\n", win.itsau, win.itsal );
+	VME4LDBG( "\tITEA 0x%08x_%08x\n", win.iteau, win.iteal );
+	VME4LDBG( "\tITOF 0x%08x_%08x\n", win.itofu, win.itofl );
+	VME4LDBG( "\tITAT 0x%08x\n", win.itat );
 
 	/* disable window first */
 	TSI148_CTRL_CLRMASK( lcsr.inbound[winNo].itat, TSI148_ITAT_EN );
@@ -1161,26 +1177,17 @@ static int Tsi148_AllocOutbResource(
 	winResP->pciResrc.flags = IORESOURCE_MEM;
 
 	/* get pci memory area */
-	if( (allocFailed = pci_bus_alloc_resource(
-							vme4l_bh->pdev->bus,
-							&winResP->pciResrc,
-							winSize,
-							(~TSI148_OTOF_OFFL_MASK)+1,
-							PCIBIOS_MIN_MEM,
-							0,					/* non prefetching */
-							NULL,
-							NULL)) != 0 ) {
-		printk( KERN_ERR "*** vme4l(%s): failed to allocate PCI memory "
-				"(size 0x%x), check BIOS settings\n", __FUNCTION__, winSize );
+	if( (allocFailed = pci_bus_alloc_resource( vme4l_bh->pdev->bus, &winResP->pciResrc, winSize, (~TSI148_OTOF_OFFL_MASK)+1,
+							PCIBIOS_MIN_MEM, 0, /* non prefetching */ NULL,	NULL)) != 0 ) {
+
+		printk( KERN_ERR "*** vme4l(%s): failed to allocate PCI memory (size 0x%lx), check BIOS settings\n", __FUNCTION__, winSize );
+
 		goto CLEANUP;
 	}
 
 	winResP->phys = winResP->pciResrc.start;
 
-	VME4LDBG( "vme4l(%s): outbound window %d allocated 0x%llx..0x%llx\n",
-			  __FUNCTION__, winNo,
-			  (uint64_t) winResP->pciResrc.start,
-			  (uint64_t) winResP->pciResrc.end );
+	VME4LDBG( "vme4l(%s): outbound window %d allocated 0x%llx..0x%llx\n", __FUNCTION__, winNo, winResP->pciResrc.start, winResP->pciResrc.end );
 	
 	winResP->memReq = 1;
 	winResP->inUse = 1;
@@ -1267,14 +1274,13 @@ static int Tsi148_RequestAddrWindow(
 		goto CLEANUP;
 	}
 	if( (endAddr-1) >  G_winSettings[spc].out.spaceEnd ) {
-		printk( KERN_ERR "*** vme4l(%s): wrong window end addr 0x%llx\n",
-				__FUNCTION__, endAddr-1 );
+
+		printk( KERN_ERR "*** vme4l(%s): wrong window end addr 0x%lx\n", __FUNCTION__, endAddr-1 );
+
 		goto CLEANUP;
 	}
 
-	VME4LDBG( "vme4l(%s): set-up outbound window %d (vmeAddr=0x%llx "
-			  "size=0x%llx)\n", __FUNCTION__, winNo, startAddr,
-			  (uint64_t) size);
+	VME4LDBG( "vme4l(%s): set-up outbound window %d (vmeAddr=0x%lx size=0x%lx)\n", __FUNCTION__, winNo, startAddr, size);
 
 	/* get PCI memory */
 	if( Tsi148_AllocOutbResource(vme4l_bh, winNo, size, spc) != TSI148_OK ){
@@ -1517,8 +1523,7 @@ static int Tsi148_SlaveWindowCtrl(
 	
 	TSI148_LOCK_STATE_IRQ( ps );
 
-	VME4LDBG( "vme4l(%s): spc=%d vmeAddr=0x%llx size=0x%llx\n",
-			  __FUNCTION__, spc, vmeAddr, (uint64_t)size);
+	VME4LDBG( "vme4l(%s): spc=%d vmeAddr=0x%lx size=0x%lx\n",  __FUNCTION__, spc, vmeAddr, size);
 
 	/* check parameters */
 	if( spc >= VME4L_TSI148_WINSETTINGS_NO || spc < VME4L_SPC_SLV0
@@ -1534,7 +1539,7 @@ static int Tsi148_SlaveWindowCtrl(
 		default: vmeMask=TSI148_ITXAX_MASK_A16; break;
 	}
 	if( vmeAddr & ~vmeMask ) {
-		printk( KERN_ERR "*** vme4l(%s): VME addr 0x%llx invalid\n",
+		printk( KERN_ERR "*** vme4l(%s): VME addr 0x%lx invalid\n",
 				__FUNCTION__, vmeAddr );
 		goto CLEANUP;
 	}
@@ -1544,7 +1549,7 @@ static int Tsi148_SlaveWindowCtrl(
 		goto CLEANUP;
 	}
 	if( (vmeAddr+size-1) > G_winSettings[spc].in.spaceEnd ) {
-		printk( KERN_ERR "*** vme4l(%s): 0x%llx..0x%llx outside addr range\n",
+		printk( KERN_ERR "*** vme4l(%s): 0x%lx..0x%lx outside addr range\n",
 				__FUNCTION__, vmeAddr, vmeAddr+size-1 );
 		goto CLEANUP;
 	}
@@ -1659,9 +1664,8 @@ static int Tsi148_SlaveWindowCtrl(
 		spc = 0;
 	}
 	
-	VME4LDBG( "vme4l(%s): %s inbound window %d (vmeAddr=0x%llx size=0x%llx)\n",
-			  __FUNCTION__, (size) ? "set-up" : "disable", winNo, vmeAddr,
-			  (uint64_t) size );
+	VME4LDBG( "vme4l(%s): %s inbound window %d (vmeAddr=0x%lx size=0x%lx)\n",
+			  __FUNCTION__, (size) ? "set-up" : "disable", winNo, vmeAddr, size );
 	
 	if( Tsi148_InboundWinSet(winNo, spc, vmeAddr, dmaAddr, size)
 		!= TSI148_OK ){
@@ -1958,7 +1962,7 @@ static int Tsi148_DmaSetup(
 
 		if( direction ){
 			/* write to VME */
-			tmp64 = sgList->dmaAddress;
+			tmp64 = sgList->dmaDataAddress;
 			TSI148_DESC_WRITE( &bdVirtP->dsau, (uint32_t)(tmp64>>32) );
 			TSI148_DESC_WRITE( &bdVirtP->dsal, (uint32_t) tmp64 );
 			TSI148_DESC_WRITE( &bdVirtP->ddau, (uint32_t)(*vmeAddr>>32) );
@@ -1974,7 +1978,7 @@ static int Tsi148_DmaSetup(
 			/* read from VME */
 			TSI148_DESC_WRITE( &bdVirtP->dsau, (uint32_t)(*vmeAddr>>32) );
 			TSI148_DESC_WRITE( &bdVirtP->dsal, (uint32_t) *vmeAddr );
-			tmp64 = sgList->dmaAddress;
+			tmp64 = sgList->dmaDataAddress;
 			TSI148_DESC_WRITE( &bdVirtP->ddau, (uint32_t)(tmp64>>32) );
 			TSI148_DESC_WRITE( &bdVirtP->ddal, (uint32_t) tmp64 );
 			TSI148_DESC_WRITE( &bdVirtP->dsat, TSI148_DXAT_TYP_VME
@@ -2307,7 +2311,7 @@ static int Tsi148_PostedWriteModeGet( VME4L_BRIDGE_HANDLE *vme4l_bh )
  */		
 static int Tsi148_BusErrGet(
 	VME4L_BRIDGE_HANDLE *vme4l_bh,
-	VME4L_SPACE *spaceP,
+	int *attrP,
 	vmeaddr_t *addrP,
 	int clear )
 {
@@ -2492,7 +2496,7 @@ static VME4L_BRIDGE_DRV G_tsi148Drv = {
  *  \return 	0 when the driver has accepted the device or
  *				an error code (negative number) otherwise.
  */
-static int __devinit tsi148_pci_init_one(
+static int DEVINIT tsi148_pci_init_one(
 	struct pci_dev *pdev,
 	const struct pci_device_id *ent )
 {
@@ -2553,11 +2557,7 @@ static int __devinit tsi148_pci_init_one(
 	/* Tsi148_IrqHandler is the standard linux IRQ handler */
 	if( (rv = request_irq( pdev->irq,
 						   Tsi148_IrqHandler,
-#if LINUX_VERSION_CODE >= VERSION_CODE_NEW_IRQFLAGS
 						   IRQF_SHARED,
-#else
-						   SA_SHIRQ,
-#endif
 						   "tsi148",
 						   vme4l_bh)) < 0 ) {
 		VME4LDBG( "vme4l(%s): error request_irq !\n", __FUNCTION__);
@@ -2592,7 +2592,7 @@ CLEANUP:
 }/* tsi148_pci_init_one */
 
 
-static void __devexit tsi148_pci_remove_one( struct pci_dev *pdev )
+static void DEVEXIT tsi148_pci_remove_one( struct pci_dev *pdev )
 {
 	int i;
 	VME4L_BRIDGE_HANDLE *vme4l_bh = &G_vme4l_bh;
@@ -2626,7 +2626,7 @@ static void __devexit tsi148_pci_remove_one( struct pci_dev *pdev )
 
 	/* pages for DMA desc buffers */
 	if( vme4l_bh->dmaDescBuf ) {
-		free_pages( (int)vme4l_bh->dmaDescBuf, TSI148_DMA_DESC_PAGES );
+		free_pages( (unsigned long)vme4l_bh->dmaDescBuf, TSI148_DMA_DESC_PAGES );
 	}
 
 	/* free allocated memory */
@@ -2642,7 +2642,7 @@ static void __devexit tsi148_pci_remove_one( struct pci_dev *pdev )
  *
  * Driver will handle all devices that have these codes.
  */
-static struct pci_device_id G_pci_tbl[] __devinitdata = {
+static struct pci_device_id G_pci_tbl[] DEVINITDATA  = {
 	/* TSI148 */
 	{
 		TSI148_VEN_ID,
@@ -2665,7 +2665,7 @@ static struct pci_driver G_pci_driver = {
 	name:		"vme4l-tsi148",
 	id_table:	G_pci_tbl,
 	probe:		tsi148_pci_init_one,
-	remove:		__devexit_p(tsi148_pci_remove_one),
+	remove:		DEVEXIT_P(tsi148_pci_remove_one),
 };/* G_pci_driver */
 
 
@@ -2693,17 +2693,14 @@ static int __init tsi148_init_module( void )
  */
 static void __exit tsi148_cleanup_module( void )
 {
-	VME4LDBG( "vme4l_tsi148(%s): deinit bridge and unregister driver\n",
-		__FUNCTION__);
-	
+	VME4LDBG( "vme4l_tsi148(%s): deinit bridge and unregister driver\n", __FUNCTION__);
 	Tsi148_InitBridge();
-
 	pci_unregister_driver(&G_pci_driver);
 }/* tsi148_cleanup_module */
 
 module_init(tsi148_init_module);
 module_exit(tsi148_cleanup_module);
 
-MODULE_AUTHOR("Ralf Trübenbach <Ralf.Truebenbach@men.de>");
+MODULE_AUTHOR("Ralf T./Thomas S.");
 MODULE_DESCRIPTION("VME4L - MEN VME TSI148 bridge driver");
 MODULE_LICENSE("GPL");

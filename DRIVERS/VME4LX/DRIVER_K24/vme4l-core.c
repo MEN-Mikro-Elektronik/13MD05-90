@@ -1217,7 +1217,7 @@ static void vme4l_user_pages_print(unsigned int nr_pages,
 
 			pDat+=16;
 		}
-		printk( "\n\n" );
+		printk( "\n" );
 		offset = 0; /* if data amount to dump > 1 page, all other data starts at 0 then */
 	}
 }
