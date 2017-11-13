@@ -465,7 +465,64 @@ static VME4L_ADRSWIN *vme4l_find_adrswin(
 }
 
 
+/** Free the resources of an address window.
+ *
+ * \param win is the window to be freed
+ * \param checkUseCount selects whether the use counter should be checked or
+ * 	the window should be freed forcibly.
+ * \return 0 on success or negative error number
+ */
+static int do_free_adrswin(VME4L_ADRSWIN *win, bool checkUseCount)
+{
+	int rv;
+	bool lastReference = false;
 
+	VME4L_LOCK_MSTRLISTS();
+
+	if(checkUseCount && win->useCount > 0) {
+		--win->useCount;
+
+		/* mark the window as safe to be removed */
+		lastReference = (win->useCount == 0);
+	}
+
+	if(!checkUseCount || lastReference) {
+		rv = G_bDrv->releaseAddrWindow(G_bHandle,
+			win->spc, win->vmeAddr, win->size,
+			win->flags, win->bDrvData);
+
+		if( !rv ) {
+			list_del(&win->node);
+
+			/*--- free all ioremapped regions ---*/
+			while(!list_empty(&win->lstIoremap)) {
+				VME4L_IOREMAP_REGION *reg =
+					list_entry(win->lstIoremap.next,
+						VME4L_IOREMAP_REGION, winNode);
+				void *va;
+
+				if((va = vme4l_destroy_ioremap_region(reg))) {
+					iounmap(va);
+				}
+
+				/* move it to end of cache list */
+				list_del(&reg->cacheNode);
+				list_add_tail(&reg->cacheNode,
+						&G_lstIoremapCache);
+			}
+
+			list_add_tail(&win->node, &G_freeAdrsWins);
+		}
+		else
+		{
+			VME4LDBG("do_free_adrswin failed\n");
+		}
+	}
+
+	VME4L_UNLOCK_MSTRLISTS();
+
+	return rv;
+}
 
 
 /***********************************************************************/
@@ -475,47 +532,11 @@ static VME4L_ADRSWIN *vme4l_find_adrswin(
  */
 static void vme4l_discard_adrswin( VME4L_ADRSWIN *win )
 {
-	VME4LDBG("vme4l_release_adrswin spc=%d vmeAddr=0x%llx sz=0x%llx phys=%p "
+	VME4LDBG("vme4l_discard_adrswin spc=%d vmeAddr=0x%llx sz=0x%llx phys=%p "
 			 "flg=0x%x\n", win->spc, win->vmeAddr, (uint64_t) win->size,
 			 win->physAddr, win->flags);
 
-	VME4L_LOCK_MSTRLISTS();
-	list_del( &win->node );
-	VME4L_UNLOCK_MSTRLISTS();
-
-	if( G_bDrv )
-		G_bDrv->releaseAddrWindow(
-			G_bHandle,
-			win->spc,
-		    win->vmeAddr,
-			win->size,
-			win->flags,
-			win->bDrvData);
-
-	VME4L_LOCK_MSTRLISTS();
-
-	/*--- free all ioremapped regions ---*/
-	{
-		while( ! list_empty( &win->lstIoremap ) ){
-			VME4L_IOREMAP_REGION *region =
-				list_entry( win->lstIoremap.next,
-							VME4L_IOREMAP_REGION,
-							winNode );
-			void *vaddr;
-
-			if( (vaddr = vme4l_destroy_ioremap_region( region ))){
-				VME4L_UNLOCK_MSTRLISTS();
-				iounmap(vaddr);
-				VME4L_LOCK_MSTRLISTS();
-			}
-			/* move it to end of cache list */
-			list_del( &region->cacheNode );
-			list_add_tail( &region->cacheNode, &G_lstIoremapCache );
-		}
-
-	}
-	list_add_tail( &win->node, &G_freeAdrsWins);
-	VME4L_UNLOCK_MSTRLISTS();
+	do_free_adrswin(win, false);
 }
 
 /***********************************************************************/
@@ -524,10 +545,11 @@ static void vme4l_discard_adrswin( VME4L_ADRSWIN *win )
  */
 static void vme4l_release_adrswin( VME4L_ADRSWIN *win )
 {
-	VME4L_LOCK_MSTRLISTS();
-	if( win->useCount > 0 )
-		win->useCount--;
-	VME4L_UNLOCK_MSTRLISTS();
+	VME4LDBG("vme4l_release_adrswin spc=%d vmeAddr=0x%llx sz=0x%llx phys=%p "
+			 "flg=0x%x\n", win->spc, win->vmeAddr, (uint64_t) win->size,
+			 win->physAddr, win->flags);
+
+	do_free_adrswin(win, true);
 }
 
 
