@@ -109,6 +109,7 @@
 #include <linux/dma-mapping.h>  /* DMA-API */
 #include <linux/scatterlist.h>
 #include <linux/device.h>
+#include <linux/mm.h>
 #include <linux/pci.h>
 #include <asm/uaccess.h>        /* put_user */
 #include <asm/io.h>
@@ -159,8 +160,7 @@ typedef void *VME4L_BRIDGE_HANDLE;
 |   TYPDEFS                             |
 +--------------------------------------*/
 typedef struct {
-	dma_addr_t dmaDataAddress;
-	dma_addr_t dmaPageAddress;
+	dma_addr_t dmaAddress;
 	uint32_t dmaLength;
 } VME4L_SCATTER_ELEM;
 

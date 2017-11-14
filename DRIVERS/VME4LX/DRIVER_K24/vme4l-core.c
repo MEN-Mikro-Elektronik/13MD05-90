@@ -1245,35 +1245,6 @@ static void vme4l_user_pages_print(unsigned int nr_pages,
 }
 #endif
 
-/**
- * It gets the user pages from a given user buffer
- * \param uaddr		Address for the user buffer
- * \param nr_pages		Number of pages found
- * \param pages		User pages for the given buffer
- *
- *\return 0 on success, or a negative number
- */
-static int vme4l_get_user_pages(uintptr_t uaddr, unsigned int write,
-				unsigned int nr_pages,
-				struct page **pages)
-{
-	int rv;
-
-	/* Ensure that all userspace pages are locked in memory for the */
-	/* duration of the DMA transfer */
-	down_read(&current->mm->mmap_sem);
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4,8,0)
-	rv = get_user_pages(current, current->mm,
-			    uaddr, nr_pages, write, 0, pages, NULL);
-#else
-	rv = get_user_pages(uaddr, nr_pages, write, pages, NULL);
-#endif
-	up_read(&current->mm->mmap_sem);
-
-	return rv;
-}
-
-
 /***********************************************************************/
 /** prepare zero-copy DMA with VME bridge
  *
@@ -1286,18 +1257,19 @@ static int vme4l_get_user_pages(uintptr_t uaddr, unsigned int write,
 static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 {
 	int rv = 0, i;
-	uintptr_t uaddr 		= (uintptr_t)blk->dataP;
-	size_t count 			= blk->size;
+	uintptr_t uaddr 	= (uintptr_t)blk->dataP;
+	size_t count 		= blk->size;
 	unsigned int nr_pages	= 0;
 	struct page **pages 	= NULL;
-	uint32_t totlen			= 0;
+	uint32_t totlen		= 0;
 	unsigned int offset 	= 0;
-	int direction 			= 0;
+	int direction 		= 0;
 	struct pci_dev *pciDev	= NULL;
-	struct device *pDev		= NULL;
-	void *pKmalloc			= NULL;
-	int locked				= 0;
-	dma_addr_t dmaAddr 		= 0;
+	struct device *pDev	= NULL;
+	void *pKmalloc		= NULL;
+        unsigned char *pVirtAddr= NULL;
+	int locked		= 0;
+	dma_addr_t dmaAddr 	= 0;
 	VME4L_SCATTER_ELEM *sgListStart = NULL, *sgList;
 #ifdef VME4L_DBG_DMA_DATA
 	unsigned int initOffs 	= 0;
@@ -1330,7 +1302,8 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 		goto CLEANUP;
 	}
 
-	rv = vme4l_get_user_pages(uaddr, (direction == DMA_FROM_DEVICE), nr_pages, pages);
+       rv = get_user_pages_fast( uaddr, nr_pages, direction, pages);
+
 	if( rv < nr_pages )
 		goto CLEANUP;
 
@@ -1342,18 +1315,17 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 #ifdef VME4L_DBG_DMA_DATA
 	initOffs = offset;
 #endif
-
 	for (i = 0; i < nr_pages; ++i, sgList++) {
-
 		struct page *page = pages[i];
 		sgList->dmaLength  = PAGE_SIZE - offset;
-		dmaAddr = dma_map_page( pDev, page,	0x0, PAGE_SIZE, direction );
+            pVirtAddr = ((unsigned char*)(page_address( page ))) + offset;
+
+            dmaAddr = dma_map_single( pDev, pVirtAddr, sgList->dmaLength, direction );
 		if ( dma_mapping_error(pDev, dmaAddr ) ) {
-			printk( KERN_ERR "error mapping DMA space with dma_map_page\n" );
+                   printk( KERN_ERR "*** error mapping DMA space!\n" );
 			goto CLEANUP;
 		} else {
-			sgList->dmaDataAddress = dmaAddr + offset; /* Add offset between page begin and payload data, often > 0 */
-			sgList->dmaPageAddress = dmaAddr;	/* store page address for later dma_unmap_page */
+                   sgList->dmaAddress = dmaAddr;      /* store page address for later dma_unmap_page */
 		}
 
 		if( totlen + sgList->dmaLength > count )
@@ -1367,23 +1339,13 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 	/*--- now do DMA in HW (device touches memory) ---*/
 	rv = vme4l_perform_zc_dma( spc, sgListStart, nr_pages, blk->direction, blk->vmeAddr, swapMode );
 
-	/* mark pages as dirty */
-	if( blk->direction == READ ) {
-		for (i = 0; i < nr_pages; ++i ) {
-			if ( !PageReserved( pages[i] ))
-				SetPageDirty( pages[i] );
-		}
-	}
-
 CLEANUP:
 	/*--- free pages ---*/
 	if( locked ) {
 		sgList = sgListStart;
 		for (i = 0; i < nr_pages; i++, sgList++) {
-			dma_unmap_page( pDev, sgList->dmaPageAddress, PAGE_SIZE, direction );
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4,6,0)
-			page_cache_release( pages[i] );
-#endif
+            	 dma_unmap_single( pDev, sgList->dmaAddress, sgList->dmaLength , direction );
+                 put_page( pages[i] ); /* release pages locked with get_user_pages */
 		}
 	}
 
