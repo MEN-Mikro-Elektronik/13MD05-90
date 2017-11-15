@@ -1320,6 +1320,10 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 		sgList->dmaLength  = PAGE_SIZE - offset;
             pVirtAddr = ((unsigned char*)(page_address( page ))) + offset;
 
+		if( totlen + sgList->dmaLength > count ){
+			sgList->dmaLength = count - totlen;
+		}
+
             dmaAddr = dma_map_single( pDev, pVirtAddr, sgList->dmaLength, direction );
 		if ( dma_mapping_error(pDev, dmaAddr ) ) {
                    printk( KERN_ERR "*** error mapping DMA space!\n" );
@@ -1328,8 +1332,6 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
                    sgList->dmaAddress = dmaAddr;      /* store page address for later dma_unmap_page */
 		}
 
-		if( totlen + sgList->dmaLength > count )
-			sgList->dmaLength = count - totlen;
 
 		VME4LDBG(" sglist %d: pageAddr=%p off=0x%04lx dmaAddr=%p length=0x%04x\n", i, page_address(page), offset, dmaAddr, sgList->dmaLength);
 		totlen += sgList->dmaLength;
