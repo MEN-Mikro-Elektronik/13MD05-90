@@ -2190,7 +2190,7 @@ static int vme4l_remove( CHAMELEONV2_UNIT_T *chu )
 
        if (( var == 1) || (var == 2 )) {
 		VME4L_BRIDGE_HANDLE *h = &G_bHandle;
-		printk( KERN_DEBUG "vme4l_pldz002_cleanup_modul\n");
+		printk( KERN_DEBUG "vme4l_pldz002_cleanup_module\n");
 		InitBridge(h);
 
 		vme4l_unregister_bridge_driver();
