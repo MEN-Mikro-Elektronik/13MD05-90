@@ -421,7 +421,7 @@ int main( int argc, char *argv[] )
 		   transferRate );
 
 	/* Uncomment when the driver is fixed.... */
-	/* if (opt_verify_write && buf_ver) {
+	if (opt_verify_write && buf_ver) {
 		free(buf_ver);
 		buf_ver = NULL;
 	}
@@ -429,7 +429,7 @@ int main( int argc, char *argv[] )
 	if (buf) {
 		free(buf);
 		buf = NULL;
-	} */
+	}
 
 
 	if (opt_mmap)
