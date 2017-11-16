@@ -759,7 +759,7 @@ static int DmaBounceSetup(
 		/* write to VME */
 		VME_REG_DMABD_WR32( bdOff+0x0, vmeAddr );
 		VME_REG_DMABD_WR32( bdOff+0x4, LOCAL_SRAM_A21ADDR );
-		VME_REG_DMABD_WR32( bdOff+0x8, size>>2 );
+		VME_REG_DMABD_WR32( bdOff+0x8, (size>>2) - 1 );
 		VME_REG_DMABD_WR32( bdOff+0xc,
 							 PLDZ002_DMABD_SRC( PLDZ002_DMABD_DIR_SRAM ) |
 							 PLDZ002_DMABD_DST( PLDZ002_DMABD_DIR_VME ) |
@@ -769,7 +769,7 @@ static int DmaBounceSetup(
 		/* read from VME */
 		VME_REG_DMABD_WR32( bdOff+0x0, BOUNCE_SRAM_A21ADDR );
 		VME_REG_DMABD_WR32( bdOff+0x4, vmeAddr );
-		VME_REG_DMABD_WR32( bdOff+0x8, size>>2 );
+		VME_REG_DMABD_WR32( bdOff+0x8, (size>>2) - 1 );
 		VME_REG_DMABD_WR32( bdOff+0xc,
 						 PLDZ002_DMABD_SRC( PLDZ002_DMABD_DIR_VME ) |
 						 PLDZ002_DMABD_DST( PLDZ002_DMABD_DIR_SRAM ) |
