@@ -658,8 +658,8 @@ static int DmaSetup(
 	for( sg=0; sg<endBd; sg++, sgList++, bdVaddr+=PLDZ002_DMABD_SIZE ){
 
 		/*--- check alignment/size ---*/
-		if( (*vmeAddr & (alignVme-1)) || (sgList->dmaAddress & 3) ||
-			(sgList->dmaLength > 256*1024) || (sgList->dmaLength & 3)){
+		if( (*vmeAddr & (alignVme-1)) || (sgList->dmaAddress & (alignVme-1)) ||
+			(sgList->dmaLength > 256*1024) || (sgList->dmaLength & (alignVme-1))){
 			VME4LDBG( "*** pldz002 DMA setup bad alignment/len "
 					  "%08llx %08llx %x\n", *vmeAddr,
 					  (uint64_t)sgList->dmaAddress, sgList->dmaLength );
@@ -748,7 +748,7 @@ static int DmaBounceSetup(
 		size = 0x3fffc;
 
 	/*--- check alignment/size ---*/
-	if( (vmeAddr & (alignVme-1)) || (size & 3) ){
+	if( (vmeAddr & (alignVme-1)) || (size & (alignVme-1)) ){
 		VME4LDBG("*** pldz002 Bounce DMA setup bad alignment/len "
 				 "0x%llx 0x%llx\n", vmeAddr, (uint64_t) size);
 		rv = -EINVAL;
