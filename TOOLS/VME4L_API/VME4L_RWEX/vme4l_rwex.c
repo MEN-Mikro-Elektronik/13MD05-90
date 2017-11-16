@@ -421,7 +421,7 @@ int main( int argc, char *argv[] )
 		   transferRate );
 
 	/* Uncomment when the driver is fixed.... */
-	/* if (opt_verify_write && buf_ver) {
+	if (opt_verify_write && buf_ver) {
 		free(buf_ver);
 		buf_ver = NULL;
 	}
@@ -429,13 +429,12 @@ int main( int argc, char *argv[] )
 	if (buf) {
 		free(buf);
 		buf = NULL;
-	} */
+	}
 
-	UOS_Delay( 100 );
+
 	if (opt_mmap)
 		CHK( (rv = VME4L_UnMap( fd, map, size + getpagesize())) == 0 );
 	VME4L_Close( fd );
-	UOS_Delay( 100 );
 	return return_global;
 }
 

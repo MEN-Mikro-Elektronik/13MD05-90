@@ -658,11 +658,11 @@ static int DmaSetup(
 	for( sg=0; sg<endBd; sg++, sgList++, bdVaddr+=PLDZ002_DMABD_SIZE ){
 
 		/*--- check alignment/size ---*/
-		if( (*vmeAddr & (alignVme-1)) || (sgList->dmaDataAddress & 3) ||
+		if( (*vmeAddr & (alignVme-1)) || (sgList->dmaAddress & 3) ||
 			(sgList->dmaLength > 256*1024) || (sgList->dmaLength & 3)){
 			VME4LDBG( "*** pldz002 DMA setup bad alignment/len "
 					  "%08llx %08llx %x\n", *vmeAddr,
-					  (uint64_t)sgList->dmaDataAddress, sgList->dmaLength );
+					  (uint64_t)sgList->dmaAddress, sgList->dmaLength );
 			rv = -EINVAL;
 			goto CLEANUP;
 		}
@@ -670,7 +670,7 @@ static int DmaSetup(
 		if( direction ) {
 			/* write to VME */
 			VME_GENREG_WRITE32( bdVaddr+0x0, *vmeAddr );
-			VME_GENREG_WRITE32( bdVaddr+0x4, sgList->dmaDataAddress );
+			VME_GENREG_WRITE32( bdVaddr+0x4, sgList->dmaAddress );
 			VME_GENREG_WRITE32( bdVaddr+0x8, (sgList->dmaLength>>2) - 1 ); /* Block Size of DMA transfer in longwords:  (x bytes / 4) -1 */
 			VME_GENREG_WRITE32( bdVaddr+0xc,
 							PLDZ002_DMABD_SRC( PLDZ002_DMABD_DIR_PCI ) |
@@ -679,7 +679,7 @@ static int DmaSetup(
 		}
 		else {
 			/* read from VME */
-			VME_GENREG_WRITE32( bdVaddr+0x0, sgList->dmaDataAddress );
+			VME_GENREG_WRITE32( bdVaddr+0x0, sgList->dmaAddress );
 			VME_GENREG_WRITE32( bdVaddr+0x4, *vmeAddr );
 			VME_GENREG_WRITE32( bdVaddr+0x8, (sgList->dmaLength>>2) - 1 );
 			VME_GENREG_WRITE32( bdVaddr+0xc,
@@ -2190,7 +2190,7 @@ static int vme4l_remove( CHAMELEONV2_UNIT_T *chu )
 
        if (( var == 1) || (var == 2 )) {
 		VME4L_BRIDGE_HANDLE *h = &G_bHandle;
-		printk( KERN_DEBUG "vme4l_pldz002_cleanup_modul\n");
+		printk( KERN_DEBUG "vme4l_pldz002_cleanup_module\n");
 		InitBridge(h);
 
 		vme4l_unregister_bridge_driver();
