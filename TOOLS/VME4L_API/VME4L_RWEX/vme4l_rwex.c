@@ -442,7 +442,7 @@ static void MemDump(uint8_t *buf, uint32_t n, uint32_t fmt)
 {
 	uint8_t *k, *k0, *kmax = buf+n;
 	int32_t i;
-
+	printf("----\n");
 	for (k=k0=buf; k0<kmax; k0+=16) {
 		printf("%04x: ", (unsigned int)(k-buf));
 
@@ -471,4 +471,5 @@ static void MemDump(uint8_t *buf, uint32_t n, uint32_t fmt)
 
 		printf("\n");
 	}
+	printf("----\n");
 }
