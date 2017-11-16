@@ -106,6 +106,9 @@
 #define BOUNCE_SRAM_A21ADDR	 0x0   /* 0xff000 */    /* ts: was c0000 */
 #define BOUNCE_DMABD_BASE	 0xff000
 
+#define PLDZ002_BOUNCE_CHUNKSIZE_LIMIT_A32D32	0x3fffc /* max. address in a 256k chunk for D32 spaces */
+#define PLDZ002_BOUNCE_CHUNKSIZE_LIMIT_A32D64	0x3fff8 /* max. address in a 256k chunk for D64 spaces */
+
 #define LOCAL_SRAM_A21ADDR	0x0   /* ts: was c0000 */
 
 #define BOUNCE_SRAM_A21SIZE	0x100000    /* 1MB SRAM  */
@@ -725,6 +728,7 @@ static int DmaBounceSetup(
 {
 	int alignVme=4, rv=0;
 	uint32_t bdAm, bdOff;
+	size_t szlimit=PLDZ002_BOUNCE_CHUNKSIZE_LIMIT_A32D32;
 
 	/* DMA controller supports only BLT spaces */
 	switch( spc ){
@@ -736,6 +740,7 @@ static int DmaBounceSetup(
 	case VME4L_SPC_A32_D64_BLT:
 		bdAm = h->addrModShadow[spc];
 		alignVme = 8;
+		szlimit=PLDZ002_BOUNCE_CHUNKSIZE_LIMIT_A32D64;
 		break;
 	default:
 		return -EINVAL;
@@ -744,8 +749,8 @@ static int DmaBounceSetup(
 	bdOff = PLDZ002_DMABD_OFF_RV9(0);
 	VME4LDBG("size = 0x%x  direction: %s\n", size, direction ? "write to VME" : "read from VME");
 
-	if( size > 0x3fffc )
-		size = 0x3fffc;
+	if( size > szlimit )
+		size = szlimit;
 
 	/*--- check alignment/size ---*/
 	if( (vmeAddr & (alignVme-1)) || (size & (alignVme-1)) ){
