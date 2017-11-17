@@ -6,10 +6,14 @@ mode drivers to access the VMEbus, handle interrupts and make use of
 other VME bridge functions.
 
 
-See the following files for documentation about VME4L:
+Installation
+-------------
 
-- INSTALL_VME4L.txt                     - Installation instructions
-- LIBSRC/VME4L_API/DOC/html/index.html  - VME4L userland API
+This driver is meant to be built as part of an MEN MDIS project. See MDIS user manual 21MD05-90 for details,
+can be downloaded at www.men.de
+
+VME4L API documentation:
+LIBSRC/VME4L_API/DOC/html/index.html  - VME4L userland API
 
 
 Supported Boards and VME Bridges
@@ -33,18 +37,7 @@ The current release supports following boards:
 Supported Kernel Releases
 -------------------------
 
-VME4L currently has been tested under Linux 2.4.18 to 2.6.24 under the
-following distributions:
-
-SLIND Clydesdale/PPC (2.6.24)
-Ubuntu 8.04/i686 (2.6.24), including SMP kernel
-ELinOS 2.1/PPC (2.4.18)
-ELinOS 2.2/X86 (2.4.18), including preemptible kernel
-ELinOS 3.0/PPC (2.4.25), including preemptible kernel
-ELinOS 4.2/PPC (2.4.31)
-SuSE 8.2/i386  (2.4.20)
-SuSE 9.0/i386  (2.4.21)
-SuSE 9.1/i386  (2.6.4)
+VME4L currently has been tested under Linux 3.4.18 to 4.4.24. Kernel 2.4 is no longer supported.
 
 
 Compatibility to Previous VME4L Version
@@ -60,12 +53,9 @@ API, using the libvme4l_api.so (.a) library.
 
 License
 -------
-VME4L is Copyright 2003-2009 MEN Mikro Elektronik GmbH, and is free software;
-you can redistribute it and/or modify it under the terms of the GNU
-General Public License as published by the Free Software Foundation,
-Inc., 675 Mass Ave, Cambridge MA 02139, USA; either version 2 of the
-License, or (at your option) any later version.
 
+All source files of the VME4L driver are released under the GNU GPL v2 or later,
+see license comment in source code.
 
 Known Problems
 --------------
