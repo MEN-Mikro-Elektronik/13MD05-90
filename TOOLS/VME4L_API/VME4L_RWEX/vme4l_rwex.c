@@ -303,7 +303,7 @@ int main( int argc, char *argv[] )
 		vmeAddr_page = vmeAddr & ~(getpagesize() - 1);
 		map_offset = vmeAddr - vmeAddr_page;
 		printf("mmap from=%p size=0x%x\n", vmeAddr_page, size );
-		CHK( (rv = VME4L_Map( fd, vmeAddr_page, size, &map )) == 0 );
+		CHK( (rv = VME4L_Map( fd, vmeAddr_page, size + map_offset, &map )) == 0 );
 		printf("mmap vaddr=%p rv=%d\n", map, rv );
 	}
 
@@ -434,7 +434,7 @@ int main( int argc, char *argv[] )
 
 
 	if (opt_mmap)
-		CHK( (rv = VME4L_UnMap( fd, map, size )) == 0 );
+		CHK( (rv = VME4L_UnMap( fd, map, size + map_offset)) == 0 );
 	VME4L_Close( fd );
 	return return_global;
 }
