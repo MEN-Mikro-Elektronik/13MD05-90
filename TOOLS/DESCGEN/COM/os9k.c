@@ -50,7 +50,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-static const char *RCSid="$Id: os9k.c,v 1.3 2001/01/19 14:37:19 kp Exp $";
+
 
 #include <stdio.h>
 #include <string.h>
@@ -88,14 +88,14 @@ typedef enum {
 +--------------------------------------*/
 static void BuildMhCom(
 	PROC_TYPE proctype,
-    mh_com *head, 	
+    mh_com *head,
     u_int32 msize,
     u_int32 mname_offs,
 	u_int32 mdisfmdesc_offs,
 	u_int32 idata_offs
 );
 static void BuildDdCom(
-    dd_com *p, 	
+    dd_com *p,
 	u_int32 mport,
 	u_int32 mpdev_offs,
 	u_int32 mfmgr_offs
@@ -110,7 +110,7 @@ static void CRC(u_int16 *p, u_int32 size, u_int32 *pa);
  *
  *  Description: Open new file for each tag and create OS-9000
  *		         module descriptor
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......: drvname		driver name
  *               fmgrname		file manager name
@@ -132,7 +132,7 @@ int32 OutOS9000(
 	DESCR_TAG *tag, *tag2;
 	char os9file[MAX_FNAME_LENGTH];		/* file names */
 	char tagname[MAX_TNAME_LENGTH];
-	char drvnamebuf[MAX_FNAME_LENGTH];	
+	char drvnamebuf[MAX_FNAME_LENGTH];
 	u_int32 msize, mdisDescSize;			/* size's */
 	u_int32 mname_offs, mfmgr_offs;		/* offsets */
 	u_int32 mpdev_offs, mdisDesc_offs;
@@ -155,7 +155,7 @@ int32 OutOS9000(
 		fprintf(stderr,"*** Unsupported processor type %s\n", processor );
 		return 1;
 	}
-		
+
 	if( proctype == _pppc_ )
 		G_targetBigEnd = TRUE;
 	else
@@ -180,7 +180,7 @@ int32 OutOS9000(
 				desc_type = tag2->val.uInt32;
 			if( strcmp(tag2->name, "HW_TYPE") == 0 )
 				hw_type = tag2->val.string;
-			
+
 		}
 
 		if( desc_type != 1 && desc_type != 2 ){
@@ -214,7 +214,7 @@ int32 OutOS9000(
 				i=3; j=0;
 
 				drvnamebuf[i++] = hw_type[j++];
-	
+
 				if( hw_type[0] == 'm' || hw_type[0] == 'M'){
 					while( hw_type[j] == '0' ) /* skip leading zeroes */
 						j++;
@@ -239,7 +239,7 @@ int32 OutOS9000(
 		mname_str 	= tagname;		/* module name */
 
 		/* offsets */
-		mdisfmdesc_offs= sizeof(mh_com);	
+		mdisfmdesc_offs= sizeof(mh_com);
 		mpdev_offs	= mdisfmdesc_offs + sizeof(mdisfm_desc);
 		mfmgr_offs	= mpdev_offs + strlen(mpdev_str)+1;
 		mname_offs	= mfmgr_offs + strlen(mfmgr_str)+1;
@@ -313,7 +313,7 @@ int32 OutOS9000(
 		}
 
 		/*--- fill in our descriptor data ---*/
-		BuildBinaryData(buf + mdisDesc_offs, tag, 1, 1);	
+		BuildBinaryData(buf + mdisDesc_offs, tag, 1, 1);
 
 		/* create CRC */
 		crc = CalcCRC(buf,crc_offs);
@@ -323,11 +323,11 @@ int32 OutOS9000(
 
 		/*---------------------------------------------------------+
 		|  write os9 module (output file)                         |
-		+---------------------------------------------------------*/	
+		+---------------------------------------------------------*/
 		sprintf(os9file,"%s%c%s",G_outputDir,MEN_PATHSEP,tagname);
 
-		/* check if output file already exist */				
-		if (FileExist(os9file))		
+		/* check if output file already exist */
+		if (FileExist(os9file))
 			if (!G_overwrite) {
 				fprintf(stderr,"*** output file %s already exists\n",os9file);
 				return 0;
@@ -362,7 +362,7 @@ int32 OutOS9000(
 /********************************* BuildMhCom ******************************
  *
  *  Description: Fill common module header
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......: head	ptr to descriptor header
  *               xxxx   header parameters
@@ -372,7 +372,7 @@ int32 OutOS9000(
 
 static void BuildMhCom(
 	PROC_TYPE proctype,
-    mh_com *head, 	
+    mh_com *head,
     u_int32 msize,
     u_int32 mname_offs,
 	u_int32 mdisfmdesc_offs,
@@ -399,7 +399,7 @@ static void BuildMhCom(
 	head->m_name 	= TWISTLONG( mname_offs );
 	head->m_access 	= TWISTWORD( 0x555 );
 	head->m_tylan 	= TWISTWORD( 0x0f01 );
-	head->m_attrev 	= TWISTWORD( 0x8000 );	
+	head->m_attrev 	= TWISTWORD( 0x8000 );
 	head->m_edit 	= TWISTWORD( medit );
 
 	head->m_exec	= TWISTLONG( mdisfmdesc_offs );
@@ -417,7 +417,7 @@ static void BuildMhCom(
 /********************************* BuildDdCom ******************************
  *
  *  Description: Fill device descriptor header
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......: p		ptr to dd_com header
  *               xxxx   header parameters
@@ -425,7 +425,7 @@ static void BuildMhCom(
  *  Globals....: -
  ****************************************************************************/
 static void BuildDdCom(
-    dd_com *p, 	
+    dd_com *p,
 	u_int32 mport,
 	u_int32 mpdev_offs,
 	u_int32 mfmgr_offs
@@ -443,7 +443,7 @@ static void BuildDdCom(
 /********************************* CreateEdition ****************************
  *
  *  Description: Create edition from global DESCGEN version string
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......: -
  *  Output.....: return    edition
@@ -456,12 +456,12 @@ static u_int16 CreateEdition()
 
 	sscanf(G_version,"V%d.%d",&major,&minor);
 
-	return((major<<8) | (minor & 0xff));	
+	return((major<<8) | (minor & 0xff));
 }
 
 /***************************** CalcHeaderParity ******************************
  *  Description: Calculate module header parity
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......: p		 ptr to module header
  *  Output.....: return  parity
@@ -484,7 +484,7 @@ static u_int16 CalcHeaderParity(u_int16 *p)
 /***************************** CalcCRC **************************************
  *
  *  Description: Calculate module CRC
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......: buf	 ptr to CRC location
  *               size    module size
@@ -509,7 +509,7 @@ u_int32 size;
  *
  *  Description: CRC calculation low level algorithm
  *				 (don't try to understand)
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......: p		 ptr to module start
  *               size    module size
@@ -559,7 +559,7 @@ static void CRC(
 			b <<= 2; c ^= b; b = c;
 			b <<= 4; c ^= b; b = c;
 			b <<= 8; c ^= b;
-		
+
 			if( c & 0x8000 )
 				a ^= 0x00800021;
 		}

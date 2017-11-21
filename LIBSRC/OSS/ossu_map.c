@@ -53,7 +53,7 @@ int32 OSS_MapPhysToVirtAddr(
     OSS_HANDLE *oss,
     void       *physAddr,
     u_int32    size,
-	int32	   addrSpace,
+    int32	   addrSpace,
     int32      busType,
     int32      busNbr,
     void       **virtAddrP
@@ -71,10 +71,10 @@ int32 OSS_MapPhysToVirtAddr(
 		if( addrSpace == OSS_ADDRSPACE_MEM ) {
 			int32 pagesize = sysconf(_SC_PAGESIZE);
 			int32 map_size = size;
-			u_int32 map_start = (u_int32)physAddr & ~(pagesize-1);
+			long map_start = (long)physAddr & ~(pagesize-1);
 
-			if((u_int32)physAddr & (pagesize-1)) {
-				map_size = size + ((u_int32)physAddr - map_start);
+			if((long)physAddr & (pagesize-1)) {
+				map_size = size + ((long)physAddr - map_start);
 			}
 
 			if(map_size >= pagesize) {
@@ -95,7 +95,7 @@ int32 OSS_MapPhysToVirtAddr(
 				error = ERR_OSS_MAP_FAILED;
 				DBGWRT_ERR((DBH,"OSS_USR - ERROR: Couldn't map physical memory\n"));
 			}
-			*virtAddrP = (void*)((U_INT32_OR_64)*virtAddrP | ((u_int32)physAddr & (pagesize-1)));
+			*virtAddrP = (void*)((U_INT32_OR_64)*virtAddrP | ((long)physAddr & (pagesize-1)));
 
 		}
 #ifdef OSS_USR_IO_MAPPED_ACC_EN

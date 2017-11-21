@@ -69,7 +69,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-static const char *RCSid="$Id: os9.c,v 1.9 2009/09/23 13:02:43 CRuff Exp $";
+
 
 #include <stdio.h>
 #include <string.h>
@@ -224,7 +224,7 @@ static void CRC(u_int16 *p, u_int32 size, u_int32 *pa);
 /********************************* OutOS9 ***********************************
  *
  *  Description: Open new file for each tag and create OS-9 module descriptor
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......: mpdev_str		driver name
  *               mport          dummy port address
@@ -327,11 +327,11 @@ int32 OutOS9(char *drvname, char *fmgrname, U_INT32_OR_64 portaddr, DESCR_TAG *t
 
 		/*---------------------------------------------------------+
 		|  write os9 module (output file)                         |
-		+---------------------------------------------------------*/	
+		+---------------------------------------------------------*/
 		sprintf(os9file,"%s%c%s",G_outputDir,MEN_PATHSEP,tagname);
 
-		/* check if output file already exist */				
-		if (FileExist(os9file))		
+		/* check if output file already exist */
+		if (FileExist(os9file))
 			if (!G_overwrite) {
 				fprintf(stderr,"*** output file %s already exists\n",os9file);
 				return 0;
@@ -366,7 +366,7 @@ int32 OutOS9(char *drvname, char *fmgrname, U_INT32_OR_64 portaddr, DESCR_TAG *t
 /********************************* BuildHeader ******************************
  *
  *  Description: Build device descriptor header
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......: head	ptr to descriptor header
  *               mxxxx  header parameters
@@ -396,7 +396,7 @@ static void BuildHeader(
 	head->_mh._mname 	= TWISTLONG( mname_offs );
 	head->_mh._maccess 	= TWISTWORD( MP_OWNER_READ | MP_OWNER_WRITE );
 	head->_mh._mtylan 	= TWISTWORD( MT_DEVDESC<<8 | ML_ANY );
-	head->_mh._mattrev 	= TWISTWORD( MA_REENT<<8 );	
+	head->_mh._mattrev 	= TWISTWORD( MA_REENT<<8 );
 	head->_mh._medit 	= TWISTWORD( medit );
 	/* other fields are zero */
 
@@ -424,7 +424,7 @@ static void BuildHeader(
 /********************************* BuildOpt *********************************
  *
  *  Description: Build path options
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......:
  *               mname	module name
@@ -446,7 +446,7 @@ static void BuildOpt(struct spf_opts *opt)
 /********************************* CreateEdition **********************************
  *
  *  Description: Create edition from global DESCGEN version string
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......: -
  *  Output.....: return    edition
@@ -459,13 +459,13 @@ static u_int16 CreateEdition()
 
 	sscanf(G_version,"V%d.%d",&major,&minor);
 
-	return((major<<8) | (minor & 0xff));	
+	return((major<<8) | (minor & 0xff));
 }
 
 /***************************** CalcHeaderParity ********************************
  *
  *  Description: Calculate module header parity
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......: p		 ptr to module header
  *  Output.....: return  parity
@@ -488,7 +488,7 @@ static u_int16 CalcHeaderParity(u_int16 *p)
 /***************************** CalcCRC **************************************
  *
  *  Description: Calculate module CRC
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......: buf	 ptr to CRC location
  *               size    module size
@@ -513,7 +513,7 @@ u_int32 size;
  *
  *  Description: CRC calculation low level algorithm
  *				 (don't try to understand)
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......: p		 ptr to module start
  *               size    module size
@@ -563,7 +563,7 @@ static void CRC(
 			b <<= 2; c ^= b; b = c;
 			b <<= 4; c ^= b; b = c;
 			b <<= 8; c ^= b;
-		
+
 			if( c & 0x8000 )
 				a ^= 0x00800021;
 		}

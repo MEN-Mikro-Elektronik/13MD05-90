@@ -72,7 +72,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-static const char *RCSid="$Id: binary.c,v 1.9 2012/05/14 21:26:28 ts Exp $";
+
 
 #include <stdio.h>
 #include <string.h>
@@ -125,7 +125,7 @@ static void mwrite(void **dstP,void *src,u_int32 size,u_int32 dowrite);
 /********************************* OutBinary *******************************
  *
  *  Description: Create binary file for each toplevel tag
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......: fname			source file name
  *				 topTag			root directory of objects
@@ -152,11 +152,11 @@ int32 OutBinary(DESCR_TAG *topTag)
 		+-------------------*/
 		StrToLower(tagname,tag->name);
 		sprintf(binfile,"%s%c%s.bin",G_outputDir,MEN_PATHSEP,tagname);
-					
+
 		/*-------------------+
 		|  check if output   |
 		|  file already exist|
-		+-------------------*/	
+		+-------------------*/
 		if (FileExist(binfile))
 			if (!G_overwrite) {
 				fprintf(stderr,"*** output file %s already exists\n",
@@ -170,7 +170,7 @@ int32 OutBinary(DESCR_TAG *topTag)
 
 		/*-------------------+
 		|  open output file  |
-		+-------------------*/	
+		+-------------------*/
 		if ((fp = fopen(binfile, "wb")) == NULL) {
 			fprintf(stderr, "*** error %d opening output file %s\n",errno,binfile);
 			return errno;
@@ -204,7 +204,7 @@ int32 OutBinary(DESCR_TAG *topTag)
 /******************************* BuildBinaryData ****************************
  *
  *  Description: Create binary data and/or return data size
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......: buf		destination buffer
  *				 topTag		tag to generate
@@ -292,7 +292,7 @@ u_int32 BuildBinaryData(void *buf, DESCR_TAG *topTag, int32 level, int32 dowrite
 					mwrite(&buf,(void*)&pad_char,1,dowrite);
 
 				break;
-			}	
+			}
 
 			break;
 		}
@@ -313,7 +313,7 @@ u_int32 BuildBinaryData(void *buf, DESCR_TAG *topTag, int32 level, int32 dowrite
 /********************************* mwrite ***********************************
  *
  *  Description: Write byte/short/long value to buffer
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......: dstP		address of destination ptr
  *               src		ptr to source

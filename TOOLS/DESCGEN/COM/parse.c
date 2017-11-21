@@ -58,7 +58,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-static const char *RCSid="$Id: parse.c,v 1.7 2007/04/03 11:20:05 DPfeuffer Exp $";
+
 
 #include <stdio.h>
 #include <string.h>
@@ -105,8 +105,8 @@ char *GetInt( int base, char *p, u_int32 *valP);
 /********************************* ParseInit ********************************
  *
  *  Description: Init parser for new input file
- *			
- *			
+ *
+ *
  *---------------------------------------------------------------------------
  *  Input......: fname			File name of file (just for error messages)
  *				 rootObj		Root object
@@ -122,8 +122,8 @@ void ParseInit( char *fname, DESCR_TAG *rootObj )
 /********************************* ParseLine ********************************
  *
  *  Description: Parse input line
- *			
- *			
+ *
+ *
  *---------------------------------------------------------------------------
  *  Input......: lineBuf		current line, null terminated
  *				 lineCount		current physical line number in file
@@ -168,7 +168,7 @@ int32 ParseLine( char *lineBuf, int32 lineCount )
 		p = GetSymbol( p, symbolBuf, sizeof(symbolBuf) );
 
 		/*--- check for MDIS wizard internal tags; ignore these ---*/
-		if( strncmp( symbolBuf, "_WIZ", 4 ) == 0 ){	
+		if( strncmp( symbolBuf, "_WIZ", 4 ) == 0 ){
 			/*printf("ignoring %s\n", symbolBuf );*/
 			return 0;
 		}
@@ -199,7 +199,7 @@ int32 ParseLine( char *lineBuf, int32 lineCount )
 	tag->type		= 0;
 	tag->align1		= 0;
 	tag->align2		= 0;
-	
+
 	/*--- append new tag to end of current directory ---*/
 
 	if( G_curTagDir->children == NULL )
@@ -242,7 +242,7 @@ int32 ParseLine( char *lineBuf, int32 lineCount )
 
 		/*--- get tag type ---*/
 		p = GetSymbol( p, symbolBuf, sizeof(symbolBuf) );
-		
+
 		if( (tag->type = TagTypeVal( symbolBuf )) == 0 ){
 			fprintf( stderr, "*** %s: line %d: invalid tag type %s\n",
 				G_fname, lineCount, symbolBuf );
@@ -258,7 +258,7 @@ int32 ParseLine( char *lineBuf, int32 lineCount )
 				u_int8 *valBuf;
 				int32 entries;
 
-				if( (valBuf = malloc( sizeof(u_int8)*MAX_LINE_LENGTH)) == 	
+				if( (valBuf = malloc( sizeof(u_int8)*MAX_LINE_LENGTH)) ==
 				   NULL){
 					fprintf(stderr, "*** %s: line %d: Out of memory\n",
 							G_fname, lineCount);
@@ -268,33 +268,33 @@ int32 ParseLine( char *lineBuf, int32 lineCount )
 				if( (entries = ParseInt( p, (void *)valBuf, MAX_LINE_LENGTH,
 										1, lineCount )) < 0 )
 					return 1;
-				
+
 				if( entries > 0 ) {
 					if( (tag->val.uInt8.arr = malloc( entries )) == NULL ){
 						fprintf(stderr, "*** %s: line %d: Out of memory\n",
 								G_fname, lineCount);
 						return -1;
 					}
-						
+
 					memcpy( tag->val.uInt8.arr, valBuf, entries );
 				}
 				else
 					tag->val.uInt8.arr = NULL;
-				
+
 				free( valBuf );
 				tag->val.uInt8.entries = entries;
 			}
 			break;
 		case DESC_U_INT32:
 			{
-				int32 entries;	
+				int32 entries;
 				if( (entries = ParseInt( p, (void *)&tag->val.uInt32, 1, 4,
 										lineCount )) < 0 )
 					return 1;
 				if( entries != 1 ){
 					fprintf(stderr, "*** %s: line %d: Expected exactly one value "
 									"behind U_INT32, but found %d\n",
-									G_fname, lineCount, entries);		
+									G_fname, lineCount, entries);
 					return 1;
 				}
 			}
@@ -307,21 +307,21 @@ int32 ParseLine( char *lineBuf, int32 lineCount )
 				G_fname, symbolBuf );
 			return 1;
 		}
-			
+
 	}
 	else {
 		fprintf( stderr, "*** %s: line %d: expected '=' or '{'\n",
 				G_fname, lineCount );
 		return 1;
 	}
-	return 0;	
+	return 0;
 }
 
 /********************************* SkipWhite ********************************
  *
  *  Description: Skip any white space
- *			
- *  Do not advance behind '\0'			
+ *
+ *  Do not advance behind '\0'
  *---------------------------------------------------------------------------
  *  Input......: p			ptr to start in line
  *  Output.....: Return		ptr to next non-white space
@@ -340,7 +340,7 @@ static char *SkipWhite( char *p )
 /********************************* GetSymbol ********************************
  *
  *  Description: Copy the symbol name from the line buffer
- *			   	
+ *
  *	copying takes place until a invalid character is detected
  *  Valid characters are a-z, A-Z, 0-9, _, /,  \
  *---------------------------------------------------------------------------
@@ -368,8 +368,8 @@ static char *GetSymbol( char *p, char *buf, int32 len )
 /********************************* IsValidCSymbol ****************************
  *
  *  Description: Checks if the symbol is a valid C-syntax
- *			
- *			
+ *
+ *
  *---------------------------------------------------------------------------
  *  Input......: p			ptr to symbol name
  *  Output.....: Return		0=not a vaild symbol 1=it is
@@ -392,8 +392,8 @@ static int IsValidCSymbol( char *p )
 /********************************* ParseInt **********************************
  *
  *  Description: Get an array of integer values
- *			
- *			
+ *
+ *
  *---------------------------------------------------------------------------
  *  Input......: p			ptr to input line
  *				 arr		place to save results
@@ -434,7 +434,7 @@ int32 lineCount )
 					G_fname, lineCount);
 			return -1;
 		}
-		
+
 		if( bytesPerEntry<4 && value >= (u_int32)(1L<<(8*bytesPerEntry))){
 			fprintf(stderr, "*** %s: line %d: value 0x%04x out of range\n",
 					G_fname, lineCount, value);
@@ -442,7 +442,7 @@ int32 lineCount )
 		}
 
 		switch( bytesPerEntry ){
-		case 1:	
+		case 1:
 			*(u_int8 *)arr = (u_int8)value;
 			break;
 		case 2:
@@ -464,8 +464,8 @@ int32 lineCount )
 		if( *p == ',' ) p++;
 
 		p = SkipWhite(p);
-			
-			
+
+
 	}
 
 	return entries;
@@ -473,8 +473,8 @@ int32 lineCount )
 /********************************* GetInt ***********************************
  *
  *  Description: convert ASCII to integer
- *			
- *			
+ *
+ *
  *---------------------------------------------------------------------------
  *  Input......: base		radix 2, 10, 16
  *				 p			ptr to input line
@@ -496,7 +496,7 @@ char *GetInt( int base, char *p, u_int32 *valP)
 			new = *p - 'A' + 10;
 		else
 			goto ex;
-		
+
 		if( (int)new >= base )
 			goto ex;
 

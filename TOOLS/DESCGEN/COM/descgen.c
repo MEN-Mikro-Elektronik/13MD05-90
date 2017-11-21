@@ -119,7 +119,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-static const char RCSid[]="$Id: descgen.c,v 1.17 2007/04/03 11:20:03 DPfeuffer Exp $";
+
 
 #include <stdio.h>
 #include <string.h>
@@ -176,8 +176,8 @@ void Align( DESCR_TAG *topTag );
 /********************************* usage *************************************
  *
  *  Description: Show platform dependent usage string and exit
- *			
- *			
+ *
+ *
  *---------------------------------------------------------------------------
  *  Input......: excode		program's exit code
  *  Output.....: does not return
@@ -193,7 +193,7 @@ void usage( int excode )
 	fprintf(stderr,"    output formats and specific options\n");
 	fprintf(stderr,"    -csource     generate C-source code file [default]\n");
 	fprintf(stderr,"    -bin_big     generate raw binary file (big endian)\n");
-	fprintf(stderr,"    -bin_lit     generate raw binary file (little endian)\n");	
+	fprintf(stderr,"    -bin_lit     generate raw binary file (little endian)\n");
 	fprintf(stderr,"    -os9         generate OS-9 descriptor module\n");
 	fprintf(stderr,"                 -port=<portaddr>  port address (hex)\n");
 	fprintf(stderr,"                 -drv=<drvname>    driver name\n");
@@ -224,7 +224,7 @@ void usage( int excode )
 /********************************* main **************************************
  *
  *  Description: Hard to describe
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......:
  *  Output.....:
@@ -237,14 +237,14 @@ int main( int argc, char *argv[] )
 	char *firstFile=NULL, *drvname=NULL, *fmgrname=NULL, *os9proc=NULL;
 	u_int32 portaddr=0;
 	FILE *optFp=NULL;
-	char optBuf[200], *opt=NULL;	
+	char optBuf[200], *opt=NULL;
 
 	G_outputMode = csource;
 
 	/*--- fill the root object ---*/
 	G_objRoot.name = "_root_";
 	G_objRoot.type = DESC_DIR;
-	
+
 	/*-----------------------------+
     |  Parse command line options  |
     +-----------------------------*/
@@ -255,7 +255,7 @@ int main( int argc, char *argv[] )
 
 	for( pass=0; pass<2; pass++ ){
 		for( i=1; i<argc; i++ ){
-		
+
 			if( optsFromFile ){
 				/* read next line from command line options file */
 				if( fgets( optBuf, sizeof(optBuf), optFp ) == NULL ){
@@ -274,7 +274,7 @@ int main( int argc, char *argv[] )
 			if( !strncmp(opt, "-z=",3)){
 				if( (optFp = fopen( opt+3, "r" )) == NULL ){
 					fprintf(stderr,"*** Can't open command line opts file %s\n",
-							opt+3 );	
+							opt+3 );
 				}
 				optsFromFile=TRUE;
 				i--;
@@ -295,9 +295,9 @@ int main( int argc, char *argv[] )
 
 				else if( !strcmp(opt, "-bin_big"))
 					G_outputMode = bin_big;
-					
+
 				else if( !strcmp(opt, "-bin_lit"))
-					G_outputMode = bin_lit;					
+					G_outputMode = bin_lit;
 
 				else if( !strncmp(opt, "-o=",3))
 					G_outputDir = StrSave(opt+3);
@@ -358,7 +358,7 @@ int main( int argc, char *argv[] )
 	if( firstFile==NULL ) usage(1);
 
 	if( error ) exit(error);
-	
+
 	/*----------------------------+
     |  Generate alignment bytes   |
     +----------------------------*/
@@ -405,12 +405,12 @@ int main( int argc, char *argv[] )
 	}
 	return error;
 }
-				
+
 /********************************* DumpDB **********************************
  *
  *  Description: dump internal data base
- *			
- *			
+ *
+ *
  *---------------------------------------------------------------------------
  *  Input......: dir		Start Directory
  *				 level		Start Level
@@ -426,7 +426,7 @@ static void DumpDB( DESCR_TAG *dir, int32 level )
 		for(i=0; i<level*2; i++) putchar(' ');
 
 		printf("%-20s %04x ", tag->name, tag->type);
-		
+
 		switch( tag->type ){
 		case DESC_DIR:
 			printf("\n");
@@ -451,8 +451,8 @@ static void DumpDB( DESCR_TAG *dir, int32 level )
 /********************************* ProcessInFile ****************************
  *
  *  Description: Process input file, build internal data base
- *			
- *			
+ *
+ *
  *---------------------------------------------------------------------------
  *  Input......: fname		Filename
  *  Output.....: Return: 	error code
@@ -479,7 +479,7 @@ static int32 ProcessInFile( char *fname )
 		error = errno;
 		goto cleanup;
 	}
-				
+
 
 	printf("processing %s\n", fname );
 
@@ -515,7 +515,7 @@ cleanup:
 /********************************* GetLine **********************************
  *
  *  Description: Get line from input file
- *			
+ *
  *	Get a single or multiple lines (when continuation sign '\' present) from
  *  the input file.
  *
@@ -523,7 +523,7 @@ cleanup:
  *  Remove any trailing white space
  *  End of line can be anything: CR, LF or CR-LF.
  *  Return '\0' terminated line
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......: fp			input file stream
  *				 lineBuf	buffer where input line will be stored
@@ -561,7 +561,7 @@ static int GetLine( FILE *fp, char *lineBuf, int32 *lineCountP )
 			break;
 		case '#':				/* comment start */
 			comment=2;
-			break;			
+			break;
 
 		case '/':
 			comment++;
@@ -570,7 +570,7 @@ static int GetLine( FILE *fp, char *lineBuf, int32 *lineCountP )
 				count--;
 				break;
 			}
-				
+
 		default:
 			if( comment < 2 ){
 				if( ++count >= MAX_LINE_LENGTH-1 ){
@@ -596,8 +596,8 @@ static int GetLine( FILE *fp, char *lineBuf, int32 *lineCountP )
 /********************************* Align ***********************************
  *
  *  Description: Generate alignment bytes for each tag
- *			
- *			
+ *
+ *
  *---------------------------------------------------------------------------
  *  Input......: topTag		root directory of objects
  *  Output.....: -
@@ -610,7 +610,7 @@ void Align( DESCR_TAG *topTag )
 	int32 len;
 	u_int16 pad;
 
-	while( tag ){		
+	while( tag ){
 		pad = 0;
 		/*printf("[%s] ",tag->parent == &G_objRoot ? "G_objRoot":"parent");*/
 
@@ -660,7 +660,7 @@ void Align( DESCR_TAG *topTag )
 		}
 
 		len += pad;
-		
+
 		/*--- alway align next tag on 4 byte boundary ---*/
 		if( (len+offs) & 2) {
 			tag->align2 += 2;
@@ -682,8 +682,8 @@ next:
 /********************************* TagTypeName ******************************
  *
  *  Description: Convert tag type value to name
- *			
- *			
+ *
+ *
  *---------------------------------------------------------------------------
  *  Input......: val		tag type value
  *  Output.....: Return:	name of type or NULL if not found
@@ -704,8 +704,8 @@ char *TagTypeName( u_int16 val )
 /********************************* TagTypeVal ********************************
  *
  *  Description: Convert tag type name to value
- *			
- *			
+ *
+ *
  *---------------------------------------------------------------------------
  *  Input......: name		name of type
  *  Output.....: Return:	value of type or 0 if not found
@@ -726,8 +726,8 @@ u_int16 TagTypeVal( char *name )
 /********************************* StrSave **********************************
  *
  *  Description: allocate memory for string and copy string
- *			
- *			
+ *
+ *
  *---------------------------------------------------------------------------
  *  Input......: str			string to be saved
  *  Output.....: str			new memory for string
@@ -736,7 +736,7 @@ u_int16 TagTypeVal( char *name )
 char *StrSave(char *str)
 {
 	char *dest;
-	
+
 	if((dest = malloc(strlen(str)+1)))
 		strcpy(dest,str);
 
@@ -745,12 +745,12 @@ char *StrSave(char *str)
 		exit(1);
 	}
 	return dest;
-}			
+}
 
 /********************************* FileExist ******************************
  *
  *  Description: Check if file already exists
- *			
+ *
  *---------------------------------------------------------------------------
  *  Input......: fname		file name
  *  Output.....: return		0 = file does not exist
@@ -788,7 +788,7 @@ char *StrToLower(char *dest, char *source)
 	while(*source)
 		*dp++ = tolower(*source++);
 
-	*dp = '\0';	/* terminate string */		
+	*dp = '\0';	/* terminate string */
 
 	return dest;
 }

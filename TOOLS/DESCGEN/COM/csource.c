@@ -55,7 +55,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-static const char *RCSid="$Id: csource.c,v 1.5 2001/01/19 14:37:13 kp Exp $";
+
 
 #include <stdio.h>
 #include <string.h>
@@ -93,8 +93,8 @@ void Indent(FILE *fp, int32 level);
 /********************************* OutCSource *******************************
  *
  *  Description: Output internal data base as C-source code
- *			
- *			
+ *
+ *
  *---------------------------------------------------------------------------
  *  Input......: fname			output filename for source file
  *				 topTag			root directory of objects
@@ -113,7 +113,7 @@ int32 OutCSource( char *fname, DESCR_TAG *topTag )
 
 	/*-------------------+
 	|  create file name  |
-	+-------------------*/	
+	+-------------------*/
 	/* remove file extension */
 	strcpy( fbody, fname );
 	if( (p = strrchr( fbody, '.' )))
@@ -124,7 +124,7 @@ int32 OutCSource( char *fname, DESCR_TAG *topTag )
 	/*-------------------+
 	|  check if output   |
 	|  file already exist|
-	+-------------------*/	
+	+-------------------*/
 	if (FileExist(cfile))
 		if (!G_overwrite) {
 			fprintf(stderr,"*** output file %s already exists\n",
@@ -138,7 +138,7 @@ int32 OutCSource( char *fname, DESCR_TAG *topTag )
 
 	/*-------------------+
     |  Open output file  |
-    +-------------------*/	
+    +-------------------*/
 	if( (fp = fopen( cfile, "w" )) == NULL ){
 		fprintf( stderr, "*** error %d opening output file %s\n",
 				errno, cfile );
@@ -170,7 +170,7 @@ int32 OutCSource( char *fname, DESCR_TAG *topTag )
 		OutCStruct( fp, tag, 1 );
 
 		Indent(fp, 1 );
-		fprintf( fp, "struct {\n" );			
+		fprintf( fp, "struct {\n" );
 		Indent(fp, 2 );
 		fprintf( fp, "u_int16 __typ, __len;\n" );
 		Indent(fp, 1 );
@@ -187,7 +187,7 @@ int32 OutCSource( char *fname, DESCR_TAG *topTag )
 
 		Indent( fp, 1 );
 		fprintf( fp, "{ DESC_%s, 0 }\n", TagTypeName(DESC_END));
-		fprintf( fp, "};\n");		
+		fprintf( fp, "};\n");
 	}
 
 	fclose(fp);
@@ -197,8 +197,8 @@ int32 OutCSource( char *fname, DESCR_TAG *topTag )
 /********************************* OutCStruct ********************************
  *
  *  Description: Output C-structure for a single tag directory
- *			
- *			
+ *
+ *
  *---------------------------------------------------------------------------
  *  Input......: fp			outfile stream
  *				 topTag		tag to generate
@@ -222,20 +222,20 @@ void OutCStruct( FILE *fp, DESCR_TAG *topTag, int32 level )
 
 			Indent(fp, level+1 );
 			fprintf( fp, "struct {\n" );
-			
+
 			Indent(fp, level+2 );
 			fprintf( fp, "u_int16 __typ, __len; char __name[%d];\n",
 					strlen(tag->name) + 1 + tag->align1 );
 
 			Indent(fp, level+1 );
 			fprintf( fp, "} __%s;\n", tag->name );
-					
+
 
 			OutCStruct( fp, tag, level+1 );
 
 			/*--- end tag ---*/
 			Indent(fp, level+1 );
-			fprintf( fp, "struct {\n" );			
+			fprintf( fp, "struct {\n" );
 			Indent(fp, level+2 );
 			fprintf( fp, "u_int16 __typ, __len;\n" );
 			Indent(fp, level+1 );
@@ -272,7 +272,7 @@ void OutCStruct( FILE *fp, DESCR_TAG *topTag, int32 level )
 				fprintf( fp, "char __val[%d];\n",
 						strlen(tag->val.string) + 1 + tag->align2 );
 				break;
-			}	
+			}
 
 			Indent(fp, level );
 			fprintf( fp, "} %s;\n", tag->name );
@@ -284,8 +284,8 @@ void OutCStruct( FILE *fp, DESCR_TAG *topTag, int32 level )
 /********************************* OutCValues ********************************
  *
  *  Description: Output C-values for a single tag directory
- *			
- *			
+ *
+ *
  *---------------------------------------------------------------------------
  *  Input......: fp			outfile stream
  *				 topTag		tag to generate
@@ -320,12 +320,12 @@ void OutCValues( FILE *fp, DESCR_TAG *topTag, int32 level )
 
 			Indent(fp, level );
 			fprintf( fp, "{ DESC_%s, 0 }\n", TagTypeName(DESC_END));
-			
+
 			level--;
 			Indent(fp, level );
 			fprintf(fp, "}");
 			break;
-			
+
 		case DESC_U_INT32:
 			fprintf(fp, ", 0x%08x }", tag->val.uInt32 );
 			break;
@@ -347,13 +347,13 @@ void OutCValues( FILE *fp, DESCR_TAG *topTag, int32 level )
 		case DESC_STRING:
 			fprintf( fp, ", \"%s\" }", tag->val.string );
 			break;
-		}	
+		}
 
 		/*if( (tag->next == NULL) && (level==1) )
 			fprintf(fp,"\n");
 		else*/
 			fprintf(fp,",\n");
-			
+
 	}
 }
 
@@ -361,8 +361,8 @@ void OutCValues( FILE *fp, DESCR_TAG *topTag, int32 level )
 /********************************* Indent ***********************************
  *
  *  Description: Line indention
- *			
- *			
+ *
+ *
  *---------------------------------------------------------------------------
  *  Input......:
  *  Output.....:
