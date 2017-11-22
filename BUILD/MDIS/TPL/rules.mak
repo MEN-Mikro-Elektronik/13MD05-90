@@ -149,6 +149,10 @@ endif
 #
 MDIS_FORCE_32BIT=$(FORCE_32BIT_BUILD)
 
+GIT_VERSION=$(shell cd $(MEN_LIN_DIR); git describe --dirty --long --tags --always)
+
+MDIS_EXTRA_DEFS += -DCONFIG_MEN_VME_KERNELIF -DA25_WRAPPER -DGIT_VERSION=\"$(GIT_VERSION)\"
+
 #-----------------------------------------------------------
 # MDIS COMMON COMPONENTS
 #
