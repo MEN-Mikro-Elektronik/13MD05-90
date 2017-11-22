@@ -191,7 +191,7 @@ int main( int argc, char *argv[] )
 
 	if( (optp=UTL_TSTOPT("m")))
 		opt_mmap = 1;
-	
+
 	if (UTL_TSTOPT("r"))
 		opt_read = 1;
 	else if (UTL_TSTOPT("w"))
@@ -206,7 +206,7 @@ int main( int argc, char *argv[] )
 		spc=strtoul( optp, NULL, 0 );
 
 	opt_swapmode = (optp=UTL_TSTOPT("x")) ? 1 : 0;
-	
+
 	opt_align = (optp=UTL_TSTOPT("l")) ? 1 : 0;
 
 	if( (optp=UTL_TSTOPT("v=")))
@@ -279,10 +279,9 @@ int main( int argc, char *argv[] )
 			CHK( posix_memalign(&buf_ver, getpagesize(), size) == 0);
 		}
 	} else {
-		/* add a page to <size> in case start offset is > 0 */
-		CHK( (buf = calloc(1, size + getpagesize())) != NULL);
+		CHK( (buf = calloc(1, size)) != NULL );
 		if (opt_verify_write) { /* allocate second buffer for write verification */
-			CHK( (buf_ver = calloc(1, size + getpagesize())) != NULL);
+			CHK( (buf_ver = calloc(1, size)) != NULL);
 		}
 	}
 
@@ -301,8 +300,8 @@ int main( int argc, char *argv[] )
 				      VME4L_IRQ_NOFLAGS) == 0 );
 		vmeAddr_page = vmeAddr & ~(getpagesize() - 1);
 		map_offset = vmeAddr - vmeAddr_page;
-		printf("mmap from=%p size=0x%x\n", vmeAddr_page, size + getpagesize() );
-		CHK( (rv = VME4L_Map( fd, vmeAddr_page, size + getpagesize(), &map )) == 0 );
+		printf("mmap from=%p size=0x%x\n", vmeAddr_page, size );
+		CHK( (rv = VME4L_Map( fd, vmeAddr_page, size, &map )) == 0 );
 		printf("mmap vaddr=%p rv=%d\n", map, rv );
 	}
 
@@ -413,11 +412,11 @@ int main( int argc, char *argv[] )
 
 	transferRate = (((float)size * (float)opt_runs) / timeTotal) /_1MB;
 
-	printf("%d %s access%s finished. average Time: %.3f s => average transfer rate: %.3f MB/s\n", 
-		   opt_runs, 
-		   opt_read ? "read" : "write", 
-		   (opt_runs > 1) ? "es" : "", 
-		   timeTotal / (float)opt_runs, 
+	printf("%d %s access%s finished. average Time: %.3f s => average transfer rate: %.3f MB/s\n",
+		   opt_runs,
+		   opt_read ? "read" : "write",
+		   (opt_runs > 1) ? "es" : "",
+		   timeTotal / (float)opt_runs,
 		   transferRate );
 
 	/* Uncomment when the driver is fixed.... */
@@ -433,7 +432,7 @@ int main( int argc, char *argv[] )
 
 
 	if (opt_mmap)
-		CHK( (rv = VME4L_UnMap( fd, map, size + getpagesize())) == 0 );
+		CHK( (rv = VME4L_UnMap( fd, map, size )) == 0 );
 	VME4L_Close( fd );
 	return return_global;
 }
