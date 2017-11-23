@@ -78,6 +78,19 @@
   +--------------------------------------*/
 static void MemDump(uint8_t *buf, uint32_t n, uint32_t fmt);
 
+/* Simple memcmp with positon returned */
+int memcmp_pos(uint8_t *buf1, uint8_t *buf2, size_t size)
+{
+	size_t i;
+	uint8_t *buf1_start = buf1;
+	for (i = 0; i < size; i++) {
+		if (*buf1 != *buf2)
+			return buf1 - buf1_start;
+		buf1++;
+		buf2++;
+	}
+	return 0;
+}
 static void usage(int excode)
 {
 	printf("Syntax:   vme4l_rwex [<opts>] <vmeaddr> <size> [<opts>]\n");
@@ -95,7 +108,9 @@ static void usage(int excode)
 	printf("-d            do *NOT* dump data (if reading big size)\n");
 	printf("-l            use page-aligned memory as buffer\n");
 	printf("-f=<file>     with -r dump binary data into a file\n");
-	printf("              with -w read binary data from a file\n");
+	printf("-k=<offset>   for writes use an offset in an allocated buffer,\n");
+	printf("              it loads the entire file into a buffer, reads data from a VME\n");
+	printf("              and compares against accidendial overwrites\n");
 	printf("-c            in conjuction with -w and -f, verifies written data\n");
 	printf("              if fails, store read data in <file>"VERIFY_FILE_POSTFIX"\n");
 	printf("-m            memory map instead of using ioctl calls\n");
@@ -151,6 +166,7 @@ int main( int argc, char *argv[] )
 	int accWidth=4;
 	size_t size = 0xffffffff;
 	size_t file_size = 0;
+	size_t buf_size = 0;
 	char *optp=NULL;
 	char *file_name=NULL;
 	char *file_name_ver = NULL;
@@ -160,6 +176,8 @@ int main( int argc, char *argv[] )
 	int opt_verify_write = 0;
 	int opt_disable_file_rewind = 0;
 	int opt_mmap = 0;
+	int opt_bufoffset = 0;
+	int opt_bufoffset_val = 0;
 	struct timespec t1, t2;
 	double transferRate=0.0, timePerRun=0.0, timeTotal=0.0;
 	ssize_t ret;
@@ -242,6 +260,17 @@ int main( int argc, char *argv[] )
 		}
 	}
 
+	if((optp = UTL_TSTOPT("k="))) {
+		if (!file_name || !opt_verify_write || opt_read) {
+			printf("You have to use parameter -c, -w and -f when -k is used\n");
+			exit(1);
+		}
+		opt_bufoffset = 1;
+		opt_bufoffset_val = strtoul(optp, NULL, 0);
+		printf("Skip 0x%x (%d) bytes in allocated buffer\n", opt_bufoffset_val, opt_bufoffset_val);
+	}
+
+
 	if (opt_runs > 1 && UTL_TSTOPT("e")) {
 		opt_disable_file_rewind = 1;
 		printf("Don't rewind a file\n");
@@ -275,15 +304,20 @@ int main( int argc, char *argv[] )
 		usage(1);
 	}
 
+	if (opt_bufoffset)
+		buf_size = file_size;
+	else
+		buf_size = size;
+
 	if ( opt_align ) {
-		CHK( posix_memalign( &buf, getpagesize(), size ) == 0 );
+		CHK( posix_memalign( &buf, getpagesize(), buf_size ) == 0 );
 		if (opt_verify_write) { /* allocate second buffer for write verification */
-			CHK( posix_memalign(&buf_ver, getpagesize(), size) == 0);
+			CHK( posix_memalign(&buf_ver, getpagesize(), buf_size) == 0);
 		}
 	} else {
-		CHK( (buf = calloc(1, size)) != NULL );
+		CHK( (buf = calloc(1, buf_size)) != NULL);
 		if (opt_verify_write) { /* allocate second buffer for write verification */
-			CHK( (buf_ver = calloc(1, size)) != NULL);
+			CHK( (buf_ver = calloc(1, buf_size)) != NULL);
 		}
 	}
 
@@ -339,8 +373,8 @@ int main( int argc, char *argv[] )
 			}
 		} else { /* write */
 			if (file_name) {
-				ret = read(f_desc, buf, size);
-				if (ret != size) {
+				ret = read(f_desc, buf, buf_size);
+				if (ret != buf_size) {
 					printf("Unable to read from a file %s (ret=%d)\n", file_name, ret);
 					exit(1);
 				}
@@ -351,15 +385,26 @@ int main( int argc, char *argv[] )
 					*p++ = (j + opt_startval) & 0xff;
 			}
 
+			if (opt_verify_write && opt_bufoffset) {
+				/* prepare buffer for comparison */
+				memcpy(buf_ver, buf, buf_size);
+				/* clear only the part of a buffer to be used for comparison */
+				memset(buf_ver + opt_bufoffset_val, 0, size);
+			}
+
 			clock_gettime( CLOCK_MONOTONIC, &t1 );
-			rv = vme_write(opt_mmap, map + map_offset, fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS);
+			rv = vme_write(opt_mmap, map + map_offset, fd, vmeAddr, accWidth, size, buf + opt_bufoffset_val, VME4L_RW_NOFLAGS);
 			clock_gettime( CLOCK_MONOTONIC, &t2 );
 
 			if (opt_verify_write) {
 				/* verify written data */
-				rv = vme_read(opt_mmap, map + map_offset, fd, vmeAddr, accWidth, size, buf_ver, VME4L_RW_NOFLAGS);
+				rv = vme_read(opt_mmap, map + map_offset, fd, vmeAddr, accWidth, size, buf_ver + opt_bufoffset_val, VME4L_RW_NOFLAGS);
+				if (rv != size) {
+					printf("Unable to read data from vme %d (ret=%d)\n", rv, size);
+					exit(1);
+				}
 
-				if ((pos = memcmp(buf, buf_ver, size))) {
+				if ((pos = memcmp_pos(buf, buf_ver, buf_size))) {
 					printf("Error during write verification at the position %d.\n", abs(pos));
 					return_global = 1;
 					file_name_ver = calloc(1, strlen(file_name) + strlen(VERIFY_FILE_POSTFIX) + 1 + 9);
@@ -378,8 +423,8 @@ int main( int argc, char *argv[] )
 						exit(1);
 					}
 					/* write bad data */
-					ret = write(f_ver_desc, buf_ver, rv);
-					if (ret != rv) {
+					ret = write(f_ver_desc, buf_ver, buf_size);
+					if (ret != buf_size) {
 						printf("Unable to write to a file %s (ret=%d)\n", file_name_ver, ret);
 						exit(1);
 					}
@@ -395,9 +440,9 @@ int main( int argc, char *argv[] )
 			}
 		}
 		if (buf)
-			memset(buf, 0, size);
+			memset(buf, 0, buf_size);
 		if (buf_ver)
-			memset(buf_ver, 0, size);
+			memset(buf_ver, 0, buf_size);
 
 		if (f_desc > -1 && !opt_disable_file_rewind) {
 			/* rewind the file if an option is set */
