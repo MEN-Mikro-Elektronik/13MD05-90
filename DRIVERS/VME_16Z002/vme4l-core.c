@@ -474,7 +474,7 @@ static VME4L_ADRSWIN *vme4l_find_adrswin(
  */
 static int do_free_adrswin(VME4L_ADRSWIN *win, bool checkUseCount)
 {
-	int rv;
+	int rv = 0;
 	bool lastReference = false;
 
 	VME4L_LOCK_MSTRLISTS();
