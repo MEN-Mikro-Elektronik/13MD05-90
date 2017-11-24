@@ -180,6 +180,7 @@ typedef	struct {
 
 	spinlock_t			lockState;		/**< spin lock for VME bridge registers	
 											 and handle	state */
+	int refCounter;		/**< number of registered clients */
 } VME4L_BRIDGE_HANDLE;
 
 #define COMPILE_VME_BRIDGE_DRIVER
@@ -2697,6 +2698,29 @@ static void __exit tsi148_cleanup_module( void )
 	Tsi148_InitBridge();
 	pci_unregister_driver(&G_pci_driver);
 }/* tsi148_cleanup_module */
+
+int vme4l_register_client( VME4L_BRIDGE_HANDLE *h )
+{
+	TSI148_LOCK_STATE();
+	++h->refCounter;
+	TSI148_UNLOCK_STATE();
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(vme4l_register_client);
+
+int vme4l_unregister_client( VME4L_BRIDGE_HANDLE *h )
+{
+	TSI148_LOCK_STATE();
+	if (h->refCounter <= 0)
+		return -EINVAL;
+
+	--h->refCounter;
+	TSI148_UNLOCK_STATE();
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(vme4l_unregister_client);
 
 module_init(tsi148_init_module);
 module_exit(tsi148_cleanup_module);

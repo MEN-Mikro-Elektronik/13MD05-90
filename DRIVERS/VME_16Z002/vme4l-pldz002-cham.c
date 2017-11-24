@@ -260,6 +260,7 @@ typedef struct {
 	uint32_t berrAcc;			/**< bus error causing properties */
 	uint32_t hasExtBerrInfo;
 	spinlock_t lockState;		/**< spin lock for VME bridge registers and handle state */
+	int refCounter;		/**< number of registered clients */
 } VME4L_BRIDGE_HANDLE;
 
 #define COMPILE_VME_BRIDGE_DRIVER
@@ -2212,6 +2213,29 @@ static int vme4l_remove( CHAMELEONV2_UNIT_T *chu )
 	return 0;
 
 }
+
+int vme4l_register_client( VME4L_BRIDGE_HANDLE *h )
+{
+	PLDZ002_LOCK_STATE();
+	++h->refCounter;
+	PLDZ002_UNLOCK_STATE();
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(vme4l_register_client);
+
+int vme4l_unregister_client( VME4L_BRIDGE_HANDLE *h )
+{
+	PLDZ002_LOCK_STATE();
+	if (h->refCounter <= 0)
+		return -EINVAL;
+
+	--h->refCounter;
+	PLDZ002_UNLOCK_STATE();
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(vme4l_unregister_client);
 
 module_init(vme4l_pldz002_init_module);
 module_exit(vme4l_pldz002_cleanup_module);

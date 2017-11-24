@@ -694,4 +694,7 @@ VME4L_BRIDGE_HANDLE* vme_bridge_get_handle(void);
 
 VME4L_BRIDGE_DRV* vme_bridge_get_driver(void);
 
+int vme4l_register_client(VME4L_BRIDGE_HANDLE *h);
+int vme4l_unregister_client(VME4L_BRIDGE_HANDLE *h);
+
 int vme4l_rw(VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode);
