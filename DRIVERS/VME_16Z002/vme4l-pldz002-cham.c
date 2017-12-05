@@ -629,8 +629,9 @@ static int DmaSetup(
 	VME4L_SCATTER_ELEM *sgList,
 	int sgNelems,
 	int direction,
-	int swapMode,
-	vmeaddr_t *vmeAddr)
+	int modeFlags,
+	vmeaddr_t *vmeAddr,
+	int flags)
 {
 	int alignVme=4, sg, rv=0, endBd;
 	uint32_t bdAm;
@@ -679,7 +680,8 @@ static int DmaSetup(
 			VME_GENREG_WRITE32( bdVaddr+0xc,
 							PLDZ002_DMABD_SRC( PLDZ002_DMABD_DIR_PCI ) |
 							PLDZ002_DMABD_DST( PLDZ002_DMABD_DIR_VME ) |
-							bdAm | ((sg == endBd-1) ? PLDZ002_DMABD_END : 0 ));
+							bdAm | ((sg == endBd-1) ? PLDZ002_DMABD_END : 0 ) |
+							(( flags & VME4L_RW_USE_DMA ) ? PLDZ002_DMABD_BLK_SGL : 0) );
 		}
 		else {
 			/* read from VME */
@@ -689,7 +691,8 @@ static int DmaSetup(
 			VME_GENREG_WRITE32( bdVaddr+0xc,
 								PLDZ002_DMABD_SRC( PLDZ002_DMABD_DIR_VME ) |
 								PLDZ002_DMABD_DST( PLDZ002_DMABD_DIR_PCI ) |
-								bdAm | ((sg == endBd-1) ? PLDZ002_DMABD_END : 0 ));
+								bdAm | ((sg == endBd-1) ? PLDZ002_DMABD_END : 0 ) |
+								(( flags & VME4L_RW_USE_DMA ) ? PLDZ002_DMABD_BLK_SGL : 0) );
 		}
 		*vmeAddr += sgList->dmaLength;
 	}
@@ -723,9 +726,9 @@ static int DmaBounceSetup(
 	VME4L_SPACE spc,
 	size_t size,
 	int direction,
-	int swapMode,
+	int modeFlags,
 	vmeaddr_t vmeAddr,
-	void **bounceBufP)
+	void **bounceBufP )
 {
 	int alignVme=4, rv=0;
 	uint32_t bdAm, bdOff;
@@ -1151,11 +1154,17 @@ static int AddrModifierSet( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h, char addrMo
 
 		/* the BLT spaces: take AM bit[1] (=supervisory flag) and OR in defaults.
 		 * CR/CSR not relevant here. */
+	case VME4L_SPC_A16_D32_BLT:
+		h->addrModShadow[spc] = PLDZ002_DMABD_AM_A16D32 | (isSupervisor << 8);
+		break;
 	case VME4L_SPC_A24_D16_BLT:
 		h->addrModShadow[spc] = PLDZ002_DMABD_AM_A24D16 | (isSupervisor << 8);
 		break;
 	case VME4L_SPC_A24_D32_BLT:
 		h->addrModShadow[spc] =	PLDZ002_DMABD_AM_A24D32 | (isSupervisor << 8);
+		break;
+	case VME4L_SPC_A24_D64_BLT:
+		h->addrModShadow[spc] =	PLDZ002_DMABD_AM_A24D64 | (isSupervisor << 8);
 		break;
 	case VME4L_SPC_A32_D32_BLT:
 		h->addrModShadow[spc] =	PLDZ002_DMABD_AM_A32D32 | (isSupervisor << 8);
@@ -1928,6 +1937,9 @@ static void InitBridge( VME4L_BRIDGE_HANDLE *h )
 	h->haveBerr = 0;
 
 	/* preset the DMA AMs with defaults */
+	h->addrModShadow[VME4L_SPC_A16_D16] = PLDZ002_DMABD_AM_A16D16;
+	h->addrModShadow[VME4L_SPC_A16_D32_BLT] = PLDZ002_DMABD_AM_A16D32;
+	h->addrModShadow[VME4L_SPC_A24_D64_BLT] = PLDZ002_DMABD_AM_A24D64;
 	h->addrModShadow[VME4L_SPC_A24_D16_BLT] = PLDZ002_DMABD_AM_A24D16;
 	h->addrModShadow[VME4L_SPC_A24_D32_BLT] = PLDZ002_DMABD_AM_A24D32;
 	h->addrModShadow[VME4L_SPC_A32_D32_BLT] = PLDZ002_DMABD_AM_A32D32;

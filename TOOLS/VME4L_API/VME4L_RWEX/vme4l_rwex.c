@@ -107,10 +107,11 @@ static void usage(int excode)
 	printf("-w            write from CPU to VME space\n");
 	printf("-d            do *NOT* dump data (if reading big size)\n");
 	printf("-l            use page-aligned memory as buffer\n");
+	printf("-t            use VME4L_RW_USE_DMA for non-BLT spaces (uses DMA BDs with SGL bit set)\n");
 	printf("-f=<file>     with -r dump binary data into a file\n");
 	printf("-k=<offset>   for writes use an offset in an allocated buffer,\n");
 	printf("              it loads the entire file into a buffer, reads data from a VME\n");
-	printf("              and compares against accidendial overwrites\n");
+	printf("              and compares against accidental overwrites\n");
 	printf("-c            in conjuction with -w and -f, verifies written data\n");
 	printf("              if fails, store read data in <file>"VERIFY_FILE_POSTFIX"\n");
 	printf("-m            memory map instead of using ioctl calls\n");
@@ -178,6 +179,7 @@ int main( int argc, char *argv[] )
 	int opt_mmap = 0;
 	int opt_bufoffset = 0;
 	int opt_bufoffset_val = 0;
+	int opt_rw_flags=0;
 	struct timespec t1, t2;
 	double transferRate=0.0, timePerRun=0.0, timeTotal=0.0;
 	ssize_t ret;
@@ -228,6 +230,8 @@ int main( int argc, char *argv[] )
 	opt_swapmode = (optp=UTL_TSTOPT("x")) ? 1 : 0;
 
 	opt_align = (optp=UTL_TSTOPT("l")) ? 1 : 0;
+
+	opt_rw_flags = (optp=UTL_TSTOPT("t")) ? VME4L_RW_USE_DMA : VME4L_RW_NOFLAGS;
 
 	if( (optp=UTL_TSTOPT("v=")))
 		opt_startval=strtoul( optp, NULL, 0 );
@@ -358,7 +362,7 @@ int main( int argc, char *argv[] )
 		if (opt_read) { /* read */
 			/* measure time right before and after VME access without mem dumps */
 			clock_gettime( CLOCK_MONOTONIC, &t1 );
-			rv = vme_read(opt_mmap, map + map_offset, fd, vmeAddr, accWidth, size, buf, VME4L_RW_NOFLAGS);
+			rv = vme_read(opt_mmap, map + map_offset, fd, vmeAddr, accWidth, size, buf, opt_rw_flags);
 			clock_gettime( CLOCK_MONOTONIC, &t2 );
 
 			if ( opt_dump )
@@ -393,12 +397,12 @@ int main( int argc, char *argv[] )
 			}
 
 			clock_gettime( CLOCK_MONOTONIC, &t1 );
-			rv = vme_write(opt_mmap, map + map_offset, fd, vmeAddr, accWidth, size, buf + opt_bufoffset_val, VME4L_RW_NOFLAGS);
+			rv = vme_write(opt_mmap, map + map_offset, fd, vmeAddr, accWidth, size, buf + opt_bufoffset_val, opt_rw_flags );
 			clock_gettime( CLOCK_MONOTONIC, &t2 );
 
 			if (opt_verify_write) {
 				/* verify written data */
-				rv = vme_read(opt_mmap, map + map_offset, fd, vmeAddr, accWidth, size, buf_ver + opt_bufoffset_val, VME4L_RW_NOFLAGS);
+				rv = vme_read(opt_mmap, map + map_offset, fd, vmeAddr, accWidth, size, buf_ver + opt_bufoffset_val, opt_rw_flags );
 				if (rv != size) {
 					printf("Unable to read data from vme %d (ret=%d)\n", rv, size);
 					exit(1);

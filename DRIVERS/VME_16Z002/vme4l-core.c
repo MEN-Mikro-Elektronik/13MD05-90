@@ -311,7 +311,7 @@ static struct proc_dir_entry *vme4l_root;
 VME4L_SPACE_ENT G_spaceTbl[] = {
 	/* devName         isSlv isBlt  spcEnd                   width */
 	{ "vme4l_a16d16"    , 0,  0,    0xFFFF,                    2 },  /* spc 0 */
-	{ "vme4l_a16d16_blt", 0,  1,    0xFFFF,                    2 },
+	{ "vme4l_a24d64_blt", 0,  1,    0xFFFFFF,                  8 },
 	{ "vme4l_a16d32"    , 0,  0,    0xFFFF,                    4 },
 	{ "vme4l_a16d32_blt", 0,  1,    0xFFFF,                    4 },
 	{ "vme4l_a24d16",     0,  0,    0xFFFFFF,                  2 },
@@ -1162,7 +1162,8 @@ static int vme4l_perform_zc_dma(
 	int sgNelems,
 	int direction,
 	vmeaddr_t vmeAddr,
-	int swapMode)
+	int swapMode,
+	int flags)
 {
 	int rv=0;
 
@@ -1179,7 +1180,8 @@ static int vme4l_perform_zc_dma(
 			sgNelems,
 			direction,
 			swapMode,
-			&vmeAddr);
+			&vmeAddr,
+			flags);
 
 		VME4LDBG( "vme4l_perform_zc_dma: dmaSetup rv=%d, next vmeAddr=0x%lx\n", rv, vmeAddr );
 
@@ -1254,10 +1256,11 @@ static void vme4l_user_pages_print(unsigned int nr_pages,
  *
  * \return 0 on success, or negative error number
  */
-static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
+static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode )
 {
 	int rv = 0, i;
 	uintptr_t uaddr 	= (uintptr_t)blk->dataP;
+	int flags 		= blk->flags;
 	size_t count 		= blk->size;
 	unsigned int nr_pages	= 0;
 	struct page **pages 	= NULL;
@@ -1339,7 +1342,7 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 	}
 
 	/*--- now do DMA in HW (device touches memory) ---*/
-	rv = vme4l_perform_zc_dma( spc, sgListStart, nr_pages, blk->direction, blk->vmeAddr, swapMode );
+	rv = vme4l_perform_zc_dma( spc, sgListStart, nr_pages, blk->direction, blk->vmeAddr, swapMode, flags);
 
 CLEANUP:
 	/*--- free pages ---*/

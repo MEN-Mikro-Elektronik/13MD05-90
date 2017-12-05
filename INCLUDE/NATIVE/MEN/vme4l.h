@@ -70,7 +70,7 @@ typedef unsigned long vmeaddr_t;
  */
 typedef enum {
 	VME4L_SPC_A16_D16=0,		/**< Short non priviledged (D16) */
-	VME4L_SPC_A16_D16_BLT=1,	/**< Short non priviledged (D16-BLT), n/a */
+	VME4L_SPC_A24_D64_BLT=1,	/**< Extended non priviledged (D64-BLT) */
 	VME4L_SPC_A16_D32=2,		/**< Short non priviledged (D32) */
 	VME4L_SPC_A16_D32_BLT=3,	/**< Short non priviledged (D32-BLT), n/a */
 	VME4L_SPC_A24_D16=4,		/**< Standard non priviledged (D16) */

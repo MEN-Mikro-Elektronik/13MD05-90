@@ -364,10 +364,11 @@ typedef struct VME4L_BRIDGE_DRV {
 	 * \param sgList		list with \a sgElems scatter elements
 	 * \param sgNelems		number of valid elements in \a sgList
 	 * \param direction		0=read from VME 1=write to VME
-	 * \param swapMode		DMA swapping mode
+	 * \param modeFlags		flags for DMA swapping or DMA for non BLTs
 	 * \param vmeAddr		(IN) vme start address
-	 *						(OUT) next vme start address
-     *
+	 *				(OUT) next vme start address
+	 * \param flags			flags passed from VME4L_Read/Write
+	 *
 	 * \return >=0 number of scatter elements setup, or negative error number
 	 */
 	int (*dmaSetup)(
@@ -377,10 +378,11 @@ typedef struct VME4L_BRIDGE_DRV {
 		int sgNelems,
 		int direction,
 		int swapMode,
-		vmeaddr_t *vmeAddr);
+		vmeaddr_t *vmeAddr,
+		int flags);
 
 	/***********************************************************************/
-    /** Setup DMA for bounce buffer
+	/** Setup DMA for bounce buffer
 	 *
 	 * This function is used if dmaSetup is NULL.
 	 *
@@ -390,7 +392,7 @@ typedef struct VME4L_BRIDGE_DRV {
 	 * For example, on VME reads, the bounce buffer is filled by DMA
 	 * and copied by vme4l-core into user space.
 	 *
-     * Bounce buffer must be maintained by bridge driver.
+	 * Bounce buffer must be maintained by bridge driver.
 	 *
 	 * (this function is optional and can be NULL)
 	 *
@@ -399,8 +401,8 @@ typedef struct VME4L_BRIDGE_DRV {
 	 * \param size			number of bytes to transfer
 	 * \param direction		0=read from VME 1=write to VME
 	 * \param vmeAddr		vme start address
-	 * \param swapMode		DMA swapping mode
-     * \param bounceBufP	(OUT) will receive the virtual address of
+	 * \param modeFlags		flags for DMA swapping or DMA for non BLTs
+	 * \param bounceBufP	(OUT) will receive the virtual address of
 	 *						the bounce buffer
 	 *
 	 * \return >=0 size of bounce buffer, or negative error number
