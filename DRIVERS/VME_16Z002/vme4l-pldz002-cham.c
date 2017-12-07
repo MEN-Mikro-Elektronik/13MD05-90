@@ -438,11 +438,11 @@ static void StoreAndClearBuserror( VME4L_BRIDGE_HANDLE *h )
 
 	/* report it, extended or default depending on core version */
 	if ( h->hasExtBerrInfo ) {
-		VME4LDBG( "*** PldZ002Irq bus error. Cause: %s VME addr 0x%lx, AM=0x%02x (in %s state)\n",
+		printk(KERN_ERR  "*** PldZ002Irq bus error. Cause: %s VME addr 0x%lx, AM=0x%02x (in %s state)\n",
 				(h->berrAcc & PLDZ002_BERR_RW_DIR) ? "read from" : "write to",	h->berrAddr,
 				(h->berrAcc & PLDZ002_BERR_ACC_AM_MASK), (h->berrAcc & PLDZ002_BERR_IACK) ? "IACK" : "normal" );
 	} else {
-		VME4LDBG("*** PldZ002Irq bus error\n");
+		printk(KERN_ERR "*** PldZ002Irq bus error\n");
 	}
 
 	/* and clear */
