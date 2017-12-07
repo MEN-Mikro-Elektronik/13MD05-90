@@ -172,6 +172,7 @@ typedef enum {
 /*#define VME4L_RW_USE_POSTED_WR 		0x01*/
 /** use DMA engine for non-BLT spaces */
 #define VME4L_RW_USE_DMA 			0x02
+#define VME4L_RW_KERNEL_SPACE_DMA 		0x04
 
 /*! @} */
 

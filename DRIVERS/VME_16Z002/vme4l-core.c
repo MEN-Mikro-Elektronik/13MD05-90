@@ -1274,12 +1274,15 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode )
 	int locked		= 0;
 	dma_addr_t dmaAddr 	= 0;
 	VME4L_SCATTER_ELEM *sgListStart = NULL, *sgList;
+	int to_user		= 0;
+	void *addr 		= NULL;
 #ifdef VME4L_DBG_DMA_DATA
 	unsigned int initOffs 	= 0;
 #endif
 
 	/* direction as seen from  DMA API context */
 	direction = ( blk->direction == READ ) ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
+	to_user = !(blk->flags & VME4L_RW_KERNEL_SPACE_DMA);
 
 	/* be paranoid.. */
 	if (count == 0)
@@ -1305,10 +1308,27 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode )
 		goto CLEANUP;
 	}
 
-       rv = get_user_pages_fast( uaddr, nr_pages, direction, pages);
-
-	if( rv < nr_pages )
-		goto CLEANUP;
+	if (to_user) {
+		VME4LDBG("To/from Userspace DMA transfer\n");
+		rv = get_user_pages_fast( uaddr, nr_pages, direction, pages);
+		if( rv < nr_pages )
+			goto CLEANUP;
+	} else {
+		VME4LDBG("To/from Kernelspace DMA transfer\n");
+		addr = (void *)uaddr;
+		if (is_vmalloc_addr(addr)) {
+			for (i = 0; i < nr_pages; i++)
+				pages[i] = vmalloc_to_page(addr + PAGE_SIZE * i);
+		} else {
+			/* Note: this supports lowmem pages only */
+			if (!virt_addr_valid(uaddr)) {
+				printk(KERN_ERR "%s virt_addr_valid not valid\n", __func__);
+				return -EINVAL;
+			}
+			for (i = 0; i < nr_pages; i++)
+				pages[i] = virt_to_page(uaddr + PAGE_SIZE * i);
+		}
+	}
 
 	/* pages are now locked in memory */
 	locked++;
@@ -1346,12 +1366,14 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode )
 
 CLEANUP:
 	/*--- free pages ---*/
-	if( locked ) {
+	if( locked) {
 		sgList = sgListStart;
 		for (i = 0; i < nr_pages; i++, sgList++) {
-            	 dma_unmap_single( pDev, sgList->dmaAddress, sgList->dmaLength , direction );
-                 put_page( pages[i] ); /* release pages locked with get_user_pages */
-		}
+			dma_unmap_single( pDev, sgList->dmaAddress, sgList->dmaLength , direction );
+
+			if (to_user)
+				put_page( pages[i] ); /* release pages locked with get_user_pages */
+			}
 	}
 
 #ifdef VME4L_DBG_DMA_DATA
