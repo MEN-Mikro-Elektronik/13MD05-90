@@ -1154,9 +1154,6 @@ static int AddrModifierSet( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h, char addrMo
 
 		/* the BLT spaces: take AM bit[1] (=supervisory flag) and OR in defaults.
 		 * CR/CSR not relevant here. */
-	case VME4L_SPC_A16_D32_BLT:
-		h->addrModShadow[spc] = PLDZ002_DMABD_AM_A16D32 | (isSupervisor << 8);
-		break;
 	case VME4L_SPC_A24_D16_BLT:
 		h->addrModShadow[spc] = PLDZ002_DMABD_AM_A24D16 | (isSupervisor << 8);
 		break;
@@ -1938,7 +1935,7 @@ static void InitBridge( VME4L_BRIDGE_HANDLE *h )
 
 	/* preset the DMA AMs with defaults */
 	h->addrModShadow[VME4L_SPC_A16_D16] = PLDZ002_DMABD_AM_A16D16;
-	h->addrModShadow[VME4L_SPC_A16_D32_BLT] = PLDZ002_DMABD_AM_A16D32;
+	h->addrModShadow[VME4L_SPC_A16_D32] = PLDZ002_DMABD_AM_A16D32;
 	h->addrModShadow[VME4L_SPC_A24_D64_BLT] = PLDZ002_DMABD_AM_A24D64;
 	h->addrModShadow[VME4L_SPC_A24_D16_BLT] = PLDZ002_DMABD_AM_A24D16;
 	h->addrModShadow[VME4L_SPC_A24_D32_BLT] = PLDZ002_DMABD_AM_A24D32;

@@ -313,7 +313,7 @@ VME4L_SPACE_ENT G_spaceTbl[] = {
 	{ "vme4l_a16d16"    , 0,  0,    0xFFFF,                    2 },  /* spc 0 */
 	{ "vme4l_a24d64_blt", 0,  1,    0xFFFFFF,                  8 },
 	{ "vme4l_a16d32"    , 0,  0,    0xFFFF,                    4 },
-	{ "vme4l_a16d32_blt", 0,  1,    0xFFFF,                    4 },
+	{ ""                , 0,  0,    0x0,                       4 }, /* ts@men kept in for now to assure minor numbers in tests etc. are remaining the same */
 	{ "vme4l_a24d16",     0,  0,    0xFFFFFF,                  2 },
 	{ "vme4l_a24d16_blt", 0,  1,    0xFFFFFF,                  2 },
 	{ "vme4l_a24d32",     0,  0,    0xFFFFFF,                  4 },

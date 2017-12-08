@@ -69,7 +69,7 @@ struct _OSS_VME_SPC
 	{VME4L_SPC_A16_D16,		"a16_d16"		},	/**< Short non priviledged (D16) */
 	{VME4L_SPC_A24_D64_BLT,	"a24_d64_blt"	},	/**< Standard non priviledged (D64-BLT), n/a */
 	{VME4L_SPC_A16_D32,		"a16_d32"		},	/**< Short non priviledged (D32) */
-	{VME4L_SPC_A16_D32_BLT, "a16_d32_blt"	},	/**< Short non priviledged (D32-BLT), n/a */
+	/* VME4L_SPC_A16_D32_BLT removed */
 	{VME4L_SPC_A24_D16,		"a24_d16"		},	/**< Standard non priviledged (D16) */
 	{VME4L_SPC_A24_D16_BLT, "a24_d16_blt"	},	/**< Standard non priviledged (D16-BLT) */
 	{VME4L_SPC_A24_D32,		"a24_d32"		},	/**< Standard non priviledged (D32) */
