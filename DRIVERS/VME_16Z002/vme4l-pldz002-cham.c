@@ -653,6 +653,13 @@ static int DmaSetup(
 		/* Ignore VME4L_RW_USE_DMA for BLT modes */
 		flags &= ~VME4L_RW_USE_DMA;
 		break;
+	case VME4L_SPC_A16_D16:
+	case VME4L_SPC_A16_D32:
+	case VME4L_SPC_A24_D16:
+	case VME4L_SPC_A24_D32:
+	case VME4L_SPC_A32_D32:
+		bdAm = h->addrModShadow[spc];
+		break;
 	default:
 		return -EINVAL;
 	}
@@ -750,6 +757,13 @@ static int DmaBounceSetup(
 		bdAm = h->addrModShadow[spc];
 		alignVme = 8;
 		szlimit=PLDZ002_BOUNCE_CHUNKSIZE_LIMIT_A32D64;
+		break;
+	case VME4L_SPC_A16_D16:
+	case VME4L_SPC_A16_D32:
+	case VME4L_SPC_A24_D16:
+	case VME4L_SPC_A24_D32:
+	case VME4L_SPC_A32_D32:
+		bdAm = h->addrModShadow[spc];
 		break;
 	default:
 		return -EINVAL;
@@ -1939,11 +1953,14 @@ static void InitBridge( VME4L_BRIDGE_HANDLE *h )
 	h->haveBerr = 0;
 
 	/* preset the DMA AMs with defaults */
-	h->addrModShadow[VME4L_SPC_A16_D16] = PLDZ002_DMABD_AM_A16D16;
-	h->addrModShadow[VME4L_SPC_A16_D32] = PLDZ002_DMABD_AM_A16D32;
-	h->addrModShadow[VME4L_SPC_A24_D64_BLT] = PLDZ002_DMABD_AM_A24D64;
+	h->addrModShadow[VME4L_SPC_A16_D16]     = PLDZ002_DMABD_AM_A16D16;
+	h->addrModShadow[VME4L_SPC_A16_D32]     = PLDZ002_DMABD_AM_A16D32;
+	h->addrModShadow[VME4L_SPC_A24_D16]     = PLDZ002_DMABD_AM_A24D16;
 	h->addrModShadow[VME4L_SPC_A24_D16_BLT] = PLDZ002_DMABD_AM_A24D16;
+	h->addrModShadow[VME4L_SPC_A24_D32]     = PLDZ002_DMABD_AM_A24D32;
 	h->addrModShadow[VME4L_SPC_A24_D32_BLT] = PLDZ002_DMABD_AM_A24D32;
+	h->addrModShadow[VME4L_SPC_A24_D64_BLT] = PLDZ002_DMABD_AM_A24D64;
+	h->addrModShadow[VME4L_SPC_A32_D32]     = PLDZ002_DMABD_AM_A32D32;
 	h->addrModShadow[VME4L_SPC_A32_D32_BLT] = PLDZ002_DMABD_AM_A32D32;
 	h->addrModShadow[VME4L_SPC_A32_D64_BLT] = PLDZ002_DMABD_AM_A32D64;
 
