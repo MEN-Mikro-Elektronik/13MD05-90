@@ -644,6 +644,7 @@ static int DmaSetup(
 	case VME4L_SPC_A32_D32_BLT:
 		bdAm = h->addrModShadow[spc];
 		break;
+	case VME4L_SPC_A24_D64_BLT:
 	case VME4L_SPC_A32_D64_BLT:
 		bdAm = h->addrModShadow[spc];
 		alignVme = 8;

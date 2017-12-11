@@ -754,7 +754,7 @@ static const char _RCSid[] = "$Id: vme4l_api.c,v 1.9 2013/09/02 18:31:16 ts Exp 
 static const char *G_devNameTbl[] = {
 	/* numerical Value for test tool: 	  */
  	 "a16d16",		/*  0 */
-	 "a16d16_blt",	/*  1 */
+	 "a24d64_blt",	/*  1 */
 	 "a16d32",		/* 	2 */
 	 "a16d32_blt",	/* 	3 */
 	 "a24d16",		/* 	4 */
