@@ -643,11 +643,15 @@ static int DmaSetup(
 	case VME4L_SPC_A24_D32_BLT:
 	case VME4L_SPC_A32_D32_BLT:
 		bdAm = h->addrModShadow[spc];
+		/* Ignore VME4L_RW_USE_DMA for BLT modes */
+		flags &= ~VME4L_RW_USE_DMA;
 		break;
 	case VME4L_SPC_A24_D64_BLT:
 	case VME4L_SPC_A32_D64_BLT:
 		bdAm = h->addrModShadow[spc];
 		alignVme = 8;
+		/* Ignore VME4L_RW_USE_DMA for BLT modes */
+		flags &= ~VME4L_RW_USE_DMA;
 		break;
 	default:
 		return -EINVAL;
