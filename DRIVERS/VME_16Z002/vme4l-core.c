@@ -131,6 +131,9 @@
 /*--------------------------------------+
 |   DEFINES                             |
 +--------------------------------------*/
+#define PFX "vme4l_core: "
+#define KERN_ERR_PFX KERN_ERR "!!!" PFX
+
 #ifndef VME4L_MAJOR
 # define VME4L_MAJOR			230 /* use 0 to auto-assign major number */
 #endif
@@ -652,7 +655,7 @@ static int vme4l_try_request_adrswin(
 		list_add_tail( &win->node, &G_freeAdrsWins );
 		VME4L_UNLOCK_MSTRLISTS();
 
-		VME4LDBG("vme4l_request_adrswin failed\n");
+		printk(KERN_ERR_PFX "%s: failed\n", __func__);
 		return rv;
 	}
 
@@ -711,7 +714,8 @@ static int vme4l_request_adrswin(
 												 size,
 												 flags,
 												 & win)) < 0 ){
-				VME4LDBG("*** vme4l_request_adrswin failed\n");
+				printk(KERN_ERR_PFX "%s: adrswin request failed\n",
+				       __func__);
 				return rv;
 			}
 		}
@@ -989,7 +993,8 @@ static int vme4l_setup_pio(
 
 	/* check alignment and accWidth <= maxWidth */
 	if( (vmeAddr & (accWidth-1)) ||	(size & (accWidth-1)) || (accWidth > spcEnt->maxWidth) ) {
-		VME4LDBG("vme4l_setup_pio: Bad alignment/size/width 0x%lx %d %d\n", vmeAddr, size, accWidth);
+		printk(KERN_ERR_PFX "%s: Bad alignment/size/width 0x%lx %d %d\n",
+		       __func__, vmeAddr, size, accWidth);
 		return -EINVAL;
 	}
 
@@ -1004,7 +1009,8 @@ static int vme4l_setup_pio(
 		/* not cached, setup a new one */
 		if( (rv = vme4l_make_ioremap_region( win, vmeAddr, size,
 											 &region )) < 0 ){
-			VME4LDBG("*** vme4l_setup_pio failed to make_ioremap_region\n");
+			printk(KERN_ERR_PFX "%s: failed to make_ioremap_region\n",
+			       __func__);
 			return rv;
 		}
 
@@ -1128,7 +1134,7 @@ static int vme4l_start_wait_dma(void)
 		VME4L_LOCK_DMA( ps );
 
 		if( ticks == 0 ){
-			VME4LDBG("*** vme4l_start_wait_dma: DMA timeout\n");
+			printk(KERN_ERR_PFX "%s: DMA timeout\n", __func__);
 			/* DMA timed out */
 			rv = -ETIME;
 			break;
@@ -1322,7 +1328,8 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode )
 		} else {
 			/* Note: this supports lowmem pages only */
 			if (!virt_addr_valid(uaddr)) {
-				printk(KERN_ERR "%s virt_addr_valid not valid\n", __func__);
+				printk(KERN_ERR_PFX "%s: virt_addr_valid not valid\n",
+				       __func__);
 				return -EINVAL;
 			}
 			for (i = 0; i < nr_pages; i++)
@@ -1349,7 +1356,8 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode )
 
             dmaAddr = dma_map_single( pDev, pVirtAddr, sgList->dmaLength, direction );
 		if ( dma_mapping_error(pDev, dmaAddr ) ) {
-                   printk( KERN_ERR "*** error mapping DMA space!\n" );
+                   printk(KERN_ERR_PFX "%s: *** error mapping DMA space!\n" ,
+			  __func__);
 			goto CLEANUP;
 		} else {
                    sgList->dmaAddress = dmaAddr;      /* store page address for later dma_unmap_page */
@@ -1626,7 +1634,8 @@ static int vme4l_slave_window_ctrl( VME4L_SPACE spc, vmeaddr_t vmeAddr,
 			 spc, vmeAddr, size );
 
 	if( !spcEnt->isSlv || G_bDrv->slaveWindowCtrl==NULL ){
-		VME4LDBG("*** vme4l_slave_window_ctrl: ERROR: not a slave window\n");
+		printk(KERN_ERR_PFX "%s: ERROR: not a slave window\n",
+		       __func__);
 		return -ENOTTY;			/* must be a slave window space */
 	}
 
@@ -1646,7 +1655,8 @@ static int vme4l_slave_window_ctrl( VME4L_SPACE spc, vmeaddr_t vmeAddr,
 
 			/* new opened */
 			if( (win = vme4l_alloc_adrswin()) == NULL ){
-				VME4LDBG("*** vme4l_slave_window_ctrl: ERROR: no Space\n");
+				printk(KERN_ERR_PFX "%s: ERROR: no Space\n",
+				       __func__);
 				return -ENOSPC;
 			}
 
@@ -1669,7 +1679,8 @@ static int vme4l_slave_window_ctrl( VME4L_SPACE spc, vmeaddr_t vmeAddr,
 		 * Don't allow size change if so
 		 */
 		if( win->useCount ){
-			VME4LDBG("*** vme4l_slave_window_ctrl: ERROR: window in use\n");
+			printk(KERN_ERR_PFX "%s: ERROR: window in use\n",
+			       __func__);
 			return -EBUSY;
 		}
 
@@ -2173,8 +2184,8 @@ static int vme4l_mmap(
 	return 0;
 
  ABORT:
-	VME4LDBG("*** vme4l_mmap failed for spc %d addr %lx (%lx), rv=%d\n",
-			 spc, vmeAddr, size, rv );
+	printk(KERN_ERR_PFX "%s: vme4l_mmap failed for spc %d addr %lx (%lx), rv=%d\n",
+	       __func__, spc, vmeAddr, size, rv );
 
 	return rv;
 }
@@ -3144,7 +3155,8 @@ static int __init vme4l_init_module(void)
 
 	if( (rv =       register_chrdev( major, "vme4l", &vme4l_fops )) < 0)
 	{
-		printk(KERN_ERR "*** vme4l: Unable to get major %d\n", major );
+		printk(KERN_ERR_PFX "%s: Unable to get major %d\n",
+		       __func__, major);
 		goto CLEANUP;
 	}
 

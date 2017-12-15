@@ -101,6 +101,8 @@
 /*--------------------------------------+
 |   DEFINES                             |
 +--------------------------------------*/
+#define PFX "vme4l_pldz002_cham: "
+#define KERN_ERR_PFX KERN_ERR "!!!" PFX
 
 /** DMA bounce buffer uses last 256K of bridge SRAM */
 #define BOUNCE_SRAM_A21ADDR	 0x0   /* 0xff000 */    /* ts: was c0000 */
@@ -313,7 +315,8 @@ unsigned int GetSysIrq( VME4L_BRIDGE_HANDLE *h )
 	irq = h->chu->pdev->irq;
 
 	if (!irq)
-		printk(KERN_ERR " *** vme-pldz002: error invalid system IRQ!\n");
+		printk(KERN_ERR_PFX "%s: error invalid system IRQ!\n",
+		       __func__);
 	return irq;
 
 }
@@ -438,11 +441,13 @@ static void StoreAndClearBuserror( VME4L_BRIDGE_HANDLE *h )
 
 	/* report it, extended or default depending on core version */
 	if ( h->hasExtBerrInfo ) {
-		printk(KERN_ERR  "*** PldZ002Irq bus error. Cause: %s VME addr 0x%lx, AM=0x%02x (in %s state)\n",
-				(h->berrAcc & PLDZ002_BERR_RW_DIR) ? "read from" : "write to",	h->berrAddr,
-				(h->berrAcc & PLDZ002_BERR_ACC_AM_MASK), (h->berrAcc & PLDZ002_BERR_IACK) ? "IACK" : "normal" );
+		printk(KERN_ERR_PFX "PldZ002Irq bus error. Cause: %s VME addr 0x%lx, AM=0x%02x (in %s state)\n",
+		       (h->berrAcc & PLDZ002_BERR_RW_DIR) ? "read from" : "write to",
+		       h->berrAddr,
+		       (h->berrAcc & PLDZ002_BERR_ACC_AM_MASK),
+		       (h->berrAcc & PLDZ002_BERR_IACK) ? "IACK" : "normal" );
 	} else {
-		printk(KERN_ERR "*** PldZ002Irq bus error\n");
+		printk(KERN_ERR_PFX "PldZ002Irq bus error\n");
 	}
 
 	/* and clear */
@@ -677,9 +682,9 @@ static int DmaSetup(
 		/*--- check alignment/size ---*/
 		if( (*vmeAddr & (alignVme-1)) || (sgList->dmaAddress & (alignVme-1)) ||
 			(sgList->dmaLength > 256*1024) || (sgList->dmaLength & (alignVme-1))){
-			VME4LDBG( "*** pldz002 DMA setup bad alignment/len "
-					  "%08llx %08llx %x\n", *vmeAddr,
-					  (uint64_t)sgList->dmaAddress, sgList->dmaLength );
+			printk(KERN_ERR_PFX "%s: DMA setup bad alignment/len "
+			       "%08llx %08llx %x\n", __func__, *vmeAddr,
+			       (uint64_t)sgList->dmaAddress, sgList->dmaLength );
 			rv = -EINVAL;
 			goto CLEANUP;
 		}
@@ -777,8 +782,8 @@ static int DmaBounceSetup(
 
 	/*--- check alignment/size ---*/
 	if( (vmeAddr & (alignVme-1)) || (size & (alignVme-1)) ){
-		VME4LDBG("*** pldz002 Bounce DMA setup bad alignment/len "
-				 "0x%llx 0x%llx\n", vmeAddr, (uint64_t) size);
+		printk(KERN_ERR_PFX "%s: Bounce DMA setup bad alignment/len "
+		       "0x%llx 0x%llx\n", __func__, vmeAddr, (uint64_t) size);
 		rv = -EINVAL;
 		goto CLEANUP;
 	}
@@ -829,11 +834,13 @@ static int DmaStart( VME4L_BRIDGE_HANDLE *h )
 	uint8_t dmastat = VME_REG_READ8( PLDZ002_DMASTA );
 
 	if( dmastat  & PLDZ002_DMASTA_EN ){
-		VME4LDBG("*** pldz002: DmaStart: DMA busy! DMASTA=%02x\n", dmastat );
+		printk(KERN_ERR_PFX "%s: DMA busy! DMASTA=%02x\n",
+		       __func__, dmastat );
 		return -EBUSY;
 	}
 	if( dmastat  & PLDZ002_DMASTA_ERR ){
-		VME4LDBG("*** pldz002: DmaStart: DMA error pending, DMASTA=%02x. Clearing it and continuing.\n", dmastat );
+		printk(KERN_ERR_PFX "%s: DMA error pending, DMASTA=%02x. "
+		      "Clearing it and continuing.\n", __func__, dmastat);
 	}
 
 	VME4LDBG("DmaStart..\n");
@@ -1364,7 +1371,8 @@ static int SlaveWindowCtrlFs3(
 			(vmeAddr >= sizeTbl[idx].maxAddr) ||
 			(vmeAddr & (size-1)) ) {
 
-			printk( KERN_ERR "*** SlaveWindowCtrlFs3: size=%lx out of range!\n", size );
+			printk(KERN_ERR_PFX "%s: size=%lx out of range!\n",
+			       __func__, size );
 			return -EINVAL;
 		}
 
@@ -1413,7 +1421,8 @@ static int SlaveWindowCtrlFs3(
 
 				h->bmShmem.vaddr = dma_alloc_coherent(&h->chu->pdev->dev, size, &dmaAddr, GFP_KERNEL);
 				if (dma_mapping_error( &h->chu->pdev->dev, dmaAddr )) {
-					printk( KERN_ERR "*** pldz002::dma_alloc_coherent failed, exiting.\n");
+					printk(KERN_ERR_PFX "%s: dma_alloc_coherent failed, exiting.\n",
+					       __func__);
 					return -ENOMEM;
 				}
 				h->bmShmem.phys = dmaAddr;
@@ -1421,7 +1430,8 @@ static int SlaveWindowCtrlFs3(
 				VME4LDBG("pldz002: dma_alloc_coherent: v=%p p=%x (%llx)\n", h->bmShmem.vaddr, h->bmShmem.phys, size );
 
 				if( h->bmShmem.vaddr == NULL ) {
-					printk( KERN_ERR "*** pldz002: can't alloc BM slave window of 0x%llx bytes\n", (uint64_t) size );
+					printk(KERN_ERR_PFX "%s: can't alloc BM slave window of 0x%llx bytes\n",
+					       __func__, (uint64_t) size );
 					return -ENOSPC;
 				}
 				h->bmShmem.size = size;
@@ -1432,7 +1442,8 @@ static int SlaveWindowCtrlFs3(
 			}
 			else {
 				if( h->bmShmem.size != size ){
-					printk( KERN_ERR "*** pldz002: won't change BM slave window if used\n");
+					printk(KERN_ERR_PFX "%s: won't change BM slave window if used\n",
+					       __func__);
 					return -EBUSY;
 				}
 			}
@@ -1795,7 +1806,8 @@ static int PldZ002_CheckMiscVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
 		VME_REG_WRITE8( PLDZ002_DMASTA, PLDZ002_DMASTA_IRQ );
 		*levP = VME4L_IRQLEV_DMAFINISHED;
 		} else {
-			VME4LDBG("*** DMA error occured, stop DMA and clear DMA IRQ and error\n");
+			printk(KERN_ERR_PFX "%s: DMA error occured, stop DMA and clear DMA IRQ and error\n",
+			       __func__);
 			/* clear by writing '1' to the bits, DMA also stopped by setting its bit to 0 */
 			VME_REG_WRITE8( PLDZ002_DMASTA, PLDZ002_DMASTA_IRQ | PLDZ002_DMASTA_ERR);
 			*levP = VME4L_IRQVEC_BUSERR;
@@ -1876,7 +1888,8 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 	/* no interrupt source -> exit */
 	handled=0;
 
-	VME4LDBG("PldZ002Irq: unhandled irq! vec=%d lev=%d\n", vector, level );
+	printk(KERN_ERR_PFX "%s: unhandled irq! vec=%d lev=%d\n",
+	       __func__, vector, level );
 	goto EXIT;
 
  DONE:
@@ -2032,7 +2045,8 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 		  h->A32BARsize          = PLDZ002_A32D32_SIZE_512M;
 		  break;
 		case 0:
-		  printk(KERN_ERR "Variant 0 should not be defined for VME Core\n");
+		  printk(KERN_ERR_PFX "%s: Variant 0 should not be defined for VME Core\n",
+			 __func__);
 		  return -EINVAL;
 		default:
 		  return 0;
@@ -2045,7 +2059,8 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 	for (i = 0; i < PLDZ002_MAX_UNITS ; i++)
 	{
 		if (men_chameleonV2_unit_find( CHAMELEON_16Z002_VME, i, &u) != 0) {
-				printk(KERN_ERR "Did not find PLDZ002 unit %d\n");
+				printk(KERN_ERR_PFX "%s: Did not find PLDZ002 unit %d\n",
+				       __func__, i);
 			rv = -EINVAL;
 			goto CLEANUP;
 		}
@@ -2082,7 +2097,8 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 		      h->longaddWidth = 8;
 		      break;
 		    default: /* something is seriously wrong with that BAR... */
-		      printk( KERN_ERR "*** invalid size of A32 space BAR3: 0x%08x\n", barsize );
+		      printk(KERN_ERR_PFX "%s: invalid size of A32 space BAR3: 0x%08x\n",
+			     __func__, barsize );
 		      rv = -EINVAL;
 		      goto CLEANUP;
 		    }
@@ -2133,7 +2149,8 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 	rv = pci_enable_msi(chu->pdev); /* using pci_enable_msi_block would be nicer,
 					   but powerpc linux doesn't support it... */
 	if (rv != 0 ) {
-		VME4LDBG("Could not allocate enough msi interrupts: %d\n" ,rv);
+		printk(KERN_ERR_PFX "%s: Could not allocate enough msi interrupts: %d\n",
+		       __func__, rv);
 		goto CLEANUP;
 	} else {
 		/*normal linux kernel mode: PldZ002Irq is a standard linux IRQ handler */
@@ -2189,7 +2206,7 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 	return rv;
 
  CLEANUP:
-	printk( KERN_ERR "vme-pldz002-cham: Init error %d\n", -rv );
+	printk(KERN_ERR_PFX "%s: Init error %d\n", __func__, -rv);
 
 	if( irqReq ){
 
