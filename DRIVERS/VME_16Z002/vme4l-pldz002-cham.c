@@ -1739,6 +1739,7 @@ static int PldZ002_ProcessPendingVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
 
 	if (NULL == h){
 		printk(" *** %s: Bridge handle is NULL!\n", __FUNCTION__);
+		return -1;
 	}
 
 	istat = VME_REG_READ8( PLDZ002_MSTR ) & 0xff;
