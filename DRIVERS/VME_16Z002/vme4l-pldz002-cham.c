@@ -2005,34 +2005,45 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 	int vector=0, level=VME4L_IRQLEV_UNKNOWN;
 	VME4L_BRIDGE_HANDLE *h 	= (VME4L_BRIDGE_HANDLE *)dev_id;
 	int handled=1;
+	int something_handled = 0;
 	/* VME4LDBG */
 	PLDZ002_LOCK_STATE();
 
-	/* 1. check for bus errors */
-	if (PldZ002_CheckVmeBusError( h, &vector, &level ))
-		goto DONE;
 
-	/* 2. get pending VME interrupts, perform IACK */
-	if (PldZ002_ProcessPendingVmeInterrupts( h, &vector, &level ))
-		goto DONE;
+	while (handled) {
+		handled = 0;
+		/* 1. check for bus errors */
+		if (0 < PldZ002_CheckVmeBusError( h, &vector, &level )){
+			handled = 1;
+			something_handled = 1;
+			VME4LDBG( "PldZ002Irq: CheckVmeBusError vector=%d level=%d\n", vector, level );
 
-	/* 3. check the other IRQ causes (DMA/Mailbox/location monitor) */
-	if (PldZ002_CheckMiscVmeInterrupts(h, &vector, &level))
-		goto DONE;
+			vme4l_irq( level, vector, regs );
+		}
 
-	/* no interrupt source -> exit */
-	handled=0;
+		/* 2. get pending VME interrupts, perform IACK */
+		if (0 < PldZ002_ProcessPendingVmeInterrupts( h, &vector, &level )){
+			handled = 1;
+			something_handled = 1;
+			VME4LDBG( "PldZ002Irq: ProcessPendingVmeInterrupts vector=%d level=%d\n", vector, level );
 
-	printk(KERN_ERR_PFX "%s: unhandled irq! vec=%d lev=%d\n",
-	       __func__, vector, level );
-	goto EXIT;
+			vme4l_irq( level, vector, regs );
+		}
 
- DONE:
-	VME4LDBG("PldZ002Irq: vector=%d level=%d\n", vector, level );
+		/* 3. check the other IRQ causes (DMA/Mailbox/location monitor) */
+		if (0 < PldZ002_CheckMiscVmeInterrupts(h, &vector, &level)){
+			handled = 1;
+			something_handled = 1;
+			VME4LDBG( "PldZ002Irq: CheckMiscVmeInterrupts vector=%d level=%d\n", vector, level );
 
-	vme4l_irq( level, vector, regs );
+			vme4l_irq( level, vector, regs );
+		}
+	}
 
- EXIT:
+	if (something_handled == 0)
+		VME4LDBG("%s: unhandled irq! vec=%d lev=%d\n",
+		         __func__, vector, level);
+
 	PLDZ002_UNLOCK_STATE();
 
 	return handled ? IRQ_HANDLED : IRQ_NONE;
