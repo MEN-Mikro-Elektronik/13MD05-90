@@ -1811,7 +1811,7 @@ static int PldZ002_CheckMiscVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
 			       __func__);
 			/* clear by writing '1' to the bits, DMA also stopped by setting its bit to 0 */
 			VME_REG_WRITE8( PLDZ002_DMASTA, PLDZ002_DMASTA_IRQ | PLDZ002_DMASTA_ERR);
-			*levP = VME4L_IRQVEC_BUSERR;
+			*levP = VME4L_IRQLEV_BUSERR;
 		}
 		*vecP = 0;
 		return 1;
