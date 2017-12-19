@@ -261,6 +261,7 @@ typedef struct {
 	uint32_t berrAddr;			/**< bus error causing address */
 	uint32_t berrAcc;			/**< bus error causing properties */
 	uint32_t hasExtBerrInfo;
+	uint32_t dmaError;
 	spinlock_t lockState;		/**< spin lock for VME bridge registers and handle state */
 	int refCounter;		/**< number of registered clients */
 } VME4L_BRIDGE_HANDLE;
@@ -948,7 +949,10 @@ static int DmaStart( VME4L_BRIDGE_HANDLE *h )
 
 	VME4LDBG("DmaStart..\n");
 
+	/* clear DMA error */
+	h->dmaError = 0;
 	VME_REG_WRITE8( PLDZ002_DMASTA, PLDZ002_DMASTA_IRQ | PLDZ002_DMASTA_ERR );
+
 	/* start DMA and enable DMA interrupt */
 	VME_REG_WRITE8( PLDZ002_DMASTA, PLDZ002_DMASTA_EN | PLDZ002_DMASTA_IEN);
 	return 0;
@@ -979,8 +983,9 @@ static int DmaStatus( VME4L_BRIDGE_HANDLE *h )
 	if( status & PLDZ002_DMASTA_EN )
 		return 1;				/* runnig */
 
-	if( status & PLDZ002_DMASTA_ERR )
+	if( status & PLDZ002_DMASTA_ERR || h->dmaError) {
 		return -EIO;
+	}
 
 	return 0;					/* ok */
 }
@@ -1848,10 +1853,10 @@ static int PldZ002_ProcessPendingVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
 
 	istat = VME_REG_READ8( PLDZ002_MSTR ) & 0xff;
 
-    istat = VME_REG_READ8( PLDZ002_ISTAT  );
+	istat = VME_REG_READ8( PLDZ002_ISTAT  );
 	istat &= VME_REG_READ8( PLDZ002_IMASK );
 
-    if( istat != 0 ){
+	if( istat != 0 ){
 		/*--- decode *levP  ---*/
 		if( istat & 0x80 ) 	    *levP = VME4L_IRQLEV_7;
 		else if( istat & 0x40 ) *levP = VME4L_IRQLEV_6;
@@ -1863,6 +1868,7 @@ static int PldZ002_ProcessPendingVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
 		else if( istat & 0x01 ){
 			*levP = VME4L_IRQLEV_ACFAIL;
 			*vecP = VME4L_IRQVEC_ACFAIL;
+			printk(KERN_ERR_PFX "%s: istat\n", __func__);
 			return 1;
 		}
 		/* fetch vector (VME IACK cycle) */
@@ -1870,6 +1876,7 @@ static int PldZ002_ProcessPendingVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
 		/* check for bus error during IACK (spurious irq) */
 		if( VME_REG_READ8( PLDZ002_MSTR ) & PLDZ002_MSTR_BERR ){
 			/* clear bus error */
+			printk(KERN_ERR_PFX "%s: bus error during vme interrupt?\n", __func__);
 			StoreAndClearBuserror(h);
 			*vecP = VME4L_IRQVEC_SPUR;
 		}
@@ -1906,16 +1913,17 @@ static int PldZ002_CheckMiscVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
 	dmastat = VME_REG_READ8( PLDZ002_DMASTA );
 	if( dmastat & ( PLDZ002_DMASTA_IRQ | PLDZ002_DMASTA_ERR) ) {
 		/* 1. check if DMA error occured ? if yes, stop DMA activity and clear DMA error & clear DMA */
-		if( dmastat & PLDZ002_DMASTA_IRQ ) {
-			/* regular finished DMA. Reset DMA irq */
-		VME_REG_WRITE8( PLDZ002_DMASTA, PLDZ002_DMASTA_IRQ );
-		*levP = VME4L_IRQLEV_DMAFINISHED;
-		} else {
+		if( dmastat & PLDZ002_DMASTA_ERR ) {
 			printk(KERN_ERR_PFX "%s: DMA error occured, stop DMA and clear DMA IRQ and error\n",
 			       __func__);
 			/* clear by writing '1' to the bits, DMA also stopped by setting its bit to 0 */
 			VME_REG_WRITE8( PLDZ002_DMASTA, PLDZ002_DMASTA_IRQ | PLDZ002_DMASTA_ERR);
 			*levP = VME4L_IRQLEV_BUSERR;
+			h->dmaError = 1;
+		} else {
+			/* regular finished DMA. Reset DMA irq */
+			VME_REG_WRITE8( PLDZ002_DMASTA, PLDZ002_DMASTA_IRQ );
+			*levP = VME4L_IRQLEV_DMAFINISHED;
 		}
 		*vecP = 0;
 		return 1;
@@ -2096,6 +2104,7 @@ static void InitBridge( VME4L_BRIDGE_HANDLE *h )
 	/* clear DMA */
 	VME_REG_WRITE8( PLDZ002_DMASTA,
 			PLDZ002_DMASTA_IRQ | PLDZ002_DMASTA_ERR );
+	h->dmaError = 0;
 
 	/* clear locmon */
 	VME_REG_WRITE8( PLDZ002_LM_STAT_CTRL_0, PLDZ002_LM_STAT_CTRL_IRQ );

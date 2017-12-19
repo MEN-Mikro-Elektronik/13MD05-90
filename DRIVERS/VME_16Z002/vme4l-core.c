@@ -1897,9 +1897,9 @@ void vme4l_irq( int level, int vector, struct pt_regs *regs)
 
 	if( vector == VME4L_IRQVEC_SPUR )
 		printk( KERN_WARNING "VME4L: spurious interrupt level %d\n", level );
-
-
-	else if( level == VME4L_IRQLEV_DMAFINISHED ){
+	else if(level == VME4L_IRQLEV_DMAFINISHED /* DMA finished */
+		|| (level == VME4L_IRQLEV_BUSERR && vector == 0) /* DMA failed */
+		){
 		VME4L_LOCK_DMA(ps);
 		VME4LDBG("DMA finished, wake G_dmaWq\n");
 		/* wake up waiting task */
