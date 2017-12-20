@@ -1172,9 +1172,17 @@ static int vme4l_perform_zc_dma(
 	int flags)
 {
 	int rv=0;
+	int dmaLeft = 0;
+	dma_addr_t dmaAddr = 0;
+	int vme_block_size = 0;
 
 	if( down_interruptible( &G_dmaMutex ))
 		return -ERESTARTSYS;
+
+	if (flags & VME4L_RW_NOVMEINC) {
+		/* get VME (M)BLT block transfer size */
+		vme_block_size = G_bDrv->getVmeBlockSize(spc);
+	}
 
 	while( sgNelems > 0 ){
 
@@ -1187,6 +1195,9 @@ static int vme4l_perform_zc_dma(
 			direction,
 			swapMode,
 			&vmeAddr,
+			&dmaAddr,
+			&dmaLeft,
+			vme_block_size,
 			flags);
 
 		VME4LDBG( "vme4l_perform_zc_dma: dmaSetup rv=%d, next vmeAddr=0x%lx\n", rv, vmeAddr );
@@ -1194,7 +1205,8 @@ static int vme4l_perform_zc_dma(
 		if( rv < 0 )
 			goto ABORT;
 
-		if( rv == 0 || rv > sgNelems){
+		/* NOTE: rv == 0 is a valid rv for novmeinc */
+		if (rv > sgNelems){
 			rv = -EINVAL;		/* bug in bridge driver... */
 			goto ABORT;
 		}
@@ -1354,7 +1366,7 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode )
 			sgList->dmaLength = count - totlen;
 		}
 
-            dmaAddr = dma_map_single( pDev, pVirtAddr, sgList->dmaLength, direction );
+		dmaAddr = dma_map_single( pDev, pVirtAddr, sgList->dmaLength, direction );
 		if ( dma_mapping_error(pDev, dmaAddr ) ) {
                    printk(KERN_ERR_PFX "%s: *** error mapping DMA space!\n" ,
 			  __func__);
@@ -1413,11 +1425,17 @@ static int vme4l_bounce_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk,
 	size_t len = blk->size;
 	vmeaddr_t vmeAddr = blk->vmeAddr;
 	char *userSpc = blk->dataP;
+	int novmeinc = blk->flags & VME4L_RW_NOVMEINC;
 
 	if( down_interruptible( &G_dmaMutex ))
 		return -ERESTARTSYS;
 
 	VME4LDBG("-> vme4l_bounce_dma\n");
+
+	if (novmeinc)
+		printk(KERN_ERR_PFX "%s: NOVMEINC not supported in "
+		       "bounce buffer DMA mode!\n",
+		       __func__);
 
 	while( len > 0 ){
 		void *bounceBuf;

@@ -102,6 +102,7 @@ static void usage(int excode)
 	printf("-n=<# runs>     nr. of runs reading/writing is done  [1]\n");
 	printf("                (shown MB/s is average of all runs)\n");
 	printf("-e            don't rewind a file after each read/write (only with -n option)\n");
+	printf("-i            FIFO mode, don't increment VME address\n");
 	printf("-x            use swap mode                        [0]\n");
 	printf("-r            read from VME space into CPU\n");
 	printf("-w            write from CPU to VME space\n");
@@ -179,7 +180,7 @@ int main( int argc, char *argv[] )
 	int opt_mmap = 0;
 	int opt_bufoffset = 0;
 	int opt_bufoffset_val = 0;
-	int opt_rw_flags=0;
+	int opt_rw_flags = VME4L_RW_NOFLAGS;
 	struct timespec t1, t2;
 	double transferRate=0.0, timePerRun=0.0, timeTotal=0.0;
 	ssize_t ret;
@@ -231,7 +232,15 @@ int main( int argc, char *argv[] )
 
 	opt_align = (optp=UTL_TSTOPT("l")) ? 1 : 0;
 
-	opt_rw_flags = (optp=UTL_TSTOPT("t")) ? VME4L_RW_USE_DMA : VME4L_RW_NOFLAGS;
+	if (UTL_TSTOPT("t")) {
+		opt_rw_flags |= VME4L_RW_USE_DMA;
+		printf("Use DMA for single-mode accesses\n");
+	}
+
+	if (UTL_TSTOPT("i")) { /* fifo mode */
+		opt_rw_flags |= VME4L_RW_NOVMEINC;
+		printf("Use FIFO/novmeinc mode\n");
+	}
 
 	if( (optp=UTL_TSTOPT("v=")))
 		opt_startval=strtoul( optp, NULL, 0 );

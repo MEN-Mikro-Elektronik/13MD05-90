@@ -353,6 +353,15 @@ typedef struct VME4L_BRIDGE_DRV {
 	 */
 	int (*addrModifierSet)( VME4L_SPACE spc, VME4L_BRIDGE_HANDLE *h, char addrMod);
 
+	/**********************************************************************/
+	/** Get size of a VME block size for a given address modifier
+	 *
+	 * (this function is optional and can be NULL)
+	 *
+	 * \param spc			VME4L space number
+	 */
+	int (*getVmeBlockSize)( VME4L_SPACE spc);
+
 
 	/***********************************************************************/
     /** Write zero-copy DMA scatter list to DMA controller
@@ -379,6 +388,9 @@ typedef struct VME4L_BRIDGE_DRV {
 		int direction,
 		int swapMode,
 		vmeaddr_t *vmeAddr,
+		dma_addr_t *dmaAddr,
+		int *dmaLeft,
+		int vme_block_size,
 		int flags);
 
 	/***********************************************************************/

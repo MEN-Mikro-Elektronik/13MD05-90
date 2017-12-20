@@ -624,6 +624,34 @@ static inline uint32_t DmaSwapMode( int swapMode )
 #endif
 }
 
+int GetVmeBlockSize(VME4L_SPACE spc)
+{
+	switch (spc) {
+	case VME4L_SPC_A16_D16:
+	case VME4L_SPC_A24_D16:
+		/* for D16 + DMA it is 4 not 2 */
+		return 4;
+
+	case VME4L_SPC_A16_D32:
+	case VME4L_SPC_A24_D32:
+	case VME4L_SPC_A32_D32:
+	case VME4L_SPC_CR_CSR:
+		return 4;
+
+	case VME4L_SPC_A24_D16_BLT:
+	case VME4L_SPC_A24_D32_BLT:
+	case VME4L_SPC_A32_D32_BLT:
+		return 256;
+	
+	case VME4L_SPC_A24_D64_BLT:
+	case VME4L_SPC_A32_D64_BLT:
+		/* according to standard it is up to 2k, but hdl uses 1k */
+		return 1024;
+	default:
+		return 0x1000;
+	}
+}
+
 /***********************************************************************/
 /** Write DMA scatter list to DMA controller
  *
@@ -636,12 +664,19 @@ static int DmaSetup(
 	int direction,
 	int modeFlags,
 	vmeaddr_t *vmeAddr,
+	dma_addr_t *dmaAddr,
+	int *dmaLeft,
+	int vme_block_size,
 	int flags)
 {
-	int alignVme=4, sg, rv=0, endBd;
+	int alignVme=4, sg, rv = -1;
 	uint32_t bdAm;
 	char *bdVaddr;
-
+	int dmaLen = 0;
+	int hwdesc_i;
+	int novmeinc = 0;
+	int sgLast;
+	
 	/* DMA controller supports only BLT spaces */
 	switch( spc ){
 	case VME4L_SPC_A24_D16_BLT:
@@ -669,69 +704,137 @@ static int DmaSetup(
 		return -EINVAL;
 	}
 
+	if (debug) {
+		int i;
+		bdVaddr = MEN_PLDZ002_DMABD_OFFS;
+		VME4LDBG("clear DmaBD:\n");
+		for(i=0; i < PLDZ002_DMA_MAX_BDS; i++ ){
+			VME_GENREG_WRITE32( bdVaddr+0x0, 0 );
+			VME_GENREG_WRITE32( bdVaddr+0x4, 0 );
+			VME_GENREG_WRITE32( bdVaddr+0x8, 0 );
+			VME_GENREG_WRITE32( bdVaddr+0xc, 0 );
+			bdVaddr+=0x10;
+		}
+	}
+
 	bdVaddr = MEN_PLDZ002_DMABD_OFFS;
 	VME4LDBG("DmaSetup: bdVaddr=%p\n", bdVaddr );
 
-	endBd = (sgNelems < PLDZ002_DMA_MAX_BDS) ? sgNelems : PLDZ002_DMA_MAX_BDS;
+	novmeinc = flags & VME4L_RW_NOVMEINC;
 
 	/* setup scatter list */
-	VME4LDBG("setup scatter list for %s. endBd = %d:\n", direction ? "write" : "read", endBd);
+	VME4LDBG("setup scatter list for %s. endBd = %d:\n",
+		 direction ? "write" : "read",
+		 (sgNelems < PLDZ002_DMA_MAX_BDS) ? sgNelems : PLDZ002_DMA_MAX_BDS);
 
-	for( sg=0; sg<endBd; sg++, sgList++, bdVaddr+=PLDZ002_DMABD_SIZE ){
+	for( hwdesc_i = 0, sg = 0; hwdesc_i < PLDZ002_DMA_MAX_BDS; hwdesc_i++, bdVaddr+=PLDZ002_DMABD_SIZE ){
+		sgLast = 0;
+
+		if (*dmaLeft == 0) {
+			/* first chunk of sg element for novmeinc, for others
+			 regular case */
+			*dmaAddr = sgList->dmaAddress;
+			*dmaLeft = sgList->dmaLength;
+		}
+
+		dmaLen = *dmaLeft;
+		if (novmeinc && ((dmaLen) > vme_block_size)) {
+			/* limit DMA transfer to a (M)BLT block size */
+			dmaLen = vme_block_size;
+		}
+
+		*dmaLeft -= dmaLen;
+
+		if (hwdesc_i == PLDZ002_DMA_MAX_BDS - 1) {
+			/* last free hwdesc_i */
+			sgLast = 1;
+			VME4LDBG( "sglast because of max BDS\n");
+		}
+
+		if (*dmaLeft == 0 && sgNelems - 1 <= sg) {
+			/* last chunk of last sg element */
+			sgLast = 1;
+			VME4LDBG( "sglast because of *dmaLeft == 0 && sgNelems - 1 <= sg\n");
+		}
+
+		VME4LDBG("%s hwdesc_i %2d, sg %2d, dmaLen 0x%04x, *dmaLeft 0x%04x, *dmaAddr 0x%8x\n",
+			 __func__, hwdesc_i, sg, dmaLen, *dmaLeft, *dmaAddr);
 
 		/*--- check alignment/size ---*/
-		if( (*vmeAddr & (alignVme-1)) || (sgList->dmaAddress & (alignVme-1)) ||
-			(sgList->dmaLength > 256*1024) || (sgList->dmaLength & (alignVme-1))){
-			printk(KERN_ERR_PFX "%s: DMA setup bad alignment/len "
+		if( (*vmeAddr & (alignVme-1)) || (*dmaAddr & (alignVme-1)) ||
+			(dmaLen > 256*1024) || (dmaLen & (alignVme-1))){
+			VME4LDBG( "%s: DMA setup bad alignment/len "
 			       "%08llx %08llx %x\n", __func__, *vmeAddr,
-			       (uint64_t)sgList->dmaAddress, sgList->dmaLength );
+			       (uint64_t)*dmaAddr, dmaLen );
 			rv = -EINVAL;
 			goto CLEANUP;
 		}
 
 		if( direction ) {
 			/* write to VME */
-			VME_GENREG_WRITE32( bdVaddr+0x0, *vmeAddr );
-			VME_GENREG_WRITE32( bdVaddr+0x4, sgList->dmaAddress );
-			VME_GENREG_WRITE32( bdVaddr+0x8, (sgList->dmaLength>>2) - 1 ); /* Block Size of DMA transfer in longwords:  (x bytes / 4) -1 */
+			VME_GENREG_WRITE32( bdVaddr+0x0, *vmeAddr);
+			VME_GENREG_WRITE32( bdVaddr+0x4, *dmaAddr);
+			VME_GENREG_WRITE32( bdVaddr+0x8, (dmaLen>>2) - 1 ); /* Block Size of DMA transfer in longwords:  (x bytes / 4) -1 */
 			VME_GENREG_WRITE32( bdVaddr+0xc,
 							PLDZ002_DMABD_SRC( PLDZ002_DMABD_DIR_PCI ) |
 							PLDZ002_DMABD_DST( PLDZ002_DMABD_DIR_VME ) |
-							bdAm | ((sg == endBd-1) ? PLDZ002_DMABD_END : 0 ) |
+							bdAm | (sgLast ? PLDZ002_DMABD_END : 0 ) |
 							(( flags & VME4L_RW_USE_DMA ) ? PLDZ002_DMABD_BLK_SGL : 0) );
 		}
 		else {
 			/* read from VME */
-			VME_GENREG_WRITE32( bdVaddr+0x0, sgList->dmaAddress );
-			VME_GENREG_WRITE32( bdVaddr+0x4, *vmeAddr );
-			VME_GENREG_WRITE32( bdVaddr+0x8, (sgList->dmaLength>>2) - 1 );
+			VME_GENREG_WRITE32( bdVaddr+0x0, *dmaAddr);
+			VME_GENREG_WRITE32( bdVaddr+0x4, *vmeAddr);
+			VME_GENREG_WRITE32( bdVaddr+0x8, (dmaLen>>2) - 1 );
 			VME_GENREG_WRITE32( bdVaddr+0xc,
-								PLDZ002_DMABD_SRC( PLDZ002_DMABD_DIR_VME ) |
-								PLDZ002_DMABD_DST( PLDZ002_DMABD_DIR_PCI ) |
-								bdAm | ((sg == endBd-1) ? PLDZ002_DMABD_END : 0 ) |
-								(( flags & VME4L_RW_USE_DMA ) ? PLDZ002_DMABD_BLK_SGL : 0) );
+							PLDZ002_DMABD_SRC( PLDZ002_DMABD_DIR_VME ) |
+							PLDZ002_DMABD_DST( PLDZ002_DMABD_DIR_PCI ) |
+							bdAm | (sgLast ? PLDZ002_DMABD_END : 0 ) |
+							(( flags & VME4L_RW_USE_DMA ) ? PLDZ002_DMABD_BLK_SGL : 0) );
 		}
-		*vmeAddr += sgList->dmaLength;
+
+		if (!novmeinc) { /* increase VME address, the simpler case... */
+			*vmeAddr += dmaLen;			
+			sgList++;
+			sg++;
+		} else {
+			if (*dmaLeft == 0) {
+				/* take another sg element */
+				sgList++;
+				sg++;
+			}
+			*dmaAddr += dmaLen;
+		}
+
+		if (*dmaLeft == 0 && sgNelems <= sg) {
+			rv = sg;
+			hwdesc_i++;
+			break;
+		}
 	}
+
+	/* return the number of fully handled sg elements */
+	rv = sg;
 
 	if (debug) {
 		int i;
 		bdVaddr = MEN_PLDZ002_DMABD_OFFS;
-		VME4LDBG("DmaBD setup for %s:\n", direction ? "write" : "read" );
-		for(i=0; i < endBd; i++ ){
-			VME4LDBG("BD%d@%x: %08x %08x %08x %08x\n",
-					 i, bdVaddr,
-					 VME_GENREG_READ32( bdVaddr+0x0 ),
-					 VME_GENREG_READ32( bdVaddr+0x4 ),
-					 VME_GENREG_READ32( bdVaddr+0x8 ),
-					 VME_GENREG_READ32( bdVaddr+0xc ));
+		VME4LDBG("DmaBD setup for %s %d:\n",
+			 direction ? "write" : "read" , hwdesc_i);
+		for(i=0; i < hwdesc_i; i++ ){
+			VME4LDBG("BD%02d@%x: %08x %08x %08x %08x\n",
+				 i, bdVaddr,
+				 VME_GENREG_READ32( bdVaddr+0x0 ),
+				 VME_GENREG_READ32( bdVaddr+0x4 ),
+				 VME_GENREG_READ32( bdVaddr+0x8 ),
+				 VME_GENREG_READ32( bdVaddr+0xc ));
 			bdVaddr+=0x10;
 		}
 	}
 
  CLEANUP:
 	VME4LDBG("<- DmaSetup\n");
-	return rv < 0 ? rv : endBd;
+	return rv;
 }
 
 /***********************************************************************/
@@ -1633,6 +1736,7 @@ static VME4L_BRIDGE_DRV G_bridgeDrv = {
 	.writePio8			= WritePio8,
 	.writePio16			= WritePio16,
 	.writePio32			= WritePio32,
+	.getVmeBlockSize		= GetVmeBlockSize,
 	.dmaSetup			= NULL,
 	.dmaBounceSetup		= NULL,
 	.dmaStart			= DmaStart,
