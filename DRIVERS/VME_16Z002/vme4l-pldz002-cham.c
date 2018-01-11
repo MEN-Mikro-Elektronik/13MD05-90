@@ -193,6 +193,7 @@
 /** VME4L_RESRC.cache flags */
 #define _PLDZ002_WRITETHROUGH 	0x1
 
+#define NR_MSI_VECTORS				13
 
 #define _PLDZ002_FS3(h) 			(0)
 #define _PLDZ002_USE_BOUNCE_DMA(h) 	(bounce_buffer)
@@ -274,7 +275,7 @@ typedef struct {
 +--------------------------------------*/
 static VME4L_BRIDGE_HANDLE G_bHandle;
 
-static const u16 G_devIdArr[] = { 2,
+static const u16 G_devIdArr[] = { CHAMELEON_16Z002_VME,
 								  CHAMELEONV2_DEVID_END };
 
 static int vme4l_probe( CHAMELEONV2_UNIT_T *chu );
@@ -300,6 +301,27 @@ module_param(bounce_buffer, int, S_IRUGO);
 MODULE_PARM_DESC(debug, "Use bounce buffer DMA instead of zero-copy (default " \
 			M_INT_TO_STR(BOUNCE_BUFFER_DEFAULT) ")");
 
+static int use_msi = 0; /* use true message signaled interrupts, not legacy /INTx  */
+
+module_param( use_msi, int, S_IRUGO | S_IWUSR );
+MODULE_PARM_DESC( use_msi, "1: use MSI interupts 0:use legacy interrupt (default)");
+
+/* helper to label MSI ISR handlers according to their function */
+static char *G_isrHdlName[NR_MSI_VECTORS] = {
+	"men_vme_acfail",
+	"men_vme_lvl_1",
+	"men_vme_lvl_2",
+	"men_vme_lvl_3",
+	"men_vme_lvl_4",
+	"men_vme_lvl_5",
+	"men_vme_lvl_6",
+	"men_vme_lvl_7",
+	"men_vme_berr",
+	"men_vme_dma",
+	"men_vme_locmon0",
+	"men_vme_locmon1",
+	"men_vme_mbox"
+};
 
 /*--------------------------------------+
 |   PROTOTYPES                          |
@@ -1968,21 +1990,16 @@ static int PldZ002_CheckMiscVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
  * \param dev_id	device specific handle
  *
  * \brief		this is the standard Linux kernel IRQ handler for VME
- *				bus devices. From here we dispatch everything to vme4l-core
+ *			bus devices. From here we dispatch everything to vme4l-core
  *
  */
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19)
-static irqreturn_t PldZ002Irq(int irq, void *dev_id, struct pt_regs *regs)
-{
-#else
 static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 {
-	struct pt_regs *regs = NULL;
-# endif /* LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19) */
-
 	int vector=0, level=VME4L_IRQLEV_UNKNOWN;
 	VME4L_BRIDGE_HANDLE *h 	= (VME4L_BRIDGE_HANDLE *)dev_id;
 	int handled=1;
+	struct pt_regs *regs=NULL;
+
 	/* VME4LDBG */
 	PLDZ002_LOCK_STATE();
 
@@ -2012,7 +2029,6 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 
  EXIT:
 	PLDZ002_UNLOCK_STATE();
-
 	return handled ? IRQ_HANDLED : IRQ_NONE;
 }
 
@@ -2140,10 +2156,11 @@ static void InitBridge( VME4L_BRIDGE_HANDLE *h )
 
 static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 {
-	int rv, i, irqReq=0;
+	int rv, i, nvec, irqReq=0;
 	VME4L_BRIDGE_HANDLE *h = &G_bHandle;
 	unsigned int barval=0, barsave=0, barsize=0, barA32=0;
 	CHAMELEONV2_UNIT_T u;
+	struct device *dev = &chu->pdev->dev;
 
 	printk(KERN_INFO "vme4l_probe: probing 16Z002 unit\n");
 	switch ( chu->unitFpga.variant ) {
@@ -2254,31 +2271,48 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 			goto CLEANUP;
 	}
 
-	/* sram as slave window (don't ioremap) */
 	h->sram.phys =  h->spaces[CHAM_SPC_SRAM];
 	h->sram.size = PLDZ002_LRAM_SIZE;
 	if( _PLDZ002_USE_BOUNCE_DMA(h) )
 		h->sram.size -= BOUNCE_SRAM_SIZE;
 
-	rv = pci_enable_msi(chu->pdev); /* using pci_enable_msi_block would be nicer,
-					   but powerpc linux doesn't support it... */
-	if (rv != 0 ) {
-		printk(KERN_ERR_PFX "%s: Could not allocate enough msi interrupts: %d\n",
-		       __func__, rv);
-		goto CLEANUP;
-	} else {
-		/*normal linux kernel mode: PldZ002Irq is a standard linux IRQ handler */
-		if( (rv = request_irq( chu->pdev->irq, PldZ002Irq,
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,20)
-						IRQF_SHARED,
-#else
-						SA_SHIRQ,
-#endif
-						"Z002_LX",
-						h))<0 )
+	if ( use_msi ) {
+		nvec = pci_alloc_irq_vectors( chu->pdev, 1, NR_MSI_VECTORS, PCI_IRQ_MSI);
+		if (nvec < 0) {
+			VME4LDBG("failed to get MSI interrupts\n");
 			goto CLEANUP;
+		}
+		VME4LDBG("Got %d MSI vectors\n", nvec );
+
+		for (i = 0; i < nvec; i++) {
+			rv = devm_request_irq( dev,
+					pci_irq_vector( chu->pdev, i ),
+					PldZ002Irq,
+					IRQF_SHARED,
+					G_isrHdlName[i],
+					h );
+			if (rv)
+				VME4LDBG( "failed to request IRQ %d for MSI %d\n", chu->pdev->irq + i, i );
+		}
+
+	} else {
+
+	rv = pci_enable_msi(chu->pdev); /* using pci_enable_msi_block would be nicer,
+					   but powerpc linux doesn't support it...
+					   ts@men: used in any case, if use_msi=0 then
+					   legacy INTx packets are sent */
+		if (rv != 0 ) {
+			printk(KERN_ERR_PFX "%s: Could'nt enable MSI (error %d)\n",  rv);
+			goto CLEANUP;
+		}
+
+		/*normal linux kernel mode: PldZ002Irq is a standard linux IRQ handler */
+		if( (rv = request_irq( chu->pdev->irq, PldZ002Irq, IRQF_SHARED,	"men_vme_16z002", h)) < 0 )
+		{
+				goto CLEANUP;
+		}
+		VME4LDBG("Got IRQ vector %x\n", chu->pdev->irq);
 	}
-	VME4LDBG("Got MSI %x\n", chu->pdev->irq);
 
 	irqReq++;
 
@@ -2322,10 +2356,16 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
  CLEANUP:
 	printk(KERN_ERR_PFX "%s: Init error %d\n", __func__, -rv);
 
-	if( irqReq ){
-
-		free_irq( chu->pdev->irq, h );
-		pci_disable_msi(chu->pdev);
+	if( irqReq ) {
+		if ( use_msi ) {
+			pci_free_irq_vectors( chu->pdev );
+			for (i = 0; i < NR_MSI_VECTORS; i++) {
+				devm_free_irq( dev, pci_irq_vector( chu->pdev, i ), h );
+			}
+		} else {
+			free_irq( chu->pdev->irq, h );
+			pci_disable_msi(chu->pdev);
+		}
 	}
 
 	FreeRegSpace( &h->regs 		);
@@ -2354,8 +2394,9 @@ static void __exit vme4l_pldz002_cleanup_module(void)
 
 static int vme4l_remove( CHAMELEONV2_UNIT_T *chu )
 {
-  int var = chu->unitFpga.variant;
-
+       int var = chu->unitFpga.variant;
+       struct device *dev = &chu->pdev->dev;
+       int i;
        if (( var == 1) || (var == 2 )) {
 		VME4L_BRIDGE_HANDLE *h = &G_bHandle;
 		printk( KERN_DEBUG "vme4l_pldz002_cleanup_module\n");
@@ -2368,12 +2409,18 @@ static int vme4l_remove( CHAMELEONV2_UNIT_T *chu )
 		FreeRegSpace( &h->iack 		);
 		FreeRegSpace( &h->bounce 	);
 
-		free_irq( chu->pdev->irq, h 	);
-		pci_disable_msi(chu->pdev);
+		if ( use_msi ) {
+			for (i = 0; i < NR_MSI_VECTORS; i++) {
+				devm_free_irq( dev, pci_irq_vector( chu->pdev, i ), h );
+			}
+			pci_free_irq_vectors( chu->pdev );
+		} else {
+			free_irq( chu->pdev->irq, h );
+			pci_disable_msi(chu->pdev);
+		}
 	}
 
 	return 0;
-
 }
 
 int vme4l_register_client( VME4L_BRIDGE_HANDLE *h )
