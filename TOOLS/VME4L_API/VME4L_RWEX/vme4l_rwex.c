@@ -191,7 +191,7 @@ int main( int argc, char *argv[] )
 	int return_global = 0;
 	int map_offset = 0;
 
-	if( UTL_TSTOPT("?") || (argc == 1) )
+	if( UTL_TSTOPT("?") || UTL_TSTOPT("h") || (argc == 1) )
 		usage(0);
 
 	/*-----------------------------+
