@@ -135,7 +135,7 @@
 #define PLDZ002_LOCK_STATE() 			spin_lock(&h->lockState)
 #define PLDZ002_UNLOCK_STATE() 			spin_unlock(&h->lockState)
 #define PLDZ002_LOCK_STATE_IRQ(ps) 		spin_lock_irqsave(&h->lockState, ps)
-#define PLDZ002_UNLOCK_STATE_IRQ(ps) 	spin_unlock_irqrestore(&h->lockState, ps)
+#define PLDZ002_UNLOCK_STATE_IRQ(ps) 		spin_unlock_irqrestore(&h->lockState, ps)
 
 /* macros to write to PLD internal regs */
 #define VME_CTRL_SETMASK(reg,mask)  \
@@ -1765,8 +1765,7 @@ static int PldZ002_ProcessPendingVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
 	}
 
 	istat = VME_REG_READ8( PLDZ002_MSTR ) & 0xff;
-
-    istat = VME_REG_READ8( PLDZ002_ISTAT  );
+	istat = VME_REG_READ8( PLDZ002_ISTAT  );
 	istat &= VME_REG_READ8( PLDZ002_IMASK );
 
     if( istat != 0 ){
@@ -1886,7 +1885,6 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 	int vector=0, level=VME4L_IRQLEV_UNKNOWN;
 	VME4L_BRIDGE_HANDLE *h 	= (VME4L_BRIDGE_HANDLE *)dev_id;
 	int handled=1;
-	struct pt_regs *regs=NULL;
 
 	/* VME4LDBG */
 	PLDZ002_LOCK_STATE();
@@ -1913,7 +1911,7 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id )
  DONE:
 	VME4LDBG("PldZ002Irq: vector=%d level=%d\n", vector, level );
 
-	vme4l_irq( level, vector, regs );
+	vme4l_irq( level, vector );
 
  EXIT:
 	PLDZ002_UNLOCK_STATE();
@@ -1921,7 +1919,153 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 }
 
 
-/*******************************************************************/
+/**
+ * MSI specific single ISR handlers for each singe IRQ source within VME core.
+ **/
+
+/* single handler for AC FAIL (could handle it like "Level 0" but it's definition in VME is different) */
+static irqreturn_t pldz002_isr_acfail(int irq, void *dev_id )
+{
+	int vector=0, level=VME4L_IRQLEV_UNKNOWN;
+	VME4L_BRIDGE_HANDLE *h 	= (VME4L_BRIDGE_HANDLE *)dev_id;
+	int handled=0;
+	uint8_t istat = 0;
+	unsigned long flags;
+
+	PLDZ002_LOCK_STATE_IRQ( flags ); /* spin_lock_irqsave as recommended in MSI-HOWTO.txt */
+	istat = VME_REG_READ8( PLDZ002_ISTAT  );
+
+	if( istat & 0x01 ) { /* should be exactly ACFAIL */
+		vector = VME4L_IRQLEV_ACFAIL;
+		level = VME4L_IRQVEC_ACFAIL;
+		handled = 1;
+
+		/* fetch vector (VME IACK cycle) */
+		vector = VME_WIN_READ8( (char *)h->iack.vaddr + ( level << 1 ) + 1 );
+		/* check for bus error during IACK (spurious irq) */
+		if( VME_REG_READ8( PLDZ002_MSTR ) & PLDZ002_MSTR_BERR ){
+			/* clear bus error */
+			StoreAndClearBuserror(h);
+			vector = VME4L_IRQVEC_SPUR;
+		}
+		VME4LDBG("pldz002_isr_acfail: vector=%d level=%d\n", vector, level );
+		vme4l_irq( level, vector );
+	}
+ 	PLDZ002_UNLOCK_STATE_IRQ( flags );
+	return handled ? IRQ_HANDLED : IRQ_NONE;
+}
+
+/*
+ * template for 7 ISRs for IRQ levels 1-7
+ **/
+#define PLDZ002_ISR_LEVEL(lvl,label) \
+static irqreturn_t pldz002_isr_level_##lvl(int irq, void *dev_id ) \
+{ \
+	int vector=0, level=VME4L_IRQLEV_UNKNOWN; \
+	VME4L_BRIDGE_HANDLE *h 	= (VME4L_BRIDGE_HANDLE *)dev_id; \
+	int handled=0; \
+	uint8_t istat = 0; \
+	unsigned long flags;\
+\
+	PLDZ002_LOCK_STATE_IRQ( flags ); /* spin_lock_irqsave as recommended in MSI-HOWTO.txt */ \
+\
+	istat = VME_REG_READ8( PLDZ002_ISTAT  ); \
+	if( istat & ( 1 << lvl )) { \
+		level = lvl; \
+		handled = 1; \
+		/* fetch vector (VME IACK cycle) */ \
+		vector = VME_WIN_READ8( (char *)h->iack.vaddr + ( level << 1 ) + 1 ); \
+		/* check for bus error during IACK (spurious irq) */ \
+		if( VME_REG_READ8( PLDZ002_MSTR ) & PLDZ002_MSTR_BERR ) { \
+			/* clear bus error */ \
+			StoreAndClearBuserror(h); \
+			vector = VME4L_IRQVEC_SPUR; \
+		} \
+		VME4LDBG( label": vector=%d level=%d\n", vector, level ); \
+		vme4l_irq( level, vector ); \
+	} \
+ 	PLDZ002_UNLOCK_STATE_IRQ( flags ); \
+	return handled ? IRQ_HANDLED : IRQ_NONE; \
+}
+
+PLDZ002_ISR_LEVEL( 1, "men_vme_lvl_1" );
+PLDZ002_ISR_LEVEL( 2, "men_vme_lvl_2" );
+PLDZ002_ISR_LEVEL( 3, "men_vme_lvl_3" );
+PLDZ002_ISR_LEVEL( 4, "men_vme_lvl_4" );
+PLDZ002_ISR_LEVEL( 5, "men_vme_lvl_5" );
+PLDZ002_ISR_LEVEL( 6, "men_vme_lvl_6" );
+PLDZ002_ISR_LEVEL( 7, "men_vme_lvl_7" );
+
+static irqreturn_t pldz002_isr_berr(int irq, void *dev_id )
+{
+	int vector=0, level=VME4L_IRQLEV_UNKNOWN;
+	VME4L_BRIDGE_HANDLE *h 	= (VME4L_BRIDGE_HANDLE *)dev_id;
+	int handled=0;
+	unsigned long flags;
+
+	PLDZ002_LOCK_STATE_IRQ( flags ); /* spin_lock_irqsave as recommended in MSI-HOWTO.txt */
+
+	if (PldZ002_CheckVmeBusError( h, &vector, &level ))
+		goto DONE;
+
+	/* no interrupt source -> exit */
+	handled=0;
+
+	printk(KERN_ERR_PFX "%s: unhandled irq! vec=%d lev=%d\n", __func__, vector, level );
+	goto EXIT;
+
+ DONE:
+	VME4LDBG("pldz002_isr_berr: vector=%d level=%d\n", vector, level );
+	vme4l_irq( level, vector );
+ EXIT:
+	PLDZ002_UNLOCK_STATE();
+	return handled ? IRQ_HANDLED : IRQ_NONE;
+}
+
+static irqreturn_t pldz002_isr_dma(int irq, void *dev_id )
+{
+	int vector=0, level=VME4L_IRQLEV_UNKNOWN;
+	VME4L_BRIDGE_HANDLE *h 	= (VME4L_BRIDGE_HANDLE *)dev_id;
+	int handled=0;
+	unsigned long flags;
+
+	PLDZ002_LOCK_STATE_IRQ( flags ); /* spin_lock_irqsave as recommended in MSI-HOWTO.txt */
+
+	/* reusing this function because it handles DMA IRQs at the beginning */
+	if (PldZ002_CheckMiscVmeInterrupts(h, &vector, &level))
+		goto DONE;
+
+	/* no interrupt source -> exit */
+	handled=0;
+
+	printk(KERN_ERR_PFX "%s: unhandled irq! vec=%d lev=%d\n", __func__, vector, level );
+	goto EXIT;
+ DONE:
+	VME4LDBG("pldz002_isr_dma: vector=%d level=%d\n", vector, level );
+	vme4l_irq( level, vector );
+ EXIT:
+	PLDZ002_UNLOCK_STATE();
+	return handled ? IRQ_HANDLED : IRQ_NONE;
+}
+
+static irqreturn_t pldz002_isr_locmon0(int irq, void *dev_id )
+{
+	printk(KERN_ERR_PFX "%s: NOT HANDLED YET!!\n", __func__ );
+	return IRQ_NONE;
+}
+
+static irqreturn_t pldz002_isr_locmon1(int irq, void *dev_id )
+{
+	printk(KERN_ERR_PFX "%s: NOT HANDLED YET!!\n", __func__ );
+	return IRQ_NONE;
+}
+
+static irqreturn_t pldz002_isr_mbox(int irq, void *dev_id )
+{
+	printk(KERN_ERR_PFX "%s: NOT HANDLED YET!!\n", __func__ );
+	return IRQ_NONE;
+}
+
 /** check mem region/request it and ioremap it
  */
 static int MapRegSpace( VME4L_RESRC *res, const char *name )
@@ -2169,18 +2313,53 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 			VME4LDBG("failed to get MSI interrupts\n");
 			goto CLEANUP;
 		}
+
+		if (nvec < NR_MSI_VECTORS ) {
+			VME4LDBG("failed to get %d vectors, only got %d.\n", NR_MSI_VECTORS, nvec);
+			goto CLEANUP;
+		}
+
 		VME4LDBG("Got %d MSI vectors\n", nvec );
 
-		for (i = 0; i < nvec; i++) {
-			rv = devm_request_irq( dev,
-					pci_irq_vector( chu->pdev, i ),
-					PldZ002Irq,
-					IRQF_SHARED,
-					G_isrHdlName[i],
-					h );
-			if (rv)
-				VME4LDBG( "failed to request IRQ %d for MSI %d\n", chu->pdev->irq + i, i );
-		}
+		/* TODO loop! */
+		if ( devm_request_irq( dev, pci_irq_vector( chu->pdev, 0 ), pldz002_isr_acfail,  IRQF_SHARED, G_isrHdlName[0], h ))
+			printk(KERN_ERR_PFX "Couldn't request MSI vector 0\n" );
+
+		if ( devm_request_irq( dev, pci_irq_vector( chu->pdev, 1 ), pldz002_isr_level_1, IRQF_SHARED, G_isrHdlName[1], h ))
+			printk(KERN_ERR_PFX "Couldn't request MSI vector 1\n" );
+
+		if ( devm_request_irq( dev, pci_irq_vector( chu->pdev, 2 ), pldz002_isr_level_2, IRQF_SHARED, G_isrHdlName[2], h ))
+			printk(KERN_ERR_PFX "Couldn't request MSI vector 2\n" );
+
+		if ( devm_request_irq( dev, pci_irq_vector( chu->pdev, 3 ), pldz002_isr_level_3, IRQF_SHARED, G_isrHdlName[3], h ))
+			printk(KERN_ERR_PFX "Couldn't request MSI vector 3\n" );
+
+		if ( devm_request_irq( dev, pci_irq_vector( chu->pdev, 4 ), pldz002_isr_level_4, IRQF_SHARED, G_isrHdlName[4], h ))
+			printk(KERN_ERR_PFX "Couldn't request MSI vector 4\n" );
+
+		if ( devm_request_irq( dev, pci_irq_vector( chu->pdev, 5 ), pldz002_isr_level_5, IRQF_SHARED, G_isrHdlName[5], h ))
+			printk(KERN_ERR_PFX "Couldn't request MSI vector 5\n" );
+
+		if ( devm_request_irq( dev, pci_irq_vector( chu->pdev, 6 ), pldz002_isr_level_6, IRQF_SHARED, G_isrHdlName[6], h ))
+			printk(KERN_ERR_PFX "Couldn't request MSI vector 6\n" );
+
+		if ( devm_request_irq( dev, pci_irq_vector( chu->pdev, 7 ), pldz002_isr_level_7, IRQF_SHARED, G_isrHdlName[7], h ))
+			printk(KERN_ERR_PFX "Couldn't request MSI vector 7\n" );
+
+		if ( devm_request_irq( dev, pci_irq_vector( chu->pdev, 8 ), pldz002_isr_berr,    IRQF_SHARED, G_isrHdlName[8], h ))
+			printk(KERN_ERR_PFX "Couldn't request MSI vector 8\n" );
+
+		if ( devm_request_irq( dev, pci_irq_vector( chu->pdev, 9 ), pldz002_isr_dma,     IRQF_SHARED, G_isrHdlName[9], h ))
+			printk(KERN_ERR_PFX "Couldn't request MSI vector 9\n" );
+
+		if ( devm_request_irq( dev, pci_irq_vector( chu->pdev, 10), pldz002_isr_locmon0,     IRQF_SHARED, G_isrHdlName[10], h ))
+			printk(KERN_ERR_PFX "Couldn't request MSI vector 10\n" );
+
+		if ( devm_request_irq( dev, pci_irq_vector( chu->pdev, 11), pldz002_isr_locmon1,     IRQF_SHARED, G_isrHdlName[11], h ))
+			printk(KERN_ERR_PFX "Couldn't request MSI vector 11\n" );
+
+		if ( devm_request_irq( dev, pci_irq_vector( chu->pdev, 12), pldz002_isr_mbox,     IRQF_SHARED, G_isrHdlName[12], h ))
+			printk(KERN_ERR_PFX "Couldn't request MSI vector 12\n" );
 
 	} else {
 
@@ -2189,7 +2368,7 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 					   ts@men: used in any case, if use_msi=0 then
 					   legacy INTx packets are sent */
 		if (rv != 0 ) {
-			printk(KERN_ERR_PFX "%s: Could'nt enable MSI (error %d)\n",  rv);
+			printk(KERN_ERR_PFX "Could'nt enable MSI (error %d)\n",  rv);
 			goto CLEANUP;
 		}
 

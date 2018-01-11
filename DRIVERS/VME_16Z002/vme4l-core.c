@@ -237,11 +237,7 @@ typedef struct {
 			void *dev_id;				/**< handler's private data */
 			union {
                 /** Linux kernel handler */
- #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)
 				void (*lHandler)(int, void *);
- #else
-				void (*lHandler)(int, void *, struct pt_regs *);
- #endif /*LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)*/
 			} h;
 		} kernel;
 	} u;
@@ -1858,7 +1854,6 @@ static int vme4l_signal_uninstall( int vector, struct file *file )
  *
  * \param level		the interrupt level code, see \ref VME4L_IRQLEV
  * \param vector 	VME vector or pseudo vector
- * \param regs		regs argument passed to bridge irq (for whatever)
  *
  * \brief   the occuring Interrupts are dispatched to one of
  *		   	the 3 possible handling environments. These are:
@@ -1867,7 +1862,7 @@ static int vme4l_signal_uninstall( int vector, struct file *file )
  *		   	- Linux Usermode signals ent->entType = VME4L_USER_IRQ
  *
  */
-void vme4l_irq( int level, int vector, struct pt_regs *regs)
+void vme4l_irq( int level, int vector )
 {
 	VME4L_IRQ_ENTRY *ent;
 	struct list_head *pos;
@@ -1904,14 +1899,8 @@ void vme4l_irq( int level, int vector, struct pt_regs *regs)
 			switch( ent->entType ){
 
 			case VME4L_KERNEL_IRQ:
-
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)
 				ent->u.kernel.h.lHandler( level, ent->u.kernel.dev_id );
-#else
-				ent->u.kernel.h.lHandler( level, ent->u.kernel.dev_id, regs );
-#endif /*LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)*/
 				break;
-
 
 			case VME4L_USER_IRQ:
 				/* send signal to process */
@@ -2773,11 +2762,7 @@ int vme_bus_to_phys( int space, u32 vmeadrs, void **physadrs_p )
  */
 int VME_REQUEST_IRQ(
 	unsigned int vme_irq,
- #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)
 	void (*handler)(int, void * ),
-#else
-	void (*handler)(int, void *, struct pt_regs * ),
-#endif
 	unsigned long flags,
 	const char *device,
 	void *dev_id

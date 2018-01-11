@@ -688,7 +688,7 @@ int vme4l_register_bridge_driver( VME4L_BRIDGE_DRV *drv,
 								  VME4L_BRIDGE_HANDLE *drvData );
 void vme4l_unregister_bridge_driver(void);
 
-void vme4l_irq( int level, int vector, struct pt_regs *regs);
+void vme4l_irq( int level, int vector );
 
 VME4L_SPACE_ENT* vme4l_get_space_ent(unsigned int idx);
 
