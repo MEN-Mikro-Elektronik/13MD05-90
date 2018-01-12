@@ -173,7 +173,6 @@ typedef enum {
 /** use DMA engine for non-BLT spaces */
 #define VME4L_RW_USE_DMA 			0x02
 #define VME4L_RW_KERNEL_SPACE_DMA 		0x04
-#define VME4L_RW_NOVMEINC			0x08
 
 /*! @} */
 
