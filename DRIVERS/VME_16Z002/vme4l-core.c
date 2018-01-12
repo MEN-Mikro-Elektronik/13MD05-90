@@ -1449,6 +1449,11 @@ static int vme4l_bounce_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk,
 
 	VME4LDBG("-> vme4l_bounce_dma\n");
 
+	if (blk->flags & VME4L_RW_NOVMEINC)
+		printk(KERN_ERR_PFX "%s: NOVMEINC not supported in "
+		       "bounce buffer DMA mode!\n",
+		       __func__);
+
 	while( len > 0 ){
 		void *bounceBuf;
 		size_t curLen;
