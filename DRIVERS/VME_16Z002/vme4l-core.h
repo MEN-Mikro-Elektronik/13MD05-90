@@ -111,6 +111,7 @@
 #include <linux/device.h>
 #include <linux/mm.h>
 #include <linux/pci.h>
+#include <linux/seq_file.h>
 #include <asm/uaccess.h>        /* put_user */
 #include <asm/io.h>
 
@@ -175,6 +176,14 @@ typedef struct VME4L_BRIDGE_DRV {
 	 * into \a buf (100 bytes max)
 	 */
 	void (*revisionInfo)( VME4L_BRIDGE_HANDLE *h, char *buf );
+
+	/***********************************************************************/
+	/** Get supported 
+	 *
+	 * bridge driver shall sprintf HW and bridge driver revision information
+	 * into \a buf (100 bytes max)
+	 */
+	void (*getSupportedBitstreams)(struct seq_file *m);
 
 	/***********************************************************************/
     /** Request VME master address window

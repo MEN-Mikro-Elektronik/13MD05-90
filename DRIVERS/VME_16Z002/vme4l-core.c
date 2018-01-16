@@ -3038,6 +3038,27 @@ static int vme4l_irq_levels_proc_show(struct seq_file *m, void *data)
 	return 0;
 }
 
+static int vme4l_supported_bitstreams_proc_show(struct seq_file *m, void *data)
+{
+	if (G_bDrv && G_bDrv->getSupportedBitstreams){
+		G_bDrv->getSupportedBitstreams(m);
+	}
+
+	return 0;
+}
+
+static int vme4l_supported_bitstreams_proc_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, vme4l_supported_bitstreams_proc_show, NULL);
+}
+
+static const struct file_operations vme4l_supported_bitstreams_proc_ops = {
+	.open		= vme4l_supported_bitstreams_proc_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+
 static int vme4l_info_proc_open(struct inode *inode, struct file *file)
 {
 	return single_open(file, vme4l_info_proc_show, NULL);
@@ -3100,7 +3121,7 @@ static void vme_bridge_procfs_register(void)
 	if (!entry)
 		printk(KERN_WARNING "vme4l: Failed to create proc windows node\n");
 
-	 entry = proc_create("interrupts", S_IFREG | S_IRUGO, vme4l_root, &vme4l_interrupts_proc_ops);
+	entry = proc_create("interrupts", S_IFREG | S_IRUGO, vme4l_root, &vme4l_interrupts_proc_ops);
 	if (!entry)
 		printk(KERN_WARNING "vme4l: Failed to create proc interrupts node\n");
 
@@ -3108,10 +3129,14 @@ static void vme_bridge_procfs_register(void)
 	if (!entry)
 		printk(KERN_WARNING "vme4l: Failed to create proc irq node\n");
 
+	entry = proc_create("supported_bitstreams", S_IFREG | S_IRUGO, vme4l_root, &vme4l_supported_bitstreams_proc_ops);
+	if (!entry)
+		printk(KERN_WARNING "vme4l: Failed to create proc supported_bitstreams node\n");
 }
 
 static void vme_bridge_procfs_unregister(void)
 {
+	remove_proc_entry("supported_bitstreams", vme4l_root);
 	remove_proc_entry("irq_levels", vme4l_root);
 	remove_proc_entry("interrupts", vme4l_root);
 	remove_proc_entry("windows", vme4l_root);

@@ -265,6 +265,12 @@ typedef struct {
 	int refCounter;		/**< number of registered clients */
 } VME4L_BRIDGE_HANDLE;
 
+
+typedef struct {
+	u_int16 revision;
+	u_int16 min_revision;
+} VME4L_BITSTREAM_VERSION;
+
 #define COMPILE_VME_BRIDGE_DRIVER
 #include "vme4l-core.h"
 
@@ -286,6 +292,12 @@ static CHAMELEONV2_DRIVER_T G_driver = {
     .remove   = vme4l_remove
 };
 
+/* List of supported bitstreams */
+static VME4L_BITSTREAM_VERSION supported_bitstream_ver[] = {
+	{ 3, 9},
+	{ 0, 0}
+};
+
 static int debug = DEBUG_DEFAULT;  /**< enable debug printouts */
 
 module_param(debug, int, S_IRUGO | S_IWUSR);
@@ -304,6 +316,15 @@ MODULE_PARM_DESC(debug, "Use bounce buffer DMA instead of zero-copy (default " \
 |   PROTOTYPES                          |
 +--------------------------------------*/
 
+void GetSupportedBitstreams(struct seq_file *m)
+{
+	VME4L_BITSTREAM_VERSION *entry;
+	entry = supported_bitstream_ver;
+	while (entry->revision != 0 && entry->min_revision != 0) {
+		seq_printf(m, "%d.%d\n", entry->revision, entry->min_revision);
+		entry++;
+	}
+}
 
 /***********************************************************************/
 /** Get system IRQ no.
@@ -1727,6 +1748,7 @@ int LocMonRegWriteFs2(
 
 static VME4L_BRIDGE_DRV G_bridgeDrv = {
 	.revisionInfo		= RevisionInfo,
+	.getSupportedBitstreams = GetSupportedBitstreams,
 	.requestAddrWindow 	= RequestAddrWindow,
 	.releaseAddrWindow 	= ReleaseAddrWindow,
 	.irqLevelCtrl		= IrqLevelCtrl,
