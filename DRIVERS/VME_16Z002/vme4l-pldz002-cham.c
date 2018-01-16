@@ -723,10 +723,12 @@ static int DmaSetup(
 		bdAm = h->addrModShadow[spc];
 		break;
 	default:
+		printk(KERN_ERR_PFX "%s: DmaSetup unknown spc %d\n",
+		       __func__, spc);
 		return -EINVAL;
 	}
 
-	if (debug) {
+	if (1) {
 		int i;
 		bdVaddr = MEN_PLDZ002_DMABD_OFFS;
 		VME4LDBG("clear DmaBD:\n");
@@ -785,9 +787,10 @@ static int DmaSetup(
 		/*--- check alignment/size ---*/
 		if( (*vmeAddr & (alignVme-1)) || (*dmaAddr & (alignVme-1)) ||
 			(dmaLen > 256*1024) || (dmaLen & (alignVme-1))){
-			VME4LDBG( "%s: DMA setup bad alignment/len "
+			printk(KERN_ERR_PFX "%s:  DMA setup bad alignment/len "
 			       "%08llx %08llx %x\n", __func__, *vmeAddr,
 			       (uint64_t)*dmaAddr, dmaLen );
+
 			rv = -EINVAL;
 			goto CLEANUP;
 		}
@@ -976,6 +979,7 @@ static int DmaStart( VME4L_BRIDGE_HANDLE *h )
 
 	/* start DMA and enable DMA interrupt */
 	VME_REG_WRITE8( PLDZ002_DMASTA, PLDZ002_DMASTA_EN | PLDZ002_DMASTA_IEN);
+
 	return 0;
 }
 
@@ -1005,6 +1009,9 @@ static int DmaStatus( VME4L_BRIDGE_HANDLE *h )
 		return 1;				/* runnig */
 
 	if( status & PLDZ002_DMASTA_ERR || h->dmaError) {
+		printk(KERN_ERR_PFX "%s: DMA error! DMASTA=%02x, "
+		       "h->dmaError = %d\n",
+		       __func__, status, h->dmaError);
 		return -EIO;
 	}
 
@@ -1861,9 +1868,9 @@ static int PldZ002_CheckVmeBusError( VME4L_BRIDGE_HANDLE *h,
  * \param levP		where to store level
  *
  */
-static int PldZ002_ProcessPendingVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
-										   int *vecP,
-										   int *levP )
+static int PldZ002_ProcessPendingVmeInterrupts(VME4L_BRIDGE_HANDLE *h,
+					       int *vecP,
+					       int *levP)
 {
 
 	uint8_t istat = 0;
@@ -1920,9 +1927,9 @@ static int PldZ002_ProcessPendingVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
  *				    processed, these are: DMA finished, Mailbox receive,
  *					location monitor
  */
-static int PldZ002_CheckMiscVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
-										 int *vecP,
-										 int *levP)
+static int PldZ002_CheckDmaVmeInterrupts(VME4L_BRIDGE_HANDLE *h,
+					 int *vecP,
+					 int *levP)
 {
 	uint8_t dmastat = 0;
 
@@ -1936,12 +1943,27 @@ static int PldZ002_CheckMiscVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
 	if( dmastat & ( PLDZ002_DMASTA_IRQ | PLDZ002_DMASTA_ERR) ) {
 		/* 1. check if DMA error occured ? if yes, stop DMA activity and clear DMA error & clear DMA */
 		if( dmastat & PLDZ002_DMASTA_ERR ) {
-			printk(KERN_ERR_PFX "%s: DMA error occured, stop DMA and clear DMA IRQ and error\n",
-			       __func__);
+			printk(KERN_ERR_PFX "%s: DMA error occured, stop DMA and clear DMA IRQ and error DMASTA8=0x%x\n",
+			       __func__, dmastat);
 			/* clear by writing '1' to the bits, DMA also stopped by setting its bit to 0 */
 			VME_REG_WRITE8( PLDZ002_DMASTA, PLDZ002_DMASTA_IRQ | PLDZ002_DMASTA_ERR);
 			*levP = VME4L_IRQLEV_BUSERR;
 			h->dmaError = 1;
+			{
+				int i;
+				char *bdVaddr;
+				bdVaddr = MEN_PLDZ002_DMABD_OFFS;
+				printk(KERN_ERR_PFX "%s DmaBD setup:\n", __func__);
+				for(i=0; i < PLDZ002_DMA_MAX_BDS; i++ ){
+					printk(KERN_ERR_PFX "BD%02d@%x: %08x %08x %08x %08x\n",
+						i, bdVaddr,
+						VME_GENREG_READ32( bdVaddr+0x0 ),
+						VME_GENREG_READ32( bdVaddr+0x4 ),
+						VME_GENREG_READ32( bdVaddr+0x8 ),
+						VME_GENREG_READ32( bdVaddr+0xc ));
+					bdVaddr+=0x10;
+				}
+			}
 		} else {
 			/* regular finished DMA. Reset DMA irq */
 			VME_REG_WRITE8( PLDZ002_DMASTA, PLDZ002_DMASTA_IRQ );
@@ -1951,6 +1973,13 @@ static int PldZ002_CheckMiscVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
 		return 1;
 	}
 
+	return 0;
+}
+
+static int PldZ002_CheckMailboxInterrupts(VME4L_BRIDGE_HANDLE *h,
+					  int *vecP,
+					  int *levP)
+{
 	/* check for mailbox irqs */
 	*vecP = HighestBitSet( VME_REG_READ8( PLDZ002_MAIL_IRQ_STAT ));
 	if( *vecP >= 0 ){
@@ -1962,6 +1991,14 @@ static int PldZ002_CheckMiscVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
 		*levP 	+= VME4L_IRQLEV_MBOXRD(0);
 		return 1;
 	}
+
+	return 0;
+}
+
+static int PldZ002_CheckLocationMonitorInterrupts(VME4L_BRIDGE_HANDLE *h,
+						  int *vecP,
+						  int *levP)
+{
 	/* check for location monitor irqs */
 	if( (VME_REG_READ8( PLDZ002_LM_STAT_CTRL_0 ) &
 				(PLDZ002_LM_STAT_CTRL_IRQ | PLDZ002_LM_STAT_CTRL_IRQ_EN)) ==
@@ -2006,47 +2043,87 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 	VME4L_BRIDGE_HANDLE *h 	= (VME4L_BRIDGE_HANDLE *)dev_id;
 	int handled=1;
 	int something_handled = 0;
+	static int handled_total = 0;
+	static int ints_total = 0;
+	int int_bus_error = 0;
+	int int_vme = 0;
+	int int_dma = 0;
+	int int_mailbox = 0;
+	int int_monitor = 0;
 	/* VME4LDBG */
 	PLDZ002_LOCK_STATE();
 
-
+	ints_total++;
 	while (handled) {
 		handled = 0;
-		/* 1. check for bus errors */
-		if (0 < PldZ002_CheckVmeBusError( h, &vector, &level )){
-			handled = 1;
-			something_handled = 1;
-			VME4LDBG( "PldZ002Irq: CheckVmeBusError vector=%d level=%d\n", vector, level );
-
-			vme4l_irq( level, vector, regs );
-		}
 
 		/* 2. get pending VME interrupts, perform IACK */
 		if (0 < PldZ002_ProcessPendingVmeInterrupts( h, &vector, &level )){
 			handled = 1;
-			something_handled = 1;
-			VME4LDBG( "PldZ002Irq: ProcessPendingVmeInterrupts vector=%d level=%d\n", vector, level );
+			something_handled++;
+			int_vme++;
+			VME4LDBG("PldZ002Irq: ProcessPendingVmeInterrupts vector=%d level=%d\n", vector, level);
 
 			vme4l_irq( level, vector, regs );
 		}
 
-		/* 3. check the other IRQ causes (DMA/Mailbox/location monitor) */
-		if (0 < PldZ002_CheckMiscVmeInterrupts(h, &vector, &level)){
+		/* 1. check for bus errors */
+		if (0 < PldZ002_CheckVmeBusError( h, &vector, &level )){
 			handled = 1;
-			something_handled = 1;
-			VME4LDBG( "PldZ002Irq: CheckMiscVmeInterrupts vector=%d level=%d\n", vector, level );
+			something_handled++;
+			int_bus_error++;
+			VME4LDBG("PldZ002Irq: CheckVmeBusError vector=%d level=%d\n", vector, level);
+
+			vme4l_irq( level, vector, regs );
+		}
+
+
+		/* 3. check the other IRQ causes (DMA) */
+		if (0 < PldZ002_CheckDmaVmeInterrupts(h, &vector, &level)){
+			handled = 1;
+			something_handled++;
+			int_dma++;
+			VME4LDBG("PldZ002Irq: PldZ002_CheckDmaVmeInterrupts vector=%d level=%d\n", vector, level);
+
+			vme4l_irq( level, vector, regs );
+		}
+		/* 4. check the other IRQ causes (Mailbox) */
+		if (0 < PldZ002_CheckMailboxInterrupts(h, &vector, &level)){
+			handled = 1;
+			something_handled++;
+			int_mailbox++;
+			VME4LDBG("PldZ002Irq: PldZ002_CheckMailboxInterrupts vector=%d level=%d\n", vector, level);
+
+			vme4l_irq( level, vector, regs );
+		}
+		/* 5. check the other IRQ causes (location monitor) */
+		if (0 < PldZ002_CheckLocationMonitorInterrupts(h, &vector, &level)){
+			handled = 1;
+			something_handled++;
+			int_monitor++;
+			VME4LDBG("PldZ002Irq: PldZ002_CheckLocationMonitorInterrupts vector=%d level=%d\n", vector, level);
 
 			vme4l_irq( level, vector, regs );
 		}
 	}
+	handled_total += something_handled;
 
-	if (something_handled == 0)
-		VME4LDBG("%s: unhandled irq! vec=%d lev=%d\n",
-		         __func__, vector, level);
+	if (!something_handled) {
+		VME4LDBG("%s: unhandled int!\n", __func__);
+	} else {
+		VME4LDBG("%s: int_dma %d, int_mailbox %d, int_monitor %d, "
+		         "int_vme %d, int_bus_error %d\n",
+			 __func__, int_dma, int_mailbox, int_monitor, int_vme,
+			 int_bus_error);
+	}
+	VME4LDBG("%s: handled_total %d, ints_total %d, something_handled %d "
+		 "delta %d\n",
+		 __func__, handled_total, ints_total, something_handled,
+		 handled_total - ints_total);
 
 	PLDZ002_UNLOCK_STATE();
 
-	return handled ? IRQ_HANDLED : IRQ_NONE;
+	return something_handled ? IRQ_HANDLED : IRQ_NONE;
 }
 
 
