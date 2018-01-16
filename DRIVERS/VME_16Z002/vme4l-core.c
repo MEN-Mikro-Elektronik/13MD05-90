@@ -1781,9 +1781,12 @@ static int vme4l_irq_install( VME4L_IRQ_ENTRY *ent, int vme_vector )
 
 	list_add_tail( &ent->node, &G_vectTbl[vme_vector] );
 
+	VME4LDBG("vme4l_irq_install: %sable vme_vector 0x%x", ent->flags & VME4L_IRQ_ENBL ? "en" : "dis", vme_vector );
+
 	/* enable irq if requested */
-	if( ent->flags & VME4L_IRQ_ENBL )
+	if( ent->flags & VME4L_IRQ_ENBL ) {
 		rv = vme4l_irqlevel_enable( ent->level );
+	}
 
 	VME4L_UNLOCK_VECTORS(ps);
 

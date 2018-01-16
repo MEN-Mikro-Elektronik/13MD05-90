@@ -6,3 +6,4 @@ BUILD/MDIS/DEVTOOLS/BIN
 BUILD/MDIS/DEVTOOLS/OBJ
 change_to_gpl_2.sh
 .settings
+.settings/language.settings.xml

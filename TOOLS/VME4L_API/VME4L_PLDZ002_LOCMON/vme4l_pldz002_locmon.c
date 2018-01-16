@@ -105,8 +105,8 @@ int main( int argc, char *argv[] )
 
 	ctrlIdx = monNum ? 1 : 0;
 	addrIdx = monNum ? 3 : 2;
-	
-	CHK( (fd = VME4L_Open( VME4L_SPC_A24_D16 )) >= 0 );
+
+	CHK( (fd = VME4L_Open( VME4L_SPC_A24_D32 )) >= 0 );
 
 	/* setup monitor regs */
 	CHK( VME4L_LocMonRegWrite( fd, ctrlIdx, ctrl ) == 0 );
@@ -117,10 +117,10 @@ int main( int argc, char *argv[] )
 	 * when location monitor triggers
 	 */
 	CHK( VME4L_SigInstall( fd,
-						   VME4L_IRQVEC_LOCMON(monNum),
-						   VME4L_IRQLEV_LOCMON(monNum),
-						   LOCMON_SIG,
-						   VME4L_IRQ_ENBL ) == 0 );
+				VME4L_IRQVEC_LOCMON(monNum),
+				VME4L_IRQLEV_LOCMON(monNum),
+				LOCMON_SIG,
+				VME4L_IRQ_ENBL ) == 0 );
 
 
 	/* mask signal, wait for signal with sigwaitinfo */
@@ -129,7 +129,7 @@ int main( int argc, char *argv[] )
 	sigprocmask( SIG_BLOCK, &sigMask, NULL );
 
 	while( !abort ){
-		
+
 		/* Let signals come in */
 		switch (sigwaitinfo( &sigMask, NULL )){
 			case LOCMON_SIG:

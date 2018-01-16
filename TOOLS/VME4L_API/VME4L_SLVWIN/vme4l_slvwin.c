@@ -114,13 +114,13 @@ int main( int argc, char *argv[] )
 		/* note: write makes only sense for shared RAM! */
 		write	= (argv[4][0]=='w') ? 1 : 0;
 	}
-	
+
 	printf( "Open space %s\n", VME4L_SpaceName(spc) );
 
 	CHK( (fd = VME4L_Open( spc )) >= 0 );
 
 	CHK( (rv = VME4L_SlaveWindowCtrl( fd, vmeAddr, size )) == 0 );
-	
+
 	/* map slave window into application space
 	   note: the vmeAddr argument of VME4L_Map() is the offset within the shared RAM here! */
 	CHK( VME4L_Map( fd,	0,  size, &map) == 0 );
@@ -129,8 +129,8 @@ int main( int argc, char *argv[] )
 		/* write a string to RAM */
 		sprintf( map, "\x12\x34\x56\x78 VME4L Slave Window at 0x%llx (spc=%d)",	 vmeAddr, spc );
 	}
-	
-	printf("spc %d opened. Now send from other VME card then press ENTER:\n");
+
+	printf("spc %d opened. Now send from other VME card then press ENTER:\n", spc);
 	UOS_KeyWait();
 
 	if( read ) {
@@ -142,7 +142,7 @@ int main( int argc, char *argv[] )
 		}
 		printf( "\n" );
 	}
-	
+
 	CHK( VME4L_Close( fd ) >= 0 );
 
 	return 0;

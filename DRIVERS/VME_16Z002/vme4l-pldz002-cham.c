@@ -516,6 +516,8 @@ int IrqLevelCtrl(
 
 	PLDZ002_LOCK_STATE_IRQ(ps);
 
+	VME4LDBG("IrqLevelCtrl: level = 0x%02x set=%d\n", level, set );
+
 	/* interrupts in IMASK reg */
 	if( (level >= VME4L_IRQLEV_1 && level <= VME4L_IRQLEV_7) ||
 		(level == VME4L_IRQLEV_ACFAIL)){
@@ -544,6 +546,7 @@ int IrqLevelCtrl(
 				VME_REG_CLRMASK8( PLDZ002_MAIL_IRQ_CTRL, 1<<level );
 			}
 			rv = 0;
+			VME4LDBG("PLDZ002_MAIL_IRQ_CTRL = 0x%02x\n", VME_REG_READ8( PLDZ002_MAIL_IRQ_CTRL ));
 		}
 		/* location monitor */
 		else if( level == VME4L_IRQLEV_LOCMON(0)){
@@ -665,7 +668,7 @@ int GetVmeBlockSize(VME4L_SPACE spc)
 	case VME4L_SPC_A24_D32_BLT:
 	case VME4L_SPC_A32_D32_BLT:
 		return 256;
-	
+
 	case VME4L_SPC_A24_D64_BLT:
 	case VME4L_SPC_A32_D64_BLT:
 		/* according to standard it is up to 2k, but hdl uses 1k */
@@ -699,7 +702,7 @@ static int DmaSetup(
 	int hwdesc_i;
 	int novmeinc = 0;
 	int sgLast;
-	
+
 	/* DMA controller supports only BLT spaces */
 	switch( spc ){
 	case VME4L_SPC_A24_D16_BLT:
@@ -817,7 +820,7 @@ static int DmaSetup(
 		}
 
 		if (!novmeinc) { /* increase VME address, the simpler case... */
-			*vmeAddr += dmaLen;			
+			*vmeAddr += dmaLen;
 			sgList++;
 			sg++;
 		} else {
@@ -1711,6 +1714,7 @@ int LocMonRegReadFs2(
 	}
 
 	*valP = VME_REG_READ32( reg );
+	VME4LDBG("LocMonRegReadFs2: reg %d = 0x%08x\n", reg, *valP );
 	return 0;
 }
 
@@ -1746,7 +1750,7 @@ int LocMonRegWriteFs2(
 	default:
 		return -EINVAL;
 	}
-
+	VME4LDBG("LocMonRegWriteFs2: reg %d = 0x%08x\n", reg, val );
 	VME_REG_WRITE32( reg, val);
 	return 0;
 }
@@ -2035,7 +2039,9 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id )
  * MSI specific single ISR handlers for each singe IRQ source within VME core.
  **/
 
-/* single handler for AC FAIL (could handle it like "Level 0" but it's definition in VME is different) */
+/*
+ * single handler for AC FAIL (could handle it like "Level 0" but it's definition in VME is different)
+ **/
 static irqreturn_t pldz002_isr_acfail(int irq, void *dev_id )
 {
 	int vector=0, level=VME4L_IRQLEV_UNKNOWN;
@@ -2108,6 +2114,9 @@ PLDZ002_ISR_LEVEL( 5, "men_vme_lvl_5" );
 PLDZ002_ISR_LEVEL( 6, "men_vme_lvl_6" );
 PLDZ002_ISR_LEVEL( 7, "men_vme_lvl_7" );
 
+/*
+ * single MSI handler for Bus Error (BERR) IRQ
+ **/
 static irqreturn_t pldz002_isr_berr(int irq, void *dev_id )
 {
 	int vector=0, level=VME4L_IRQLEV_UNKNOWN;
@@ -2134,6 +2143,9 @@ static irqreturn_t pldz002_isr_berr(int irq, void *dev_id )
 	return handled ? IRQ_HANDLED : IRQ_NONE;
 }
 
+/*
+ * single MSI handler for DMA finish IRQ
+ **/
 static irqreturn_t pldz002_isr_dma(int irq, void *dev_id )
 {
 	int vector=0, level=VME4L_IRQLEV_UNKNOWN;
@@ -2160,22 +2172,105 @@ static irqreturn_t pldz002_isr_dma(int irq, void *dev_id )
 	return handled ? IRQ_HANDLED : IRQ_NONE;
 }
 
+/*
+ * single MSI handler for location monitor 0 hit IRQ
+ **/
 static irqreturn_t pldz002_isr_locmon0(int irq, void *dev_id )
 {
-	printk(KERN_ERR_PFX "%s: NOT HANDLED YET!!\n", __func__ );
-	return IRQ_NONE;
+	int vector=0, level=VME4L_IRQLEV_UNKNOWN;
+	VME4L_BRIDGE_HANDLE *h 	= (VME4L_BRIDGE_HANDLE *)dev_id;
+	int handled=0;
+	unsigned long flags;
+
+	PLDZ002_LOCK_STATE_IRQ( flags ); /* spin_lock_irqsave as recommended in MSI-HOWTO.txt */
+
+	if( (VME_REG_READ8( PLDZ002_LM_STAT_CTRL_0 ) & (PLDZ002_LM_STAT_CTRL_IRQ | PLDZ002_LM_STAT_CTRL_IRQ_EN)) == (PLDZ002_LM_STAT_CTRL_IRQ | PLDZ002_LM_STAT_CTRL_IRQ_EN)) {
+		vector = VME4L_IRQVEC_LOCMON(0);
+		level  = VME4L_IRQLEV_LOCMON(0);
+		/* clear interrupt */
+		VME_REG_SETMASK8( PLDZ002_LM_STAT_CTRL_0, PLDZ002_LM_STAT_CTRL_IRQ );
+		goto DONE;
+	}
+
+	/* no interrupt source -> exit */
+	handled=0;
+
+	printk(KERN_ERR_PFX "%s: unhandled irq! vec=%d lev=%d\n", __func__, vector, level );
+	goto EXIT;
+ DONE:
+	VME4LDBG("pldz002_isr_locmon0: vector=%d level=%d\n", vector, level );
+	vme4l_irq( level, vector );
+ EXIT:
+	PLDZ002_UNLOCK_STATE();
+	return handled ? IRQ_HANDLED : IRQ_NONE;
 }
 
+/*
+ * single MSI handler for location monitor 1 hit IRQ
+ **/
 static irqreturn_t pldz002_isr_locmon1(int irq, void *dev_id )
 {
-	printk(KERN_ERR_PFX "%s: NOT HANDLED YET!!\n", __func__ );
-	return IRQ_NONE;
+	int vector=0, level=VME4L_IRQLEV_UNKNOWN;
+	VME4L_BRIDGE_HANDLE *h 	= (VME4L_BRIDGE_HANDLE *)dev_id;
+	int handled=0;
+	unsigned long flags;
+
+	PLDZ002_LOCK_STATE_IRQ( flags ); /* spin_lock_irqsave as recommended in MSI-HOWTO.txt */
+
+	if( (VME_REG_READ8( PLDZ002_LM_STAT_CTRL_1) & (PLDZ002_LM_STAT_CTRL_IRQ | PLDZ002_LM_STAT_CTRL_IRQ_EN)) == (PLDZ002_LM_STAT_CTRL_IRQ | PLDZ002_LM_STAT_CTRL_IRQ_EN)) {
+		vector = VME4L_IRQVEC_LOCMON(1);
+		level  = VME4L_IRQLEV_LOCMON(1);
+		VME_REG_SETMASK8( PLDZ002_LM_STAT_CTRL_1,PLDZ002_LM_STAT_CTRL_IRQ);
+		goto DONE;
+	}
+
+	/* no interrupt source -> exit */
+	handled=0;
+
+	printk(KERN_ERR_PFX "%s: unhandled irq! vec=%d lev=%d\n", __func__, vector, level );
+	goto EXIT;
+ DONE:
+	VME4LDBG("pldz002_isr_locmon1: vector=%d level=%d\n", vector, level );
+	vme4l_irq( level, vector );
+ EXIT:
+	PLDZ002_UNLOCK_STATE();
+	return handled ? IRQ_HANDLED : IRQ_NONE;
 }
 
+/*
+ * single MSI handler for mailbox IRQ
+ **/
 static irqreturn_t pldz002_isr_mbox(int irq, void *dev_id )
 {
-	printk(KERN_ERR_PFX "%s: NOT HANDLED YET!!\n", __func__ );
-	return IRQ_NONE;
+	int vector=0, level=VME4L_IRQLEV_UNKNOWN;
+	VME4L_BRIDGE_HANDLE *h 	= (VME4L_BRIDGE_HANDLE *)dev_id;
+	int handled=0;
+	unsigned long flags;
+
+	PLDZ002_LOCK_STATE_IRQ( flags ); /* spin_lock_irqsave as recommended in MSI-HOWTO.txt */
+
+	vector = HighestBitSet( VME_REG_READ8( PLDZ002_MAIL_IRQ_STAT ));
+	if( vector >= 0 ){
+		level  = vector;
+		/* clear pending bit */
+		VME_REG_WRITE8( PLDZ002_MAIL_IRQ_STAT, 1<<level );
+		/* warning: numbering must match vme4l.h! */
+		vector 	+= VME4L_IRQVEC_MBOXRD(0);
+		level 	+= VME4L_IRQLEV_MBOXRD(0);
+		goto DONE;
+	}
+
+	/* no interrupt source -> exit */
+	handled=0;
+
+	printk(KERN_ERR_PFX "%s: unhandled irq! vec=%d lev=%d\n", __func__, vector, level );
+	goto EXIT;
+ DONE:
+	VME4LDBG("pldz002_isr_mbox: vector=%d level=%d\n", vector, level );
+	vme4l_irq( level, vector );
+ EXIT:
+	PLDZ002_UNLOCK_STATE();
+	return handled ? IRQ_HANDLED : IRQ_NONE;
 }
 
 /** check mem region/request it and ioremap it
