@@ -126,7 +126,7 @@
 /*--------------------------------------+
 |   DEFINES                             |
 +--------------------------------------*/
-
+#undef DBG
 /* VME4L_ADRSWIN.flags */
 /*#define VME4L_AW_POSTED_WR	0x01*/
 #define VME4L_AW_HW_SWAP1	0x02

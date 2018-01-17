@@ -508,10 +508,8 @@ int IrqLevelCtrl(
 	int level,
 	int set )
 {
-	unsigned long ps;
-	int rv = -EINVAL;
 
-	/* PLDZ002_LOCK_STATE_IRQ(ps); */
+	int rv = -EINVAL;
 
 	VME4LDBG("IrqLevelCtrl: level = 0x%02x set=%d\n", level, set );
 
@@ -562,7 +560,6 @@ int IrqLevelCtrl(
 		}
 	}
 
-	/* PLDZ002_UNLOCK_STATE_IRQ(ps); */
 	return rv;
 }
 
@@ -2718,6 +2715,10 @@ EXPORT_SYMBOL_GPL(vme4l_unregister_client);
 
 module_init(vme4l_pldz002_init_module);
 module_exit(vme4l_pldz002_cleanup_module);
+
+#ifndef GIT_VERSION
+# error "GIT version not defined!"
+#endif
 
 MODULE_AUTHOR("Klaus Popp <klaus.popp@men.de>");
 MODULE_DESCRIPTION("VME4L - MEN VME PLDZ002 bridge driver");
