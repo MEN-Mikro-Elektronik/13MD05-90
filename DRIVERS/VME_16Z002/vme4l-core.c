@@ -155,16 +155,16 @@
 #define VME4L_KERNEL_IRQ		1
 
 /** locks interrupt vector&level variables */
-#define VME4L_LOCK_VECTORS(ps) 	 spin_lock_irqsave(&G_lockVectTbl, ps)
-#define VME4L_UNLOCK_VECTORS(ps) spin_unlock_irqrestore(&G_lockVectTbl, ps)
+#define VME4L_LOCK_VECTORS(ps) 	 	spin_lock_irqsave(&G_lockVectTbl, ps)
+#define VME4L_UNLOCK_VECTORS(ps) 	spin_unlock_irqrestore(&G_lockVectTbl, ps)
 
 /** locks DMA irq variables */
 #define VME4L_LOCK_DMA(ps) 		spin_lock_irqsave(&G_lockDma, ps)
-#define VME4L_UNLOCK_DMA(ps) 	spin_unlock_irqrestore(&G_lockDma, ps)
+#define VME4L_UNLOCK_DMA(ps) 		spin_unlock_irqrestore(&G_lockDma, ps)
 
 /** locks address window lists */
-#define VME4L_LOCK_MSTRLISTS()	spin_lock(&G_lockMstrLists);
-#define VME4L_UNLOCK_MSTRLISTS() spin_unlock(&G_lockMstrLists);
+#define VME4L_LOCK_MSTRLISTS()		spin_lock(&G_lockMstrLists);
+#define VME4L_UNLOCK_MSTRLISTS() 	spin_unlock(&G_lockMstrLists);
 
 /* page remapping changed to remap_pfn_range - use correct page parameter! */
 #define VME4L_REMAP(a,b,c,d,e) remap_pfn_range((a),(b),(c)>>PAGE_SHIFT,(d),(e))
@@ -1906,8 +1906,6 @@ void vme4l_irq( int level, int vector )
 	}
 	else
 	{  /* brace2 */
-		VME4L_LOCK_VECTORS(ps);
-
 		if( list_empty( &G_vectTbl[vector]) && (level != VME4L_IRQLEV_BUSERR)){
 			VME4LDBG( "VME4L: Uninitialized VME Interrupt lev %d vect %d\n",
 					  level, vector);
@@ -1950,13 +1948,9 @@ void vme4l_irq( int level, int vector )
 		}/* /list_for_each */
 
 		if( doDisable ){
-			SAVE_FLAGS_AND_CLI(_flags);
 			vme4l_irqlevel_disable( level );
-			RESTORE_FLAGS(_flags);
 		}
 
-
-		VME4L_UNLOCK_VECTORS(ps);
 	} /* /brace2 */
 }
 

@@ -88,9 +88,6 @@
  */
 
 #include <linux/version.h>
-/* #if !(defined AUTOCONF_INCLUDED) && (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19)) */
-/*  #include <linux/config.h> */
-/* #endif */
 #include <linux/module.h>
 #include <linux/kernel.h> /* printk() */
 
@@ -514,7 +511,7 @@ int IrqLevelCtrl(
 	unsigned long ps;
 	int rv = -EINVAL;
 
-	PLDZ002_LOCK_STATE_IRQ(ps);
+	/* PLDZ002_LOCK_STATE_IRQ(ps); */
 
 	VME4LDBG("IrqLevelCtrl: level = 0x%02x set=%d\n", level, set );
 
@@ -565,8 +562,7 @@ int IrqLevelCtrl(
 		}
 	}
 
-	PLDZ002_UNLOCK_STATE_IRQ(ps);
-
+	/* PLDZ002_UNLOCK_STATE_IRQ(ps); */
 	return rv;
 }
 
