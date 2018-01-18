@@ -369,9 +369,10 @@ static int RequestAddrWindow(
 	size_t size=0;
 	vmeaddr_t vmeAddr=0;
 	int rv = 0;
+	unsigned long ps;
 
 	*bDrvDataP = NULL;			/* don't need it for now */
-	PLDZ002_LOCK_STATE();
+	PLDZ002_LOCK_STATE_IRQ(ps);
 
 	switch( spc ){
 	case VME4L_SPC_A16_D16:
@@ -443,7 +444,7 @@ static int RequestAddrWindow(
 		*sizeP	   = size;
 	}
 
-	PLDZ002_UNLOCK_STATE();
+	PLDZ002_UNLOCK_STATE_IRQ(ps);
 
 	return rv;
 }
@@ -487,7 +488,9 @@ static int ReleaseAddrWindow(
 	int flags,
 	void *bDrvData)
 {
-	PLDZ002_LOCK_STATE();
+	unsigned long ps;
+
+	PLDZ002_LOCK_STATE_IRQ(ps);
 
 	switch( spc ){
 	case VME4L_SPC_A32_D32:
@@ -497,7 +500,7 @@ static int ReleaseAddrWindow(
 	default:
 		break;
 	}
-	PLDZ002_UNLOCK_STATE();
+	PLDZ002_UNLOCK_STATE_IRQ(ps);
 
 	return 0;
 }
@@ -1047,13 +1050,14 @@ static int IrqGenerate(
 	int level,
 	int vector)
 {
+	unsigned long ps;
 	int rv = _PLDZ002_INTERRUPTER_ID;
 
 	if( (level < VME4L_IRQLEV_1) || (level > VME4L_IRQLEV_7) ||
 		(vector > 255 ))
 		return -EINVAL;
 
-	PLDZ002_LOCK_STATE();
+	PLDZ002_LOCK_STATE_IRQ(ps);
 
 	if( VME_REG_READ8( PLDZ002_INTR ) & PLDZ002_INTR_INTEN )
 		rv = -EBUSY;			/* interrupter busy */
@@ -1063,7 +1067,7 @@ static int IrqGenerate(
 		VME_REG_WRITE8( PLDZ002_INTR, level | PLDZ002_INTR_INTEN );
 	}
 
-	PLDZ002_UNLOCK_STATE();
+	PLDZ002_UNLOCK_STATE_IRQ(ps);
 
 
 	return rv;
@@ -1095,14 +1099,16 @@ static int IrqGenClear(
 	VME4L_BRIDGE_HANDLE *h,
 	int id)
 {
+	unsigned long ps;
+
 	if( id != _PLDZ002_INTERRUPTER_ID )
 		return -EINVAL;
 
-	PLDZ002_LOCK_STATE();
+	PLDZ002_LOCK_STATE_IRQ(ps);
 
 	VME_REG_CLRMASK8( PLDZ002_INTR, PLDZ002_INTR_INTEN );
 
-	PLDZ002_UNLOCK_STATE();
+	PLDZ002_UNLOCK_STATE_IRQ(ps);
 	return 0;
 }
 
@@ -1122,14 +1128,16 @@ static int SysCtrlFuncGet( VME4L_BRIDGE_HANDLE *h)
  */
 static int SysCtrlFuncSet( VME4L_BRIDGE_HANDLE *h, int state)
 {
-	PLDZ002_LOCK_STATE();
+	unsigned long ps;
+
+	PLDZ002_LOCK_STATE_IRQ(ps);
 
 	if( state )
 		VME_REG_SETMASK8( PLDZ002_SYSCTL, PLDZ002_SYSCTL_SYSCON);
 	else
 		VME_REG_CLRMASK8( PLDZ002_SYSCTL, PLDZ002_SYSCTL_SYSCON);
 
-	PLDZ002_UNLOCK_STATE();
+	PLDZ002_UNLOCK_STATE_IRQ(ps);
 	return 0;
 }
 
@@ -1138,9 +1146,11 @@ static int SysCtrlFuncSet( VME4L_BRIDGE_HANDLE *h, int state)
  */
 static int SysReset( VME4L_BRIDGE_HANDLE *h )
 {
-	PLDZ002_LOCK_STATE();
+	unsigned long ps;
+
+	PLDZ002_LOCK_STATE_IRQ(ps);
 	VME_REG_SETMASK8( PLDZ002_SYSCTL, PLDZ002_SYSCTL_SYSRES);
-	PLDZ002_UNLOCK_STATE();
+	PLDZ002_UNLOCK_STATE_IRQ(ps);
 
 	return 0;
 }
@@ -1151,12 +1161,13 @@ static int SysReset( VME4L_BRIDGE_HANDLE *h )
 static int ArbToutGet( VME4L_BRIDGE_HANDLE *h, int clear)
 {
 	int state;
+	unsigned long ps;
 
-	PLDZ002_LOCK_STATE();
+	PLDZ002_LOCK_STATE_IRQ(ps);
 	state = !!(VME_REG_READ8( PLDZ002_SYSCTL ) & PLDZ002_SYSCTL_ATO);
 	if( clear )
 		VME_REG_SETMASK8( PLDZ002_SYSCTL, PLDZ002_SYSCTL_ATO);
-	PLDZ002_UNLOCK_STATE();
+	PLDZ002_UNLOCK_STATE_IRQ(ps);
 	return state;
 }
 
@@ -2509,9 +2520,11 @@ static int vme4l_remove( CHAMELEONV2_UNIT_T *chu )
 
 int vme4l_register_client( VME4L_BRIDGE_HANDLE *h )
 {
-	PLDZ002_LOCK_STATE();
+	unsigned long ps;
+
+	PLDZ002_LOCK_STATE_IRQ(ps);
 	++h->refCounter;
-	PLDZ002_UNLOCK_STATE();
+	PLDZ002_UNLOCK_STATE_IRQ(ps);
 
 	return 0;
 }
@@ -2519,12 +2532,14 @@ EXPORT_SYMBOL_GPL(vme4l_register_client);
 
 int vme4l_unregister_client( VME4L_BRIDGE_HANDLE *h )
 {
-	PLDZ002_LOCK_STATE();
+	unsigned long ps;
+
+	PLDZ002_LOCK_STATE_IRQ(ps);
 	if (h->refCounter <= 0)
 		return -EINVAL;
 
 	--h->refCounter;
-	PLDZ002_UNLOCK_STATE();
+	PLDZ002_UNLOCK_STATE_IRQ(ps);
 
 	return 0;
 }
