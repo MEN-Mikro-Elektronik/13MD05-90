@@ -725,7 +725,7 @@ static int DmaSetup(
 	default:
 		printk(KERN_ERR_PFX "%s: DmaSetup unknown spc %d\n",
 		       __func__, spc);
-		return -EINVAL;
+		goto CLEANUP;
 	}
 
 	if (1) {
@@ -958,13 +958,18 @@ static int DmaBounceSetup(
  */
 static int DmaStart( VME4L_BRIDGE_HANDLE *h )
 {
+	uint8_t dmastat;
+	int rv = 0;
+	unsigned long ps;
 
-	uint8_t dmastat = VME_REG_READ8( PLDZ002_DMASTA );
-
+	PLDZ002_LOCK_STATE_IRQ(ps);
+	
+	dmastat = VME_REG_READ8( PLDZ002_DMASTA );
 	if( dmastat  & PLDZ002_DMASTA_EN ){
 		printk(KERN_ERR_PFX "%s: DMA busy! DMASTA=%02x\n",
 		       __func__, dmastat );
-		return -EBUSY;
+		rv = -EBUSY;
+		goto CLEANUP;
 	}
 	if( dmastat  & PLDZ002_DMASTA_ERR ){
 		printk(KERN_ERR_PFX "%s: DMA error pending, DMASTA=%02x. "
@@ -980,7 +985,9 @@ static int DmaStart( VME4L_BRIDGE_HANDLE *h )
 	/* start DMA and enable DMA interrupt */
 	VME_REG_WRITE8( PLDZ002_DMASTA, PLDZ002_DMASTA_EN | PLDZ002_DMASTA_IEN);
 
-	return 0;
+CLEANUP:
+	PLDZ002_UNLOCK_STATE_IRQ(ps);
+	return rv;
 }
 
 /***********************************************************************/
@@ -988,7 +995,11 @@ static int DmaStart( VME4L_BRIDGE_HANDLE *h )
  */
 static int DmaStop(	VME4L_BRIDGE_HANDLE *h )
 {
+	unsigned long ps;
+
+	PLDZ002_LOCK_STATE_IRQ(ps);
 	VME_REG_WRITE8( PLDZ002_DMASTA, PLDZ002_DMASTA_IRQ | PLDZ002_DMASTA_ERR );
+	PLDZ002_UNLOCK_STATE_IRQ(ps);
 
 	return 0;
 }
@@ -1001,21 +1012,31 @@ static int DmaStop(	VME4L_BRIDGE_HANDLE *h )
  */
 static int DmaStatus( VME4L_BRIDGE_HANDLE *h )
 {
-	uint8_t status = VME_REG_READ8( PLDZ002_DMASTA );
+	uint8_t status;
+	int rv = 0;
+	unsigned long ps;
 
+	PLDZ002_LOCK_STATE_IRQ(ps);
+	status = VME_REG_READ8( PLDZ002_DMASTA );
 	VME4LDBG("pldz002 DmaStatus: 0x%02x\n", status );
 
-	if( status & PLDZ002_DMASTA_EN )
-		return 1;				/* runnig */
+	if( status & PLDZ002_DMASTA_EN ) {
+		rv = 1 ; /* runnig */
+		goto CLEANUP;
+	}
 
 	if( status & PLDZ002_DMASTA_ERR || h->dmaError) {
 		printk(KERN_ERR_PFX "%s: DMA error! DMASTA=%02x, "
 		       "h->dmaError = %d\n",
 		       __func__, status, h->dmaError);
-		return -EIO;
+		rv = -EIO; /* runnig */
+		goto CLEANUP;
 	}
 
-	return 0;					/* ok */
+
+CLEANUP:
+	PLDZ002_UNLOCK_STATE_IRQ(ps);
+	return rv; /* ok */
 }
 
 /**********************************************************************/

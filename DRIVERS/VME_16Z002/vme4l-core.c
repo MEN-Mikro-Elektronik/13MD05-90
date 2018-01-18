@@ -1102,16 +1102,12 @@ static int vme4l_rw_pio( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode )
 static int vme4l_start_wait_dma(void)
 {
 	int rv;
-	unsigned long ps;
 	uint32_t ticks = 5 * HZ;
 
 	wait_queue_t __wait;
 
-	VME4L_LOCK_DMA(ps);
-
 	/* start DMA */
 	if( (rv = G_bDrv->dmaStart( G_bHandle )) < 0 ){
-		VME4L_UNLOCK_DMA(ps);
 		if (rv < 0)
 			printk(KERN_ERR_PFX "%s: DMA dmaStart rv=%d\n",
 			       __func__, rv );
@@ -1121,9 +1117,10 @@ static int vme4l_start_wait_dma(void)
 	init_waitqueue_entry(&__wait, current);
 
 	add_wait_queue(&G_dmaWq, &__wait);
+
 	for (;;) {
 		set_current_state(TASK_UNINTERRUPTIBLE);
-
+		
 		/* check DMA state */
 		rv = G_bDrv->dmaStatus( G_bHandle );
 		if( rv <= 0 ){
@@ -1133,11 +1130,9 @@ static int vme4l_start_wait_dma(void)
 				       __func__, rv);
 			break;
 		}
-		VME4L_UNLOCK_DMA(ps);
+		
 		VME4LDBG("vme4l_start_wait_dma: going to sleep %d\n", ticks);
 		ticks = schedule_timeout( ticks );
-
-		VME4L_LOCK_DMA( ps );
 
 		if( ticks == 0 ){
 			printk(KERN_ERR_PFX "%s: DMA timeout\n", __func__);
@@ -1150,7 +1145,6 @@ static int vme4l_start_wait_dma(void)
 
 	set_current_state(TASK_RUNNING);
 	remove_wait_queue(&G_dmaWq, &__wait);
-	VME4L_UNLOCK_DMA(ps);
 
  ABORT:
 	if (rv<0)
@@ -1932,7 +1926,7 @@ void vme4l_irq( int level, int vector, struct pt_regs *regs)
 	VME4L_IRQ_ENTRY *ent;
 	struct list_head *pos;
 	unsigned long ps;
-	static unsigned long _flags=0;
+	static unsigned long _flags=0; /* Adam: Why static? */
 	int doDisable=0;
 
 	VME4LDBG("vme4l_irq() level=%d vector=%d \n", level, vector);
@@ -1942,11 +1936,9 @@ void vme4l_irq( int level, int vector, struct pt_regs *regs)
 	else if(level == VME4L_IRQLEV_DMAFINISHED /* DMA finished */
 		|| (level == VME4L_IRQLEV_BUSERR && vector == 0) /* DMA failed */
 		){
-		VME4L_LOCK_DMA(ps);
 		VME4LDBG("DMA finished, wake G_dmaWq\n");
 		/* wake up waiting task */
 		wake_up( &G_dmaWq );
-		VME4L_UNLOCK_DMA(ps);
 	}
 	else
 	{  /* brace2 */
