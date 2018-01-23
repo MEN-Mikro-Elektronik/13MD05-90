@@ -1106,6 +1106,10 @@ static int vme4l_start_wait_dma(void)
 
 	wait_queue_t __wait;
 
+	/* Add to wait queue before starting DMA */
+	init_waitqueue_entry(&__wait, current);
+	add_wait_queue(&G_dmaWq, &__wait);
+
 	/* start DMA */
 	if( (rv = G_bDrv->dmaStart( G_bHandle )) < 0 ){
 		if (rv < 0)
@@ -1113,10 +1117,6 @@ static int vme4l_start_wait_dma(void)
 			       __func__, rv );
 		goto ABORT;
 	}
-
-	init_waitqueue_entry(&__wait, current);
-
-	add_wait_queue(&G_dmaWq, &__wait);
 
 	for (;;) {
 		set_current_state(TASK_UNINTERRUPTIBLE);
@@ -1148,9 +1148,10 @@ static int vme4l_start_wait_dma(void)
 	}
 
 	set_current_state(TASK_RUNNING);
-	remove_wait_queue(&G_dmaWq, &__wait);
 
  ABORT:
+	remove_wait_queue(&G_dmaWq, &__wait);
+
 	if (rv<0)
 		printk(KERN_ERR_PFX "%s: exit rv=%d\n", __func__, rv);
 
