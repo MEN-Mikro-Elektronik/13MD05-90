@@ -1109,6 +1109,7 @@ static int vme4l_start_wait_dma(void)
 	/* Add to wait queue before starting DMA */
 	init_waitqueue_entry(&__wait, current);
 	add_wait_queue(&G_dmaWq, &__wait);
+	set_current_state(TASK_UNINTERRUPTIBLE);
 
 	/* start DMA */
 	if( (rv = G_bDrv->dmaStart( G_bHandle )) < 0 ){
@@ -1119,8 +1120,6 @@ static int vme4l_start_wait_dma(void)
 	}
 
 	for (;;) {
-		set_current_state(TASK_UNINTERRUPTIBLE);
-		
 		VME4LDBG("vme4l_start_wait_dma: going to sleep %d\n", ticks);
 		ticks = schedule_timeout( ticks );
 
@@ -1145,11 +1144,16 @@ static int vme4l_start_wait_dma(void)
 			break;
 		}
 		VME4LDBG("vme4l_start_wait_dma: remaining %d ticks\n", ticks );
+
+		/* In case we execute more loop iterations task has go to
+		   TASK_UNINTERRUPTIBLE again */
+		set_current_state(TASK_UNINTERRUPTIBLE);
 	}
 
 	set_current_state(TASK_RUNNING);
-
  ABORT:
+
+
 	remove_wait_queue(&G_dmaWq, &__wait);
 
 	if (rv<0)
