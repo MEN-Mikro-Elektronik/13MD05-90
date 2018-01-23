@@ -513,10 +513,11 @@ int IrqLevelCtrl(
 	int level,
 	int set )
 {
-	unsigned long ps;
+	/* unsigned long ps; */
 	int rv = -EINVAL;
 
-	PLDZ002_LOCK_STATE_IRQ(ps);
+/*	PLDZ002_LOCK_STATE_IRQ(ps); this skinlock is already taken when this
+	  function is called from PldZ002Irq->vme4l_irq->vme4l_irqlevel_disable */
 
 	/* interrupts in IMASK reg */
 	if( (level >= VME4L_IRQLEV_1 && level <= VME4L_IRQLEV_7) ||
@@ -564,7 +565,7 @@ int IrqLevelCtrl(
 		}
 	}
 
-	PLDZ002_UNLOCK_STATE_IRQ(ps);
+/* 	PLDZ002_UNLOCK_STATE_IRQ(ps); */
 
 	return rv;
 }
@@ -2139,6 +2140,7 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 		}
 	}
 	handled_total += something_handled;
+
 
 	if (!something_handled) {
 		VME4LDBG("%s: unhandled int!\n", __func__);
