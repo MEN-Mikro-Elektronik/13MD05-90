@@ -1124,6 +1124,10 @@ static int vme4l_start_wait_dma(void)
 		VME4LDBG("vme4l_start_wait_dma: going to sleep %d\n", ticks);
 		ticks = schedule_timeout( ticks );
 
+		if( ticks == 0 ){
+			printk(KERN_ERR_PFX "%s: DMA timeout\n", __func__);
+		}
+
 		/* check DMA state */
 		rv = G_bDrv->dmaStatus( G_bHandle );
 		if( rv <= 0 ){
@@ -1135,7 +1139,7 @@ static int vme4l_start_wait_dma(void)
 		}
 
 		if( ticks == 0 ){
-			printk(KERN_ERR_PFX "%s: DMA timeout\n", __func__);
+			printk(KERN_ERR_PFX "%s: DMA timeout DMA not finished\n", __func__);
 			/* DMA timed out */
 			rv = -ETIME;
 			break;
