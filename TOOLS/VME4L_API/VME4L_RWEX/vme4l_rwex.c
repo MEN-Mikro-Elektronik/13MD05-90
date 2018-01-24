@@ -123,6 +123,8 @@ static void usage(int excode)
 
 static void SigHandler( int sigNum )
 {
+	printf("Signal \"%s\" (%d) received\n", strsignal(sigNum), sigNum);
+	exit(1);
 	return; /* nothing  */
 }
 
@@ -206,7 +208,7 @@ int main( int argc, char *argv[] )
 		}
 	/* Correctness of startaddr and size is done later */
 
-	signal( SIGUSR1, SigHandler ); /* catch sig 10 (typical) */
+	signal (SIGBUS, SigHandler); /* catch bus error sig */
 
 	vmeAddr = startaddr;
 
@@ -343,6 +345,7 @@ int main( int argc, char *argv[] )
 	CHK( VME4L_SwapModeSet( fd, opt_swapmode ) == 0 );
 
 	if (opt_mmap) {
+		printf("Installing bus error signal handler\n", vmeAddr_page, size );
 		CHK( VME4L_SigInstall(fd, VME4L_IRQVEC_BUSERR,
 				      VME4L_IRQLEV_BUSERR,
 				      SIGBUS,

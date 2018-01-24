@@ -1102,52 +1102,62 @@ static int vme4l_rw_pio( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode )
 static int vme4l_start_wait_dma(void)
 {
 	int rv;
-	unsigned long ps;
 	uint32_t ticks = 5 * HZ;
+
 	wait_queue_t __wait;
 
-	VME4L_LOCK_DMA(ps);
+	/* Add to wait queue before starting DMA */
+	init_waitqueue_entry(&__wait, current);
+	add_wait_queue(&G_dmaWq, &__wait);
+	set_current_state(TASK_UNINTERRUPTIBLE);
 
 	/* start DMA */
 	if( (rv = G_bDrv->dmaStart( G_bHandle )) < 0 ){
-		VME4L_UNLOCK_DMA(ps);
+		if (rv < 0)
+			printk(KERN_ERR_PFX "%s: DMA dmaStart rv=%d\n",
+			       __func__, rv );
 		goto ABORT;
 	}
 
-	init_waitqueue_entry(&__wait, current);
-
-	add_wait_queue(&G_dmaWq, &__wait);
 	for (;;) {
-		set_current_state(TASK_UNINTERRUPTIBLE);
+		VME4LDBG("vme4l_start_wait_dma: going to sleep %d\n", ticks);
+		ticks = schedule_timeout( ticks );
+
+		if( ticks == 0 ){
+			printk(KERN_ERR_PFX "%s: DMA timeout\n", __func__);
+		}
 
 		/* check DMA state */
 		rv = G_bDrv->dmaStatus( G_bHandle );
 		if( rv <= 0 ){
 			/* error or ok */
-			VME4LDBG("vme4l_start_wait_dma: DMA status %d\n", rv );
+			if (rv < 0)
+				printk(KERN_ERR_PFX "%s: DMA status %d\n",
+				       __func__, rv);
 			break;
 		}
-		VME4L_UNLOCK_DMA(ps);
-		VME4LDBG("vme4l_start_wait_dma: going to sleep %d\n", ticks);
-		ticks = schedule_timeout( ticks );
-
-		VME4L_LOCK_DMA( ps );
 
 		if( ticks == 0 ){
-			printk(KERN_ERR_PFX "%s: DMA timeout\n", __func__);
+			printk(KERN_ERR_PFX "%s: DMA timeout DMA not finished\n", __func__);
 			/* DMA timed out */
 			rv = -ETIME;
 			break;
 		}
 		VME4LDBG("vme4l_start_wait_dma: remaining %d ticks\n", ticks );
+
+		/* In case we execute more loop iterations task has go to
+		   TASK_UNINTERRUPTIBLE again */
+		set_current_state(TASK_UNINTERRUPTIBLE);
 	}
 
 	set_current_state(TASK_RUNNING);
-	remove_wait_queue(&G_dmaWq, &__wait);
-	VME4L_UNLOCK_DMA(ps);
-
  ABORT:
-	VME4LDBG("vme4l_start_wait_dma: exit %d\n", rv);
+
+
+	remove_wait_queue(&G_dmaWq, &__wait);
+
+	if (rv<0)
+		printk(KERN_ERR_PFX "%s: exit rv=%d\n", __func__, rv);
 
 	return rv;
 }
@@ -1202,8 +1212,11 @@ static int vme4l_perform_zc_dma(
 
 		VME4LDBG( "vme4l_perform_zc_dma: dmaSetup rv=%d, next vmeAddr=0x%lx\n", rv, vmeAddr );
 
-		if( rv < 0 )
+		if( rv < 0 ) {
+			printk(KERN_ERR_PFX "%s: dmaSetup rv=%d\n",
+			       __func__, rv);
 			goto ABORT;
+		}
 
 		/* NOTE: rv == 0 is a valid rv for novmeinc */
 		if (rv > sgNelems){
@@ -1217,8 +1230,11 @@ static int vme4l_perform_zc_dma(
 		/* start&wait for DMA */
 		rv = vme4l_start_wait_dma();
 
-		if( rv < 0 )
+		if (rv < 0) {
+			printk(KERN_ERR_PFX "%s: vme4l_start_wait_dma rv=%d\n",
+			       __func__, rv);
 			goto ABORT;
+		}
 	}
 
  ABORT:
@@ -1313,8 +1329,13 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode )
 	nr_pages = ((uaddr & ~PAGE_MASK) + count + ~PAGE_MASK) >> PAGE_SHIFT;
 
 	/* User attempted Overflow! */
-	if ((uaddr + count) < uaddr)
+	if ((uaddr + count) < uaddr) {
+		printk(KERN_ERR_PFX "%s: User attempted Overflow "
+		       "(uaddr + count) < uaddr, (uaddr + count)0x%x, "
+		       "uaddr 0x%x, count 0x%x\n",
+		       __func__, (uaddr + count), uaddr, count);
 		return -EINVAL;
+	}
 
 	if ((pages = kmalloc(nr_pages * sizeof(*pages), GFP_ATOMIC)) == NULL)
 		return -ENOMEM;
@@ -1329,8 +1350,14 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode )
 	if (to_user) {
 		VME4LDBG("To/from Userspace DMA transfer\n");
 		rv = get_user_pages_fast( uaddr, nr_pages, direction, pages);
-		if( rv < nr_pages )
+		if (rv < 0)
+			printk(KERN_ERR_PFX "%s: get_user_pages_fast failed rv"
+			       "%d nr pages %d\n",
+			       __func__, rv, nr_pages);
+
+		if (rv < nr_pages) {
 			goto CLEANUP;
+		}
 	} else {
 		VME4LDBG("To/from Kernelspace DMA transfer\n");
 		addr = (void *)uaddr;
@@ -1406,6 +1433,9 @@ CLEANUP:
 		kfree( pages );
 	if (pKmalloc)
 		kfree ( pKmalloc );
+
+	if (rv < 0)
+		printk(KERN_ERR_PFX "%s: rv=%d\n", __func__, rv);
 
 	return rv >= 0 ? totlen : rv;
 }
@@ -1535,6 +1565,21 @@ int vme4l_rw(VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 	else {
 		rv = vme4l_rw_pio( spc, blk, swapMode );
 	}
+
+	if (rv < 0)
+		printk(KERN_ERR_PFX "%s: %s rv=%d, spc=%d vmeAddr=0x%lx "
+		       "acc=%d sz=0x%lx dataP=0x%p flags=0x%x, swp=0x%x\n",
+		       __func__,
+		       blk->direction ? "write":"read",
+		       rv,
+		       spc,
+		       blk->vmeAddr,
+		       blk->accWidth,
+		       blk->size,
+		       blk->dataP,
+		       blk->flags,
+		       swapMode);
+
  ABORT:
 	VME4LDBG("vme4l_rw exit rv=%d\n", rv);
 	return rv;
@@ -1890,21 +1935,19 @@ void vme4l_irq( int level, int vector, struct pt_regs *regs)
 	VME4L_IRQ_ENTRY *ent;
 	struct list_head *pos;
 	unsigned long ps;
-	static unsigned long _flags=0;
+	static unsigned long _flags=0; /* Adam: Why static? */
 	int doDisable=0;
 
 	VME4LDBG("vme4l_irq() level=%d vector=%d \n", level, vector);
 
 	if( vector == VME4L_IRQVEC_SPUR )
 		printk( KERN_WARNING "VME4L: spurious interrupt level %d\n", level );
-
-
-	else if( level == VME4L_IRQLEV_DMAFINISHED ){
-		VME4L_LOCK_DMA(ps);
+	else if(level == VME4L_IRQLEV_DMAFINISHED /* DMA finished */
+		|| (level == VME4L_IRQLEV_BUSERR && vector == 0) /* DMA failed */
+		){
 		VME4LDBG("DMA finished, wake G_dmaWq\n");
 		/* wake up waiting task */
 		wake_up( &G_dmaWq );
-		VME4L_UNLOCK_DMA(ps);
 	}
 	else
 	{  /* brace2 */
