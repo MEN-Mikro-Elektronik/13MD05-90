@@ -665,7 +665,7 @@ static int DmaSetup(
 	vmeaddr_t *vmeAddr,
 	int flags)
 {
-	int alignVme=4, sg, rv=0, endBd;
+	int alignVme=4, sg, rv=0, endBd = 0;
 	uint32_t bdAm;
 	char *bdVaddr;
 	int novmeinc;
@@ -696,6 +696,7 @@ static int DmaSetup(
 	default:
 		printk(KERN_ERR_PFX "%s: DmaSetup unknown spc %d\n",
 		       __func__, spc);
+		rv = -EINVAL;
 		goto CLEANUP;
 	}
 
