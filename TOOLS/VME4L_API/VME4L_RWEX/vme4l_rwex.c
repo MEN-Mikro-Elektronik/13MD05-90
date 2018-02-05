@@ -97,8 +97,9 @@ static void usage(int excode)
 	printf("Function: perform basic VME read/write from and to VME spaces\n");
 	printf("Options:\n\n");
 	printf("-s=<spc>      VME4L space number\n");
-	printf("-a=<width>    access width in bytes (1/2/4)        [4]\n");
-	printf("-v=<init.Val> initial value for write buffer fill  [0]\n");
+	printf("-a=<width>    access width in bytes (1/2/4/8) [4]\n");
+	printf("-v=<init.Val> initial value for write buffer fill, each next byte is incremented  [0]\n");
+	printf("-V=<Val>      value for write buffer fill, value is repeted   [0]\n");
 	printf("-n=<# runs>     nr. of runs reading/writing is done  [1]\n");
 	printf("                (shown MB/s is average of all runs)\n");
 	printf("-e            don't rewind a file after each read/write (only with -n option)\n");
@@ -176,7 +177,10 @@ int main( int argc, char *argv[] )
 	char *file_name_ver = NULL;
 	int f_desc=-1;
 	int f_ver_desc=-1;
-	int opt_read=-1, opt_dump=1, opt_swapmode = 0, opt_startval = 0, opt_align=0, opt_runs=1;
+	int opt_read=-1, opt_dump=1, opt_swapmode = 0, opt_align=0, opt_runs=1;
+	uint32_t opt_use_startval = 0, opt_startval = 0;
+	uint32_t opt_use_fillval = 0;
+	uint64_t opt_fillval = 0;
 	int opt_verify_write = 0;
 	int opt_disable_file_rewind = 0;
 	int opt_mmap = 0;
@@ -244,9 +248,31 @@ int main( int argc, char *argv[] )
 		printf("Use FIFO/novmeinc mode\n");
 	}
 
-	if( (optp=UTL_TSTOPT("v=")))
-		opt_startval=strtoul( optp, NULL, 0 );
+	if( (optp = UTL_TSTOPT("v="))) {
+		opt_use_startval = 1;
+		opt_startval = strtoul(optp, NULL, 0);
+	}
 
+	if( (optp = UTL_TSTOPT("V="))) {
+		opt_use_fillval = 1;
+		opt_fillval = strtoull(optp, NULL, 0);
+		if ((accWidth < 8) && (opt_fillval > (1LL << (accWidth * 8)))) {
+			printf("Value given to the -V parameter (0x%llx) is bigger than word width (%d)!\n",
+			       opt_fillval, accWidth);
+			exit(1);
+		}
+	}
+
+	if (!opt_read && !opt_use_fillval && !opt_use_startval) {
+		printf("In Write mode -v or -V has to be specified!\n");
+		usage(1);
+	}
+
+	if (opt_use_fillval && opt_use_startval) {
+		printf("Parameters -v and -V cannot be used at the same time!\n");
+		usage(1);
+	}
+	
 	if( (optp=UTL_TSTOPT("n="))) {
 		opt_runs=strtoul( optp, NULL, 0 );
 
@@ -396,9 +422,19 @@ int main( int argc, char *argv[] )
 				}
 			} else {
 				p = buf;
-				/* if filename is not specified fill buffer */
-				for( j=0; j < size; j++ )
-					*p++ = (j + opt_startval) & 0xff;
+				/* If filename is not specified check if buffer shall be filled */
+				if (opt_use_startval)
+					for (j = 0; j < size; j++ )
+						*p++ = (j + opt_startval) & 0xff;
+				if (opt_use_fillval) {
+					uint64_t word_swap;
+					word_swap = htobe64(opt_fillval);
+					printf("Fill with data 0x%llx\n", opt_fillval);
+					for (j = 0; j < size; j += accWidth) {
+						memcpy(p, ((uint8_t *) &word_swap) + 8 - accWidth, accWidth);
+						p += accWidth;
+					}
+				}
 			}
 
 			if (opt_verify_write && opt_bufoffset) {
