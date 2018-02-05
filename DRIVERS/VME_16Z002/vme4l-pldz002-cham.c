@@ -2321,7 +2321,7 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 #else
 						SA_SHIRQ,
 #endif
-						"Z002_LX",
+						"men_vme_bridge",
 						h))<0 )
 			goto CLEANUP;
 	}
