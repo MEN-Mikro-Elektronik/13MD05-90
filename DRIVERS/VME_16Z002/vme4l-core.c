@@ -1532,7 +1532,7 @@ int vme4l_rw(VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 			 blk->dataP,
 			 swapMode );
 
-	if( spcEnt->isBlt || (blk->flags & VME4L_RW_USE_DMA))
+	if( spcEnt->isBlt || (blk->flags & VME4L_RW_USE_SGL_DMA))
 	{
 		if( G_bDrv->dmaSetup == NULL ){
 			if( G_bDrv->dmaBounceSetup == NULL ){

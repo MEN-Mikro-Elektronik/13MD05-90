@@ -109,7 +109,7 @@ static void usage(int excode)
 	printf("-w            write from CPU to VME space\n");
 	printf("-d            do *NOT* dump data (if reading big size)\n");
 	printf("-l            use page-aligned memory as buffer\n");
-	printf("-t            use VME4L_RW_USE_DMA for non-BLT spaces (uses DMA BDs with SGL bit set)\n");
+	printf("-t            use VME4L_RW_USE_SGL_DMA for non-BLT spaces (uses DMA BDs with SGL bit set)\n");
 	printf("-f=<file>     with -r dump binary data into a file\n");
 	printf("-k=<offset>   for writes use an offset in an allocated buffer,\n");
 	printf("              it loads the entire file into a buffer, reads data from a VME\n");
@@ -239,7 +239,7 @@ int main( int argc, char *argv[] )
 	opt_align = (optp=UTL_TSTOPT("l")) ? 1 : 0;
 
 	if (UTL_TSTOPT("t")) {
-		opt_rw_flags |= VME4L_RW_USE_DMA;
+		opt_rw_flags |= VME4L_RW_USE_SGL_DMA;
 		printf("Use DMA for single-mode accesses\n");
 	}
 

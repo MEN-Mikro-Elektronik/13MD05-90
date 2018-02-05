@@ -676,15 +676,15 @@ static int DmaSetup(
 	case VME4L_SPC_A24_D32_BLT:
 	case VME4L_SPC_A32_D32_BLT:
 		bdAm = h->addrModShadow[spc];
-		/* Ignore VME4L_RW_USE_DMA for BLT modes */
-		flags &= ~VME4L_RW_USE_DMA;
+		/* Ignore VME4L_RW_USE_SGL_DMA for BLT modes */
+		flags &= ~VME4L_RW_USE_SGL_DMA;
 		break;
 	case VME4L_SPC_A24_D64_BLT:
 	case VME4L_SPC_A32_D64_BLT:
 		bdAm = h->addrModShadow[spc];
 		alignVme = 8;
-		/* Ignore VME4L_RW_USE_DMA for BLT modes */
-		flags &= ~VME4L_RW_USE_DMA;
+		/* Ignore VME4L_RW_USE_SGL_DMA for BLT modes */
+		flags &= ~VME4L_RW_USE_SGL_DMA;
 		break;
 	case VME4L_SPC_A16_D16:
 	case VME4L_SPC_A16_D32:
@@ -731,7 +731,7 @@ static int DmaSetup(
 							PLDZ002_DMABD_SRC( PLDZ002_DMABD_DIR_PCI ) |
 							PLDZ002_DMABD_DST( PLDZ002_DMABD_DIR_VME ) |
 							bdAm | ((sg == endBd-1) ? PLDZ002_DMABD_END : 0 ) |
-							(( flags & VME4L_RW_USE_DMA ) ? PLDZ002_DMABD_BLK_SGL : 0) |
+							(( flags & VME4L_RW_USE_SGL_DMA ) ? PLDZ002_DMABD_BLK_SGL : 0) |
 							(novmeinc ? PLDZ002_DMABD_NOINC_DST : 0));
 		}
 		else {
@@ -743,7 +743,7 @@ static int DmaSetup(
 								PLDZ002_DMABD_SRC( PLDZ002_DMABD_DIR_VME ) |
 								PLDZ002_DMABD_DST( PLDZ002_DMABD_DIR_PCI ) |
 								bdAm | ((sg == endBd-1) ? PLDZ002_DMABD_END : 0 ) |
-								(( flags & VME4L_RW_USE_DMA ) ? PLDZ002_DMABD_BLK_SGL : 0) |
+								(( flags & VME4L_RW_USE_SGL_DMA ) ? PLDZ002_DMABD_BLK_SGL : 0) |
 								(novmeinc ? PLDZ002_DMABD_NOINC_SRC : 0));
 		}
 

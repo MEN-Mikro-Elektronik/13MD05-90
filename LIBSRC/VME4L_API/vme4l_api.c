@@ -1008,19 +1008,17 @@ int VME4L_RequesterLevelGet( int spaceFd )
  * This transfers a data block from VME into the user's buffer.
  *
  * Data is automatically transferred by DMA engine if a BLT (incl. 2EVME/2ESST)
- * space has been selected or if the #VME4L_RW_USE_DMA flag was specified.
+ * space has been selected or if the #VME4L_RW_USE_SGL_DMA flag was specified.
  *
  * \plda12 DMA/BLT mode is not available.
  *
  * \pldz002 For BLT spaces, \a dataP must be aligned to 4 bytes and
  * 			\a vmeAddr must be aligned to 4 bytes for 16-/32-bit wide space
  *			or 8-byte aligned for 64-bit spaces.\n
- *          The #VME4L_RW_USE_DMA flag is not supported. Non-BLT spaces
- *          must be transferred in PIO mode.\n
  *          For A32 spaces, the 3 MSBs of the VME address must be identical
  *          to all other A32 spaces currently in use.
  *
- * \tsi148 	The #VME4L_RW_USE_DMA flag is not supported. Non-BLT spaces
+ * \tsi148 	The #VME4L_RW_USE_SGL_DMA flag is not supported. Non-BLT spaces
  *          must be transferred in PIO mode.\n
  *
  * \param spaceFd 	\IN  File descriptor for VME space,
@@ -1072,21 +1070,19 @@ int VME4L_Read(
  * This transfers a data block from the user's buffer to VME.
  *
  * Data is automatically transferred by DMA engine if a BLT (incl. 2EVME/2ESST)
- * space has been selected or if the #VME4L_RW_USE_DMA flag was specified.
+ * space has been selected or if the #VME4L_RW_USE_SGL_DMA flag was specified.
  *
  * \plda12 DMA/BLT mode is not available.
  *
  * \pldz002 For BLT spaces, \a dataP must be aligned to 4 bytes and
  * 			\a vmeAddr must be aligned to 4 bytes for 16-/32-bit wide space
  *			or 8-byte aligned for 64-bit spaces.\n
- *          The #VME4L_RW_USE_DMA flag is not supported. Non-BLT spaces
- *          must be transferred in PIO mode.\n
  *          For A32 spaces, the 3 MSBs of the VME address must be identical
  *          to all other A32 spaces currently in use.\n
  *			Always uses delayed write accesses, even when posted write
  *			accesses have been enabled by VME4L_PostedWriteModeSet().
  *
- * \tsi148 	The #VME4L_RW_USE_DMA flag is not supported. Non-BLT spaces
+ * \tsi148 	The #VME4L_RW_USE_SGL_DMA flag is not supported. Non-BLT spaces
  *          must be transferred in PIO mode.\n
  *
  * \param spaceFd 	\IN  File descriptor for VME space,
