@@ -25,7 +25,7 @@ API = ../../LIBSRC/VME4L_API/libvme4l_api.a
 CFLAGS = -I ../../INCLUDE/NATIVE 
 
 all: vme4l_ctrl vme4l_irqgen vme4l_m99irq vme4l_mmap vme4l_rwex \
-	 vme4l_rwspeed vme4l_spcycle
+	 vme4l_rwspeed vme4l_spcycle vme4l_crcsr
 
 vme4l_ctrl: VME4L_CTRL/vme4l_ctrl.c
 	$(CC) $(CFLAGS) $< -o $@ $(API)
@@ -51,3 +51,5 @@ vme4l_rwspeed: VME4L_RWSPEED/vme4l_rwspeed.c
 vme4l_spcycle: VME4L_SPCYCLE/vme4l_spcycle.c
 	$(CC) $(CFLAGS) $< -o $@ $(API)
 
+vme4l_crcsr: VME4L_CRCSR/vme4l_crcsr.c
+	$(CC) $(CFLAGS) $< -o $@ $(API)
