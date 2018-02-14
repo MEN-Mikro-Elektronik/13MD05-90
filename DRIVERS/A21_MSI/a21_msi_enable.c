@@ -111,6 +111,6 @@ void mod_exit(void)
 
 module_init( mod_init );
 module_exit( mod_exit );
-MODULE_DESCRIPTION( COMP_NAME "MDIS module");
+MODULE_DESCRIPTION( COMP_NAME " MDIS module");
 MODULE_AUTHOR("Thomas Schnuerer <thomas.schnuerer@men.de>");
 MODULE_LICENSE("GPL");

@@ -85,7 +85,7 @@ void mod_exit(void)
 
 module_init( mod_init );
 module_exit( mod_exit );
-MODULE_DESCRIPTION( COMP_NAME "MDIS module");
+MODULE_DESCRIPTION( COMP_NAME " MDIS module");
 MODULE_AUTHOR("Klaus Popp <klaus.popp@men.de>");
 #ifdef MODULE_LICENSE
 MODULE_LICENSE("GPL");
