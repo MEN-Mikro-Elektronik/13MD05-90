@@ -3032,12 +3032,12 @@ static int vme4l_interrupts_proc_show(struct seq_file *m, void *data)
 				switch(ent->entType){
 
 				case VME4L_USER_IRQ:
-					seq_printf(m, "user sig=%d task=%p\n",
+					seq_printf(m, ", user sig=%d task=%p\n",
 								ent->u.user.signal, ent->u.user.task);
 					break;
 
 				case VME4L_KERNEL_IRQ:
-					seq_printf(m, "kernel dev=%s id=%p\n",
+					seq_printf(m, ", kernel dev=%s id=%p\n",
 						    ent->u.kernel.device,
 						    ent->u.kernel.dev_id);
 					break;
