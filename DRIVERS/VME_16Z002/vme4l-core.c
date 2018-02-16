@@ -3050,7 +3050,7 @@ static int vme4l_interrupts_proc_show(struct seq_file *m, void *data)
 	return 0;
 }
 
-static int vme4l_irq_levels_proc_show(struct seq_file *m, void *data)
+static int vme4l_irq_levels_enable_proc_show(struct seq_file *m, void *data)
 {
 	int level;
 
@@ -3125,13 +3125,13 @@ static const struct file_operations vme4l_interrupts_proc_ops = {
 	.release	= single_release,
 };
 
-static int vme4l_irq_levels_proc_open(struct inode *inode, struct file *file)
+static int vme4l_irq_levels_enable_proc_open(struct inode *inode, struct file *file)
 {
-	return single_open(file, vme4l_irq_levels_proc_show, NULL);
+	return single_open(file, vme4l_irq_levels_enable_proc_show, NULL);
 }
 
-static const struct file_operations vme4l_irq_levels_proc_ops = {
-	.open		= vme4l_irq_levels_proc_open,
+static const struct file_operations vme4l_irq_levels_enable_proc_ops = {
+	.open		= vme4l_irq_levels_enable_proc_open,
 	.read		= seq_read,
 	.llseek		= seq_lseek,
 	.release	= single_release,
@@ -3155,7 +3155,7 @@ static void vme_bridge_procfs_register(void)
 	if (!entry)
 		printk(KERN_WARNING "vme4l: Failed to create proc interrupts node\n");
 
-	entry = proc_create("irq_levels", S_IFREG | S_IRUGO, vme4l_root, &vme4l_irq_levels_proc_ops);
+	entry = proc_create("irq_levels_enable", S_IFREG | S_IRUGO, vme4l_root, &vme4l_irq_levels_enable_proc_ops);
 	if (!entry)
 		printk(KERN_WARNING "vme4l: Failed to create proc irq node\n");
 
@@ -3167,7 +3167,7 @@ static void vme_bridge_procfs_register(void)
 static void vme_bridge_procfs_unregister(void)
 {
 	remove_proc_entry("supported_bitstreams", vme4l_root);
-	remove_proc_entry("irq_levels", vme4l_root);
+	remove_proc_entry("irq_levels_enable", vme4l_root);
 	remove_proc_entry("interrupts", vme4l_root);
 	remove_proc_entry("windows", vme4l_root);
 	remove_proc_entry("info", vme4l_root);
