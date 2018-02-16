@@ -236,8 +236,14 @@ typedef enum {
 	CHAM_SPC_END,
 } VME_SPACE_CHAM;
 
+struct vme4l_bridge_handle;
+
+typedef struct vme4l_bridge_handle VME4L_BRIDGE_HANDLE;
+#define COMPILE_VME_BRIDGE_DRIVER
+#include "vme4l-core.h"
+
 /** bridge drivers private data */
-typedef struct {
+struct vme4l_bridge_handle {
 	CHAMELEONV2_UNIT_T * chu;		/**< chameleon unit for vme control registers  */
 	unsigned long spaces[CHAM_SPC_END]; /**< chameleon units of the separate spaces*/
 	VME4L_RESRC regs;			/**< bridge regs [+ PLD internal RAM if any] */
@@ -264,7 +270,7 @@ typedef struct {
 	uint32_t dmaError;
 	spinlock_t lockState;		/**< spin lock for VME bridge registers and handle state */
 	int refCounter;		/**< number of registered clients */
-} VME4L_BRIDGE_HANDLE;
+};
 
 
 typedef struct {
@@ -272,8 +278,6 @@ typedef struct {
 	u_int16 min_revision;
 } VME4L_BITSTREAM_VERSION;
 
-#define COMPILE_VME_BRIDGE_DRIVER
-#include "vme4l-core.h"
 
 /*--------------------------------------+
 |   GLOBALS                             |
