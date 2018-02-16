@@ -270,6 +270,7 @@ struct vme4l_bridge_handle {
 	uint32_t dmaError;
 	spinlock_t lockState;		/**< spin lock for VME bridge registers and handle state */
 	int refCounter;		/**< number of registered clients */
+	VME4L_IRQ_STAT irqs;
 };
 
 
@@ -277,7 +278,6 @@ typedef struct {
 	u_int16 revision;
 	u_int16 min_revision;
 } VME4L_BITSTREAM_VERSION;
-
 
 /*--------------------------------------+
 |   GLOBALS                             |
@@ -330,6 +330,22 @@ void GetSupportedBitstreams(struct seq_file *m)
 		seq_printf(m, "%d.%d\n", entry->revision, entry->min_revision);
 		entry++;
 	}
+}
+
+int GetIrqStats(VME4L_BRIDGE_HANDLE *h, VME4L_IRQ_STAT *irqs, size_t stats_size)
+{
+	unsigned seq1;
+	unsigned seq2;
+	
+	seq1 = h->irqs.sequence;
+	memcpy(irqs, &h->irqs, stats_size);
+	seq2 = h->irqs.sequence;
+
+	if ((seq1 != seq2) || (h->irqs.sequence & 1)) {
+		/* Inconsistent data */
+		return -1;
+	}
+	return 0;
 }
 
 /***********************************************************************/
@@ -521,7 +537,7 @@ int IrqLevelCtrl(
 	/* unsigned long ps; */
 	int rv = -EINVAL;
 
-/*	PLDZ002_LOCK_STATE_IRQ(ps); this skinlock is already taken when this
+/*	PLDZ002_LOCK_STATE_IRQ(ps); this spinlock is already taken when this
 	  function is called from PldZ002Irq->vme4l_irq->vme4l_irqlevel_disable */
 
 	/* interrupts in IMASK reg */
@@ -1703,6 +1719,7 @@ int LocMonRegWriteFs2(
 static VME4L_BRIDGE_DRV G_bridgeDrv = {
 	.revisionInfo		= RevisionInfo,
 	.getSupportedBitstreams = GetSupportedBitstreams,
+	.getIrqStats		= GetIrqStats,
 	.requestAddrWindow 	= RequestAddrWindow,
 	.releaseAddrWindow 	= ReleaseAddrWindow,
 	.irqLevelCtrl		= IrqLevelCtrl,
@@ -1813,8 +1830,8 @@ static int PldZ002_ProcessPendingVmeInterrupts(VME4L_BRIDGE_HANDLE *h,
 					       int *vecP,
 					       int *levP)
 {
-
 	uint8_t istat = 0;
+	uint8_t mstr = 0;
 
 	if (NULL == h){
 		printk(" *** %s: Bridge handle is NULL!\n", __FUNCTION__);
@@ -1844,9 +1861,14 @@ static int PldZ002_ProcessPendingVmeInterrupts(VME4L_BRIDGE_HANDLE *h,
 		/* fetch vector (VME IACK cycle) */
 		*vecP = VME_WIN_READ8( (char *)h->iack.vaddr + ( *levP<<1 ) + 1 );
 		/* check for bus error during IACK (spurious irq) */
-		if( VME_REG_READ8( PLDZ002_MSTR ) & PLDZ002_MSTR_BERR ){
+		mstr = VME_REG_READ8(PLDZ002_MSTR);
+		if(mstr & PLDZ002_MSTR_BERR) {
 			/* clear bus error */
 			printk(KERN_ERR_PFX "%s: bus error during vme interrupt?\n", __func__);
+			if (mstr & PLDZ002_MSTR_IBERREN) {
+				/* irq enabled count it */
+				h->irqs.ber++;
+			}
 			StoreAndClearBuserror(h);
 			*vecP = VME4L_IRQVEC_SPUR;
 		}
@@ -1984,17 +2006,20 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 	VME4L_BRIDGE_HANDLE *h 	= (VME4L_BRIDGE_HANDLE *)dev_id;
 	int handled=1;
 	int something_handled = 0;
-	static int handled_total = 0;
-	static int ints_total = 0;
-	int int_bus_error = 0;
-	int int_vme = 0;
-	int int_dma = 0;
-	int int_mailbox = 0;
-	int int_monitor = 0;
 	/* VME4LDBG */
 	PLDZ002_LOCK_STATE();
 
-	ints_total++;
+	/* lock for irq stat */
+	if (h->irqs.sequence & 1) {
+		/* This should never happen */
+		printk(KERN_ERR_PFX "%s: irq stats already locked "
+		       "sequence number %\n", __func__, h->irqs.sequence);
+		/* make sure it gets to the unlocked value */
+		h->irqs.sequence++;
+	}
+	h->irqs.sequence++;
+
+	h->irqs.hw_total++;
 	while (handled) {
 		handled = 0;
 
@@ -2002,7 +2027,8 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 		if (0 < PldZ002_ProcessPendingVmeInterrupts( h, &vector, &level )){
 			handled = 1;
 			something_handled++;
-			int_vme++;
+			h->irqs.vme++;
+			h->irqs.levels[level]++;
 			VME4LDBG("PldZ002Irq: ProcessPendingVmeInterrupts vector=%d level=%d\n", vector, level);
 
 			vme4l_irq( level, vector, regs );
@@ -2012,7 +2038,8 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 		if (0 < PldZ002_CheckVmeBusError( h, &vector, &level )){
 			handled = 1;
 			something_handled++;
-			int_bus_error++;
+			h->irqs.ber++;
+			h->irqs.levels[level]++;
 			VME4LDBG("PldZ002Irq: CheckVmeBusError vector=%d level=%d\n", vector, level);
 
 			vme4l_irq( level, vector, regs );
@@ -2023,7 +2050,8 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 		if (0 < PldZ002_CheckDmaVmeInterrupts(h, &vector, &level)){
 			handled = 1;
 			something_handled++;
-			int_dma++;
+			h->irqs.dma++;
+			h->irqs.levels[level]++;
 			VME4LDBG("PldZ002Irq: PldZ002_CheckDmaVmeInterrupts vector=%d level=%d\n", vector, level);
 
 			vme4l_irq( level, vector, regs );
@@ -2032,7 +2060,8 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 		if (0 < PldZ002_CheckMailboxInterrupts(h, &vector, &level)){
 			handled = 1;
 			something_handled++;
-			int_mailbox++;
+			h->irqs.mbox++;
+			h->irqs.levels[level]++;
 			VME4LDBG("PldZ002Irq: PldZ002_CheckMailboxInterrupts vector=%d level=%d\n", vector, level);
 
 			vme4l_irq( level, vector, regs );
@@ -2041,27 +2070,38 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 		if (0 < PldZ002_CheckLocationMonitorInterrupts(h, &vector, &level)){
 			handled = 1;
 			something_handled++;
-			int_monitor++;
+			h->irqs.mon++;
+			h->irqs.levels[level]++;
 			VME4LDBG("PldZ002Irq: PldZ002_CheckLocationMonitorInterrupts vector=%d level=%d\n", vector, level);
 
 			vme4l_irq( level, vector, regs );
 		}
 	}
-	handled_total += something_handled;
+	h->irqs.handled += something_handled;
 
 
 	if (!something_handled) {
 		VME4LDBG("%s: unhandled int!\n", __func__);
+		h->irqs.spurious++;
 	} else {
-		VME4LDBG("%s: int_dma %d, int_mailbox %d, int_monitor %d, "
-		         "int_vme %d, int_bus_error %d\n",
-			 __func__, int_dma, int_mailbox, int_monitor, int_vme,
-			 int_bus_error);
+		VME4LDBG("%s: irq_dma %d, irq_mailbox %d, irq_monitor %d, "
+		         "irq_vme %d, irq_bus_error %d\n",
+			 __func__, h->irqs.dma, h->irqs.mbox, h->irqs.mon,
+			 h->irqs.vme, h->irqs.ber);
 	}
 	VME4LDBG("%s: handled_total %d, ints_total %d, something_handled %d "
 		 "delta %d\n",
-		 __func__, handled_total, ints_total, something_handled,
-		 handled_total - ints_total);
+		 __func__, h->irqs.handled, h->irqs.hw_total,
+		 something_handled, h->irqs.handled - h->irqs.hw_total);
+
+	if (!(h->irqs.sequence & 1)) {
+		/* This should never happen */
+		printk(KERN_ERR_PFX "%s: irq stats already unlocked "
+		       "sequence number %\n", __func__, h->irqs.sequence);
+		/* make sure it gets to the locked value */
+		h->irqs.sequence++;
+	}
+	h->irqs.sequence++;
 
 	PLDZ002_UNLOCK_STATE();
 

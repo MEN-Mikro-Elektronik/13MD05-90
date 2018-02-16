@@ -165,6 +165,21 @@ typedef struct {
 	uint32_t dmaLength;
 } VME4L_SCATTER_ELEM;
 
+typedef struct vme4l_irq_stat {
+	unsigned sequence;	/* If we need consistency, this is it. LSB bit
+				 * informs whether this struct is locked already */
+/* use signed, so it is likely that someone will notice unelikely the overflow */
+	int64_t vme;
+	int64_t ber;
+	int64_t dma;
+	int64_t mbox;
+	int64_t mon;
+	int64_t hw_total;
+	int64_t handled;
+	int64_t spurious;
+	int64_t levels[VME4L_NUM_LEVELS];
+} VME4L_IRQ_STAT;
+
 /** Low level VME bridge interface */
 
 typedef struct VME4L_BRIDGE_DRV {
@@ -178,12 +193,20 @@ typedef struct VME4L_BRIDGE_DRV {
 	void (*revisionInfo)( VME4L_BRIDGE_HANDLE *h, char *buf );
 
 	/***********************************************************************/
-	/** Get supported 
+	/** Get a list of supported bitstreams using the seq_file interface
 	 *
-	 * bridge driver shall sprintf HW and bridge driver revision information
-	 * into \a buf (100 bytes max)
+	 *  * bridge driver shall fill a new-line separated list of supported
+	 * bitstreams using the seq_file interface (for proc entry)
 	 */
 	void (*getSupportedBitstreams)(struct seq_file *m);
+
+	/***********************************************************************/
+	/** Get interrupts' stats
+	 *
+	 * Please note that these stats may be inconsistent! Make sure
+	 * irqs->sequence is even and getIrqStats returned 0.
+	 */
+	int (*getIrqStats)(VME4L_BRIDGE_HANDLE *h, VME4L_IRQ_STAT *irqs, size_t stats_size);
 
 	/***********************************************************************/
     /** Request VME master address window

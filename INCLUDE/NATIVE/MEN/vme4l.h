@@ -144,6 +144,7 @@ typedef enum {
 #define VME4L_IRQLEV_5				5 /**< VME IRQ level 5  */
 #define VME4L_IRQLEV_6				6 /**< VME IRQ level 6  */
 #define VME4L_IRQLEV_7				7 /**< VME IRQ level 7  */
+#define VME4L_IRQLEV_NUM		7
 
 /** fake level for bus error interrupt */
 #define VME4L_IRQLEV_BUSERR 		8
@@ -155,10 +156,12 @@ typedef enum {
 #define VME4L_IRQLEV_MBOXRD(_n)		(0x10+((_n)*2))
 /** fake level for mailbox _n interrupt caused by VME write access */
 #define VME4L_IRQLEV_MBOXWR(_n)		(0x11+((_n)*2))
+#define VME4L_IRQLEV_MBOXWR_NNUM	5
 /** fake level for location monitor n interrupt */
 #define VME4L_IRQLEV_LOCMON(_n)		(0x20+(_n))
+#define VME4L_IRQLEV_LOCMON_NUM		0x10
 
-#define VME4L_NUM_LEVELS			0x30
+#define VME4L_NUM_LEVELS		0x30
 /*! @} */
 
 /**********************************************************************/

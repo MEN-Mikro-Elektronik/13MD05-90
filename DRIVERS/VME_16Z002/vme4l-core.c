@@ -2944,7 +2944,7 @@ static char *vme4l_rev_info( char *buf )
 
 	p += sprintf( p, "vme4l-core $Revision: 1.18 $,  ");
 
-	if( G_bDrv ){
+	if( G_bDrv && G_bDrv->revisionInfo){
 		G_bDrv->revisionInfo( G_bHandle, p );
 	}
 	else {
@@ -3004,6 +3004,75 @@ static int vme4l_window_proc_show(struct seq_file *m, void *data)
 		}
 	}
 	VME4L_UNLOCK_MSTRLISTS();
+
+	return 0;
+}
+
+static int vme4l_interrupts_proc_show(struct seq_file *m, void *data)
+{
+	int tries = 10;
+	int i;
+	int ret;
+
+	VME4L_IRQ_STAT irqs;
+	seq_printf(m, "Interrupts\n");
+
+	if (!G_bDrv) {
+		printk(KERN_ERR_PFX "%s: G_bDrv not initialized\n",
+		       __func__);
+		return -1;
+	}
+
+	if (!G_bDrv->getIrqStats) {
+		printk(KERN_ERR_PFX "%s: G_bDrv->getIrqStats not initialized\n",
+		       __func__);
+		return -1;
+	}
+
+	while (1) {
+		ret = G_bDrv->getIrqStats(G_bHandle, &irqs, sizeof(irqs));
+		if (!ret) {
+			/* we have a valid and consistent data */
+			break;
+		}
+		tries--;
+		udelay(1000);
+		if (!tries) {
+			printk(KERN_ERR_PFX "%s: Unable to get consistent "
+			       "irq stats for the VME bridge!\n", __func__);
+			return -1;
+		}
+	}
+
+	seq_printf(m, "------------------------------------------\n");
+	seq_printf(m, "ISR stats:\n");
+	seq_printf(m, "VME interrupts                  %10lld\n", irqs.vme);
+	seq_printf(m, "Bus error interrupts            %10lld\n", irqs.ber);
+	seq_printf(m, "DMA interrupts                  %10lld\n", irqs.dma);
+	seq_printf(m, "MailBox interrupts              %10lld\n", irqs.mbox);
+	seq_printf(m, "Mocation Monitor interrupts     %10lld\n", irqs.mon);
+	seq_printf(m, "Total HW interrupts             %10lld\n", irqs.hw_total);
+	seq_printf(m, "Handled interrupts              %10lld\n", irqs.handled);
+	seq_printf(m, "Not handled interrupts          %10lld\n", irqs.spurious);
+	seq_printf(m, "Handled + spurious              %10lld\n", irqs.handled + irqs.spurious);
+	/* If this is more than 0, it means that during at least one
+	 * HW interrupt, at least two interrupt sources were handled */
+	seq_printf(m, "(Handled + spurious) - total    %10lld\n", (irqs.handled + irqs.spurious) - irqs.hw_total);
+	seq_printf(m, "------------------------------------------\n");
+	seq_printf(m, "IRQ level unknown               %10lld\n", irqs.levels[VME4L_IRQLEV_UNKNOWN]);
+	for (i = 0; i < VME4L_IRQLEV_NUM; i++) {
+		seq_printf(m, "IRQ level %d                     %10lld\n", i + VME4L_IRQLEV_1, irqs.levels[i + VME4L_IRQLEV_1]);
+	}
+	seq_printf(m, "IRQ level bus error             %10lld\n", irqs.levels[VME4L_IRQLEV_BUSERR]);
+	seq_printf(m, "IRQ level ACFAIL                %10lld\n", irqs.levels[VME4L_IRQLEV_ACFAIL]);
+	seq_printf(m, "IRQ level SYSFAIL               %10lld\n", irqs.levels[VME4L_IRQLEV_SYSFAIL]);
+	for (i = 0; i < VME4L_IRQLEV_MBOXWR_NNUM; i++) {
+		seq_printf(m, "IRQ level RX mailbox %d          %10lld\n", i, irqs.levels[VME4L_IRQLEV_MBOXRD(i)]);
+		seq_printf(m, "IRQ level TX mailbox %d          %10lld\n", i, irqs.levels[VME4L_IRQLEV_MBOXWR(i)]);
+	}
+	for (i = 0; i < VME4L_IRQLEV_LOCMON_NUM; i++) {
+		seq_printf(m, "IRQ level location monitor %2d   %10lld\n", i, irqs.levels[VME4L_IRQLEV_LOCMON(i)]);
+	}
 
 	return 0;
 }
@@ -3125,6 +3194,18 @@ static const struct file_operations vme4l_irq_proc_ops = {
 	.release	= single_release,
 };
 
+static int vme4l_interrupts_proc_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, vme4l_interrupts_proc_show, NULL);
+}
+
+static const struct file_operations vme4l_interrupts_proc_ops = {
+	.open		= vme4l_interrupts_proc_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+
 static int vme4l_irq_levels_enable_proc_open(struct inode *inode, struct file *file)
 {
 	return single_open(file, vme4l_irq_levels_enable_proc_show, NULL);
@@ -3155,6 +3236,10 @@ static void vme_bridge_procfs_register(void)
 	if (!entry)
 		printk(KERN_WARNING "vme4l: Failed to create proc irq node\n");
 
+	entry = proc_create("interrupts", S_IFREG | S_IRUGO, vme4l_root, &vme4l_interrupts_proc_ops);
+	if (!entry)
+		printk(KERN_WARNING "vme4l: Failed to create proc interrupts node\n");
+
 	entry = proc_create("irq_levels_enable", S_IFREG | S_IRUGO, vme4l_root, &vme4l_irq_levels_enable_proc_ops);
 	if (!entry)
 		printk(KERN_WARNING "vme4l: Failed to create proc irq node\n");
@@ -3168,6 +3253,7 @@ static void vme_bridge_procfs_unregister(void)
 {
 	remove_proc_entry("supported_bitstreams", vme4l_root);
 	remove_proc_entry("irq_levels_enable", vme4l_root);
+	remove_proc_entry("interrupts", vme4l_root);
 	remove_proc_entry("irq", vme4l_root);
 	remove_proc_entry("windows", vme4l_root);
 	remove_proc_entry("info", vme4l_root);
