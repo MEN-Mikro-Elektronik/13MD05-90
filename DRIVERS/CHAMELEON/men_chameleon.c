@@ -1114,7 +1114,7 @@ void men_chameleon_cleanup(void)
 		kfree(h);
 	}
 	G_chamInit--;
-	printk( KERN_INFO "<-men_chameleon_cleanup\n" );
+
 	root_device_unregister(G_cham_devs);
 
 	pci_unregister_driver(&G_pci_driver);
