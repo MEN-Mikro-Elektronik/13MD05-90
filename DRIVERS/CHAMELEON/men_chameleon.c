@@ -247,8 +247,9 @@ MODULE_PARM_DESC( usePciIrq, "usePciIrq=1: IRQ# from PCI header. usePciIrq=0: Us
 #define CFGTABLE_READWORD(tbl,idx)   (h->ioMapped ? \
     inw((u16)((u32)tbl + (idx)*4)) : readw((u16*)((u32)tbl + (idx)*4)))
 
-#define NR_CHAM_TBL_ATTRS	4	/* sysfs files per table: fpgafile,model,revision,magic*/
-#define NR_CHAM_IPCORE_ATTRS	10	/* sysfs files per IP core: Unit, devId,Grp,Rev,Var,Inst,IRQ,BAR,Offset,Addr */
+#define NR_CHAM_TBL_ATTRS	4	/**< sysfs files per table: fpgafile,model,revision,magic */
+#define NR_CHAM_IPCORE_ATTRS	10	/**< sysfs files per IP core: Unit, devId,Grp,Rev,Var,Inst,IRQ,BAR,Offset,Addr */
+#define CHAM_SYSFS_MODE		0644 	/**< sysfs attributs access mode */
 
 /* such #defines exist in sysfs.h already but we need a different syntax */
 #define CHAM_ATTR_SET(atr,attname,mod,showfct,storefct) \
@@ -262,14 +263,6 @@ MODULE_PARM_DESC( usePciIrq, "usePciIrq=1: IRQ# from PCI header. usePciIrq=0: Us
  * unlimited! TODO: use chained List instead v0Unit[] and v2Unit[] !
  */
 #define CORES_PER_FPGA		 	256
-
-/** data structure for early access to core FPGAs */
-typedef struct {
-	u32 bar[4]; /**< base address regs  */
-	void *cfgTbl; /**< mapped config table in bar0 */
-	int numUnits; /**< number of chameleon units of this FPGA */
-	int valid; /**< early_init has been called  */
-} CHAMELEON_EARLY_T;
 
 /** data structure providing sysfs entries for one IP core within the table */
 typedef struct {
@@ -312,10 +305,6 @@ static struct device *G_cham_devs;  	/**< base node for sysfs entries  	*/
 /* helpers for sysfs attribute names */
 static const char *G_sysChamTblAttrname[NR_CHAM_TBL_ATTRS] = { "fpga_file","model","revision", "magic" };
 static const char *G_sysIpCoreAttrname[NR_CHAM_IPCORE_ATTRS] = { "Unit", "devId", "Grp", "Rev", "Var", "Inst", "IRQ", "BAR", "Offset", "Addr" };
-
-#ifdef MEN_EARLY_ACCESS
-static CHAMELEON_EARLY_T G_early; /**< early access vars 				*/
-#endif
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36)
 static DEFINE_SEMAPHORE(cham_probe_sem);
@@ -578,148 +567,6 @@ void men_chameleonV2_unregister_driver(CHAMELEONV2_DRIVER_T *drv)
 	}
 }
 
-#ifdef MEN_EARLY_ACCESS
-/*******************************************************************/
-/** Initialize early access to MEN chameleon FPGA
- *
- * This should be called from the platform specific init code if required
- *
- * Supports only one instance of a chameleon FPGA.
- *
- * initializes the global variable G_early so that routines
- * men_chameleon_early_unit_find and men_chameleon_early_unit_ident can work
- *
- * \param hose		\IN early pci access controller structure
- * \param devNo		\IN pci device number of FPGA
- *
- * \return 0 on success or negative linux error number
- */
-int men_chameleon_early_init(
-		struct pci_controller *hose,
-		int devNo)
-{
-	int i;
-	int dev_fun = PCI_DEVFN( devNo, 0 );
-	u16 venId;
-
-	G_early.valid = 0;
-	/* make sure device is present */
-	if( early_read_config_word( hose, 0, dev_fun, PCI_VENDOR_ID, &venId ) ||
-			(venId == 0xffff))
-	return -ENODEV;
-
-	/*-------------------------+
-	 |  Read base address regs  |
-	 +-------------------------*/
-	for( i=0; i<4; ++i ) {
-		if( early_read_config_dword( hose, 0, dev_fun, PCI_BASE_ADDRESS_0+i*4,
-						&G_early.bar[i] )) {
-			return -EIO;
-		}
-		/* printk( "BAR%d: 0x%08x\n", i, G_early.bar[i] ); */
-	}
-
-	G_early.cfgTbl = ioremap_nocache( G_early.bar[0], CHAMELEON_CFGTABLE_SZ );
-
-#if 0 /* for debug purposes */
-	printk( "Dumping Chameleon Table:");
-	for( i=0; i<256; ++i ) {
-		/* linefeed every 16 values */
-		if (!(i%16))
-		printk( "\n");
-		printk( "%04x ", CFGTABLE_READWORD( G_early.cfgTbl,i));
-	}
-
-#endif
-
-	/*--------------------------------------------+
-	 |  Check if config table contains sync word   |
-	 +--------------------------------------------*/
-	if( (CFGTABLE_READWORD( G_early.cfgTbl,1) != FPGA_SYNC_MAGIC_ABCD) &&
-			(CFGTABLE_READWORD( G_early.cfgTbl,1) != FPGA_SYNC_MAGIC_CDEF)) {
-		printk( "unknown Magic word 0x%04x from G_early.bar[0]=0x%08x\n",
-				CFGTABLE_READWORD(G_early.cfgTbl,1), G_early.bar[0] );
-		iounmap( G_early.cfgTbl );
-		return -ENODEV;
-	}
-
-	/*--------------------------------------------+
-	 |  Determine number of units in config table  |
-	 +--------------------------------------------*/
-	for( i=0; i<CHAMELEON_MAX_UNITS; i++ ) {
-		/* check for end marker (device is all 1's) */
-		if((CFGTABLE_READWORD( G_early.cfgTbl, (i+1)*2 ) & 0x3f0 ) == 0x3f0)
-		break;
-	}
-
-	G_early.numUnits = i;
-	G_early.valid = 1;
-
-	printk( "MEN Chameleon early number modules: %d\n", G_early.numUnits);
-
-	return 0;
-}
-
-/*******************************************************************/
-/** Identify nth unit of chameleon FPGA initialized by men_chameleon_early_init
- */
-int
-men_chameleon_early_unit_ident(
-		int idx,
-		CHAMELEON_UNIT_T *unit )
-{
-	if( ! G_early.valid )
-	return -ENODEV;
-
-	if( idx >= G_early.numUnits )
-	return -EINVAL;
-
-	/* fill unit info */
-	fill_unit_info( NULL, G_early.cfgTbl, unit, idx );
-
-	unit->phys = (void *)(G_early.bar[unit->bar] + unit->offset);
-	unit->chamNum = 0;
-	unit->pdev = NULL;
-
-	/*     printk( "modCode: %d  bar:%d  offset:0x%x  addr:0x%p\n",  */
-	/* 	  unit->modCode, unit->bar, unit->offset, unit->phys ); */
-
-	return 0;
-}
-
-/*******************************************************************/
-/** Find unit in chameleon FPGA initialized by men_chameleon_early_init
- */
-int men_chameleon_early_unit_find(
-		int modCode,
-		int instance,
-		CHAMELEON_UNIT_T *unit)
-{
-	int idx = 0;
-	if( !G_early.valid )
-	return -ENODEV;
-
-	while( men_chameleon_early_unit_ident( idx, unit ) == 0 ) {
-
-		if( ((unit->modCode == modCode) || (modCode == -1 )) &&
-				((unit->instance == instance) || (instance == -1)))
-
-		return 0;
-
-		idx++;
-	}
-
-	printk( "unit not found. searched %d units\n", idx );
-	dump_stack();
-	return -ENODEV;
-}
-
-EXPORT_SYMBOL(men_chameleon_early_unit_find);
-EXPORT_SYMBOL(men_chameleon_early_unit_ident);
-EXPORT_SYMBOL(men_chameleon_early_init);
-
-#endif /* MEN_EARLY_ACCESS */
-
 /*******************************************************************/
 /** Find the system wide nth occurrance of a chameleon module \a modCode
  *
@@ -908,7 +755,7 @@ static int __devinit pci_init_one(struct pci_dev *pdev,
 
 	/* assemble attribute group and populate info entries per chameleon table */
 	for ( i=0; i < NR_CHAM_TBL_ATTRS; i++) {
-		CHAM_ATTR_SET(h->attr_cham[i],G_sysChamTblAttrname[i],0644,cham_sysfs_read,cham_sysfs_write);
+		CHAM_ATTR_SET(h->attr_cham[i],G_sysChamTblAttrname[i],CHAM_SYSFS_MODE,cham_sysfs_read,cham_sysfs_write);
 		h->chamTblAttrs[i] = &h->attr_cham[i].attr;
 	}
 	h->chamTblAttrGrp.attrs = h->chamTblAttrs;
@@ -917,7 +764,6 @@ static int __devinit pci_init_one(struct pci_dev *pdev,
 		kobject_put( h->chamTblObj );
 		h->chamTblObj = NULL;
 	}
-
 	INIT_LIST_HEAD( &h->ipcores);
 
 	/* gather all IP cores until end marker found */
@@ -981,7 +827,7 @@ static int __devinit pci_init_one(struct pci_dev *pdev,
 
 		/* assemble attribute group and populate info entries per chameleon table */
 		for ( i=0; i < NR_CHAM_IPCORE_ATTRS; i++) {
-			CHAM_ATTR_SET(ip->attr_ip[i], G_sysIpCoreAttrname[i],0644,cham_sysfs_read,cham_sysfs_write);
+			CHAM_ATTR_SET(ip->attr_ip[i], G_sysIpCoreAttrname[i],CHAM_SYSFS_MODE,cham_sysfs_read,cham_sysfs_write);
 			ip->ipCoreAttrs[i] = &ip->attr_ip[i].attr;
 		}
 		ip->ipCoreAttrGrp.attrs = ip->ipCoreAttrs;
