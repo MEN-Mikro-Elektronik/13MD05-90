@@ -224,7 +224,8 @@
 # define __devinitdata
 #endif
 
-#undef DEBUG_CHAM_LX
+
+#define DEBUG_CHAM_LX
 
 #ifdef DEBUG_CHAM_LX
 #define DBGOUT(x...) printk(KERN_DEBUG x)
@@ -256,7 +257,7 @@ MODULE_PARM_DESC( usePciIrq, "usePciIrq=1: IRQ# from PCI header. usePciIrq=0: Us
 	atr.attr.name 	= attname; \
 	atr.attr.mode 	= mod;  \
 	atr.show 	= showfct; \
-	atr.store 	= storefct;
+	atr.store 	= storefct;	/* set to NULL in this driver, the sysfs exports are readonly */
 
 /*
  * IP cores per FPGA (v0Unit[] and v2Unit[] arrays), mind that by Spec its
@@ -264,10 +265,29 @@ MODULE_PARM_DESC( usePciIrq, "usePciIrq=1: IRQ# from PCI header. usePciIrq=0: Us
  */
 #define CORES_PER_FPGA		 	256
 
-/** data structure providing sysfs entries for one IP core within the table */
+/** data structure providing sysfs entries for one IP core within the table. Stores also the
+ * IP cores data for readout from the chameleon table, like in this example dump:
+ *  CHAM - TableIdent: idx=0
+ *  Information about the Chameleon FPGA:
+ *  FPGA File='F210n00' table model=0x41('A') Revision 1.0 Magic 0xABCE  <= 4 per-chameleon-table attributes
+ *   Unit                devId   Grp Rev  Var  Inst IRQ   BAR  Offset       Addr
+ *  ================================================================================
+ *   00 16Z057_UART      0x0039  0    7    0   0x00 0x00   0   0x00000200   0xc1000200
+ *   01 16Z057_UART      0x0039  0    7    0   0x01 0x01   0   0x00000300   0xc1000300
+ *   02 16Z045_FLASH     0x002d  0    2    0   0x00 0x3f   0   0x00000400   0xc1000400
+ *   03 16Z001_SMB       0x0001  0    6    0   0x00 0x02   0   0x00000500   0xc1000500
+ *   04 16Z001_SMB       0x0001  0    6    0   0x01 0x03   0   0x00000600   0xc1000600 <= 10 per-IP-core attributes
+ *   05 16Z034_GPIO      0x0022  0    9    0   0x00 0x3f   0   0x00000700   0xc1000700
+ *   06 16Z069_RST       0x0045  0    6    0   0x00 0x3f   0   0x00000800   0xc1000800
+ *   07 16Z052_GIRQ      0x0034  0    6    0   0x00 0x3f   0   0x00000900   0xc1000900
+ *   08 16Z034_GPIO      0x0022  0    9    0   0x01 0x3f   0   0x00000a00   0xc1000a00
+ *   09 16Z034_GPIO      0x0022  0    9    0   0x02 0x3f   0   0x00000b00   0xc1000b00
+ *   10 16Z034_GPIO      0x0022  0    9    0   0x03 0x3f   0   0x00000c00   0xc1000c00
+ *   11 16Z043_SDRAM     0x002b  0   22    0   0x00 0x3f   3   0x00000000   0xc0000000
+ *
+ */
 typedef struct {
 	struct list_head node; /**< node in list of IP core sysfs entries 	*/
-	struct device *ipCodeDev;  /**< base node for sysfs entries  	*/
 	struct kobject *ipCoreObj; /* parent node for single IP core folder */
         struct kobj_attribute attr_ip[NR_CHAM_IPCORE_ATTRS];
 	struct attribute *ipCoreAttrs[NR_CHAM_IPCORE_ATTRS+1]; /* the above incl. NULL term. */
@@ -631,19 +651,58 @@ int men_chameleonV2_unit_find(int devId, int idx, CHAMELEONV2_UNIT_T *unit)
 	return -ENODEV;
 }
 
-/* common sysfs write/read functions */
-static ssize_t cham_sysfs_write(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t size)
-{
-	printk("cham_sysfs_write:\n" );
-	printk("attr.name = '%s'\n", attr->attr.name );
-	printk("size = %d data = '%s'\n", size, buf );
-	return size;
-}
-
+/*******************************************************************/
+/**   sysfs read function (writing is not supported)
+ *
+ * The common sysfs show function searches the list of found
+ * chameleon tables and each IP core present in each table. When the
+ * matching kobj pointer is found, it's requested attribute files
+ * data is returned.
+ * the kobj argument can either be one of the 10 per-IP-core
+ * attributes or one of the 4 per-cham-table attributes.
+ *
+ *  \param kobj  kobject of sysfs parent entry (=IP core)
+ *  \param attr  kobj_attribute (= &ip->attr_ip[0-9]), the
+ *               requiested sysfs file per IP core)
+ *  \param buf   pointer to which data are to be written
+ *  \param size  # of bytes to return
+ *
+ *  \return      # of written bytes or error code (negative number).
+ */
 static ssize_t cham_sysfs_read(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
 {
-	printk("cham_sysfs_read called for attr.name = '%s'\n", attr->attr.name );
-	return scnprintf( buf, strlen(attr->attr.name), "%s", attr->attr.name );
+	struct list_head *posTbl = NULL;
+	struct list_head *posIpcore = NULL;
+	struct list_head *tmp1 = NULL, *tmp2 = NULL;
+	CHAM_IPCORE_SYSFS_T *ip = NULL;
+	CHAMELEON_HANDLE_T *h = NULL;
+	DBGOUT("cham_sysfs_read: kobj=%p attr=%p attr->attr.name = '%s'\n", kobj, attr, attr->attr.name );
+
+	list_for_each_safe(posTbl, tmp1, &G_chamLst)
+	{ /* iterate through all found chameleon tables */
+		h = list_entry(posTbl, CHAMELEON_HANDLE_T, node);
+		DBGOUT("TBL: h->chamTblObj=%p &h->attr_cham[0]=%p &h->attr_cham[1]=%p &h->attr_cham[2]=%p &h->attr_cham[3]=%p \n", h->chamTblObj, &h->attr_cham[0] );
+
+		if ( kobj == h->chamTblObj ) {
+			/* kobj points to h->chamTblObj => one of the 4 chameleon table attributes is requested */
+			DBGOUT("-> chameleon table attribute requested, file: '%s'\n", attr->attr.name  );
+		} else {
+			/* not the chamTblObj ? then it was one of the 10 IP core attributes */
+			list_for_each_safe( posIpcore, tmp2, &h->ipcores )
+			{/* and trough every IP core found in this table */
+				ip = list_entry( posIpcore, CHAM_IPCORE_SYSFS_T, node);
+				DBGOUT("  ip->ipCoreObj=%p &ip->attr_ip[0]=%p &ip->attr_ip[1]=%p &ip->attr_ip[2]=%p ip->unit: %s\n",
+						ip->ipCoreObj, &ip->attr_ip[0], &ip->attr_ip[1], &ip->attr_ip[2], ip->ipCoreObj->name );
+				if ( kobj == ip->ipCoreObj ) {
+					/* kobj points to ip->ipCoreObj => one of the 10 IP core attributes is requested */
+					DBGOUT("-> IP core attribute requested, file: '%s'\n", attr->attr.name  );
+				}
+			}
+		}
+		DBGOUT("---\n" );
+	}
+
+	return 0; /*scnprintf( buf, strlen(attr->attr.name), "%s", attr->attr.name ); */
 }
 
 
@@ -665,7 +724,6 @@ static ssize_t cham_sysfs_read(struct kobject *kobj, struct kobj_attribute *attr
  *  \return     0 when the driver has accepted the device or
  *              an error code (negative number) otherwise.
  */
-
 static int __devinit pci_init_one(struct pci_dev *pdev,
 		const struct pci_device_id *ent)
 {
@@ -755,7 +813,7 @@ static int __devinit pci_init_one(struct pci_dev *pdev,
 
 	/* assemble attribute group and populate info entries per chameleon table */
 	for ( i=0; i < NR_CHAM_TBL_ATTRS; i++) {
-		CHAM_ATTR_SET(h->attr_cham[i],G_sysChamTblAttrname[i],CHAM_SYSFS_MODE,cham_sysfs_read,cham_sysfs_write);
+		CHAM_ATTR_SET(h->attr_cham[i],G_sysChamTblAttrname[i],CHAM_SYSFS_MODE,cham_sysfs_read,NULL);
 		h->chamTblAttrs[i] = &h->attr_cham[i].attr;
 	}
 	h->chamTblAttrGrp.attrs = h->chamTblAttrs;
@@ -795,7 +853,7 @@ static int __devinit pci_init_one(struct pci_dev *pdev,
 		v0unit->phys = (void *)(U_INT32_OR_64)(pci_resource_start(pdev, info.bar) + info.offset);
 
 		v2unit->unitFpga.devId = info.devId;
-		v2unit->unitFpga.group = info.group;
+		v2unit->unitFpga.group 	= info.group;
 		v2unit->unitFpga.revision = info.revision;
 		v2unit->unitFpga.instance = info.instance;
 		v2unit->unitFpga.variant = info.variant;
@@ -820,14 +878,14 @@ static int __devinit pci_init_one(struct pci_dev *pdev,
 		if((ip = kzalloc(sizeof(CHAM_IPCORE_SYSFS_T), GFP_KERNEL)) == NULL)
 			goto CLEANUP;
 
-		/* add IP core name as subdirectory to this table and create table info files in it.
-		 * Because multiple IP cores with same name can occur, add index as prefix. */
+		/* add subdirectory with IP cores name to this table and create table info files in it.
+		 * Because multiple IP cores with same name can occur, we add the index as prefix. */
 		snprintf( name, sizeof(name), "%02d_%s", idx, CHAM_DevIdToName(info.devId));
 		ip->ipCoreObj = kobject_create_and_add( name,  h->chamTblObj );
 
 		/* assemble attribute group and populate info entries per chameleon table */
 		for ( i=0; i < NR_CHAM_IPCORE_ATTRS; i++) {
-			CHAM_ATTR_SET(ip->attr_ip[i], G_sysIpCoreAttrname[i],CHAM_SYSFS_MODE,cham_sysfs_read,cham_sysfs_write);
+			CHAM_ATTR_SET(ip->attr_ip[i], G_sysIpCoreAttrname[i],CHAM_SYSFS_MODE,cham_sysfs_read,NULL);
 			ip->ipCoreAttrs[i] = &ip->attr_ip[i].attr;
 		}
 		ip->ipCoreAttrGrp.attrs = ip->ipCoreAttrs;
@@ -839,7 +897,6 @@ static int __devinit pci_init_one(struct pci_dev *pdev,
 
 		list_add_tail( &ip->node, &h->ipcores );
 
-		/****** create the set of sysfs entries for that core *******/
 		idx++;
 	}
 
