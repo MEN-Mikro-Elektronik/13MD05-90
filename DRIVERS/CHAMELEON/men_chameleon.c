@@ -249,10 +249,11 @@ MODULE_PARM_DESC( usePciIrq, "usePciIrq=1: IRQ# from PCI header. usePciIrq=0: Us
     inw((u16)((u32)tbl + (idx)*4)) : readw((u16*)((u32)tbl + (idx)*4)))
 
 #define NR_CHAM_TBL_ATTRS	4	/**< sysfs files per table: fpgafile,model,revision,magic */
-#define NR_CHAM_IPCORE_ATTRS	10	/**< sysfs files per IP core: Unit, devId,Grp,Rev,Var,Inst,IRQ,BAR,Offset,Addr */
+#define NR_CHAM_IPCORE_ATTRS	10	/**< sysfs files per IP core: (Unit),devId,Grp,Rev,Var,Inst,IRQ,BAR,Offset,Addr (Unit is derived from devID) */
 #define CHAM_SYSFS_MODE		0644 	/**< sysfs attributs access mode */
+#define CHAM_TBL_DFLT_LEN	16	/**< sysfs attribute default string length */
 
-/* such #defines exist in sysfs.h already but we need a different syntax */
+/* similar exists in sysfs.h already but we need a different syntax */
 #define CHAM_ATTR_SET(atr,attname,mod,showfct,storefct) \
 	atr.attr.name 	= attname; \
 	atr.attr.mode 	= mod;  \
@@ -265,33 +266,28 @@ MODULE_PARM_DESC( usePciIrq, "usePciIrq=1: IRQ# from PCI header. usePciIrq=0: Us
  */
 #define CORES_PER_FPGA		 	256
 
-/** data structure providing sysfs entries for one IP core within the table. Stores also the
- * IP cores data for readout from the chameleon table, like in this example dump:
- *  CHAM - TableIdent: idx=0
- *  Information about the Chameleon FPGA:
- *  FPGA File='F210n00' table model=0x41('A') Revision 1.0 Magic 0xABCE  <= 4 per-chameleon-table attributes
- *   Unit                devId   Grp Rev  Var  Inst IRQ   BAR  Offset       Addr
- *  ================================================================================
- *   00 16Z057_UART      0x0039  0    7    0   0x00 0x00   0   0x00000200   0xc1000200
- *   01 16Z057_UART      0x0039  0    7    0   0x01 0x01   0   0x00000300   0xc1000300
- *   02 16Z045_FLASH     0x002d  0    2    0   0x00 0x3f   0   0x00000400   0xc1000400
- *   03 16Z001_SMB       0x0001  0    6    0   0x00 0x02   0   0x00000500   0xc1000500
- *   04 16Z001_SMB       0x0001  0    6    0   0x01 0x03   0   0x00000600   0xc1000600 <= 10 per-IP-core attributes
- *   05 16Z034_GPIO      0x0022  0    9    0   0x00 0x3f   0   0x00000700   0xc1000700
- *   06 16Z069_RST       0x0045  0    6    0   0x00 0x3f   0   0x00000800   0xc1000800
- *   07 16Z052_GIRQ      0x0034  0    6    0   0x00 0x3f   0   0x00000900   0xc1000900
- *   08 16Z034_GPIO      0x0022  0    9    0   0x01 0x3f   0   0x00000a00   0xc1000a00
- *   09 16Z034_GPIO      0x0022  0    9    0   0x02 0x3f   0   0x00000b00   0xc1000b00
- *   10 16Z034_GPIO      0x0022  0    9    0   0x03 0x3f   0   0x00000c00   0xc1000c00
- *   11 16Z043_SDRAM     0x002b  0   22    0   0x00 0x3f   3   0x00000000   0xc0000000
- *
- */
+enum attribute_indices {
+        ATTR_OFS_UNIT=0,
+	ATTR_OFS_DEVID,
+	ATTR_OFS_GRP,
+	ATTR_OFS_REV,
+	ATTR_OFS_VAR,
+	ATTR_OFS_INST,
+	ATTR_OFS_IRQ,
+	ATTR_OFS_BAR,
+	ATTR_OFS_OFF,
+	ATTR_OFS_ADDR
+};
+
+/** data structure providing sysfs entries for one IP core within the table */
 typedef struct {
 	struct list_head node; /**< node in list of IP core sysfs entries 	*/
 	struct kobject *ipCoreObj; /* parent node for single IP core folder */
         struct kobj_attribute attr_ip[NR_CHAM_IPCORE_ATTRS];
 	struct attribute *ipCoreAttrs[NR_CHAM_IPCORE_ATTRS+1]; /* the above incl. NULL term. */
 	struct attribute_group ipCoreAttrGrp;
+	u32 sysattr[NR_CHAM_IPCORE_ATTRS];
+	void *addr;
 } CHAM_IPCORE_SYSFS_T;
 
 /** data structure that handles one instance of a chameleon FPGA */
@@ -303,7 +299,7 @@ typedef struct {
 	void *cfgTbl; 			/**< mapped config table in bar0 		*/
 	u32 cfgTblPhys; 		/**< phys addr of config table in bar0 		*/
 	int ioMapped; 			/**< config table in io-mapped bar 		*/
-	char variant;
+	char variant;			/**< usually 'A', the table model 		*/
 	int revision;
 	int chamNum;
 	CHAMELEON_UNIT_T v0Unit[CORES_PER_FPGA];
@@ -313,6 +309,9 @@ typedef struct {
         struct kobj_attribute attr_cham[NR_CHAM_TBL_ATTRS];
 	struct attribute *chamTblAttrs[NR_CHAM_TBL_ATTRS+1]; /* the above incl. NULL term. */
 	struct attribute_group chamTblAttrGrp;
+	char fpgafile[CHAM_TBL_FILE_LEN];
+	char revstr[CHAM_TBL_DFLT_LEN];
+	char magic[CHAM_TBL_DFLT_LEN];
 } CHAMELEON_HANDLE_T;
 
 static int G_chamInit = 0; 		/**< men_chameleon_init was called  	*/
@@ -676,35 +675,48 @@ static ssize_t cham_sysfs_read(struct kobject *kobj, struct kobj_attribute *attr
 	struct list_head *tmp1 = NULL, *tmp2 = NULL;
 	CHAM_IPCORE_SYSFS_T *ip = NULL;
 	CHAMELEON_HANDLE_T *h = NULL;
-	DBGOUT("cham_sysfs_read: kobj=%p attr=%p attr->attr.name = '%s'\n", kobj, attr, attr->attr.name );
+	int i=0;
 
 	list_for_each_safe(posTbl, tmp1, &G_chamLst)
-	{ /* iterate through all found chameleon tables */
+	{
+		/* iterate through all found chameleon tables */
 		h = list_entry(posTbl, CHAMELEON_HANDLE_T, node);
-		DBGOUT("TBL: h->chamTblObj=%p &h->attr_cham[0]=%p &h->attr_cham[1]=%p &h->attr_cham[2]=%p &h->attr_cham[3]=%p \n", h->chamTblObj, &h->attr_cham[0] );
 
 		if ( kobj == h->chamTblObj ) {
 			/* kobj points to h->chamTblObj => one of the 4 chameleon table attributes is requested */
-			DBGOUT("-> chameleon table attribute requested, file: '%s'\n", attr->attr.name  );
+			if ( attr == &h->attr_cham[0]) { /* fpga_file */
+				return scnprintf( buf, CHAM_TBL_FILE_LEN+1, "%s\n", h->fpgafile );
+			} else if ( attr == &h->attr_cham[1]) { /* model */
+				return scnprintf( buf, 2, "%c\n", h->variant );
+			} else if ( attr == &h->attr_cham[2]) { /* FPGA revision */
+				return scnprintf( buf, CHAM_TBL_DFLT_LEN, "%s\n", h->revstr );
+			} else if ( attr == &h->attr_cham[3]) { /* magic */
+				return scnprintf( buf, CHAM_TBL_DFLT_LEN, "%s\n", h->magic );
+			}
 		} else {
-			/* not the chamTblObj ? then it was one of the 10 IP core attributes */
+			/* if kobj != chamTblObj then one of the 10 IP core attributes is requested */
 			list_for_each_safe( posIpcore, tmp2, &h->ipcores )
-			{/* and trough every IP core found in this table */
+			{
 				ip = list_entry( posIpcore, CHAM_IPCORE_SYSFS_T, node);
-				DBGOUT("  ip->ipCoreObj=%p &ip->attr_ip[0]=%p &ip->attr_ip[1]=%p &ip->attr_ip[2]=%p ip->unit: %s\n",
-						ip->ipCoreObj, &ip->attr_ip[0], &ip->attr_ip[1], &ip->attr_ip[2], ip->ipCoreObj->name );
 				if ( kobj == ip->ipCoreObj ) {
 					/* kobj points to ip->ipCoreObj => one of the 10 IP core attributes is requested */
-					DBGOUT("-> IP core attribute requested, file: '%s'\n", attr->attr.name  );
+					for ( i=0; i < NR_CHAM_IPCORE_ATTRS; i++) {
+						if ( attr == &ip->attr_ip[i] ) {
+							/* Unitname and address need special formatting, all other values are simply printed as hex values */
+							if ( i == ATTR_OFS_UNIT  ) /* Unit is derived from devID */
+								return scnprintf( buf, CHAM_TBL_DFLT_LEN, "%s\n", CHAM_DevIdToName( ip->sysattr[ATTR_OFS_DEVID] ));
+							else if ( i == ATTR_OFS_ADDR )
+								return scnprintf( buf, CHAM_TBL_DFLT_LEN, "0x%p\n", ip->addr );
+							else
+								return scnprintf( buf, CHAM_TBL_DFLT_LEN, "0x%x\n", ip->sysattr[i]  );
+						}
+					}
 				}
 			}
 		}
-		DBGOUT("---\n" );
 	}
-
-	return 0; /*scnprintf( buf, strlen(attr->attr.name), "%s", attr->attr.name ); */
+	return -EIO; /* shouldn't come here but complain at least */
 }
-
 
 /*******************************************************************/
 /** Probe/initialize Chameleon FPGA.
@@ -796,14 +808,19 @@ static int __devinit pci_init_one(struct pci_dev *pdev,
 
 	/* store right aligned chars from table.file[] to normal left aligned tblfile[] and skip leading zeroes */
 	for(i = 0, j = 0; i < CHAM_TBL_FILE_LEN; i++) {
-		if (table.file[i] != 0)
+		if (table.file[i] != 0) {
 			tblfile[j++] = table.file[i];
+		}
 	}
-	/* ensure string is terminated */
 	tblfile[j] = '\0';
 
+	/* store table info for sysfs read function */
+	strncpy( h->fpgafile, tblfile, CHAM_TBL_FILE_LEN );
+	snprintf( h->revstr, CHAM_TBL_DFLT_LEN, "%3d.%1d", table.revision, table.minRevision );
+	snprintf( h->magic, CHAM_TBL_DFLT_LEN, "0x%04X", table.magicWord);
+
 	printk( KERN_INFO "Information about the Chameleon FPGA:\n");
-	printk( KERN_INFO "FPGA File='%s' table model=0x%02x('%c') Revision %d.%d Magic 0x%04X\n",
+	printk( KERN_INFO "FPGA File='%s' table model=0x%02x('%c') Revision %d.%d Magic \n",
 			tblfile, table.model, table.model, table.revision,table.minRevision, table.magicWord );
 	printk( KERN_INFO " Unit                devId   Grp Rev  Var  Inst IRQ   BAR  Offset       Addr\n");
 	printk( "================================================================================\n");
@@ -883,6 +900,17 @@ static int __devinit pci_init_one(struct pci_dev *pdev,
 		snprintf( name, sizeof(name), "%02d_%s", idx, CHAM_DevIdToName(info.devId));
 		ip->ipCoreObj = kobject_create_and_add( name,  h->chamTblObj );
 
+		/* store values for quick retrieval in sysfs */
+		ip->sysattr[ATTR_OFS_DEVID] = info.devId;
+		ip->sysattr[ATTR_OFS_GRP] = info.group;
+		ip->sysattr[ATTR_OFS_REV] = info.revision;
+		ip->sysattr[ATTR_OFS_VAR] = info.variant;
+		ip->sysattr[ATTR_OFS_INST] = info.instance;
+		ip->sysattr[ATTR_OFS_IRQ] = info.interrupt;
+		ip->sysattr[ATTR_OFS_BAR] = info.bar;
+		ip->sysattr[ATTR_OFS_OFF] = info.offset;
+		ip->addr = v2unit->unitFpga.addr;
+
 		/* assemble attribute group and populate info entries per chameleon table */
 		for ( i=0; i < NR_CHAM_IPCORE_ATTRS; i++) {
 			CHAM_ATTR_SET(ip->attr_ip[i], G_sysIpCoreAttrname[i],CHAM_SYSFS_MODE,cham_sysfs_read,NULL);
@@ -894,7 +922,6 @@ static int __devinit pci_init_one(struct pci_dev *pdev,
 			kobject_put( ip->ipCoreObj );
 			ip->ipCoreObj = NULL;
 		}
-
 		list_add_tail( &ip->node, &h->ipcores );
 
 		idx++;
@@ -914,9 +941,7 @@ static int __devinit pci_init_one(struct pci_dev *pdev,
 	 |  Inform all registered drivers  |
 	 +--------------------------------*/
 	chameleon_announce_fpga(h);
-
 	rv = 0;
-
 	return rv;
 
 	CLEANUP: if(h) {
@@ -931,7 +956,6 @@ static int __devinit pci_init_one(struct pci_dev *pdev,
 				release_mem_region(h->cfgTblPhys,
 						CHAMELEON_CFGTABLE_SZ);
 		}
-
 		kfree(h);
 	}
 	return rv;
