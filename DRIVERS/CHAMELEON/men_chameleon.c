@@ -252,6 +252,7 @@ MODULE_PARM_DESC( usePciIrq, "usePciIrq=1: IRQ# from PCI header. usePciIrq=0: Us
 #define NR_CHAM_IPCORE_ATTRS	10	/**< sysfs files per IP core: (Unit),devId,Grp,Rev,Var,Inst,IRQ,BAR,Offset,Addr (Unit is derived from devID) */
 #define CHAM_SYSFS_MODE		0644 	/**< sysfs attributs access mode */
 #define CHAM_TBL_DFLT_LEN	16	/**< sysfs attribute default string length */
+#define CHAM_TBL_UNIT_LEN	32	/**< string length for IP core Unit names */
 
 /* similar exists in sysfs.h already but we need a different syntax */
 #define CHAM_ATTR_SET(atr,attname,mod,showfct,storefct) \
@@ -662,7 +663,7 @@ int men_chameleonV2_unit_find(int devId, int idx, CHAMELEONV2_UNIT_T *unit)
  *
  *  \param kobj  kobject of sysfs parent entry (=IP core)
  *  \param attr  kobj_attribute (= &ip->attr_ip[0-9]), the
- *               requiested sysfs file per IP core)
+ *               requested sysfs file per IP core)
  *  \param buf   pointer to which data are to be written
  *  \param size  # of bytes to return
  *
@@ -687,7 +688,7 @@ static ssize_t cham_sysfs_read(struct kobject *kobj, struct kobj_attribute *attr
 			if ( attr == &h->attr_cham[0]) { /* fpga_file */
 				return scnprintf( buf, CHAM_TBL_FILE_LEN+1, "%s\n", h->fpgafile );
 			} else if ( attr == &h->attr_cham[1]) { /* model */
-				return scnprintf( buf, 2, "%c\n", h->variant );
+				return scnprintf( buf, CHAM_TBL_DFLT_LEN, "%c\n", h->variant );
 			} else if ( attr == &h->attr_cham[2]) { /* FPGA revision */
 				return scnprintf( buf, CHAM_TBL_DFLT_LEN, "%s\n", h->revstr );
 			} else if ( attr == &h->attr_cham[3]) { /* magic */
@@ -704,7 +705,7 @@ static ssize_t cham_sysfs_read(struct kobject *kobj, struct kobj_attribute *attr
 						if ( attr == &ip->attr_ip[i] ) {
 							/* Unitname and address need special formatting, all other values are simply printed as hex values */
 							if ( i == ATTR_OFS_UNIT  ) /* Unit is derived from devID */
-								return scnprintf( buf, CHAM_TBL_DFLT_LEN, "%s\n", CHAM_DevIdToName( ip->sysattr[ATTR_OFS_DEVID] ));
+								return scnprintf( buf, CHAM_TBL_UNIT_LEN, "%s\n", CHAM_DevIdToName( ip->sysattr[ATTR_OFS_DEVID] ));
 							else if ( i == ATTR_OFS_ADDR )
 								return scnprintf( buf, CHAM_TBL_DFLT_LEN, "0x%p\n", ip->addr );
 							else
@@ -816,7 +817,7 @@ static int __devinit pci_init_one(struct pci_dev *pdev,
 
 	/* store table info for sysfs read function */
 	strncpy( h->fpgafile, tblfile, CHAM_TBL_FILE_LEN );
-	snprintf( h->revstr, CHAM_TBL_DFLT_LEN, "%3d.%1d", table.revision, table.minRevision );
+	snprintf( h->revstr, CHAM_TBL_DFLT_LEN, "%d.%d", table.revision, table.minRevision );
 	snprintf( h->magic, CHAM_TBL_DFLT_LEN, "0x%04X", table.magicWord);
 
 	printk( KERN_INFO "Information about the Chameleon FPGA:\n");
