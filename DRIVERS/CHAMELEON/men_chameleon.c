@@ -251,7 +251,7 @@ MODULE_PARM_DESC( usePciIrq, "usePciIrq=1: IRQ# from PCI header. usePciIrq=0: Us
 #define NR_CHAM_TBL_ATTRS	4	/**< sysfs files per table: fpgafile,model,revision,magic */
 #define NR_CHAM_IPCORE_ATTRS	10	/**< sysfs files per IP core: (Unit),devId,Grp,Rev,Var,Inst,IRQ,BAR,Offset,Addr (Unit is derived from devID) */
 #define CHAM_SYSFS_MODE		0644 	/**< sysfs attributs access mode */
-#define CHAM_TBL_DFLT_LEN	16	/**< sysfs attribute default string length */
+#define CHAM_TBL_DFLT_LEN	24	/**< sysfs attribute default string length */
 #define CHAM_TBL_UNIT_LEN	32	/**< string length for IP core Unit names */
 
 /* similar exists in sysfs.h already but we need a different syntax */
