@@ -224,14 +224,22 @@
 # define __devinitdata
 #endif
 
+#define STR_HELPER(x) 		#x
+#define M_INT_TO_STR(x) 	STR_HELPER(x)
+#define CHAM_LX_DBG_PREFIX 	printk
 
-#define DEBUG_CHAM_LX
-
-#ifdef DEBUG_CHAM_LX
-#define DBGOUT(x...) printk(KERN_DEBUG x)
+#ifdef DBG
+#define DEBUG_DEFAULT 1
 #else
-#define DBGOUT(x...)
-#endif /* DBG */
+#define DEBUG_DEFAULT 0
+#endif
+
+#define CHAMLXDBG(fmt, args...) \
+	do { \
+		if (debug) { \
+			CHAM_LX_DBG_PREFIX( KERN_DEBUG fmt, ## args ); \
+		} \
+	} while (0)
 
 /* length of Cham. table file */
 #define CHAM_TBL_FILE_LEN    12
@@ -239,8 +247,14 @@
 /* module parameters */
 static int usePciIrq = 1; /* true for all ESMs except EM8, ... */
 
-module_param( usePciIrq, int, 0664 );
+module_param( usePciIrq, int, S_IRUGO | S_IWUSR );
 MODULE_PARM_DESC( usePciIrq, "usePciIrq=1: IRQ# from PCI header. usePciIrq=0: Use IP Core IRQ#");
+
+static int debug = DEBUG_DEFAULT;  /**< enable debug printouts */
+
+module_param(debug, int, S_IRUGO | S_IWUSR);
+MODULE_PARM_DESC(debug, "Enable debugging printouts (default " \
+			M_INT_TO_STR(DEBUG_DEFAULT) ")");
 
 /*--------------------------------------+
  |   DEFINES & CONSTS                    |
@@ -506,9 +520,9 @@ int men_chameleonV2_register_driver(CHAMELEONV2_DRIVER_T *drv)
 				node);
 
 		for(i = 0; i < h->numUnits; i++) {
-			DBGOUT("reg_driver, devId: %d\n", h->v2Unit[i].unitFpga.devId);
+			CHAMLXDBG("reg_driver, devId: %d\n", h->v2Unit[i].unitFpga.devId);
 			if(chameleonV2_announce(&h->v2Unit[i], drv)) {
-				DBGOUT("\t-->\t accepted\n");
+				CHAMLXDBG("\t-->\t accepted\n");
 				count++;
 			}
 		}
@@ -678,12 +692,15 @@ static ssize_t cham_sysfs_read(struct kobject *kobj, struct kobj_attribute *attr
 	CHAMELEON_HANDLE_T *h = NULL;
 	int i=0;
 
+	CHAMLXDBG( "->cham_sysfs_read: kobj=%p attr=%p\n", kobj, attr );
+
 	list_for_each_safe(posTbl, tmp1, &G_chamLst)
 	{
 		/* iterate through all found chameleon tables */
 		h = list_entry(posTbl, CHAMELEON_HANDLE_T, node);
 
 		if ( kobj == h->chamTblObj ) {
+			CHAMLXDBG( "cham table attribute '%s' requested.\n", attr->attr.name );
 			/* kobj points to h->chamTblObj => one of the 4 chameleon table attributes is requested */
 			if ( attr == &h->attr_cham[0]) { /* fpga_file */
 				return scnprintf( buf, CHAM_TBL_FILE_LEN+1, "%s\n", h->fpgafile );
@@ -698,6 +715,7 @@ static ssize_t cham_sysfs_read(struct kobject *kobj, struct kobj_attribute *attr
 			/* if kobj != chamTblObj then one of the 10 IP core attributes is requested */
 			list_for_each_safe( posIpcore, tmp2, &h->ipcores )
 			{
+				CHAMLXDBG( "IP core attribute '%s' requested.\n", attr->attr.name );
 				ip = list_entry( posIpcore, CHAM_IPCORE_SYSFS_T, node);
 				if ( kobj == ip->ipCoreObj ) {
 					/* kobj points to ip->ipCoreObj => one of the 10 IP core attributes is requested */
@@ -1021,7 +1039,7 @@ void men_chameleon_cleanup(void)
 		list_for_each_safe( posIpcore, tmp2, &h->ipcores)
 		{
 			ip = list_entry( posIpcore, CHAM_IPCORE_SYSFS_T, node);
-			DBGOUT( KERN_INFO " ip = %p ip->unit: %s\n", ip, ip->ipCoreObj->name );
+			CHAMLXDBG( " ip = %p ip->unit: %s\n", ip, ip->ipCoreObj->name );
 			sysfs_remove_group( ip->ipCoreObj , &ip->ipCoreAttrGrp );
 			kobject_put( ip->ipCoreObj );
 			list_del( posIpcore );
