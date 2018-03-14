@@ -65,7 +65,7 @@
  *  #include <MEN/men_typs.h>
  *  #include <MEN/maccess.h>
  *  #include <MEN/mk_nonmdisif.h>
- *  #include <MEN/mdis_com.h>
+ *Â  #include <MEN/mdis_com.h>
  *  #include <MEN/ll_defs.h>
  *
  *	if( (ret = mdis_open_external_dev( 0, "m99_1", "c203_1", 0,
@@ -348,10 +348,6 @@ int mdis_remove_external_irq( void *_dev )
 	int32 error;
 
 	DBGWRT_1((DBH,"%s\n", fname ));
-	
-	/* enable irq on carrier board */
-	if( (error = MDIS_EnableIrq( dev, FALSE )) )
-		return -EINVAL;
 
 	MDIS_RemoveSysirq( dev );
 
