@@ -228,6 +228,8 @@ typedef struct {
 
 #include "vme4l-core.h"
 
+static int debug = DEBUG_DEFAULT;  /**< enable debug printouts */
+
 /*--------------------------------------+
 |   GLOBALS                             |
 +--------------------------------------*/
@@ -560,7 +562,11 @@ static int DmaSetup(
 	int sgNelems,
 	int direction,
 	int swapMode,
-	vmeaddr_t *vmeAddr)
+	vmeaddr_t *vmeAddr,
+	dma_addr_t *dmaAddr,
+	int *dmaLeft,
+	int vme_block_size,
+	int flags)
 {
 	int alignVme=4, sg, rv=0, endBd;
 	uint32_t bdAm;
@@ -917,7 +923,7 @@ static int ArbToutGet( VME4L_BRIDGE_HANDLE *h, int clear)
  */
 static int BusErrGet(
 	VME4L_BRIDGE_HANDLE *h,
-	VME4L_SPACE *spaceP,
+	int *spaceP,
 	vmeaddr_t *addrP,
 	int clear )
 {
@@ -1578,7 +1584,8 @@ static VME4L_BRIDGE_DRV G_bridgeDrv = {
 	.writePio8			= WritePio8,
 	.writePio16			= WritePio16,
 	.writePio32			= WritePio32,
-	.dmaSetup			= NULL,
+//	.dmaSetup			= NULL,
+	.dmaSetup			= DmaSetup,
 	.dmaBounceSetup		= NULL,
 	.dmaStart			= DmaStart,
 	.dmaStop			= DmaStop,
@@ -1845,8 +1852,10 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id, struct pt_regs *regs)
 static int MapRegSpace( VME4L_RESRC *res, const char *name )
 {
 	res->vaddr = NULL;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,0,0)
 	if( check_mem_region( res->phys, res->size ))
 		return -EBUSY;
+#endif
 
 	request_mem_region( res->phys, res->size, name );
 	

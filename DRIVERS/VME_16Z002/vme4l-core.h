@@ -112,7 +112,11 @@
 #include <linux/mm.h>
 #include <linux/pci.h>
 #include <linux/seq_file.h>
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,12,0)
 #include <asm/uaccess.h>        /* put_user */
+#else
+#include <linux/uaccess.h>        /* put_user */
+#endif
 #include <asm/io.h>
 
 /* include men_vme_kernelif.h depending on build environment */

@@ -58,7 +58,11 @@
 |  TYPEDEFS                                |
 +------------------------------------------*/
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
 static void AlarmTimeout( unsigned long data );
+#else
+static void AlarmTimeout( struct timer_list *t );
+#endif
 
 /*! \page linossalarmusage
 
@@ -99,7 +103,9 @@ int32 OSS_AlarmCreate(
 
 	(*alarmP)->funct    = funct;
 	(*alarmP)->arg		= arg;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
 	(*alarmP)->tmr.data = (unsigned long)*alarmP;
+#endif
 	(*alarmP)->active   = 0;
 	(*alarmP)->cyclic   = 0;	/* set later */
 	(*alarmP)->interval = 0;	/* set later */
@@ -180,8 +186,12 @@ int32 OSS_AlarmSet(
 	/* calc rounded msec */
 	*realMsecP = (ticks * 1000) / HZ;
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
 	init_timer( &alarm->tmr );
 	alarm->tmr.function = AlarmTimeout;
+#else
+	timer_setup(&alarm->tmr, (void *)(struct timer_list *)AlarmTimeout, 0);
+#endif
 	alarm->tmr.expires 	= jiffies + ticks;
 	alarm->cyclic 		= cyclic;
 	alarm->active 		= TRUE;
@@ -268,9 +278,17 @@ void OSS_AlarmRestore( OSS_HANDLE *oss, OSS_ALARM_STATE oldState )
  *  Output.....: -
  *  Globals....: -
  ****************************************************************************/
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
 static void AlarmTimeout( unsigned long data )
+#else
+static void AlarmTimeout( struct timer_list *t )
+#endif
 {
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
 	OSS_ALARM_HANDLE *alarm = (OSS_ALARM_HANDLE *)data;
+#else
+	OSS_ALARM_HANDLE *alarm = from_timer(alarm, t, tmr);
+#endif
 	OSS_ALARM_STATE flags;
 
 	flags = OSS_AlarmMask( alarm->oss );

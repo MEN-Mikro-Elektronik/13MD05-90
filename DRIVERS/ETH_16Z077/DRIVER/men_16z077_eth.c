@@ -2188,7 +2188,7 @@ static void z77_pass_packet( struct net_device *dev, unsigned int idx )
 
 		/* tell network stack... */
 		netif_receive_skb(skb);
-#if LINUX_VERSION_CODE  < KERNEL_VERSION(4,10,0)
+#if LINUX_VERSION_CODE  < KERNEL_VERSION(4,11,0)
 		dev->last_rx 		= jiffies;
 #endif
 		np->stats.rx_bytes += pkt_len;
@@ -2345,10 +2345,12 @@ int men_16z077_probe( CHAMELEON_UNIT_T *chu )
 	/* this driver support 32bit PCI core/registers yet so make sure we get
 	   DMAable memory from that range. Should one day 64bit IP cores arrive the bit mask
 	   can be set to 64. */
+#if LINUX_VERSION_CODE > KERNEL_VERSION(3,12,26)
 	if ( dma_set_mask_and_coherent(&chu->pdev->dev, DMA_BIT_MASK(32)) ) {
 		printk(KERN_ERR MEN_Z77_DRV_NAME "can't set 32bit DMA mask, aborting\n");
 		goto err_free_reg;
 	}
+#endif
 
 	phys_addr = pci_resource_start(chu->pdev, chu->bar) + chu->offset;
 	dev->base_addr = (unsigned long)ioremap_nocache(phys_addr, (u32)Z77_CFGREG_SIZE );
@@ -2414,10 +2416,15 @@ int men_16z077_probe( CHAMELEON_UNIT_T *chu )
 	}
 
 	/* set up timer to poll for link state changes */
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
 	init_timer(&np->timer);
+	np->timer.expires       = jiffies + CONFIG_HZ / 2;
+	np->timer.data          = (unsigned long)dev;
+	np->timer.function      = z77_timerfunc;
+#else
 	np->timer.expires 	= jiffies + CONFIG_HZ / 2;
-	np->timer.data 		= (unsigned long)dev;
-	np->timer.function 	= z77_timerfunc;
+	timer_setup(&np->timer, (void *)(struct timer_list *)z77_timerfunc, 0);
+#endif
 
 	/* init the process context work queue function to restart Z77 */
 	INIT_WORK(&np->reset_task, z77_reset_task);
