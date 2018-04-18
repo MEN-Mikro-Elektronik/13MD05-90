@@ -314,9 +314,8 @@ MODULE_PARM_DESC(debug, "Enable debugging printouts (default " \
 static int bounce_buffer = BOUNCE_BUFFER_DEFAULT;  /**< enable bounce buffer */
 
 module_param(bounce_buffer, int, S_IRUGO);
-MODULE_PARM_DESC(debug, "Use bounce buffer DMA instead of zero-copy (default " \
+MODULE_PARM_DESC(bounce_buffer, "Use bounce buffer DMA instead of zero-copy (default " \
 			M_INT_TO_STR(BOUNCE_BUFFER_DEFAULT) ")");
-
 
 /*--------------------------------------+
 |   PROTOTYPES                          |
