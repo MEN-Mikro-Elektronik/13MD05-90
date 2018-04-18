@@ -1114,7 +1114,7 @@ static int vme4l_start_wait_dma(void)
 	/* start DMA */
 	if( (rv = G_bDrv->dmaStart( G_bHandle )) < 0 ){
 		if (rv < 0)
-			printk(KERN_ERR_PFX "%s: DMA dmaStart rv=%d\n",
+			VME4LERR(PFX "%s: DMA dmaStart rv=%d\n",
 			       __func__, rv );
 		goto ABORT;
 	}
@@ -1124,7 +1124,7 @@ static int vme4l_start_wait_dma(void)
 		ticks = schedule_timeout( ticks );
 
 		if( ticks == 0 ){
-			printk(KERN_ERR_PFX "%s: DMA timeout\n", __func__);
+			VME4LERR(PFX "%s: DMA timeout\n", __func__);
 		}
 
 		/* check DMA state */
@@ -1132,13 +1132,13 @@ static int vme4l_start_wait_dma(void)
 		if( rv <= 0 ){
 			/* error or ok */
 			if (rv < 0)
-				printk(KERN_ERR_PFX "%s: DMA status %d\n",
+				VME4LERR(PFX "%s: DMA status %d\n",
 				       __func__, rv);
 			break;
 		}
 
 		if( ticks == 0 ){
-			printk(KERN_ERR_PFX "%s: DMA timeout DMA not finished\n", __func__);
+			VME4LERR(PFX "%s: DMA timeout DMA not finished\n", __func__);
 			/* DMA timed out */
 			rv = -ETIME;
 			break;
@@ -1157,7 +1157,7 @@ static int vme4l_start_wait_dma(void)
 	remove_wait_queue(&G_dmaWq, &__wait);
 
 	if (rv<0)
-		printk(KERN_ERR_PFX "%s: exit rv=%d\n", __func__, rv);
+		VME4LERR(PFX "%s: exit rv=%d\n", __func__, rv);
 
 	return rv;
 }
@@ -1202,7 +1202,7 @@ static int vme4l_perform_zc_dma(
 		VME4LDBG( "vme4l_perform_zc_dma: dmaSetup rv=%d, next vmeAddr=0x%lx\n", rv, vmeAddr );
 
 		if( rv < 0 ) {
-			printk(KERN_ERR_PFX "%s: dmaSetup rv=%d\n",
+			VME4LERR(PFX "%s: dmaSetup rv=%d\n",
 			       __func__, rv);
 			goto ABORT;
 		}
@@ -1219,7 +1219,7 @@ static int vme4l_perform_zc_dma(
 		rv = vme4l_start_wait_dma();
 
 		if (rv < 0) {
-			printk(KERN_ERR_PFX "%s: vme4l_start_wait_dma rv=%d\n",
+			VME4LERR(PFX "%s: vme4l_start_wait_dma rv=%d\n",
 			       __func__, rv);
 			goto ABORT;
 		}
@@ -1423,7 +1423,7 @@ CLEANUP:
 		kfree ( pKmalloc );
 
 	if (rv < 0)
-		printk(KERN_ERR_PFX "%s: rv=%d\n", __func__, rv);
+		VME4LERR(PFX "%s: rv=%d\n", __func__, rv);
 
 	return rv >= 0 ? totlen : rv;
 }
@@ -1554,7 +1554,7 @@ int vme4l_rw(VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode)
 	}
 
 	if (rv < 0)
-		printk(KERN_ERR_PFX "%s: %s rv=%d, spc=%d vmeAddr=0x%lx "
+		VME4LERR(PFX "%s: %s rv=%d, spc=%d vmeAddr=0x%lx "
 		       "acc=%d sz=0x%lx dataP=0x%p flags=0x%x, swp=0x%x\n",
 		       __func__,
 		       blk->direction ? "write":"read",
@@ -2232,7 +2232,7 @@ static int vme4l_mmap(
 	return 0;
 
  ABORT:
-	printk(KERN_ERR_PFX "%s: vme4l_mmap failed for spc %d addr %lx (%lx), rv=%d\n",
+	VME4LERR(PFX "%s: vme4l_mmap failed for spc %d addr %lx (%lx), rv=%d\n",
 	       __func__, spc, vmeAddr, size, rv );
 
 	return rv;

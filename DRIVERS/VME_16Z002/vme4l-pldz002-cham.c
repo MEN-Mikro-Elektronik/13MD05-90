@@ -484,13 +484,13 @@ static void StoreAndClearBuserror( VME4L_BRIDGE_HANDLE *h )
 
 	/* report it, extended or default depending on core version */
 	if ( h->hasExtBerrInfo ) {
-		printk(KERN_ERR_PFX "PldZ002Irq bus error. Cause: %s VME addr 0x%lx, AM=0x%02x (in %s state)\n",
+		VME4LERR(PFX "PldZ002Irq bus error. Cause: %s VME addr 0x%lx, AM=0x%02x (in %s state)\n",
 		       (h->berrAcc & PLDZ002_BERR_RW_DIR) ? "read from" : "write to",
 		       h->berrAddr,
 		       (h->berrAcc & PLDZ002_BERR_ACC_AM_MASK),
 		       (h->berrAcc & PLDZ002_BERR_IACK) ? "IACK" : "normal" );
 	} else {
-		printk(KERN_ERR_PFX "PldZ002Irq bus error\n");
+		VME4LERR(PFX "PldZ002Irq bus error\n");
 	}
 
 	/* and clear */
@@ -954,7 +954,7 @@ static int DmaStatus( VME4L_BRIDGE_HANDLE *h )
 	}
 
 	if( status & PLDZ002_DMASTA_ERR || h->dmaError) {
-		printk(KERN_ERR_PFX "%s: DMA error! DMASTA=%02x, "
+		VME4LERR(PFX "%s: DMA error! DMASTA=%02x, "
 		       "h->dmaError = %d\n",
 		       __func__, status, h->dmaError);
 		rv = -EIO; /* runnig */
@@ -1863,7 +1863,7 @@ static int PldZ002_ProcessPendingVmeInterrupts(VME4L_BRIDGE_HANDLE *h,
 		mstr = VME_REG_READ8(PLDZ002_MSTR);
 		if(mstr & PLDZ002_MSTR_BERR) {
 			/* clear bus error */
-			printk(KERN_ERR_PFX "%s: bus error during vme interrupt?\n", __func__);
+			VME4LERR(PFX "%s: bus error during vme interrupt?\n", __func__);
 			if (mstr & PLDZ002_MSTR_IBERREN) {
 				/* irq enabled count it */
 				h->irqs.ber++;
@@ -1905,7 +1905,7 @@ static int PldZ002_CheckDmaVmeInterrupts(VME4L_BRIDGE_HANDLE *h,
 	if( dmastat & ( PLDZ002_DMASTA_IRQ | PLDZ002_DMASTA_ERR) ) {
 		/* 1. check if DMA error occured ? if yes, stop DMA activity and clear DMA error & clear DMA */
 		if( dmastat & PLDZ002_DMASTA_ERR ) {
-			printk(KERN_ERR_PFX "%s: DMA error occured, stop DMA and clear DMA IRQ and error DMASTA8=0x%x\n",
+			VME4LERR(PFX "%s: DMA error occured, stop DMA and clear DMA IRQ and error DMASTA8=0x%x\n",
 			       __func__, dmastat);
 			/* clear by writing '1' to the bits, DMA also stopped by setting its bit to 0 */
 			VME_REG_WRITE8( PLDZ002_DMASTA, PLDZ002_DMASTA_IRQ | PLDZ002_DMASTA_ERR);
@@ -1915,9 +1915,9 @@ static int PldZ002_CheckDmaVmeInterrupts(VME4L_BRIDGE_HANDLE *h,
 				int i;
 				char *bdVaddr;
 				bdVaddr = MEN_PLDZ002_DMABD_OFFS;
-				printk(KERN_ERR_PFX "%s DmaBD setup:\n", __func__);
+				VME4LERR(PFX "%s DmaBD setup:\n", __func__);
 				for(i=0; i < PLDZ002_DMA_MAX_BDS; i++ ){
-					printk(KERN_ERR_PFX "BD%02d@%x: %08x %08x %08x %08x\n",
+					VME4LERR(PFX "BD%02d@%x: %08x %08x %08x %08x\n",
 						i, bdVaddr,
 						VME_GENREG_READ32( bdVaddr+0x0 ),
 						VME_GENREG_READ32( bdVaddr+0x4 ),

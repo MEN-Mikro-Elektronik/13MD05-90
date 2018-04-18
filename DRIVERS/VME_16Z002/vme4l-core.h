@@ -144,16 +144,28 @@ typedef void *VME4L_BRIDGE_HANDLE;
 
 #define VME_DBG_PREFIX 	printk
 
+#define DEBUG_NONE 0
+#define DEBUG_ERROR 1
+#define DEBUG_DEBUG 2
+
+
 #ifdef DBG
-#define DEBUG_DEFAULT 1
+#define DEBUG_DEFAULT 2
 #else
 #define DEBUG_DEFAULT 0
 #endif
 
 #define VME4LDBG(fmt, args...) \
 	do { \
-		if (debug) { \
+		if (debug >= DEBUG_DEBUG) { \
 			VME_DBG_PREFIX( KERN_DEBUG fmt, ## args ); \
+		} \
+	} while (0)
+
+#define VME4LERR(fmt, args...) \
+	do { \
+		if (debug >= DEBUG_ERROR) { \
+			VME_DBG_PREFIX( KERN_ERR fmt, ## args ); \
 		} \
 	} while (0)
 
