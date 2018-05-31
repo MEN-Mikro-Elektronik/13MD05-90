@@ -299,6 +299,7 @@ static CHAMELEONV2_DRIVER_T G_driver = {
 
 /* List of supported bitstreams */
 static VME4L_BITSTREAM_VERSION supported_bitstream_ver[] = {
+	{ 3, 15}, /* versions 3.12-3.14 were development versions, we don't want to support them */
 	{ 3, 11},
 	{ 3, 10},
 	{ 0,  0}
