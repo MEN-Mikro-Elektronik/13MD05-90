@@ -238,7 +238,8 @@ MODULE_PARM_DESC(debug, "Enable debugging printouts (default " \
 #define	TSI148_CTRL_SPACE		0x1000		/**< TSI148 register size */
 
 /* Macros to lock accesses to bridge driver	handle and VME bridge regs */
-#define	TSI148_LOCK_STATE()				spin_lock( &vme4l_bh->lockState )
+static VME4L_BRIDGE_HANDLE *vme4l_bh;
+#define	TSI148_LOCK_STATE()			spin_lock( &vme4l_bh->lockState )
 #define	TSI148_UNLOCK_STATE()			spin_unlock( &vme4l_bh->lockState )
 #define	TSI148_LOCK_STATE_IRQ(ps)		spin_lock_irqsave( \
 											&vme4l_bh->lockState, ps )
@@ -1335,7 +1336,7 @@ static int Tsi148_ReleaseAddrWindow(
 
 	TSI148_LOCK_STATE_IRQ( ps );
 
-	winNo = (unsigned int) bDrvData;
+	winNo = (unsigned long) bDrvData;
 
 	if( !vme4l_bh || winNo >= TSI148_OUTBOUND_NO ) {
 		printk( KERN_ERR "*** vme4l(%s): could not release win no. %d",
@@ -1911,7 +1912,11 @@ static int Tsi148_DmaSetup(
 	int sgNelems,
 	int direction,
 	int swapMode,
-	vmeaddr_t *vmeAddr)
+	vmeaddr_t *vmeAddr,
+	dma_addr_t *dmaAddr,
+	int *dmaLeft,
+	int vme_block_size,
+	int flags)
 {
 	int i;
 	int rv=-EINVAL;
@@ -1963,7 +1968,7 @@ static int Tsi148_DmaSetup(
 
 		if( direction ){
 			/* write to VME */
-			tmp64 = sgList->dmaDataAddress;
+			tmp64 = sgList->dmaAddress;
 			TSI148_DESC_WRITE( &bdVirtP->dsau, (uint32_t)(tmp64>>32) );
 			TSI148_DESC_WRITE( &bdVirtP->dsal, (uint32_t) tmp64 );
 			TSI148_DESC_WRITE( &bdVirtP->ddau, (uint32_t)(*vmeAddr>>32) );
@@ -1979,7 +1984,7 @@ static int Tsi148_DmaSetup(
 			/* read from VME */
 			TSI148_DESC_WRITE( &bdVirtP->dsau, (uint32_t)(*vmeAddr>>32) );
 			TSI148_DESC_WRITE( &bdVirtP->dsal, (uint32_t) *vmeAddr );
-			tmp64 = sgList->dmaDataAddress;
+			tmp64 = sgList->dmaAddress;
 			TSI148_DESC_WRITE( &bdVirtP->ddau, (uint32_t)(tmp64>>32) );
 			TSI148_DESC_WRITE( &bdVirtP->ddal, (uint32_t) tmp64 );
 			TSI148_DESC_WRITE( &bdVirtP->dsat, TSI148_DXAT_TYP_VME

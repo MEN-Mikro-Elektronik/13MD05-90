@@ -56,6 +56,9 @@
 # define _MAC_OFF_	0			
 #endif
 
+#ifdef __KERNEL__
+# include <asm/io.h>
+#endif
 
 /*---- MEMORY MAPPED I/O ---*/
 #ifdef MAC_MEM_MAPPED
