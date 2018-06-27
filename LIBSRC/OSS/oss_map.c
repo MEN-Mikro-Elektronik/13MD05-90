@@ -6,7 +6,7 @@
  *        $Date: 2005/07/07 17:17:22 $
  *    $Revision: 1.4 $
  *
- *	   \project  MDIS4Linux
+ *	   \project  MDISforLinux
  *  	 \brief  Memory mapping related routines of the OSS module
  *
  *    \switches  -

@@ -6,7 +6,7 @@
  *        $Date: 2007/12/04 16:26:58 $
  *    $Revision: 2.2 $
  *
- *	   \project  MDIS4Linux
+ *	   \project  MDISforLinux
  *  	 \brief  Semaphore routines
  *
  */

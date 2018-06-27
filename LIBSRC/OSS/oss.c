@@ -6,7 +6,7 @@
  *        $Date: 2012/05/14 20:29:47 $
  *    $Revision: 2.16 $
  *
- *	   \project  MDIS4Linux
+ *	   \project  MDISforLinux
  *  	 \brief  Core functions of the OSS module
  *
  */

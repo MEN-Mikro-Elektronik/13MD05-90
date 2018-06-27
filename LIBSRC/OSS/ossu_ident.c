@@ -6,7 +6,7 @@
  *        $Date: 2014/01/20 17:44:44 $
  *    $Revision: 2.3 $
  *
- *	   \project  MDIS4Linux
+ *	   \project  MDISforLinux
  *  	 \brief  OSS user space library version info
  *
  *    \switches

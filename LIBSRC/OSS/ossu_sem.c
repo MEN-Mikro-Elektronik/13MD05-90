@@ -6,7 +6,7 @@
  *        $Date: 2005/07/08 11:32:59 $
  *    $Revision: 2.1 $
  *
- *	   \project  MDIS4Linux
+ *	   \project  MDISforLinux
  *  	 \brief  Semaphore routines for user space
  *
  *    \switches

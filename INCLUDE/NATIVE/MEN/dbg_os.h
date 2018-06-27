@@ -6,7 +6,7 @@
  *        $Date: 2006/09/27 18:38:03 $
  *    $Revision: 1.5 $
  *
- *	   \project  MDIS4Linux
+ *	   \project  MDISforLinux
  *       \brief  Linux macros to display driver debug messages
  *
  *    \switches  MAC_USERSPACE

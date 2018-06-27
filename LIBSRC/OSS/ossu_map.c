@@ -6,7 +6,7 @@
  *        $Date: 2014/01/20 17:43:26 $
  *    $Revision: 2.3 $
  *
- *	   \project  MDIS4Linux
+ *	   \project  MDISforLinux
  *  	 \brief  Memory mapping related routines of the OSS module, user space
  *
  *    \switches  OSS_USR_IO_MAPPED_ACC_EN

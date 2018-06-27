@@ -6,7 +6,7 @@
  *        $Date: 2010/04/14 10:06:41 $
  *    $Revision: 1.11 $
  *
- *	   \project  MDIS4Linux
+ *	   \project  MDISforLinux
  *  	 \brief  Signal routines
  *
  */

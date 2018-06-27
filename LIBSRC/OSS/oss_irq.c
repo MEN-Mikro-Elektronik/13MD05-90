@@ -6,7 +6,7 @@
  *        $Date: 2012/04/23 13:51:16 $
  *    $Revision: 1.9 $
  *
- *	   \project  MDIS4Linux
+ *	   \project  MDISforLinux
  *  	 \brief  Interrupt related routines
  *
  */

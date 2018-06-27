@@ -6,7 +6,7 @@
  *        $Date: 2012/10/11 13:58:05 $
  *    $Revision: 2.4 $
  *
- *	   \project  MDIS4Linux (OSS lib)
+ *	   \project  MDISforLinux (OSS lib)
  *  	 \brief  Spinlock functions
  *
  *    \switches  DBG - enable debugging

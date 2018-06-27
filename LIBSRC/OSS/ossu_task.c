@@ -6,7 +6,7 @@
  *        $Date: 2005/07/08 11:33:00 $
  *    $Revision: 2.1 $
  *
- *	   \project  MDIS4Linux
+ *	   \project  MDISforLinux
  *  	 \brief  Task routines for user_space
  *
  *    \switches

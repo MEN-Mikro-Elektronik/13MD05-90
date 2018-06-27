@@ -6,7 +6,7 @@
  *        $Date: 2005/07/07 17:17:20 $
  *    $Revision: 1.3 $
  *
- *	   \project  MDIS4Linux
+ *	   \project  MDISforLinux
  *  	 \brief  ISA PNP support
  *
  *    \switches  -

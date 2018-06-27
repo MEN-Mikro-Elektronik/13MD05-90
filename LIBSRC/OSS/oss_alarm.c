@@ -6,7 +6,7 @@
  *        $Date: 2005/07/07 17:16:58 $
  *    $Revision: 1.6 $
  *
- *	   \project  MDIS4Linux
+ *	   \project  MDISforLinux
  *  	 \brief  Alarm routines
  *
  */

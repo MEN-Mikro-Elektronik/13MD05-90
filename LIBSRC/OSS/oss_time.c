@@ -6,7 +6,7 @@
  *        $Date: 2009/09/08 16:44:13 $
  *    $Revision: 1.9 $
  *
- *	   \project  MDIS4Linux
+ *	   \project  MDISforLinux
  *  	 \brief  Time related routines of the OSS module
  *
  */

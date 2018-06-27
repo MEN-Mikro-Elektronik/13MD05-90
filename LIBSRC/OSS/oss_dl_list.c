@@ -6,7 +6,7 @@
  *        $Date: 2005/07/07 17:17:12 $
  *    $Revision: 1.4 $
  *
- *	   \project  MDIS4Linux
+ *	   \project  MDISforLinux
  *  	 \brief  double linked list routines
  *
  *    \switches  -

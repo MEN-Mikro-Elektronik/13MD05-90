@@ -6,7 +6,7 @@
  *        $Date: 2012/08/07 19:04:11 $
  *    $Revision: 1.11 $
  *
- *	   \project  MDIS4Linux
+ *	   \project  MDISforLinux
  *  	 \brief  Bus Address translation routines and PCI access routines
  *
  *    \switches  -

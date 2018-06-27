@@ -6,7 +6,7 @@
  *        $Date: 2012/08/07 19:06:28 $
  *    $Revision: 1.15 $
  *
- *	   \project  MDIS4Linux
+ *	   \project  MDISforLinux
  *       \brief  oss internal defines
  *    \switches  DBG
  *               MAC_USERSPACE

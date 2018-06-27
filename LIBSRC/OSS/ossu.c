@@ -6,7 +6,7 @@
  *        $Date: 2007/03/28 16:11:37 $
  *    $Revision: 2.3 $
  *
- *	   \project  MDIS4Linux
+ *	   \project  MDISforLinux
  *  	 \brief  Core functions of the OSS module for user space
  *
  *    \switches  MAC_USERSPACE

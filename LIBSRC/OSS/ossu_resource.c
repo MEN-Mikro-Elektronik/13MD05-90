@@ -6,7 +6,7 @@
  *        $Date: 2005/07/08 11:32:58 $
  *    $Revision: 2.1 $
  *
- *	   \project  MDIS4Linux
+ *	   \project  MDISforLinux
  *  	 \brief  Resource related routines of the OSS module for user space
  *
  *    \switches  -

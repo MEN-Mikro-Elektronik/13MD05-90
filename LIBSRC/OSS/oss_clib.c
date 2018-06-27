@@ -6,7 +6,7 @@
  *        $Date: 2007/02/06 17:04:41 $
  *    $Revision: 1.5 $
  *
- *	   \project  MDIS4Linux
+ *	   \project  MDISforLinux
  *  	 \brief  Substitutes for C library calls
  *
  *    \switches  -
