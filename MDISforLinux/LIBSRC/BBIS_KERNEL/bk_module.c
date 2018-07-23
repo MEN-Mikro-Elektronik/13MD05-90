@@ -79,6 +79,7 @@
 #include <linux/module.h>
 #include <linux/interrupt.h>
 #include <linux/uaccess.h>
+#include <linux/vmalloc.h>
 
 #include "bk_intern.h"
 
@@ -638,8 +639,8 @@ static ssize_t bk_read_procmem( struct file *filp, char *buf, size_t count, loff
 {
 
   int i, rv=0;
-  char locbuf[PROC_BUF_LEN];
-  char *tmp = locbuf;
+  char *locbuf;
+  char *tmp;
   static int len=0;
 
   /* ts: page wise readers like cat read until no chars are returned,
@@ -649,10 +650,15 @@ static ssize_t bk_read_procmem( struct file *filp, char *buf, size_t count, loff
     return 0;
   }
 
+	locbuf = vmalloc(PROC_BUF_LEN);
+	if (!locbuf)
+		return -ENOMEM;
+	tmp = locbuf;
+
   DBGWRT_3((DBH,"mk_read_procmem: count %d\n", count));
   BK_LOCK(i);
 
-  memset(locbuf, 0x00, sizeof(locbuf));
+	memset(locbuf, 0x00, PROC_BUF_LEN);
 
 
   /* Drivers */
@@ -685,6 +691,8 @@ static ssize_t bk_read_procmem( struct file *filp, char *buf, size_t count, loff
 
   len+=copy_to_user(buf, locbuf, len );
 
+	vfree(locbuf);
+
   DBGWRT_3((DBH,"bk_read_procmem: ex rv=%d\n", rv));
   BK_UNLOCK;
   return len;
@@ -695,7 +703,7 @@ static ssize_t bk_read_procmem( struct file *filp, char *buf, size_t count, loff
 /* since kernel 3.10 new proc entry fops are needed */
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
 static struct file_operations bk_proc_fops = {
-     read:       	bk_read_procmem,
+     .read=      	bk_read_procmem,
 };
 #endif
 

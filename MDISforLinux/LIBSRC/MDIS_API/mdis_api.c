@@ -56,8 +56,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-static const char RCSid[]="$Header: /dd2/CVSR/LINUX/LIBSRC/MDIS_API/mdis_api.c,v 1.8 2014/07/17 12:29:39 ts Exp $";
-
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>

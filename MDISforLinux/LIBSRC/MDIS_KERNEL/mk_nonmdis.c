@@ -337,7 +337,7 @@ int mdis_install_external_irq(
  *
  * The actions of this routine are also done by mdis_close_external_dev()
  *
- * \param  _dev		device handle returned by #mdis_open_external_dev
+ * \param  _dev        device handle returned by #mdis_open_external_dev
  *
  * \return negative linux error number
  */
@@ -345,14 +345,13 @@ int mdis_remove_external_irq( void *_dev )
 {
 	MK_DEV *dev = (MK_DEV *)_dev;
 	DBGCMD(const char fname[] = "mdis_remove_external_irq: "; )
-	int32 error;
 
 	DBGWRT_1((DBH,"%s\n", fname ));
 
 	MDIS_RemoveSysirq( dev );
 
 	dev->llJumpTbl.irq = NULL;
-	dev->ll			   = NULL;
+	dev->ll            = NULL;
 
 	return 0;
 }

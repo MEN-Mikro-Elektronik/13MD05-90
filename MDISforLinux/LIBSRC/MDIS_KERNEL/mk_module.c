@@ -334,18 +334,18 @@ int mk_ioctl (
     if (_IOC_TYPE(cmd) != MDIS_IOC_MAGIC) return -ENOTTY;
     if (_IOC_NR(cmd) > MDIS_IOC_MAXNR) return -ENOTTY;
 
-    /*
-     * the direction is a bitmask, and VERIFY_WRITE catches R/W
-     * transfers. `Type' is user-oriented, while
-     * access_ok is kernel-oriented, so the concept of "read" and
-     * "write" is reversed
-     */
-    if (_IOC_DIR(cmd) & _IOC_READ)
-        err = !access_ok(VERIFY_WRITE, (void *)arg, size);
-    else if (_IOC_DIR(cmd) & _IOC_WRITE)
-        err =  !access_ok(VERIFY_READ, (void *)arg, size);
-	
-	if (err)	
+	/*
+	* the direction is a bitmask, and VERIFY_WRITE catches R/W
+	* transfers. `Type' is user-oriented, while
+	* access_ok is kernel-oriented, so the concept of "read" and
+	* "write" is reversed
+	*/
+	if (_IOC_DIR(cmd) & _IOC_READ)
+		err = !access_ok(VERIFY_WRITE, (void *)arg, size);
+	else if (_IOC_DIR(cmd) & _IOC_WRITE)
+		err =  !access_ok(VERIFY_READ, (void *)arg, size);
+
+	if (err)
 		return -EFAULT;	
 
     switch(cmd) {
@@ -1539,8 +1539,8 @@ static ssize_t mk_read_procmem( struct file *filp, char *buf, size_t count, loff
 {
 
   int i,error, rv=0;
-  char locbuf[PROC_BUF_LEN];
-  char *tmp = locbuf;
+  char *locbuf;
+  char *tmp;
   static int len=0;
 
   /* ts: page wise readers like cat read until no chars are returned, so keep len in a persistent static value
@@ -1553,7 +1553,12 @@ static ssize_t mk_read_procmem( struct file *filp, char *buf, size_t count, loff
   DBGWRT_3((DBH,"mk_read_procmem: count %d\n", count));
   MK_LOCK(error);
 
-  memset(locbuf, 0x00, sizeof(locbuf));
+	locbuf = vmalloc(PROC_BUF_LEN);
+	if (!locbuf)
+		return -ENOMEM;
+	tmp = locbuf;
+
+	memset(locbuf, 0x00, PROC_BUF_LEN);
 
   /* user buffers */
   {
@@ -1594,6 +1599,8 @@ static ssize_t mk_read_procmem( struct file *filp, char *buf, size_t count, loff
   }
 
   len+=copy_to_user(buf, locbuf, len );
+
+	vfree(locbuf);
 
   DBGWRT_3((DBH,"mk_read_procmem: ex rv=%d\n", rv));
   MK_UNLOCK;
