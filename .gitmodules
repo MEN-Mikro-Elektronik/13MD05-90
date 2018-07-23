@@ -159,6 +159,7 @@
 [submodule "TOOLS/MDIS_API"]
 	path = MDISforLinux/TOOLS/MDIS_API
 	url = ../mdis_tools_mdis_api.git
+	branch = jpe-dev
 [submodule "DRIVERS/BBIS/A21"]
 	path = MDISforLinux/DRIVERS/BBIS/A21
 	url = ../mdis_drivers_bbis_a21_com.git
