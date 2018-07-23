@@ -1,6 +1,6 @@
 [submodule "13AD78-06"]
 	path = 13AD78-06
-	url = https://github.com/MEN-Mikro-Elektronik/13AD78-06.git
+	url = ../13AD78-06.git
 [submodule "13M011-06"]
 	path = 13M011-06
 	url = ../13M011-06.git
@@ -126,7 +126,7 @@
 	url = ../13Z135-90.git
 [submodule "13SC24-91"]
 	path = 13SC24-91
-	url = ../13SC24-91
+	url = ../13SC24-91.git
 [submodule "INCLUDE/COM/MEN"]
 	path = MDISforLinux/INCLUDE/COM/MEN
 	url = ../mdis_include_com_men.git
