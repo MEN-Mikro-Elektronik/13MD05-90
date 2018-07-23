@@ -148,6 +148,7 @@
 [submodule "LIBSRC/USR_UTL/COM"]
 	path = MDISforLinux/LIBSRC/USR_UTL/COM
 	url = ../mdis_libsrc_usr_utl_com.git
+	branch = jpe-dev
 [submodule "LIBSRC/SMB/PORT/COM"]
 	path = MDISforLinux/LIBSRC/SMB/PORT/COM
 	url = ../mdis_libsrc_smb_port_com.git
