@@ -1,6 +1,6 @@
 [submodule "13AD78-06"]
 	path = 13AD78-06
-	url = ../13AD78-06.git
+	url = https://github.com/MEN-Mikro-Elektronik/13AD78-06.git
 [submodule "13M011-06"]
 	path = 13M011-06
 	url = ../13M011-06.git
