@@ -415,7 +415,7 @@ $(ALL_DEV_TOOLS):
 $(ALL_DESC):
 	$(MAKEIT) -f $(DESC_MAK) $(RULE) DESC=$@
 
-include $(THIS_DIR)/.kernelsettings
+-include $(THIS_DIR)/.kernelsettings
 
 #
 # Rule to get settings from Linux Kernel
