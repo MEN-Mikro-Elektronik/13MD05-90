@@ -6,3 +6,10 @@ BUILD/MDIS/DEVTOOLS/BIN
 BUILD/MDIS/DEVTOOLS/OBJ
 change_to_gpl_2.sh
 .settings
+.kernelsettings
+.kernelsubdirs
+BIN/
+LIB/
+Makefile
+OBJ/
+system.dsc
