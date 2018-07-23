@@ -1,0 +1,2 @@
+# MDISforLinux
+This is the repository of the MEN Driver interface system (MDIS) system package for Linux. It is the base MDIS package without the MDIS Low Level and native Drivers. It contains several submodules, so be sure to not only clone this repository but also to update submodules. For obtaining the complete MDIS package with all drivers, refer to repository 13MD05-90 and follow instructions there.

@@ -1,0 +1,306 @@
+#!/bin/bash
+#*****************************************************************************
+#  
+#         Author: Andreas Geissler
+#          $Date: 2018-06-20 
+#       Revision: 0.1
+#  
+#    Description: Installation script for MDIS5LINUX system package
+#      
+#-----------------------------------------------------------------------------
+# (c) Copyright 2018 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
+#*****************************************************************************
+
+
+# warn when using uninitialised variables
+set -u
+
+this=$0
+CWD=`pwd`
+
+# installation dir
+OPT=/opt
+MENLINUX=menlinux
+MENHISTORY=HISTORY
+
+if [ $# -gt 0 ]; then
+   if [ ! -z $1 ]; then
+      echo "Use $1 as MDIS installation path"
+      MENLINUX_ROOT=$1
+   fi
+else
+   MENLINUX_ROOT=$OPT/$MENLINUX
+fi
+
+
+# system package git repository name
+MDIS_PACKAGE=MDISforLinux
+
+# system MDIS_PACKAGE tarfile name
+MDIS_DRIVER=./
+
+# do_or_die {command-list}
+#
+# execute command-list and exit script if that fails
+#
+# NOTICE: beware of quotes and the like the might need escaping
+do_or_die()
+{
+    eval $* || exit $?
+}
+
+#
+# input: arg1 = message to print
+#        check for y/n/q
+# returns: 0="y" 1="n" 2="q"
+get_ynq_answer() {
+   while true
+   do
+      echo -n $1 '(y/n/q): '
+      read answer
+      case $answer in
+      [Yy]) return 0;;
+      [Nn]) return 1;;
+      [Qq]) return 2;;
+      esac
+   done
+}     
+
+run_scan_system() {
+	echo "scanning system. Calling $1/scan_system.sh $1"
+	/$1/scan_system.sh $1
+}
+
+show_next_steps() {
+	echo "The next steps could be:"
+	echo " - generate a MDIS project by opening MDIS Wizard and run automatic system scan or"
+	echo " - generate a MDIS project by opening MDIS Wizard and manually create a system configuration."
+}
+
+# Function to copy folder structure of low level driver.
+# Ask for overwrite of existing folder in destination folder.
+# Function is called recursive
+#
+# input: arg1 = Source folder 
+#        arg2 = Destination folder
+folder_recursive() {
+   local SRC_FOLDER=$1 
+   local DST_FOLDER=$2
+
+   # check if subfolder already exists
+   for subfolder in $SRC_FOLDER/* ; do
+      # get base name
+      subfolder_base=$(basename ${subfolder})
+
+      if  [ -f "$subfolder" ] ; then 
+         #################
+         # It is a file
+         #################
+         # TODO: do only check folders because it takes to long to accept all
+         #       file overwrites
+         #if  [ -f "$DST_FOLDER/$subfolder_base" ] ; then 
+         #   get_ynq_answer "Overwrite file $DST_FOLDER/$subfolder_base"
+         #   echo
+         #   case $? in
+         #       1 | 2) echo "Aborted."; continue;
+         #   esac
+         #fi
+         cp $subfolder $DST_FOLDER/
+         continue;
+     else
+         #################
+         # It is a folder
+         #################
+         # if the folder already exists check ask the user
+         # for overwrite. Ignore standard folders
+         if  [ -d "$DST_FOLDER/$subfolder_base" ] ; then 
+            if    [ $subfolder_base != "COM" ]     \
+               && [ $subfolder_base != "NATIVE" ]  \
+               && [ $subfolder_base != "html" ]    \
+               && [ $subfolder_base != "MDIS_LL" ] \
+               && [ $subfolder_base != "DOC" ]     \
+               && [ $subfolder_base != "MEN" ] ; then
+               get_ynq_answer "Overwrite folder $DST_FOLDER/$subfolder_base"
+               case $? in
+                  1 | 2) echo "Aborted."; continue;
+               esac
+            fi;
+            # goto subfolder and go on searching
+            folder_recursive $subfolder $DST_FOLDER/$subfolder_base
+         else
+            echo -n "Install ${subfolder} to ${DST_FOLDER} ... "
+            do_or_die cp -ru ${subfolder} ${DST_FOLDER}/
+            echo "Done"
+         fi;
+      fi;
+   done
+}
+
+echo "  _______________________________________________________________________________________ "
+echo " |                                                                                       |"
+echo " | Welcome to the MDIS for Linux System Package installer from MEN Mikro Elektronik GmbH.|"
+echo " | This installer will guide you through the installation process and perform required   |"
+echo " | steps. Upon installation the availability of some tools will be checked.              |"
+echo " |_______________________________________________________________________________________|"
+
+get_ynq_answer "Continue ? "
+case $? in
+    1 | 2) echo "Aborted."; exit 1;;
+esac
+
+STARTDIR=`pwd`
+
+# echo " 1. Checkout all submodules... "
+# do_or_die git submodule update --init --recursive
+# echo "ok"
+
+echo " Checking if I2C tools are installed..."
+# checking witch which because scan_system expects it in the standard path
+TOOLNAME=`which i2cdetect 2> /dev/null`
+if [ "$TOOLNAME" == "" ]; then
+    echo >&2 "*** Warning: I2C tools seem missing. Run e.g. 'sudo apt-get install i2c-tools'."
+    echo >&2 "    The i2c-tools are required for automated system scan and generation of MDIS projects! "
+else
+    echo "Ok, i2c-tools are available. If module i2c-dev is loaded but still no i2c buses are found by i2c-detect please add kernel parameter"
+	echo "  acpi_enforce_resources=lax "
+	echo "to kernel parameter line in GRUB."
+fi
+
+echo -n " Checking if git is installed..."
+TOOLNAME=`which git 2> /dev/null`
+if [ "$TOOLNAME" == "" ]; then
+    echo >&2 "*** Warning: git not installed or in \$PATH. Please install git to ensure proper module versioning."
+else
+    echo "Ok, git is available. "
+fi
+
+echo " Checking if $MENLINUX_ROOT exists... "
+#
+# Prepare, create /opt/menlinux
+#
+if [ ! -d "$MENLINUX_ROOT" ]; then
+   # $MENLINUX_ROOT doesn't exist
+   echo "no"
+    
+   echo -n "Checking if $OPT exists... "
+   if [ ! -d "$OPT" ]; then
+      # /opt doesn't exists    
+      echo >&2 "$OPT doesn't exists. Please create and then call $this again"
+      exit 1
+   fi
+   
+
+   # check if /opt writeable
+   if [ ! -w "$OPT" ]; then
+      echo >&2 
+      echo >&2 "*** Can't create directory in $OPT due to insufficient rights."
+      echo >&2 "*** Please login as root and then call $this again"
+      exit 1
+   fi
+   echo "ok"
+   
+   # create MENLINUX
+   echo -n "Creating directory $MENLINUX_ROOT... "
+   do_or_die mkdir -p $MENLINUX_ROOT
+   do_or_die chmod 777 $MENLINUX_ROOT
+   echo "ok"
+
+else
+   # $MENLINUX_ROOT exists, check if it's writeable
+   if [ ! -w "$MENLINUX_ROOT" ]; then
+      echo >&2 
+      echo >&2 "*** Insufficient rights to write into $MENLINUX_ROOT"
+      echo >&2 "*** Please login as root and then call $this again"
+      exit 1
+   fi
+   echo "ok"
+    
+   # ask wether to overwrite
+   if [ -d "$MENLINUX_ROOT" ]; then
+      echo
+      echo "Directory $MENLINUX_ROOT already exists."
+      get_ynq_answer "Overwrite existing files?"
+      case $? in
+         1 | 2) echo "Aborted."; exit 1;;
+      esac
+   fi
+fi
+
+#
+# Install driver and system package
+#
+(
+   echo ""
+   cd $MENLINUX_ROOT
+   echo -n "Copy $MDIS_PACKAGE..."
+   do_or_die cp -ru $CWD/$MDIS_PACKAGE/* .
+   echo "ok"
+   
+   for i in * ; do
+      if [ -d "$i" ]; then
+         echo "$i"
+      fi
+   done
+
+   echo ""
+   echo -n "Create ${MENHISTORY}..."
+   mkdir -p ${MENLINUX_ROOT}/${MENHISTORY}
+   cd $CWD/$MDIS_PACKAGE
+   if [ -f "${MENLINUX_ROOT}/13md05-90_history.txt" ]; then
+      rm "${MENLINUX_ROOT}/13md05-90_history.txt"
+   fi
+   git log > "${MENLINUX_ROOT}/13MD05-90_history.txt"
+
+   # Create history for submodules 
+   for i in $CWD/13* $CWD/$MDIS_PACKAGE; do
+      CUR_DIR=`pwd`
+      cd $i
+      git log > "${MENLINUX_ROOT}/${MENHISTORY}/$(basename ${i})_history.txt"
+      git rev-parse --verify HEAD > "${MENLINUX_ROOT}/${MENHISTORY}/$(basename ${i})_version.txt"
+      #git describe --exact-match --tags $(git log -n1 --pretty='%h') > "${MENLINUX_ROOT}/${MENHISTORY}/$(basename ${i})_tag.txt"
+      git remote -v > "${MENLINUX_ROOT}/${MENHISTORY}/$(basename ${i})_url.txt"
+      cd $CUR_DIR
+   done
+   echo "ok"
+   echo ""
+   echo -n "Copy MDIS drivers..."
+   for i in $CWD/13* ; do
+      if [ -d "$i" ]; then
+         for folder_type in BIN BUILD DOXYGENTMPL DRIVERS INCLUDE LIBSRC LICENSES PACKAGE_DESC TOOLS WINDOWS; do 
+            if [ -d "$i/$folder_type" ]; then 
+               mkdir -p ./$folder_type
+               folder_recursive $i/$folder_type $MENLINUX_ROOT/$folder_type
+            fi
+         done
+      fi
+   done
+   echo "ok"
+   
+   echo ""
+   cd ${STARTDIR}
+   echo -n "copy .git to ${MENLINUX_ROOT}..."
+   cp -a \.git ${MENLINUX_ROOT}
+   echo "ok"
+
+   # set permissions in "BUILD" and "BIN" directory for all users
+   cd ${MENLINUX_ROOT}
+   echo -n "Setting permissions..."
+   find -type d -exec chmod 777 {} \;
+   chmod -R 755 BIN/*
+   echo "ok"
+)
+
+echo
+echo "Gratulations, you installed MDIS System Package for Linux plus MDIS Low Level Drivers successfully."
+echo ""
+echo ""
+get_ynq_answer "Would you like to run a system scan to automatically find MEN hardware and generate an MDIS project ?"
+case $? in
+	     0 ) run_scan_system ${MENLINUX_ROOT};;
+         1 | 2) show_next_steps ;;
+esac
+
+
+echo
+echo "Please download and read 21md05-90 for further instructions."
+echo "http://www.men.de/download/support,13MD05-90.html"
