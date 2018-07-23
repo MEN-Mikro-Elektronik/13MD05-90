@@ -154,6 +154,7 @@
 [submodule "LIBSRC/USR_OSS"]
 	path = MDISforLinux/LIBSRC/USR_OSS
 	url = ../mdis_libsrc_usr_oss.git
+	branch = jpe-dev
 [submodule "TOOLS/MDIS_API"]
 	path = MDISforLinux/TOOLS/MDIS_API
 	url = ../mdis_tools_mdis_api.git
