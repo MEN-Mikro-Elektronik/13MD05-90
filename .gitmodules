@@ -197,6 +197,7 @@
 [submodule "DRIVERS/BBIS/A12"]
 	path = MDISforLinux/DRIVERS/BBIS/A12
 	url = ../mdis_drivers_bbis_a12_com.git
+	branch = jpe-dev
 [submodule "LIBSRC/SMB/PORTCB/COM"]
 	path = MDISforLinux/LIBSRC/SMB/PORTCB/COM
 	url = ../mdis_libsrc_smb_portcb_com.git
