@@ -178,6 +178,7 @@
 [submodule "DRIVERS/BBIS/CHAMELEON"]
 	path = MDISforLinux/DRIVERS/BBIS/CHAMELEON
 	url = ../mdis_drivers_bbis_chameleon_com.git
+	branch = jpe-dev
 [submodule "DRIVERS/BBIS/D201"]
 	path = MDISforLinux/DRIVERS/BBIS/D201
 	url = ../mdis_drivers_bbis_d201_com.git
