@@ -198,6 +198,7 @@
 [submodule "DRIVERS/BBIS/SMBPCI"]
 	path = MDISforLinux/DRIVERS/BBIS/SMBPCI
 	url = ../mdis_drivers_bbis_smbpci_com.git
+	branch = jpe-dev
 [submodule "DRIVERS/BBIS/A12"]
 	path = MDISforLinux/DRIVERS/BBIS/A12
 	url = ../mdis_drivers_bbis_a12_com.git
