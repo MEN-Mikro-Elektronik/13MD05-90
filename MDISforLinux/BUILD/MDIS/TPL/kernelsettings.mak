@@ -24,6 +24,6 @@ getsettings_for_mdis:
 	@echo KERNEL_CC := $(CC)
 	@echo KERNEL_LD := $(LD)
 	@echo KERNEL_CFLAGS := $(CFLAGS)
-	@echo KERNEL_LFLAGS := $(LFLAGS)
+	@echo KERNEL_LDFLAGS := $(LDFLAGS)
 	@echo KERNEL_ARCH := $(ARCH)
 
