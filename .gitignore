@@ -11,5 +11,6 @@ change_to_gpl_2.sh
 BIN/
 LIB/
 Makefile
+Makefile.*
 OBJ/
 system.dsc
