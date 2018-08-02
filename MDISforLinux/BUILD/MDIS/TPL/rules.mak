@@ -144,6 +144,13 @@ else
  endif
 endif
 
+# on Debian a workaround for kernel headers is needed
+LIN_DISTRO_ID := $(findstring Debian,"$(shell uname --kernel-version)")
+ifeq ($(LIN_DISTRO_ID),Debian)
+	LIN_KERNEL_COMMON_DIR := $(LIN_KERNEL_DIR)/source
+endif
+LIN_KERNEL_COMMON_DIR ?= $(LIN_KERNEL_DIR)
+
 #
 # decide wether to force build of 32bit apps or leave it to build host
 #
@@ -291,6 +298,7 @@ export LIB_INSTALL_DIR
 export STATIC_LIB_INSTALL_DIR
 export DESC_INSTALL_DIR
 export LIN_KERNEL_DIR
+export LIN_KERNEL_COMMON_DIR
 export LIN_INC_DIR
 export LIN_USR_INC_DIR
 export DEBUG_FLAGS
@@ -425,12 +433,13 @@ $(ALL_DESC):
 kernelsettings: $(THIS_DIR)/.kernelsettings
 
 
-$(THIS_DIR)/.kernelsettings: Makefile $(LIN_KERNEL_DIR)/Makefile
+$(THIS_DIR)/.kernelsettings: $(LIN_KERNEL_COMMON_DIR)/Makefile
 	@$(ECHO) "Getting Compiler/Linker settings from Linux Kernel Makefile"
-	$(Q)$(MAKE) -C $(LIN_KERNEL_DIR) \
-	--no-print-directory -f $(TPL_DIR)kernelsettings.mak getsettings_for_mdis | tail -n 5 >$@
+	@$(Q)$(MAKE) -C $(LIN_KERNEL_COMMON_DIR) \
+	--no-print-directory -f $(TPL_DIR)kernelsettings.mak \
+	KERNEL_SETTINGS_FILE=$(THIS_DIR)/.kernelsettings > /dev/null 2>&1
 
-$(THIS_DIR)/.endian: Makefile $(LIN_KERNEL_DIR)/Makefile
+$(THIS_DIR)/.endian: Makefile $(LIN_KERNEL_COMMON_DIR)/Makefile
 	@$(ECHO) "Getting Compiler/Linker settings from Linux Kernel Makefile"
 
 
