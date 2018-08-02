@@ -186,6 +186,7 @@
 [submodule "DRIVERS/BBIS/D203"]
 	path = MDISforLinux/DRIVERS/BBIS/D203
 	url = ../mdis_drivers_bbis_d203n_com.git
+	branch = jpe-dev
 [submodule "DRIVERS/BBIS/D302"]
 	path = MDISforLinux/DRIVERS/BBIS/D302
 	url = ../mdis_drivers_bbis_d302_com.git
@@ -216,9 +217,11 @@
 [submodule "LIBSRC/SMB2/COM"]
 	path = MDISforLinux/LIBSRC/SMB2/COM
 	url = ../mdis_libsrc_smb2_com.git
+	branch = jpe-dev
 [submodule "TOOLS/FPGA_LOAD"]
 	path = MDISforLinux/TOOLS/FPGA_LOAD
 	url = ../mdis_tools_fpga_load
+	branch = jpe-dev
 [submodule "LIBSRC/pciutils"]
 	path = MDISforLinux/LIBSRC/pciutils
 	url = ../pciutils
