@@ -141,6 +141,7 @@
 [submodule "INCLUDE/COM/MEN"]
 	path = MDISforLinux/INCLUDE/COM/MEN
 	url = ../mdis_include_com_men.git
+	branch = jpe-dev
 [submodule "LIBSRC/CHAMELEON/COM"]
 	path = MDISforLinux/LIBSRC/CHAMELEON/COM
 	url = ../mdis_libsrc_chameleon_com.git
