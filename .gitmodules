@@ -201,6 +201,7 @@
 [submodule "DRIVERS/BBIS/ISA"]
 	path = MDISforLinux/DRIVERS/BBIS/ISA
 	url = ../mdis_drivers_bbis_isa_com.git
+	branch = jpe-dev
 [submodule "DRIVERS/BBIS/PCI"]
 	path = MDISforLinux/DRIVERS/BBIS/PCI
 	url = ../mdis_drivers_bbis_pci_com.git
