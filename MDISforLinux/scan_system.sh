@@ -1080,7 +1080,7 @@ debug_print "Using _WIZ_MODEL = $wiz_model_cpu"
 # create SC24 based Bx50x CPU model
 if [ "$main_cpu" == "SC24" ]; then
     map_sc24_fpga
-    cat $DSC_TPL_DIR/sc24.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
+    cat $DSC_TPL_DIR/sc24.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g; s/SCAN_SMBNR1/$G_SmBusNumber/g; s/SCAN_SMBNR2/$((G_SmBusNumber + 1))/g;" >> $DSC_FILE
     cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE
 # create SC25 based Bx70x CPU model - no FPGA mapping necessary here
 elif  [ "$main_cpu" == "SC25" ]; then 
