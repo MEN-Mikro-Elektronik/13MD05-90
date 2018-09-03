@@ -476,8 +476,10 @@ function scan_cham_table {
 
         # skip to begin of IP cores table
 	delimiter=`echo $devline | awk '{print $1}'`
-	if [ $delimiter == "---" ]; then
+        if [ "$delimiter" == "---" ]; then
             do_parse=1
+        elif [ "$delimiter" == "" ]; then
+            do_parse=0
 	fi
 
     done < $TMP_CHAM_TBL
@@ -647,14 +649,14 @@ function scan_for_pci_devs {
     bus_path_sec_f223=0
 
     while read line; do
-	# Nr.|bus|dev|fun| Ven ID | Dev ID | SubVen ID |
-	#  25   5  15   0  0x12d8   0xe110    0x0000
+	# Nr.| dom|bus|dev|fun| Ven ID | Dev ID | SubVen ID |
+	#  25   0   5  15   0   0x12d8   0xe110    0x0000
         listnr=`echo $line | awk '{print $1}'`
-        pcibus=`echo $line | awk '{print $2}'`
-        pcidevnr=`echo $line | awk '{print $3}'`
-        pcivend=`echo $line | awk '{print $5}'`
-        pcidevid=`echo $line | awk '{print $6}'`
-        pcisubvend=`echo $line | awk '{print $7}'`
+        pcibus=`echo $line | awk '{print $3}'`
+        pcidevnr=`echo $line | awk '{print $4}'`
+        pcivend=`echo $line | awk '{print $6}'`
+        pcidevid=`echo $line | awk '{print $7}'`
+        pcisubvend=`echo $line | awk '{print $8}'`
         debug_print "Vendor: $pcivend Device: $pcidevid PCI bus: $pcibus PCI devnr. $pcidevnr "
 
         ###################
