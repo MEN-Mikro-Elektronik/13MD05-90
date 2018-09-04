@@ -234,7 +234,7 @@ function map_sc24_fpga {
 function create_entry_dsc_smb_type {
     echo "Writing CPU SMB BBIS section."
     #echo " _WIZ_MODEL = $3, SM Bus nr. = $2  SM Bus IF nr. = $4 "
-    cat $1/smb.tpl | sed "s/SCAN_SMBDRV/$3/g; s/SCAN_SMBNR/$2/g; s/SCAN_SMBUSIF/$4/g" >> $DSC_FILE
+    cat $1/smb.tpl | sed "s/SCAN_SMBDRV/$3/g; s/SCAN_SMBNR/`printf \"0x%x\" $2`/g; s/SCAN_SMBUSIF/$4/g" >> $DSC_FILE
 }
 
 ############################################################################
@@ -265,7 +265,7 @@ function create_entry_dsc_smb_drv {
     echo "creating CPU SMB driver section: _WIZ_MODEL = $3, SM Bus nr. = $2"
 
     cat $1/smb_drv.tpl | \
-        sed "s/SCAN_DEVNAME/$3/g;s/SCAN_HWTYPE/$4/g;s/SCAN_WIZMODEL/$5/g;s/SCAN_SMBNR/$2/g" >> $DSC_FILE
+        sed "s/SCAN_DEVNAME/$3/g;s/SCAN_HWTYPE/$4/g;s/SCAN_WIZMODEL/$5/g;s/SCAN_SMBNR/`printf \"0x%x\" $2`/g" >> $DSC_FILE
 }
 
 
@@ -369,7 +369,7 @@ function create_entry_dsc_bbis_cham {
     fi
 
     # TODO generate the long filter commands dynamically..
-    cat $1/$tplname | sed "s/SCAN_BBIS_INSTANCE/$bbis_instance/g;s/SCAN_WIZ_MODEL/$wiz_mod/g;s/SCAN_WIZ_BUSIF/$busif/g;s/SCAN_PCI_BUS_NR/$pci_busnr/g;s/SCAN_PCI_BUS_SLOT/$pcibusslot/g;s/SCAN_PCI_DEV_NR/$pci_devnr/g" > $TMP_BBIS_DSC
+    cat $1/$tplname | sed "s/SCAN_BBIS_INSTANCE/$bbis_instance/g;s/SCAN_WIZ_MODEL/$wiz_mod/g;s/SCAN_WIZ_BUSIF/$busif/g;s/SCAN_PCI_BUS_NR/`printf \"0x%x\" $pci_busnr`/g;s/SCAN_PCI_BUS_SLOT/`printf \"0x%x\" $pcibusslot`/g;s/SCAN_PCI_DEV_NR/`printf \"0x%x\" $pci_devnr`/g" > $TMP_BBIS_DSC
 
 }
 
@@ -449,9 +449,9 @@ function scan_cham_table {
 
 		    # TODO generate the long sed filter commands dynamically..
 		    if [ "$bbis_name" == "mm01" ]; then
-			cat $1/$ipcore.tpl | sed "s/SCAN_MDIS_INSTANCE/$G_mdisInstanceCount/g;s/SCAN_BBIS_NAME/fpga/g;s/USCORESCAN_BBIS_INSTANCE//g;s/SCAN_DEV_SLOT/$G_bus_slot_count/g;" >> $DSC_FILE
+			cat $1/$ipcore.tpl | sed "s/SCAN_MDIS_INSTANCE/$G_mdisInstanceCount/g;s/SCAN_BBIS_NAME/fpga/g;s/USCORESCAN_BBIS_INSTANCE//g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $G_bus_slot_count`/g;" >> $DSC_FILE
 		    else
-			cat $1/$ipcore.tpl | sed "s/SCAN_MDIS_INSTANCE/$G_mdisInstanceCount/g;s/SCAN_BBIS_NAME/$bbis_name/g;s/USCORESCAN_BBIS_INSTANCE/_$bbis_instance/g;s/SCAN_DEV_SLOT/$G_bus_slot_count/g;" >> $DSC_FILE
+			cat $1/$ipcore.tpl | sed "s/SCAN_MDIS_INSTANCE/$G_mdisInstanceCount/g;s/SCAN_BBIS_NAME/$bbis_name/g;s/USCORESCAN_BBIS_INSTANCE/_$bbis_instance/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $G_bus_slot_count`/g;" >> $DSC_FILE
 		    fi
 
 		    G_bus_slot_count=`expr $G_bus_slot_count + 1`
@@ -576,8 +576,8 @@ function create_entry_dsc_f223 {
     echo "Writing f223_$2 section to system.dsc "
     debug_args " \$1 = $1   \$2 = $2    \$3 = $3    \$4 = $4  "
     cat $1/f223.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;"\
-"s/SCAN_MDIS_INSTANCE/$2/g;s/SCAN_PCIPATH_PRIM/$3/g;"\
-"s/SCAN_PCIPATH_SEC/$4/g" >> $DSC_FILE
+"s/SCAN_MDIS_INSTANCE/$2/g;s/SCAN_PCIPATH_PRIM/`printf \"0x%x\" $3`/g;"\
+"s/SCAN_PCIPATH_SEC/`printf \"0x%x\" $4`/g" >> $DSC_FILE
 
 }
 
@@ -593,7 +593,7 @@ function create_entry_dsc_f223 {
 function create_entry_dsc_f207 {
     echo "Writing f207_$2 section to system.dsc "
     debug_args " \$1 = $1 \$2 = $2  \$3 = $3  \$4 = $4 "
-    cat $1/f207.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_PCIPATH_PRIM/$3/g;s/SCAN_PCIPATH_SEC/$4/g" >> $DSC_FILE
+    cat $1/f207.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_PCIPATH_PRIM/`printf \"0x%x\" $3`/g;s/SCAN_PCIPATH_SEC/`printf \"0x%x\" $4`/g" >> $DSC_FILE
 }
 
 
@@ -1090,7 +1090,7 @@ debug_print "Using _WIZ_MODEL = $wiz_model_cpu"
 # create SC24 based Bx50x CPU model
 if [ "$main_cpu" == "SC24" ]; then
     map_sc24_fpga
-    cat $DSC_TPL_DIR/sc24.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g; s/SCAN_SMBNR1/$((G_SmBusNumber - 1))/g; s/SCAN_SMBNR2/$G_SmBusNumber/g;" >> $DSC_FILE
+    cat $DSC_TPL_DIR/sc24.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g; s/SCAN_SMBNR1/`printf \"0x%x\" $((G_SmBusNumber - 1))`/g; s/SCAN_SMBNR2/`printf \"0x%x\" $G_SmBusNumber`/g;" >> $DSC_FILE
     cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE
 # create SC25 based Bx70x CPU model - no FPGA mapping necessary here
 elif  [ "$main_cpu" == "SC25" ]; then 

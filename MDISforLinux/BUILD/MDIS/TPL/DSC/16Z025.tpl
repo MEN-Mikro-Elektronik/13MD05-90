@@ -4,7 +4,7 @@ uart_SCAN_MDIS_INSTANCE {
     #        general parameters (don't modify)
     # ------------------------------------------------------------------------
     DESC_TYPE = U_INT32 0x1
-    HW_TYPE = STRING FRODO_SERIAL
+    HW_TYPE = STRING MEN_LX_Z25
     _WIZ_MODEL = STRING 16Z025_UART
 
     # ------------------------------------------------------------------------
