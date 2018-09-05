@@ -596,6 +596,20 @@ function create_entry_dsc_f207 {
     cat $1/f207.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_PCIPATH_PRIM/`printf \"0x%x\" $3`/g;s/SCAN_PCIPATH_SEC/`printf \"0x%x\" $4`/g" >> $DSC_FILE
 }
 
+############################################################################
+# create a d203_a24_x BBIS section.
+#
+# parameters:
+# $1  DSC template directory
+# $2  instance number (subst. SCAN_BBIS_INSTANCE tag)
+# $3  PCI_BUS slot (subst. SCAN_SMBUSIF tag)
+# $4  PCI_BUS primary path (subst. SCAN_PCIPATH_PRIM tag)
+function create_entry_dsc_d203_a24 {
+    echo "Writing d203_a24_$2 section to system.dsc "
+    debug_args " \$1 = $1 \$2 = $2  \$3 = $3  \$4 = $4"
+    cat $1/d203_a24.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_SMBUSIF/$3/g;s/SCAN_PCIPATH_PRIM/`printf \"0x%x\" $4`/g" >> $DSC_FILE
+    G_makefileBbisDriver+=" D203/DRIVER/COM/driver_a24.mak"
+}
 
 ############################################################################
 # add the xm01bc LL driver, tool to LL driver and LL tool list. Some
@@ -644,6 +658,7 @@ function scan_for_pci_devs {
     count_instance_f223=0 # handled separately
     count_instance_f207=0
     count_instance_f2xx=0 # any other F2xx cham. carrier
+    count_instance_d203_a24=0
     bus_path_prim=$1
     bus_path_sec=0
     bus_path_sec_f223=0
@@ -693,7 +708,6 @@ function scan_for_pci_devs {
             fi
         fi
 
-
         ############################
         # state events
 
@@ -721,6 +735,14 @@ function scan_for_pci_devs {
             check_for_cham_devs $MEN_LIN_DIR \
                 $pcivend $pcidevid $pcidevnr $pcisubvend \
                 $count_instance_f2xx $pcibus
+        fi
+
+	if [ "$pcivend" == "0x1172" ] && [ "$pcidevid" == "0x203d" ] && [ "$pcisubvend" == "0x00b9" ]; then
+		pcibusslot=$G_cPciRackSlotSerial
+                count_instance_d203_a24=`expr $count_instance_d203_a24 + 1`
+                G_cPciRackSlotSerial=`expr $G_cPciRackSlotSerial + 1`
+                echo "Found d203_a24 no. $count_instance_d203_a24"
+                create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_d203_a24 $pcibusslot $bus_path_prim
         fi
 
     done <  $TMP_PCIDEVS
@@ -1019,7 +1041,7 @@ case $main_cpu in
     F023|F23P)
 		wiz_model_cpu=F23P
 		wiz_model_smb=SMBPCI_ICH
-		G_primPciPath=0x1e
+		G_primPciPath=0x1c
 		wiz_model_busif=0
 		add_xm01bc_support
 		bCreateXm01bcDrv=1
