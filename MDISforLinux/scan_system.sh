@@ -606,11 +606,10 @@ function create_entry_dsc_f207 {
 # $4  PCI_BUS primary path (subst. SCAN_PCIPATH_PRIM tag)
 # $5  BOARD_NAME
 # $6  SCAN_PCI_DEVICE_NUMBER
-# $7  SCAN_PCI_DEVICE_ID
 function create_entry_dsc_d203 {
     echo "Writing d203_$2 section to system.dsc "
-    debug_args " \$1 = $1 \$2 = $2  \$3 = $3  \$4 = $4  \$5 = $5  \$6 = $6  \$7 = $7"
-    cat $1/d203.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_SMBUSIF/$3/g;s/SCAN_PCIPATH_PRIM/`printf \"0x%x\" $4`/g;s/BOARD_NAME/$5/g;s/SCAN_PCI_DEVICE_NUMBER/`printf \"0x%x\" $6`/g;s/SCAN_PCI_DEVICE_ID/`printf \"0x%x\" $7`/g" >> $DSC_FILE
+    debug_args " \$1 = $1 \$2 = $2  \$3 = $3  \$4 = $4  \$5 = $5  \$6 = $6 "
+    cat $1/d203.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_SMBUSIF/$3/g;s/SCAN_PCIPATH_PRIM/`printf \"0x%x\" $4`/g;s/BOARD_NAME/$5/g;s/SCAN_PCI_DEVICE_NUMBER/`printf \"0x%x\" $6`/g" >> $DSC_FILE
     G_makefileBbisDriver+=" D203/DRIVER/COM/driver.mak"
 }
 
@@ -624,11 +623,10 @@ function create_entry_dsc_d203 {
 # $4  PCI_BUS primary path (subst. SCAN_PCIPATH_PRIM tag)
 # $5  BOARD_NAME
 # $6  SCAN_PCI_DEVICE_NUMBER
-# $7  SCAN_PCI_DEVICE_ID
 function create_entry_dsc_d203_a24 {
     echo "Writing d203_a24_$2 section to system.dsc "
-    debug_args " \$1 = $1 \$2 = $2  \$3 = $3  \$4 = $4  \$5 = $5  \$6 = $6  \$7 = $7"
-    cat $1/d203_a24.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_SMBUSIF/$3/g;s/SCAN_PCIPATH_PRIM/`printf \"0x%x\" $4`/g;s/BOARD_NAME/$5/g;s/SCAN_PCI_DEVICE_NUMBER/`printf \"0x%x\" $6`/g;s/SCAN_PCI_DEVICE_ID/`printf \"0x%x\" $7`/g" >> $DSC_FILE
+    debug_args " \$1 = $1 \$2 = $2  \$3 = $3  \$4 = $4  \$5 = $5  \$6 = $6 "
+    cat $1/d203_a24.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_SMBUSIF/$3/g;s/SCAN_PCIPATH_PRIM/`printf \"0x%x\" $4`/g;s/BOARD_NAME/$5/g;s/SCAN_PCI_DEVICE_NUMBER/`printf \"0x%x\" $6`/g" >> $DSC_FILE
     G_makefileBbisDriver+=" D203/DRIVER/COM/driver_a24.mak"
 }
 
@@ -764,7 +762,7 @@ function scan_for_pci_devs {
                 count_instance_d203_a24=`expr $count_instance_d203_a24 + 1`
                 G_cPciRackSlotSerial=`expr $G_cPciRackSlotSerial + 1`
                 echo "Found d203_a24 no. $count_instance_d203_a24"
-                create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_d203_a24 $pcibusslot $pcibus "G204_A24" $pcidevnr $pcidevnr
+                create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_d203_a24 $pcibusslot $pcibus "G204_A24" $pcidevnr 
         fi
 
 	# support for F204/F205 carrier board with A08 M-Module access boards
@@ -775,7 +773,7 @@ function scan_for_pci_devs {
                 count_instance_d203=`expr $count_instance_d203 + 1`
                 G_cPciRackSlotStandard=`expr $G_cPciRackSlotStandard + 1`
                 echo "Found d203 no. $count_instance_d203"
-                create_entry_dsc_d203 $DSC_TPL_DIR $count_instance_d203_a24 $busif $pcibus "F205" $pcidevnr $pcidevnr 
+                create_entry_dsc_d203 $DSC_TPL_DIR $count_instance_d203_a24 $busif $pcibus "F205" $pcidevnr 
         fi
 
 	# support for F204/F205 carrier board with A24 M-Module access boards
@@ -786,7 +784,7 @@ function scan_for_pci_devs {
                 count_instance_d203_a24=`expr $count_instance_d203_a24 + 1`
                 G_cPciRackSlotStandard=`expr $G_cPciRackSlotStandard + 1`
                 echo "Found d203_a24 no. $count_instance_d203_a24"
-                create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_203d_a24 $busif $pcibus "F205" $pcidevnr $pcidevnr
+                create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_203d_a24 $busif $pcibus "F205" $pcidevnr 
         fi
 
     done <  $TMP_PCIDEVS
