@@ -14,7 +14,7 @@ mezz_cham_SCAN_BBIS_INSTANCE {
     # ------------------------------------------------------------------------
     PCI_BUS_NUMBER = U_INT32 SCAN_PCI_BUS_NR
     PCI_DEVICE_NUMBER = U_INT32 SCAN_PCI_DEV_NR
-    PCI_BUS_SLOT = U_INT32 SCAN_PCI_BUS_SLOT
+    PCI_DEVICE_ID = U_INT32 SCAN_PCI_DEV_NR
 
     # ------------------------------------------------------------------------
     #        Chameleon BBIS Device: 

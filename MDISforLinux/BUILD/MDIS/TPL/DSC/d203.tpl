@@ -1,10 +1,10 @@
-d203_a24_SCAN_BBIS_INSTANCE {
+d203_SCAN_BBIS_INSTANCE {
 
     # ------------------------------------------------------------------------
     #        general parameters (don't modify)
     # ------------------------------------------------------------------------
     DESC_TYPE = U_INT32 0x2
-    HW_TYPE = STRING D203_A24
+    HW_TYPE = STRING D203
     _WIZ_MODEL = STRING BOARD_NAME
     _WIZ_BUSIF = STRING cpu,SCAN_SMBUSIF
 

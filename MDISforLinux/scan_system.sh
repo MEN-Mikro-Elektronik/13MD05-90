@@ -597,6 +597,24 @@ function create_entry_dsc_f207 {
 }
 
 ############################################################################
+# create a d203_x BBIS section.
+#
+# parameters:
+# $1  DSC template directory
+# $2  instance number (subst. SCAN_BBIS_INSTANCE tag)
+# $3  PCI_BUS slot (subst. SCAN_SMBUSIF tag)
+# $4  PCI_BUS primary path (subst. SCAN_PCIPATH_PRIM tag)
+# $5  BOARD_NAME
+# $6  SCAN_PCI_DEVICE_NUMBER
+# $7  SCAN_PCI_DEVICE_ID
+function create_entry_dsc_d203 {
+    echo "Writing d203_$2 section to system.dsc "
+    debug_args " \$1 = $1 \$2 = $2  \$3 = $3  \$4 = $4  \$5 = $5  \$6 = $6  \$7 = $7"
+    cat $1/d203.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_SMBUSIF/$3/g;s/SCAN_PCIPATH_PRIM/`printf \"0x%x\" $4`/g;s/BOARD_NAME/$5/g;s/SCAN_PCI_DEVICE_NUMBER/`printf \"0x%x\" $6`/g;s/SCAN_PCI_DEVICE_ID/`printf \"0x%x\" $7`/g" >> $DSC_FILE
+    G_makefileBbisDriver+=" D203/DRIVER/COM/driver.mak"
+}
+
+############################################################################
 # create a d203_a24_x BBIS section.
 #
 # parameters:
@@ -604,10 +622,13 @@ function create_entry_dsc_f207 {
 # $2  instance number (subst. SCAN_BBIS_INSTANCE tag)
 # $3  PCI_BUS slot (subst. SCAN_SMBUSIF tag)
 # $4  PCI_BUS primary path (subst. SCAN_PCIPATH_PRIM tag)
+# $5  BOARD_NAME
+# $6  SCAN_PCI_DEVICE_NUMBER
+# $7  SCAN_PCI_DEVICE_ID
 function create_entry_dsc_d203_a24 {
     echo "Writing d203_a24_$2 section to system.dsc "
-    debug_args " \$1 = $1 \$2 = $2  \$3 = $3  \$4 = $4"
-    cat $1/d203_a24.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_SMBUSIF/$3/g;s/SCAN_PCIPATH_PRIM/`printf \"0x%x\" $4`/g" >> $DSC_FILE
+    debug_args " \$1 = $1 \$2 = $2  \$3 = $3  \$4 = $4  \$5 = $5  \$6 = $6  \$7 = $7"
+    cat $1/d203_a24.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_SMBUSIF/$3/g;s/SCAN_PCIPATH_PRIM/`printf \"0x%x\" $4`/g;s/BOARD_NAME/$5/g;s/SCAN_PCI_DEVICE_NUMBER/`printf \"0x%x\" $6`/g;s/SCAN_PCI_DEVICE_ID/`printf \"0x%x\" $7`/g" >> $DSC_FILE
     G_makefileBbisDriver+=" D203/DRIVER/COM/driver_a24.mak"
 }
 
@@ -658,6 +679,7 @@ function scan_for_pci_devs {
     count_instance_f223=0 # handled separately
     count_instance_f207=0
     count_instance_f2xx=0 # any other F2xx cham. carrier
+    count_instance_d203=0
     count_instance_d203_a24=0
     bus_path_prim=$1
     bus_path_sec=0
@@ -742,7 +764,29 @@ function scan_for_pci_devs {
                 count_instance_d203_a24=`expr $count_instance_d203_a24 + 1`
                 G_cPciRackSlotSerial=`expr $G_cPciRackSlotSerial + 1`
                 echo "Found d203_a24 no. $count_instance_d203_a24"
-                create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_d203_a24 $pcibusslot $bus_path_prim
+                create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_d203_a24 $pcibusslot $pcibus "G204_A24" $pcidevnr $pcidevnr
+        fi
+
+	# support for F204/F205 carrier board with A08 M-Module access boards
+	if [ "$pcivend" == "0x1172" ] && [ "$pcidevid" == "0xd203" ] && [ "$pcisubvend" == "0xff00" ]; then
+		echo "Found d203 F204/F205 board with 1 or 2 M-Modules A08"
+		pcibusslot=$G_cPciRackSlotStandard
+		busif="1"     # for standard cPCI always "cpu,1"
+                count_instance_d203=`expr $count_instance_d203 + 1`
+                G_cPciRackSlotStandard=`expr $G_cPciRackSlotStandard + 1`
+                echo "Found d203 no. $count_instance_d203"
+                create_entry_dsc_d203 $DSC_TPL_DIR $count_instance_d203_a24 $busif $pcibus "F205" $pcidevnr $pcidevnr 
+        fi
+
+	# support for F204/F205 carrier board with A24 M-Module access boards
+	if [ "$pcivend" == "0x1172" ] && [ "$pcidevid" == "0x203d" ] && [ "$pcisubvend" == "0xff00" ]; then
+		echo "Found d203 F204/F205 board with 1 or 2 M-Modules A24"
+		pcibusslot=$G_cPciRackSlotStandard
+		busif="1"     # for standard cPCI always "cpu,1"
+                count_instance_d203_a24=`expr $count_instance_d203_a24 + 1`
+                G_cPciRackSlotStandard=`expr $G_cPciRackSlotStandard + 1`
+                echo "Found d203_a24 no. $count_instance_d203_a24"
+                create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_203d_a24 $busif $pcibus "F205" $pcidevnr $pcidevnr
         fi
 
     done <  $TMP_PCIDEVS
