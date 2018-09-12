@@ -13,5 +13,6 @@ LIB/
 Makefile
 Makefile.*
 OBJ/
+DESC/
 system.dsc
 system.dsc.*
