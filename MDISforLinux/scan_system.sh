@@ -893,6 +893,9 @@ function scan_for_mmodules {
 	if [ ! -v count_instance_m31 ]; then
 		count_instance_m31=0
 	fi
+	if [ ! -v count_instance_m66 ]; then
+		count_instance_m66=0
+	fi
 	mm_pci_bus=`printf "%x" $4`
 	mm_pci_dev=`printf "%x" $5`
 	mm_pci_fun=`printf "%x" $6`
