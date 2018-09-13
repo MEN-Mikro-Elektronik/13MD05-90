@@ -253,6 +253,9 @@ function create_entry_dsc_pp04 {
     echo "Writing PP04 MDIS driver section."
     #echo " _WIZ_MODEL = $3, SM Bus nr. = $2  SM Bus IF nr. = $4 "
     cat $1/pp04.tpl | sed "s/SCAN_MDIS_INSTANCE/$2/g;s/SCAN_BBIS_INSTANCE/$3/g;" >> $DSC_FILE
+    if [ "$2" == "1" ]; then
+        G_makefileLlDriver+=" PP04/DRIVER/COM/driver.mak"
+    fi
 }
 
 
