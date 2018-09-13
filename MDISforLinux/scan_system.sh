@@ -270,7 +270,7 @@ function fill_entry_dsc_smb_scan_list {
 #
 function add_device_smb_scan_list {
     echo "add_device_smb_scan_list"
-    tmpSmbDeviceList=$(cat $1/smb.tmp.tpl | sed "s/SCAN_SMB_DEV_NUMBER/$2/g;s/SCAN_SMB_DEV_NAME/$3/g")
+    tmpSmbDeviceList=$(cat $1/smb_device.tpl | sed "s/SCAN_SMB_DEV_NUMBER/$2/g;s/SCAN_SMB_DEV_NAME/$3/g")
     G_smbDeviceList+="\n$tmpSmbDeviceList"
 }
 
