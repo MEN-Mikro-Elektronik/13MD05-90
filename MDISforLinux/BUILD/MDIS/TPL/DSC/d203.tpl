@@ -5,7 +5,7 @@ d203_SCAN_BBIS_INSTANCE {
     # ------------------------------------------------------------------------
     DESC_TYPE = U_INT32 0x2
     HW_TYPE = STRING D203
-    _WIZ_MODEL = STRING BOARD_NAME
+    _WIZ_MODEL = STRING SCAN_BBIS_NAME
     _WIZ_BUSIF = STRING cpu,SCAN_SMBUSIF
 
     # ------------------------------------------------------------------------
@@ -16,9 +16,9 @@ d203_SCAN_BBIS_INSTANCE {
     #        device parameters
     # ------------------------------------------------------------------------
     # --- C-PCI parameters
-    PCI_BUS_NUMBER = U_INT32 SCAN_PCIPATH_PRIM
-    PCI_DEVICE_NUMBER = U_INT32 SCAN_PCI_DEVICE_NUMBER
-    PCI_DEVICE_ID = U_INT32 SCAN_PCI_DEVICE_NUMBER #required by mdiswiz
+    PCI_BUS_NUMBER = U_INT32 SCAN_PCI_BUS_NR
+    PCI_DEVICE_NUMBER = U_INT32 SCAN_PCI_DEV_NR
+    PCI_DEVICE_ID = U_INT32 SCAN_PCI_DEV_NR #required by mdiswiz
 
     # ------------------------------------------------------------------------
     #        debug levels (optional)

@@ -1,31 +1,28 @@
-d203_a24_SCAN_BBIS_INSTANCE {
+m31_SCAN_MMODULE_INSTANCE {
 
     # ------------------------------------------------------------------------
     #        general parameters (don't modify)
     # ------------------------------------------------------------------------
-    DESC_TYPE = U_INT32 0x2
-    HW_TYPE = STRING D203_A24
-    _WIZ_MODEL = STRING SCAN_BBIS_NAME
-    _WIZ_BUSIF = STRING cpu,SCAN_SMBUSIF
+    DESC_TYPE = U_INT32 0x1
+    HW_TYPE = STRING M31
+    _WIZ_MODEL = STRING M31
 
     # ------------------------------------------------------------------------
-    #        PCI configuration
+    #        reference to base board
     # ------------------------------------------------------------------------
+    BOARD_NAME = STRING SCAN_BBIS_NAMEUSCORESCAN_BBIS_INSTANCE
+    DEVICE_SLOT = U_INT32 SCAN_DEV_SLOT
 
     # ------------------------------------------------------------------------
     #        device parameters
     # ------------------------------------------------------------------------
-    # --- C-PCI parameters
-    PCI_BUS_NUMBER = U_INT32 SCAN_PCI_BUS_NR
-    PCI_DEVICE_NUMBER = U_INT32 SCAN_PCI_DEV_NR
-    PCI_DEVICE_ID = U_INT32 SCAN_PCI_DEV_NR #required by mdiswiz
 
     # ------------------------------------------------------------------------
     #        debug levels (optional)
     #        these keys have only effect on debug drivers
     # ------------------------------------------------------------------------
     DEBUG_LEVEL = U_INT32 0xc0008000
-    DEBUG_LEVEL_BK = U_INT32 0xc0008000
+    DEBUG_LEVEL_MK = U_INT32 0xc0008000
     DEBUG_LEVEL_OSS = U_INT32 0xc0008000
     DEBUG_LEVEL_DESC = U_INT32 0xc0008000
 }

@@ -58,6 +58,8 @@ TMP_CHAM_TBL=/tmp/men_cham_tbl.tmp
 # fpga_load to use (32/64 bit)
 # (Mind: without ia32 lib 32bit programs cant run under 64bit)
 FPGA_LOAD=fpga_load_x86-32
+# mm_ident to use
+MM_IDENT=mm_ident
 # debugging/verbosity: 0=none, 1=verbose 2=verbose+function arguments
 VERBOSE_PRINT=0
 # run drytest with test PCI device list ?
@@ -214,7 +216,9 @@ function detect_board_id {
 ############################################################################
 # Map SC24 FPGA (in case old BIOS is present)
 # the IRQ settings are switched on loading BBIS driver
+#
 # parameters: N/A
+#
 function map_sc24_fpga {
     echo "SC24 detected, mapping FPGA."
     # PCI location is fixed (inside AMD chipset)
@@ -282,6 +286,9 @@ function create_entry_dsc_pp04 {
     echo "Writing PP04 MDIS driver section."
     #echo " _WIZ_MODEL = $3, SM Bus nr. = $2  SM Bus IF nr. = $4 "
     cat $1/pp04.tpl | sed "s/SCAN_MDIS_INSTANCE/$2/g;s/SCAN_BBIS_INSTANCE/$3/g" >> $DSC_FILE
+    if [ "$2" == "1" ]; then
+        G_makefileLlDriver+=" PP04/DRIVER/COM/driver.mak"
+    fi
 }
 
 
@@ -294,6 +301,7 @@ function create_entry_dsc_pp04 {
 # $3    MDIS device name, e.g. xm01bc_1 or smb2_2
 # $4    HW_TYPE, e.g. XM01BC (not always the capitalized MDIS dev. type
 # $5    WIZ_MODEL
+#
 function create_entry_dsc_smb_drv {
     echo "creating CPU SMB driver section: _WIZ_MODEL = $3, SM Bus nr. = $2 at DEVICE_SLOT = $6"
 
@@ -353,7 +361,7 @@ function create_entry_dsc_cpu_type {
 #  This results in the following algorithm described below. In this script we can 
 #  not detect the true physical slots, so we assign just incrementing slots according to
 #  each card type (cPCI serial, standard cPCI)
-
+#
 function create_entry_dsc_bbis_cham {
     echo "create chameleon BBIS device..."
     debug_args " \$1 = $1  \$2 = $2  \$3 = $3  \$4 = $4  \$5 = $5  \$6 = $6"
@@ -424,6 +432,7 @@ function create_entry_dsc_bbis_cham {
 # $3  BBIS board instance number ( x as in f210_x)
 # $4  0: just get DEVICE_IDV2 data (to complete BBIS dsc entry)
 #     1: also write MDIS dsc data  (to add device sections below BBIS entry)
+#
 function scan_cham_table {
     debug_args "\$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 "
     fpga_file=$2
@@ -550,6 +559,7 @@ function scan_cham_table {
 # $6  instance count
 # $7  pci primary path
 # $8  pci bus nr.
+#
 function check_for_cham_devs {
     debug_args "PCIvd.$2 PCIdev. $3 PCIdevnr $4  PCIsubv $5 instance $6  PCIprimPath $7"
     cham_file=""
@@ -610,6 +620,7 @@ function check_for_cham_devs {
 # $2  instance number (subst. SCAN_BBIS_INSTANCE tag)
 # $3  PCI_BUS primary path (subst. SCAN_PCIPATH_PRIM tag)
 # $4  PCI_BUS sec. path (subst. SCAN_PCIPATH_SEC tag)
+#
 function create_entry_dsc_f223 {
     echo "Writing f223_$2 section to system.dsc "
     debug_args " \$1 = $1   \$2 = $2    \$3 = $3    \$4 = $4  "
@@ -628,6 +639,7 @@ function create_entry_dsc_f223 {
 # $2  instance number (subst. SCAN_BBIS_INSTANCE tag)
 # $3  PCI_BUS primary path (subst. SCAN_PCIPATH_PRIM tag)
 # $4  PCI_BUS sec. path (subst. SCAN_PCIPATH_SEC tag)
+#
 function create_entry_dsc_f207 {
     echo "Writing f207_$2 section to system.dsc "
     debug_args " \$1 = $1 \$2 = $2  \$3 = $3  \$4 = $4 "
@@ -641,14 +653,18 @@ function create_entry_dsc_f207 {
 # $1  DSC template directory
 # $2  instance number (subst. SCAN_BBIS_INSTANCE tag)
 # $3  PCI_BUS slot (subst. SCAN_SMBUSIF tag)
-# $4  PCI_BUS primary path (subst. SCAN_PCIPATH_PRIM tag)
-# $5  BOARD_NAME
-# $6  SCAN_PCI_DEVICE_NUMBER
+# $4  PCI_BUS number (subst. SCAN_PCI_BUS_NR tag)
+# $5  board name (subst. SCAN_BBIS_NAME tag)
+# $6  PCI device number (subst. SCAN_PCI_DEV_NR tag)
+#
 function create_entry_dsc_d203 {
-    echo "Writing d203_$2 section to system.dsc "
-    debug_args " \$1 = $1 \$2 = $2  \$3 = $3  \$4 = $4  \$5 = $5  \$6 = $6 "
-    cat $1/d203.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_SMBUSIF/$3/g;s/SCAN_PCIPATH_PRIM/`printf \"0x%x\" $4`/g;s/BOARD_NAME/$5/g;s/SCAN_PCI_DEVICE_NUMBER/`printf \"0x%x\" $6`/g" >> $DSC_FILE
-    G_makefileBbisDriver+=" D203/DRIVER/COM/driver.mak"
+	echo "Writing d203_$2 section to system.dsc "
+	debug_args " \$1 = $1 \$2 = $2  \$3 = $3  \$4 = $4  \$5 = $5  \$6 = $6 "
+	cat $1/d203.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_SMBUSIF/$3/g;s/SCAN_PCI_BUS_NR/`printf \"0x%x\" $4`/g;s/SCAN_BBIS_NAME/$5/g;s/SCAN_PCI_DEV_NR/`printf \"0x%x\" $6`/g" >> $DSC_FILE
+	if [ "$2" == "1" ]; then
+		G_makefileBbisDriver+=" D203/DRIVER/COM/driver.mak"
+	fi
+	scan_for_mmodules $1 $2 d203 $4 $6 0 "0x0 0x400"
 }
 
 ############################################################################
@@ -658,14 +674,83 @@ function create_entry_dsc_d203 {
 # $1  DSC template directory
 # $2  instance number (subst. SCAN_BBIS_INSTANCE tag)
 # $3  PCI_BUS slot (subst. SCAN_SMBUSIF tag)
-# $4  PCI_BUS primary path (subst. SCAN_PCIPATH_PRIM tag)
-# $5  BOARD_NAME
-# $6  SCAN_PCI_DEVICE_NUMBER
+# $4  PCI_BUS number (subst. SCAN_PCI_BUS_NR tag)
+# $5  board name (subst. SCAN_BBIS_NAME tag)
+# $6  PCI device number (subst. SCAN_PCI_DEV_NR tag)
+#
 function create_entry_dsc_d203_a24 {
-    echo "Writing d203_a24_$2 section to system.dsc "
-    debug_args " \$1 = $1 \$2 = $2  \$3 = $3  \$4 = $4  \$5 = $5  \$6 = $6 "
-    cat $1/d203_a24.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_SMBUSIF/$3/g;s/SCAN_PCIPATH_PRIM/`printf \"0x%x\" $4`/g;s/BOARD_NAME/$5/g;s/SCAN_PCI_DEVICE_NUMBER/`printf \"0x%x\" $6`/g" >> $DSC_FILE
-    G_makefileBbisDriver+=" D203/DRIVER/COM/driver_a24.mak"
+	echo "Writing d203_a24_$2 section to system.dsc "
+	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 \$6 = $6 "
+	cat $1/d203_a24.tpl | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_SMBUSIF/$3/g;s/SCAN_PCI_BUS_NR/`printf \"0x%x\" $4`/g;s/SCAN_BBIS_NAME/$5/g;s/SCAN_PCI_DEV_NR/`printf \"0x%x\" $6`/g" >> $DSC_FILE
+	if [ "$2" == "1" ]; then
+		G_makefileBbisDriver+=" D203/DRIVER/COM/driver_a24.mak"
+	fi
+	scan_for_mmodules $1 $2 d203_a24 $4 $6 0 "0x0"
+}
+
+############################################################################
+# create a m35_x M-Module section
+#
+# parameters:
+# $1  DSC template directory
+# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
+# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
+# $4  board name (subst. SCAN_BBIS_NAME tag)
+# $5  device slot number (subst. SCAN_DEV_SLOT tag)
+#
+function create_entry_dsc_m35 {
+	echo "Writing m35_$2 section to system.dsc "
+	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
+	cat $1/m35.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $DSC_FILE
+	if [ "$2" == "1" ]; then
+		G_makefileLlDriver+=" M034/DRIVER/COM/driver.mak"
+		G_makefileLlTool+=" M034/EXAMPLE/M34_SIMP/COM/program.mak\
+			 M034/TOOLS/M34_READ/COM/program.mak\
+			 M034/TOOLS/M34_BLKREAD/COM/program.mak"
+	fi
+}
+
+############################################################################
+# create a m31_x M-Module section
+#
+# parameters:
+# $1  DSC template directory
+# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
+# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
+# $4  board name (subst. SCAN_BBIS_NAME tag)
+# $5  device slot number (subst. SCAN_DEV_SLOT tag)
+#
+function create_entry_dsc_m31 {
+	echo "Writing m31_$2 section to system.dsc "
+	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
+	cat $1/m31.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $DSC_FILE
+	if [ "$2" == "1" ]; then
+		G_makefileLlDriver+=" M031/DRIVER/COM/driver.mak"
+		G_makefileLlTool+=" M031/EXAMPLE/M31_SIMP/COM/program.mak\
+			 M031/EXAMPLE/M31_SIG/COM/program.mak"
+	fi
+}
+
+############################################################################
+# create a m66_x M-Module section
+#
+# parameters:
+# $1  DSC template directory
+# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
+# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
+# $4  board name (subst. SCAN_BBIS_NAME tag)
+# $5  device slot number (subst. SCAN_DEV_SLOT tag)
+#
+function create_entry_dsc_m66 {
+	echo "Writing m66_$2 section to system.dsc "
+	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
+	cat $1/m66.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $DSC_FILE
+	if [ "$2" == "1" ]; then
+		G_makefileLlDriver+=" M066/DRIVER/COM/driver.mak"
+		G_makefileLlTool+=" M066/EXAMPLE/M66_SIMP/COM/program.mak\
+			 M066/EXAMPLE/M66_DEMO/COM/program.mak\
+			 M066/TEST/M66_PERF/COM/program.mak"
+	fi
 }
 
 ############################################################################
@@ -815,12 +900,13 @@ function scan_for_pci_devs {
         fi
 
 	if [ "$pcivend" == "0x1172" ] && [ "$pcidevid" == "0x203d" ] && [ "$pcisubvend" == "0x00b9" ]; then
+		echo "Found d203 G204 board with 1 M-Module A24"
 		pcibusslot=$G_cPciRackSlotSerial
-                count_instance_d203_a24=`expr $count_instance_d203_a24 + 1`
-                G_cPciRackSlotSerial=`expr $G_cPciRackSlotSerial + 1`
-                echo "Found d203_a24 no. $count_instance_d203_a24"
-                create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_d203_a24 $pcibusslot $pcibus "G204_A24" $pcidevnr 
-        fi
+		count_instance_d203_a24=`expr $count_instance_d203_a24 + 1`
+		G_cPciRackSlotSerial=`expr $G_cPciRackSlotSerial + 1`
+		echo "Found d203_a24 no. $count_instance_d203_a24"
+		create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_d203_a24 $pcibusslot $pcibus "G204_A24" $pcidevnr 
+	fi
 
 	# support for F204/F205 carrier board with A08 M-Module access boards
 	if [ "$pcivend" == "0x1172" ] && [ "$pcidevid" == "0xd203" ] && [ "$pcisubvend" == "0xff00" ]; then
@@ -830,7 +916,7 @@ function scan_for_pci_devs {
                 count_instance_d203=`expr $count_instance_d203 + 1`
                 G_cPciRackSlotStandard=`expr $G_cPciRackSlotStandard + 1`
                 echo "Found d203 no. $count_instance_d203"
-                create_entry_dsc_d203 $DSC_TPL_DIR $count_instance_d203_a24 $busif $pcibus "F205" $pcidevnr 
+                create_entry_dsc_d203 $DSC_TPL_DIR $count_instance_d203 $busif $pcibus "F205" $pcidevnr 
         fi
 
 	# support for F204/F205 carrier board with A24 M-Module access boards
@@ -845,6 +931,61 @@ function scan_for_pci_devs {
         fi
 
     done <  $TMP_PCIDEVS
+}
+
+############################################################################
+# scan for M-Modules on specific board
+#
+# parameters:
+# $1  DSC template directory
+# $2  board instance number
+# $3  board name
+# $4  PCI bus number to scan (decimal)
+# $5  PCI device number to scan (decimal)
+# $6  PCI device function to scan (decimal)
+# $7  M-Module offset address array in hex (e.g. "0x0 0x3f0 0x47c 0x600")
+#
+function scan_for_mmodules {
+	mm_device_slot=0
+	if [ ! -v count_instance_m35 ]; then
+		count_instance_m35=0
+	fi
+	if [ ! -v count_instance_m31 ]; then
+		count_instance_m31=0
+	fi
+	if [ ! -v count_instance_m66 ]; then
+		count_instance_m66=0
+	fi
+	mm_pci_bus=`printf "%x" $4`
+	mm_pci_dev=`printf "%x" $5`
+	mm_pci_fun=`printf "%x" $6`
+	bar_address=`lspci -s $mm_pci_bus:$mm_pci_dev.$mm_pci_fun -v | grep 'Memory at' | head -n 1 | awk '{print $3}'`
+	for mm_offset in $7; do
+		mm_address=`printf "0x%x" $((0x$bar_address + $mm_offset))`
+		mm_name=`$MEN_LIN_DIR/BIN/$MM_IDENT $mm_address | grep Name | awk '{print $8}'`
+		case $mm_name in
+			M35)
+				echo "Found $mm_name on $3_$2"
+				count_instance_m35=$(($count_instance_m35 + 1))
+				create_entry_dsc_m35 $1 $count_instance_m35 $2 $3 $mm_device_slot
+				;;
+			M31)
+				echo "Found $mm_name on $3_$2"
+				count_instance_m31=$(($count_instance_m31 + 1))
+				create_entry_dsc_m31 $1 $count_instance_m31 $2 $3 $mm_device_slot
+				;;
+			M66)
+				echo "Found $mm_name on $3_$2"
+				count_instance_m66=$(($count_instance_m66 + 1))
+				create_entry_dsc_m66 $1 $count_instance_m66 $2 $3 $mm_device_slot
+				;;
+
+			*)
+				echo "Found unknown M-Module $mm_name"
+				;;
+		esac
+		mm_device_slot=$(($mm_device_slot + 1))
+	done
 }
 
 
@@ -1020,8 +1161,10 @@ else
 fi
 
 echo "checking if PCI utils exists..."
-have_pciutils=`which setpci`
-if [ "$have_pciutils" == "" ]; then
+have_pciutils1=`which setpci`
+have_pciutils2=`which lspci`
+if [[ "$have_pciutils1" == "" || \
+      "$have_pciutils2" == "" ]]; then
     echo "*** error: please install pciutils. Ubuntu: apt-get install pciutils, Fedora: yum install pciutils"
     exit 1
 else
