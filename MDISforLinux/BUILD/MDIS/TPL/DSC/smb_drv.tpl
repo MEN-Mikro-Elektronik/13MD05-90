@@ -11,7 +11,7 @@ SCAN_DEVNAME {
     #        reference to base board
     # ------------------------------------------------------------------------
     BOARD_NAME = STRING smb2_1
-    DEVICE_SLOT = U_INT32 0x0
+    DEVICE_SLOT = U_INT32 SCAN_DEVICE_SLOT
 
     # ------------------------------------------------------------------------
     #        device parameters

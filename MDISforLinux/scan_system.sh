@@ -63,6 +63,7 @@ VERBOSE_PRINT=0
 # run drytest with test PCI device list ?
 PCI_DRYTEST=""
 
+
 # really writing pcitree/temp. cham table or use simulation data ?
 # 0 = normal operation, scan and write PCI devices
 # 1 = use predefined /tmp/men_pci_devs.tmp file to run tests
@@ -81,6 +82,7 @@ G_mdisInstanceCount=1
 # CPU on which we run, detected in ID EEprom on SMbus <G_SmBusNumber>
 G_cpu=""
 G_SmBusNumber=0
+G_SmbDeviceSlotNumber=0 
 # PCI_BUS_xxx entries for all MDIS devs within one chameleon BBIS device.
 G_bus_slot_count=0
 G_primPciPath=0
@@ -101,6 +103,8 @@ G_makefileNatDriver=""
 G_makefileUsrLibs=""
 # DEVICE_IDV2_xx list
 G_deviceIdV2=""
+# SMB device list 
+G_smbDeviceList=""
 
 ############################################################################
 # verbose debug outputs if VERBOSE_PRINT is 1 or 2
@@ -234,7 +238,36 @@ function map_sc24_fpga {
 function create_entry_dsc_smb_type {
     echo "Writing CPU SMB BBIS section."
     #echo " _WIZ_MODEL = $3, SM Bus nr. = $2  SM Bus IF nr. = $4 "
-    cat $1/smb.tpl | sed "s/SCAN_SMBDRV/$3/g; s/SCAN_SMBNR/`printf \"0x%x\" $2`/g; s/SCAN_SMBUSIF/$4/g" >> $DSC_FILE
+    cat $1/smb.tpl | sed "s/SCAN_SMBDRV/$3/g; s/SCAN_SMBNR/`printf \"0x%x\" $2`/g; s/SCAN_SMBUSIF/$4/g;" >> $DSC_FILE
+}
+
+############################################################################
+# write the smb devices list into smb section for the cpu
+#
+# parameters:
+# None
+#
+function fill_entry_dsc_smb_scan_list {
+    echo "fill smb devices scan list in system.dsc file"
+    dscTmpFile=$(<$DSC_FILE)
+    formattedSmbDeviceList="$(echo "${G_smbDeviceList}" | sed ':a;N;$!ba;s/\n/\\n/g' )"
+    dscTmpFile=$(echo -e "$dscTmpFile" | sed "s/SCAN_LIST_OF_SMB_DEVICES/$formattedSmbDeviceList/g")
+    #echo "$dscTmpFile"
+    echo "$dscTmpFile" > "$DSC_FILE"
+}
+
+############################################################################
+# add smb single device into list of smb devices
+#
+# parameters:
+# $1    DSC template directory
+# $2    SMB device number
+# $3    SMB device name 
+#
+function add_device_smb_scan_list {
+    echo "add_device_smb_scan_list"
+    tmpSmbDeviceList=$(cat $1/smb.tmp.tpl | sed "s/SCAN_SMB_DEV_NUMBER/$2/g;s/SCAN_SMB_DEV_NAME/$3/g")
+    G_smbDeviceList+="\n$tmpSmbDeviceList"
 }
 
 ############################################################################
@@ -248,7 +281,7 @@ function create_entry_dsc_smb_type {
 function create_entry_dsc_pp04 {
     echo "Writing PP04 MDIS driver section."
     #echo " _WIZ_MODEL = $3, SM Bus nr. = $2  SM Bus IF nr. = $4 "
-    cat $1/pp04.tpl | sed "s/SCAN_MDIS_INSTANCE/$2/g;s/SCAN_BBIS_INSTANCE/$3/g;" >> $DSC_FILE
+    cat $1/pp04.tpl | sed "s/SCAN_MDIS_INSTANCE/$2/g;s/SCAN_BBIS_INSTANCE/$3/g" >> $DSC_FILE
 }
 
 
@@ -262,10 +295,15 @@ function create_entry_dsc_pp04 {
 # $4    HW_TYPE, e.g. XM01BC (not always the capitalized MDIS dev. type
 # $5    WIZ_MODEL
 function create_entry_dsc_smb_drv {
-    echo "creating CPU SMB driver section: _WIZ_MODEL = $3, SM Bus nr. = $2"
+    echo "creating CPU SMB driver section: _WIZ_MODEL = $3, SM Bus nr. = $2 at DEVICE_SLOT = $6"
 
+    if [ "$3" == "smb2_2" ]; then
+     cat $1/smb_drv_no_addr.tpl | \
+        sed "s/SCAN_DEVNAME/$3/g;s/SCAN_HWTYPE/$4/g;s/SCAN_WIZMODEL/$5/g;s/SCAN_SMBNR/`printf \"0x%x\" $2`/g;s/SCAN_DEVICE_SLOT/`printf \"0x%x\" $6`/g" >> $DSC_FILE
+    else
     cat $1/smb_drv.tpl | \
-        sed "s/SCAN_DEVNAME/$3/g;s/SCAN_HWTYPE/$4/g;s/SCAN_WIZMODEL/$5/g;s/SCAN_SMBNR/`printf \"0x%x\" $2`/g" >> $DSC_FILE
+        sed "s/SCAN_DEVNAME/$3/g;s/SCAN_HWTYPE/$4/g;s/SCAN_WIZMODEL/$5/g;s/SCAN_SMBNR/`printf \"0x%x\" $2`/g;s/SCAN_DEVICE_SLOT/`printf \"0x%x\" $6`/g" >> $DSC_FILE
+    fi 
 }
 
 
@@ -656,6 +694,25 @@ function add_z001_io_support {
     G_makefileNatDriver+=" DRIVERS/Z001_SMB/driver_g2x.mak DRIVERS/CHAMELEON/driver.mak"
 }
 
+############################################################################
+# add the smb2_x generic support with tools 
+#
+function add_smb2_generic_support {
+    G_makefileLlTool+=" SMB2/EXAMPLE/SMB2_SIMP/COM/program.mak"
+    G_makefileLlTool+=" SMB2/EXAMPLE/SMB2_F601/COM/program.mak"
+    G_makefileLlTool+=" SMB2/TOOLS/SMB2_CTRL/COM/program.mak"
+    G_makefileLlTool+=" SMB2/TOOLS/SMB2_BOARDIDENT/COM/program.mak"
+    G_makefileLlTool+=" SMB2/TOOLS/SMB2_TOUCH/COM/program.mak"
+    G_makefileLlTool+=" SMB2/TOOLS/SMB2_BMC/COM/program.mak"
+    G_makefileLlTool+=" SMB2/TOOLS/SMB2_SHC_CTRL/COM/program.mak"
+    G_makefileLlTool+=" SMB2/TOOLS/SMB2_STM32_FLASH/COM/program.mak"
+    G_makefileLlTool+=" SMB2/TOOLS/SMB2_EETEMP/COM/program.mak"
+    G_makefileLlTool+=" SMB2/TOOLS/SMB2_POE/COM/program.mak"
+    G_makefileLlTool+=" SMB2/TOOLS/SMB2_EEPROD2/COM/program.mak"
+    G_makefileLlTool+=" SMB2/TOOLS/SMB2_TEST/COM/program.mak"
+    G_makefileLlDriver+=" SMB2/DRIVER/COM/driver.mak"
+    G_makefileUsrLibs+=" SMB2_SHC/COM/library.mak"
+}
 
 ############################################################################
 # scan the generated PCI list tmp file for known devices. read the PCI list
@@ -996,6 +1053,8 @@ echo "Found CPU: $main_cpu. Using SMB address $G_SmBusNumber for SMB2 based driv
 wiz_model_busif=1
 bCreateXm01bcDrv=0
 bCreateF14bcDrv=0
+bCreateSmb2GenericDrv=0
+
 
 #unfortunately some F-cards seem to be have IDs with and without '0' (marketing name)
 case $main_cpu in
@@ -1070,7 +1129,9 @@ case $main_cpu in
 		G_primPciPath=0x1e
 		wiz_model_busif=0
 		add_xm01bc_support
+                add_smb2_generic_support
 		bCreateXm01bcDrv=1
+                bCreateSmb2GenericDrv=1
 		;;
     F022|F22P)
 		wiz_model_cpu=F22P
@@ -1085,8 +1146,10 @@ case $main_cpu in
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1c
 		wiz_model_busif=0
-		add_xm01bc_support
 		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
+		add_xm01bc_support
+                add_smb2_generic_support
 		;;
     F075|F75P)
 		wiz_model_cpu=F75P
@@ -1130,9 +1193,9 @@ case $main_cpu in
 	    wiz_model_smb=SMBPCI_ICH
 	    G_primPciPath=0x1c
 	    wiz_model_busif=7
-		add_xm01bc_support
-	    add_z001_io_support
-		bCreateXm01bcDrv=1
+            add_xm01bc_support
+            add_z001_io_support
+            bCreateXm01bcDrv=1
 	    ;;
 
     G25-|G25A|G025)
@@ -1142,7 +1205,9 @@ case $main_cpu in
 	    wiz_model_busif=7
 	    add_xm01bc_support
 	    add_z001_io_support
+            add_smb2_generic_support
 	    bCreateXm01bcDrv=1
+	    bCreateSmb2GenericDrv=1
         ;;
     *)
 		echo "No MEN CPU type found!"
@@ -1164,12 +1229,24 @@ else
     #all other CPUs: detect PCI boards, start with CPU/SMB drivers
     create_entry_dsc_cpu_type $DSC_TPL_DIR $wiz_model_cpu
     create_entry_dsc_smb_type $DSC_TPL_DIR $G_SmBusNumber $wiz_model_smb $wiz_model_busif
-    if [ $bCreateXm01bcDrv == 1 ]; then
-	create_entry_dsc_smb_drv  $DSC_TPL_DIR $G_SmBusNumber xm01bc_1 XM01BC XM01BC
+    if [ "$bCreateXm01bcDrv" == "1" ]; then
+	create_entry_dsc_smb_drv  $DSC_TPL_DIR $G_SmBusNumber xm01bc_1 XM01BC XM01BC $G_SmbDeviceSlotNumber
+	add_device_smb_scan_list $DSC_TPL_DIR $G_SmbDeviceSlotNumber xm01bc_1
+	G_SmbDeviceSlotNumber=$((G_SmbDeviceSlotNumber+1))
     fi
-    if [ $bCreateF14bcDrv == 1 ]; then
-	create_entry_dsc_smb_drv  $DSC_TPL_DIR $G_SmBusNumber f14bc_1 F14BC F14BC
+    if [ "$bCreateSmb2GenericDrv" == "1" ]; then
+        create_entry_dsc_smb_drv  $DSC_TPL_DIR $G_SmBusNumber smb2_2 SMB2 SMB2 $G_SmbDeviceSlotNumber
+        add_device_smb_scan_list $DSC_TPL_DIR $G_SmbDeviceSlotNumber smb2_2
+        G_SmbDeviceSlotNumber=$((G_SmbDeviceSlotNumber+1))
+    fi 
+    if [ "$bCreateF14bcDrv" == "1" ]; then
+	create_entry_dsc_smb_drv  $DSC_TPL_DIR $G_SmBusNumber f14bc_1 F14BC F14BC $G_SmbDeviceSlotNumber
+        add_device_smb_scan_list $DSC_TPL_DIR $G_SmbDeviceSlotNumber f14bc_1
+        G_SmbDeviceSlotNumber=$((G_SmbDeviceSlotNumber+1))
     fi
+    #insert all smb drv scan list into smb2_1 device
+    fill_entry_dsc_smb_scan_list 
+
     # add the SMB2 userland API too
     G_makefileUsrLibs+=" SMB2_API/COM/library.mak"
     echo " Scanning for MEN PCI devices: "
