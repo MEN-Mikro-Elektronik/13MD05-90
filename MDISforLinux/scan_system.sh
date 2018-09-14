@@ -305,7 +305,7 @@ function create_entry_dsc_pp04 {
 function create_entry_dsc_smb_drv {
     echo "creating CPU SMB driver section: _WIZ_MODEL = $3, SM Bus nr. = $2 at DEVICE_SLOT = $6"
 
-    if [ "$3" == "smb2_2" ]; then
+    if [ "$3" == "smb2_1" ]; then
      cat $1/smb_drv_no_addr.tpl | \
         sed "s/SCAN_DEVNAME/$3/g;s/SCAN_HWTYPE/$4/g;s/SCAN_WIZMODEL/$5/g;s/SCAN_SMBNR/`printf \"0x%x\" $2`/g;s/SCAN_DEVICE_SLOT/`printf \"0x%x\" $6`/g" >> $DSC_FILE
     else
@@ -1372,16 +1372,16 @@ else
     #all other CPUs: detect PCI boards, start with CPU/SMB drivers
     create_entry_dsc_cpu_type $DSC_TPL_DIR $wiz_model_cpu
     create_entry_dsc_smb_type $DSC_TPL_DIR $G_SmBusNumber $wiz_model_smb $wiz_model_busif
+    if [ "$bCreateSmb2GenericDrv" == "1" ]; then
+        create_entry_dsc_smb_drv  $DSC_TPL_DIR $G_SmBusNumber smb2_1 SMB2 SMB2 $G_SmbDeviceSlotNumber
+        add_device_smb_scan_list $DSC_TPL_DIR $G_SmbDeviceSlotNumber smb2_1
+        G_SmbDeviceSlotNumber=$((G_SmbDeviceSlotNumber+1))
+    fi 
     if [ "$bCreateXm01bcDrv" == "1" ]; then
 	create_entry_dsc_smb_drv  $DSC_TPL_DIR $G_SmBusNumber xm01bc_1 XM01BC XM01BC $G_SmbDeviceSlotNumber
 	add_device_smb_scan_list $DSC_TPL_DIR $G_SmbDeviceSlotNumber xm01bc_1
 	G_SmbDeviceSlotNumber=$((G_SmbDeviceSlotNumber+1))
     fi
-    if [ "$bCreateSmb2GenericDrv" == "1" ]; then
-        create_entry_dsc_smb_drv  $DSC_TPL_DIR $G_SmBusNumber smb2_2 SMB2 SMB2 $G_SmbDeviceSlotNumber
-        add_device_smb_scan_list $DSC_TPL_DIR $G_SmbDeviceSlotNumber smb2_2
-        G_SmbDeviceSlotNumber=$((G_SmbDeviceSlotNumber+1))
-    fi 
     if [ "$bCreateF14bcDrv" == "1" ]; then
 	create_entry_dsc_smb_drv  $DSC_TPL_DIR $G_SmBusNumber f14bc_1 F14BC F14BC $G_SmbDeviceSlotNumber
         add_device_smb_scan_list $DSC_TPL_DIR $G_SmbDeviceSlotNumber f14bc_1
