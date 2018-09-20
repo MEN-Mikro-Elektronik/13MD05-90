@@ -197,7 +197,7 @@ typedef struct OSS_LIN_SEM_HANDLE
 	int32 value;				/* semaphore's value */
 	int32 semType;				/* OSS_SEM_BIN or OSS_SEM_COUNT */
 	spinlock_t lock;			/* lock for sempahore modifications */
-#if LINUX_VERSION_CODE > KERNEL_VERSION(3,0,0)
+#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,20)
 	wait_queue_head_t wq;		/* wait queue for waiting processes */
 #else
 	struct wait_queue *wq;		/* wait queue for waiting processes */

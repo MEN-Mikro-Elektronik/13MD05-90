@@ -142,7 +142,7 @@ typedef struct {
 #define DBH 				oss->dbh
 
 #ifndef MAC_USERSPACE
-#if LINUX_VERSION_CODE > KERNEL_VERSION(3,0,0)
+#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,20)
 # define TASK_SIGPENDING 	pending.signal.sig
 #else
 # define TASK_SIGPENDING 	signal.sig
