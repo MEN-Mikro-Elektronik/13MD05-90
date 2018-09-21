@@ -664,7 +664,7 @@ function create_entry_dsc_d203 {
 	if [ "$2" == "1" ]; then
 		G_makefileBbisDriver+=" D203/DRIVER/COM/driver.mak"
 	fi
-	scan_for_mmodules $1 $2 d203 $4 $6 0 "0x0 0x400"
+	scan_for_mmodules $1 $2 d203 $4 $6 0 "0x0 0x400 0x800 0xc00"
 }
 
 ############################################################################
@@ -685,7 +685,11 @@ function create_entry_dsc_d203_a24 {
 	if [ "$2" == "1" ]; then
 		G_makefileBbisDriver+=" D203/DRIVER/COM/driver_a24.mak"
 	fi
-	scan_for_mmodules $1 $2 d203_a24 $4 $6 0 "0x0"
+	if [ "$5" == "G204_A24" ]; then
+		scan_for_mmodules $1 $2 d203_a24 $4 $6 0 "0x0"
+	else
+		scan_for_mmodules $1 $2 d203_a24 $4 $6 0 "0x0 0x200000 0x400000 0x600000"
+	fi
 }
 
 ############################################################################
@@ -981,7 +985,9 @@ function scan_for_mmodules {
 				;;
 
 			*)
-				echo "Found unknown M-Module $mm_name"
+				if [[ -v mm_name && "$mm_name" != "" ]]; then
+					echo "Found unknown M-Module $mm_name"
+				fi
 				;;
 		esac
 		mm_device_slot=$(($mm_device_slot + 1))
