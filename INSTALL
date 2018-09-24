@@ -120,11 +120,25 @@ folder_recursive() {
                && [ $subfolder_base != "MDIS_LL" ] \
                && [ $subfolder_base != "DOC" ]     \
                && [ $subfolder_base != "MEN" ] ; then
-               get_ynq_answer "Overwrite folder $DST_FOLDER/$subfolder_base"
-               case $? in
-                  1 | 2) echo "Aborted."; continue;
-               esac
-            fi;
+               ynq_ask=1
+               if [ -v last_overwritten_folder ]; then
+                   if [ ${last_overwritten_folder: -1} != "/" ]; then
+                       last_overwritten_folder="$last_overwritten_folder/"
+                   fi
+                   if [[ "$DST_FOLDER/$subfolder_base" == $last_overwritten_folder* ]]; then
+                       ynq_ask=0
+                   fi
+               fi
+               if [ $ynq_ask -eq 1 ]; then
+                   get_ynq_answer "Overwrite folder $DST_FOLDER/$subfolder_base"
+                   if [ "$?" == "0" ]; then
+                       last_overwritten_folder="$DST_FOLDER/$subfolder_base"
+                   fi
+                   case $? in
+                      1 | 2) echo "Aborted."; continue;
+                   esac
+               fi
+            fi
             # goto subfolder and go on searching
             folder_recursive $subfolder $DST_FOLDER/$subfolder_base
          else
@@ -220,6 +234,9 @@ else
       echo
       echo "Directory $MENLINUX_ROOT already exists."
       get_ynq_answer "Overwrite existing files?"
+      if [ "$?" == "0" ]; then
+          last_overwritten_folder="$MENLINUX_ROOT"
+      fi
       case $? in
          1 | 2) echo "Aborted."; exit 1;;
       esac
