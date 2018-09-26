@@ -1150,8 +1150,15 @@ fi
 echo "checking if gksu/gksudo exists..."
 have_gksu=`which gksu`
 if [ "$have_gksu" == "" ]; then
-    echo "*** error: please install gksu. Examples: Ubuntu: apt-get install gksu, Fedora: yum install gksu"
-    exit 1
+    echo "NO."
+    echo "checking if pkexec exists..."
+    have_pkexec=`which pkexec`
+    if [ "$have_pkexec" == "" ]; then
+        echo "*** error: please install gksu or pkexec (PolicyKit). Examples: Ubuntu: apt-get install gksu, Fedora: yum install gksu"
+        exit 1
+    else
+        echo "OK."
+    fi
 else
     echo "OK."
 fi
