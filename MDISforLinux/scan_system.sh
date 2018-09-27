@@ -1147,11 +1147,9 @@ else
     TMP_PCIDEVS=$PCI_DRYTEST
 fi
 
-echo "checking if gksu/gksudo exists..."
+echo "checking if gksu/gksudo or pkexec exists..."
 have_gksu=`which gksu`
 if [ "$have_gksu" == "" ]; then
-    echo "NO."
-    echo "checking if pkexec exists..."
     have_pkexec=`which pkexec`
     if [ "$have_pkexec" == "" ]; then
         echo "*** error: please install gksu or pkexec (PolicyKit). Examples: Ubuntu: apt-get install gksu, Fedora: yum install gksu"
