@@ -108,6 +108,12 @@ G_deviceIdV2=""
 # SMB device list 
 G_smbDeviceList=""
 
+# M-Module instance counters
+G_count_instance_m35=0
+G_count_instance_m31=0
+G_count_instance_m66=0
+
+
 ############################################################################
 # verbose debug outputs if VERBOSE_PRINT is 1 or 2
 #
@@ -951,15 +957,6 @@ function scan_for_pci_devs {
 #
 function scan_for_mmodules {
 	mm_device_slot=0
-	if [ ! -v count_instance_m35 ]; then
-		count_instance_m35=0
-	fi
-	if [ ! -v count_instance_m31 ]; then
-		count_instance_m31=0
-	fi
-	if [ ! -v count_instance_m66 ]; then
-		count_instance_m66=0
-	fi
 	mm_pci_bus=`printf "%x" $4`
 	mm_pci_dev=`printf "%x" $5`
 	mm_pci_fun=`printf "%x" $6`
@@ -970,22 +967,22 @@ function scan_for_mmodules {
 		case $mm_name in
 			M35)
 				echo "Found $mm_name on $3_$2"
-				count_instance_m35=$(($count_instance_m35 + 1))
-				create_entry_dsc_m35 $1 $count_instance_m35 $2 $3 $mm_device_slot
+				G_count_instance_m35=$(($G_count_instance_m35 + 1))
+				create_entry_dsc_m35 $1 $G_count_instance_m35 $2 $3 $mm_device_slot
 				;;
 			M31)
 				echo "Found $mm_name on $3_$2"
-				count_instance_m31=$(($count_instance_m31 + 1))
-				create_entry_dsc_m31 $1 $count_instance_m31 $2 $3 $mm_device_slot
+				G_count_instance_m31=$(($G_count_instance_m31 + 1))
+				create_entry_dsc_m31 $1 $G_count_instance_m31 $2 $3 $mm_device_slot
 				;;
 			M66)
 				echo "Found $mm_name on $3_$2"
-				count_instance_m66=$(($count_instance_m66 + 1))
-				create_entry_dsc_m66 $1 $count_instance_m66 $2 $3 $mm_device_slot
+				G_count_instance_m66=$(($G_count_instance_m66 + 1))
+				create_entry_dsc_m66 $1 $G_count_instance_m66 $2 $3 $mm_device_slot
 				;;
 
 			*)
-				if [[ -v mm_name && "$mm_name" != "" ]]; then
+				if [ "$mm_name" != "" ]; then
 					echo "Found unknown M-Module $mm_name"
 				fi
 				;;
