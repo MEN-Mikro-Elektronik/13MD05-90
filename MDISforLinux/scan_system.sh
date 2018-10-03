@@ -1214,29 +1214,33 @@ case $main_cpu in
 		wiz_model_smb=SMBPCI_FCH
 		;;
     SC25)
-        wiz_model_cpu=Bx70x
-        wiz_model_smb=SMBPCI_FCH
-        ;;
+		wiz_model_cpu=Bx70x
+		wiz_model_smb=SMBPCI_FCH
+		;;
     F011)
 		wiz_model_cpu=F11S
 		wiz_model_smb=SMBPCI_SCH
 		G_primPciPath=0x3c
 		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
 		add_xm01bc_support
+		add_smb2_generic_support
 		;;
     F11S)
 		wiz_model_cpu=F11S
 		wiz_model_smb=SMBPCI_SCH
 		G_primPciPath=0x3c
 		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
 		add_xm01bc_support
+		add_smb2_generic_support
 		;;
     F14|F014)
 		wiz_model_cpu=F14
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
-		add_xm01bc_support
 		bCreateXm01bcDrv=1
+		add_xm01bc_support
 		;;
     F15)
 		wiz_model_cpu=F15
@@ -1264,33 +1268,39 @@ case $main_cpu in
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
 		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
 		add_xm01bc_support
+		add_smb2_generic_support
 		;;
     F21P|F21C|F021)
 		wiz_model_cpu=F21P_F21C
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
 		wiz_model_busif=0
-		add_xm01bc_support
 		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
+		add_xm01bc_support
+		add_smb2_generic_support
 		;;
     F026)
 		wiz_model_cpu=F26L
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
 		wiz_model_busif=0
-		add_xm01bc_support
-                add_smb2_generic_support
 		bCreateXm01bcDrv=1
                 bCreateSmb2GenericDrv=1
+		add_xm01bc_support
+                add_smb2_generic_support
 		;;
     F022|F22P)
 		wiz_model_cpu=F22P
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
 		wiz_model_busif=0
-		add_xm01bc_support
 		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
+		add_xm01bc_support
+		add_smb2_generic_support
 		;;
     F023|F23P)
 		wiz_model_cpu=F23P
@@ -1307,20 +1317,26 @@ case $main_cpu in
 		wiz_model_smb=SMBPCI_SCH
 		G_primPciPath=0x18
 		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
 		add_xm01bc_support
+		add_smb2_generic_support
 		;;
     XM01)
 		wiz_model_cpu=XM1
 		wiz_model_smb=SMBPCI_SCH
 		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
 		add_xm01bc_support
+		add_smb2_generic_support
 		;;
     MM01)
 		wiz_model_cpu=MM1
 		wiz_model_smb=SMBPCI_SCH
 		G_primPciPath=0x1c
 		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
 		add_xm01bc_support
+		add_smb2_generic_support
 		;;
     G20-)
 		wiz_model_cpu=G20
@@ -1335,31 +1351,35 @@ case $main_cpu in
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1c
 		wiz_model_busif=7
+		bCreateSmb2GenericDrv=1
+		bCreateXm01bcDrv=1
 		add_xm01bc_support
 		add_z001_io_support
-		bCreateXm01bcDrv=1
+		add_smb2_generic_support
 		;;
     G23-|G023)
-	    wiz_model_cpu=G23
-	    wiz_model_smb=SMBPCI_ICH
-	    G_primPciPath=0x1c
-	    wiz_model_busif=7
-            add_xm01bc_support
-            add_z001_io_support
-            bCreateXm01bcDrv=1
-	    ;;
+		wiz_model_cpu=G23
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1c
+		wiz_model_busif=7
+		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
+		add_xm01bc_support
+		add_z001_io_support
+		add_smb2_generic_support
+		;;
 
     G25-|G25A|G025)
-	    wiz_model_cpu=G25A
-	    wiz_model_smb=SMBPCI_ICH
-	    G_primPciPath=0x1c
-	    wiz_model_busif=7
-	    add_xm01bc_support
-	    add_z001_io_support
-            add_smb2_generic_support
-	    bCreateXm01bcDrv=1
-	    bCreateSmb2GenericDrv=1
-        ;;
+		wiz_model_cpu=G25A
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1c
+		wiz_model_busif=7
+		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
+		add_xm01bc_support
+		add_z001_io_support
+		add_smb2_generic_support
+		;;
     *)
 		echo "No MEN CPU type found!"
 		;;
