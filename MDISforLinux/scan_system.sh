@@ -109,9 +109,13 @@ G_deviceIdV2=""
 G_smbDeviceList=""
 
 # M-Module instance counters
-G_count_instance_m35=0
 G_count_instance_m31=0
+G_count_instance_m35=0
+G_count_instance_m36n=0
 G_count_instance_m66=0
+G_count_instance_m72=0
+G_count_instance_m77=0
+G_count_instance_m82=0
 
 
 ############################################################################
@@ -670,7 +674,7 @@ function create_entry_dsc_d203 {
 	if [ "$2" == "1" ]; then
 		G_makefileBbisDriver+=" D203/DRIVER/COM/driver.mak"
 	fi
-	scan_for_mmodules $1 $2 d203 $4 $6 0 "0x0 0x400 0x800 0xc00"
+	scan_for_mmodules $1 $2 d203 $4 $6 0 "0x200 0x400 0x800 0xc00"
 }
 
 ############################################################################
@@ -699,6 +703,27 @@ function create_entry_dsc_d203_a24 {
 }
 
 ############################################################################
+# create a m31_x M-Module section
+#
+# parameters:
+# $1  DSC template directory
+# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
+# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
+# $4  board name (subst. SCAN_BBIS_NAME tag)
+# $5  device slot number (subst. SCAN_DEV_SLOT tag)
+#
+function create_entry_dsc_m31 {
+	echo "Writing m31_$2 section to system.dsc "
+	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
+	cat $1/m31.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $DSC_FILE
+	if [ "$2" == "1" ]; then
+		G_makefileLlDriver+=" M031/DRIVER/COM/driver.mak"
+		G_makefileLlTool+=" M031/EXAMPLE/M31_SIMP/COM/program.mak\
+			 M031/EXAMPLE/M31_SIG/COM/program.mak"
+	fi
+}
+
+############################################################################
 # create a m35_x M-Module section
 #
 # parameters:
@@ -721,7 +746,7 @@ function create_entry_dsc_m35 {
 }
 
 ############################################################################
-# create a m31_x M-Module section
+# create a m36n_x M-Module section
 #
 # parameters:
 # $1  DSC template directory
@@ -730,14 +755,15 @@ function create_entry_dsc_m35 {
 # $4  board name (subst. SCAN_BBIS_NAME tag)
 # $5  device slot number (subst. SCAN_DEV_SLOT tag)
 #
-function create_entry_dsc_m31 {
-	echo "Writing m31_$2 section to system.dsc "
+function create_entry_dsc_m36n {
+	echo "Writing m36n_$2 section to system.dsc "
 	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
-	cat $1/m31.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $DSC_FILE
+	cat $1/m36n.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $DSC_FILE
 	if [ "$2" == "1" ]; then
-		G_makefileLlDriver+=" M031/DRIVER/COM/driver.mak"
-		G_makefileLlTool+=" M031/EXAMPLE/M31_SIMP/COM/program.mak\
-			 M031/EXAMPLE/M31_SIG/COM/program.mak"
+		G_makefileLlDriver+=" M036/DRIVER/COM/driver.mak"
+		G_makefileLlTool+=" M036/EXAMPLE/M36_SIMP/COM/program.mak\
+			 M036/TOOLS/M36_BLKREAD/COM/program.mak\
+			 M036/TOOLS/M36_READ/COM/program.mak"
 	fi
 }
 
@@ -760,6 +786,73 @@ function create_entry_dsc_m66 {
 		G_makefileLlTool+=" M066/EXAMPLE/M66_SIMP/COM/program.mak\
 			 M066/EXAMPLE/M66_DEMO/COM/program.mak\
 			 M066/TEST/M66_PERF/COM/program.mak"
+	fi
+}
+
+############################################################################
+# create a m72_x M-Module section
+#
+# parameters:
+# $1  DSC template directory
+# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
+# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
+# $4  board name (subst. SCAN_BBIS_NAME tag)
+# $5  device slot number (subst. SCAN_DEV_SLOT tag)
+#
+function create_entry_dsc_m72 {
+	echo "Writing m72_$2 section to system.dsc "
+	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
+	cat $1/m72.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $DSC_FILE
+	if [ "$2" == "1" ]; then
+		G_makefileLlDriver+="M072/DRIVER/COM/driver.mak"
+		G_makefileLlTool+=" M072/TOOLS/M72_COUNT/COM/program.mak\
+			M072/EXAMPLE/M72_FREQ/COM/program.mak\
+			M072/EXAMPLE/M72_OUT/COM/program.mak\
+			M072/EXAMPLE/M72_PERIOD/COM/program.mak\
+			M072/EXAMPLE/M72_PULSE/COM/program.mak\
+			M072/EXAMPLE/M72_SINGLE/COM/program.mak\
+			M072/EXAMPLE/M72_TIMER/COM/program.mak\
+			M072/EXAMPLE/M72_PRETRIG/COM/program.mak"
+	fi
+}
+
+############################################################################
+# create a m77_x M-Module section
+#
+# parameters:
+# $1  DSC template directory
+# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
+# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
+# $4  board name (subst. SCAN_BBIS_NAME tag)
+# $5  device slot number (subst. SCAN_DEV_SLOT tag)
+#
+function create_entry_dsc_m77 {
+	echo "Writing m77_$2 section to system.dsc "
+	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
+	cat $1/m77.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $DSC_FILE
+	if [ "$2" == "1" ]; then
+		G_makefileNatDriver+=" DRIVERS/M077/DRIVER/driver.mak"
+	fi
+}
+
+############################################################################
+# create a m82_x M-Module section
+#
+# parameters:
+# $1  DSC template directory
+# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
+# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
+# $4  board name (subst. SCAN_BBIS_NAME tag)
+# $5  device slot number (subst. SCAN_DEV_SLOT tag)
+#
+function create_entry_dsc_m82 {
+	echo "Writing m82_$2 section to system.dsc "
+	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
+	cat $1/m82.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $DSC_FILE
+	if [ "$2" == "1" ]; then
+		G_makefileLlDriver+=" M031/DRIVER/COM/driver.mak"
+		G_makefileLlTool+=" M031/EXAMPLE/M31_SIMP/COM/program.mak\
+				M031/EXAMPLE/M31_SIG/COM/program.mak"
 	fi
 }
 
@@ -965,20 +1058,40 @@ function scan_for_mmodules {
 		mm_address=`printf "0x%x" $((0x$bar_address + $mm_offset))`
 		mm_name=`$MEN_LIN_DIR/BIN/$MM_IDENT $mm_address | grep Name | awk '{print $8}'`
 		case $mm_name in
-			M35)
-				echo "Found $mm_name on $3_$2"
-				G_count_instance_m35=$(($G_count_instance_m35 + 1))
-				create_entry_dsc_m35 $1 $G_count_instance_m35 $2 $3 $mm_device_slot
-				;;
 			M31)
 				echo "Found $mm_name on $3_$2"
 				G_count_instance_m31=$(($G_count_instance_m31 + 1))
 				create_entry_dsc_m31 $1 $G_count_instance_m31 $2 $3 $mm_device_slot
 				;;
+			M35)
+				echo "Found $mm_name on $3_$2"
+				G_count_instance_m35=$(($G_count_instance_m35 + 1))
+				create_entry_dsc_m35 $1 $G_count_instance_m35 $2 $3 $mm_device_slot
+				;;
+			M36N)	
+				echo "Found $mm_name on $3_$2"
+				G_count_instance_m36n=$(($G_count_instance_m36n + 1))
+				create_entry_dsc_m36n $1 $G_count_instance_m36n $2 $3 $mm_device_slot
+				;;
 			M66)
 				echo "Found $mm_name on $3_$2"
 				G_count_instance_m66=$(($G_count_instance_m66 + 1))
 				create_entry_dsc_m66 $1 $G_count_instance_m66 $2 $3 $mm_device_slot
+				;;
+			M72)	
+				echo "Found $mm_name on $3_$2"
+				G_count_instance_m72=$(($G_count_instance_m72 + 1))
+				create_entry_dsc_m72 $1 $G_count_instance_m72 $2 $3 $mm_device_slot
+				;;
+			M77)	
+				echo "Found $mm_name on $3_$2"
+				G_count_instance_m77=$(($G_count_instance_m77 + 1))
+				create_entry_dsc_m77 $1 $G_count_instance_m77 $2 $3 $mm_device_slot
+				;;
+			M82)	
+				echo "Found $mm_name on $3_$2"
+				G_count_instance_m82=$(($G_count_instance_m82 + 1))
+				create_entry_dsc_m82 $1 $G_count_instance_m82 $2 $3 $mm_device_slot
 				;;
 
 			*)
@@ -990,7 +1103,6 @@ function scan_for_mmodules {
 		mm_device_slot=$(($mm_device_slot + 1))
 	done
 }
-
 
 ############################################################################
 # create MDIS Makefile from collected driver data
