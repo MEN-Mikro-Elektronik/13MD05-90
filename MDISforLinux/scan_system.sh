@@ -1029,6 +1029,8 @@ function scan_for_pci_devs {
 		pcibusslot=$G_cPciRackSlotStandard
 		busif="1"     # for standard cPCI always "cpu,1"
 		if [ $reverse_enum_f205 == 0 ]; then
+			cat /dev/null > "$TMP_F205_DSC"
+			cat /dev/null > "$TMP_F205_DSC.tmp"
 			reverse_enum_f205=1
 			count_instance_d203=$(($count_instance_d203 + 1 + (15 - $pcidevnr)))
 			G_cPciRackSlotStandard=$(($G_cPciRackSlotStandard + 1 + (15 - $pcidevnr)))
@@ -1059,6 +1061,8 @@ function scan_for_pci_devs {
 		pcibusslot=$G_cPciRackSlotStandard
 		busif="1"     # for standard cPCI always "cpu,1"
 		if [ $reverse_enum_f205 == 0 ]; then
+			cat /dev/null > "$TMP_F205_DSC"
+			cat /dev/null > "$TMP_F205_DSC.tmp"
 			reverse_enum_f205=1
 			count_instance_d203_a24=$(($count_instance_d203_a24 + 1 + (15 - $pcidevnr)))
 			G_cPciRackSlotStandard=$(($G_cPciRackSlotStandard + 1 + (15 - $pcidevnr)))
@@ -1081,7 +1085,7 @@ function scan_for_pci_devs {
 			fi
 			reverse_enum_f205=0
 		fi
-fi
+	fi
 
     done <  $TMP_PCIDEVS
 }
