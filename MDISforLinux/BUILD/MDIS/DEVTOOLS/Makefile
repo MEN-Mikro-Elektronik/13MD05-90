@@ -38,12 +38,12 @@ export HOST_LD			:= ld
 # Usually this is the development platform's /usr/bin or 
 # /usr/local/bin directory
 #
-BIN_INSTALL_DIR 	?= /usr/local/bin
+BIN_INSTALL_DIR 	:= /usr/local/bin
 
 #-----------------------------------------------------------
 # Define the include root directory for the development platform's linux 
 #
-LIN_USR_INC_DIR		?= /usr/include
+LIN_USR_INC_DIR		:= /usr/include
 
 #-----------------------------------------------------------
 # Define wether to build/use static or shared user state libraries
@@ -51,7 +51,7 @@ LIN_USR_INC_DIR		?= /usr/include
 # static 	make static libs / link programs with static libs
 # shared	make shared libs / link programs for use with shared libs
 #
-LIB_MODE			?= shared
+LIB_MODE			:= shared
 
 #-----------------------------------------------------------
 # Define common tools to build
