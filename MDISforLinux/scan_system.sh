@@ -55,6 +55,8 @@ TMP_BBIS_DSC=/tmp/bbis.dsc.tmp
 TMP_PCIDEVS=/tmp/men_pci_devs.tmp
 # temporary chameleon table file to scan IPcore IDs
 TMP_CHAM_TBL=/tmp/men_cham_tbl.tmp
+# temporaty F205 devices file
+TMP_F205_DSC=/tmp/men_f205.dsc.tmp
 # fpga_load to use (32/64 bit)
 # (Mind: without ia32 lib 32bit programs cant run under 64bit)
 FPGA_LOAD=fpga_load_x86-32
@@ -109,9 +111,13 @@ G_deviceIdV2=""
 G_smbDeviceList=""
 
 # M-Module instance counters
-G_count_instance_m35=0
 G_count_instance_m31=0
+G_count_instance_m35=0
+G_count_instance_m36n=0
 G_count_instance_m66=0
+G_count_instance_m72=0
+G_count_instance_m77=0
+G_count_instance_m82=0
 
 
 ############################################################################
@@ -662,15 +668,16 @@ function create_entry_dsc_f207 {
 # $4  PCI_BUS number (subst. SCAN_PCI_BUS_NR tag)
 # $5  board name (subst. SCAN_BBIS_NAME tag)
 # $6  PCI device number (subst. SCAN_PCI_DEV_NR tag)
+# $7  DSC output file
 #
 function create_entry_dsc_d203 {
 	echo "Writing d203_$2 section to system.dsc "
 	debug_args " \$1 = $1 \$2 = $2  \$3 = $3  \$4 = $4  \$5 = $5  \$6 = $6 "
-	cat $1/d203.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_SMBUSIF/$3/g;s/SCAN_PCI_BUS_NR/`printf \"0x%x\" $4`/g;s/SCAN_BBIS_NAME/$5/g;s/SCAN_PCI_DEV_NR/`printf \"0x%x\" $6`/g" >> $DSC_FILE
+	cat $1/d203.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_SMBUSIF/$3/g;s/SCAN_PCI_BUS_NR/`printf \"0x%x\" $4`/g;s/SCAN_BBIS_NAME/$5/g;s/SCAN_PCI_DEV_NR/`printf \"0x%x\" $6`/g" >> $7
 	if [ "$2" == "1" ]; then
 		G_makefileBbisDriver+=" D203/DRIVER/COM/driver.mak"
 	fi
-	scan_for_mmodules $1 $2 d203 $4 $6 0 "0x0 0x400 0x800 0xc00"
+	scan_for_mmodules $1 $2 d203 $4 $6 0 "0x200 0x400 0x800 0xc00" $7
 }
 
 ############################################################################
@@ -683,40 +690,19 @@ function create_entry_dsc_d203 {
 # $4  PCI_BUS number (subst. SCAN_PCI_BUS_NR tag)
 # $5  board name (subst. SCAN_BBIS_NAME tag)
 # $6  PCI device number (subst. SCAN_PCI_DEV_NR tag)
+# $7  DSC output file
 #
 function create_entry_dsc_d203_a24 {
 	echo "Writing d203_a24_$2 section to system.dsc "
 	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 \$6 = $6 "
-	cat $1/d203_a24.tpl | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_SMBUSIF/$3/g;s/SCAN_PCI_BUS_NR/`printf \"0x%x\" $4`/g;s/SCAN_BBIS_NAME/$5/g;s/SCAN_PCI_DEV_NR/`printf \"0x%x\" $6`/g" >> $DSC_FILE
+	cat $1/d203_a24.tpl | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_SMBUSIF/$3/g;s/SCAN_PCI_BUS_NR/`printf \"0x%x\" $4`/g;s/SCAN_BBIS_NAME/$5/g;s/SCAN_PCI_DEV_NR/`printf \"0x%x\" $6`/g" >> $7
 	if [ "$2" == "1" ]; then
 		G_makefileBbisDriver+=" D203/DRIVER/COM/driver_a24.mak"
 	fi
 	if [ "$5" == "G204_A24" ]; then
-		scan_for_mmodules $1 $2 d203_a24 $4 $6 0 "0x0"
+		scan_for_mmodules $1 $2 d203_a24 $4 $6 0 "0x0" $7
 	else
-		scan_for_mmodules $1 $2 d203_a24 $4 $6 0 "0x0 0x200000 0x400000 0x600000"
-	fi
-}
-
-############################################################################
-# create a m35_x M-Module section
-#
-# parameters:
-# $1  DSC template directory
-# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
-# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
-# $4  board name (subst. SCAN_BBIS_NAME tag)
-# $5  device slot number (subst. SCAN_DEV_SLOT tag)
-#
-function create_entry_dsc_m35 {
-	echo "Writing m35_$2 section to system.dsc "
-	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
-	cat $1/m35.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $DSC_FILE
-	if [ "$2" == "1" ]; then
-		G_makefileLlDriver+=" M034/DRIVER/COM/driver.mak"
-		G_makefileLlTool+=" M034/EXAMPLE/M34_SIMP/COM/program.mak\
-			 M034/TOOLS/M34_READ/COM/program.mak\
-			 M034/TOOLS/M34_BLKREAD/COM/program.mak"
+		scan_for_mmodules $1 $2 d203_a24 $4 $6 0 "0x0 0x200000 0x400000 0x600000" $7
 	fi
 }
 
@@ -729,15 +715,62 @@ function create_entry_dsc_m35 {
 # $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
 # $4  board name (subst. SCAN_BBIS_NAME tag)
 # $5  device slot number (subst. SCAN_DEV_SLOT tag)
+# $6  DSC output file
 #
 function create_entry_dsc_m31 {
 	echo "Writing m31_$2 section to system.dsc "
 	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
-	cat $1/m31.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $DSC_FILE
+	cat $1/m31.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $6
 	if [ "$2" == "1" ]; then
 		G_makefileLlDriver+=" M031/DRIVER/COM/driver.mak"
 		G_makefileLlTool+=" M031/EXAMPLE/M31_SIMP/COM/program.mak\
 			 M031/EXAMPLE/M31_SIG/COM/program.mak"
+	fi
+}
+
+############################################################################
+# create a m35_x M-Module section
+#
+# parameters:
+# $1  DSC template directory
+# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
+# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
+# $4  board name (subst. SCAN_BBIS_NAME tag)
+# $5  device slot number (subst. SCAN_DEV_SLOT tag)
+# $6  DSC output file
+#
+function create_entry_dsc_m35 {
+	echo "Writing m35_$2 section to system.dsc "
+	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
+	cat $1/m35.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $6
+	if [ "$2" == "1" ]; then
+		G_makefileLlDriver+=" M034/DRIVER/COM/driver.mak"
+		G_makefileLlTool+=" M034/EXAMPLE/M34_SIMP/COM/program.mak\
+			 M034/TOOLS/M34_READ/COM/program.mak\
+			 M034/TOOLS/M34_BLKREAD/COM/program.mak"
+	fi
+}
+
+############################################################################
+# create a m36n_x M-Module section
+#
+# parameters:
+# $1  DSC template directory
+# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
+# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
+# $4  board name (subst. SCAN_BBIS_NAME tag)
+# $5  device slot number (subst. SCAN_DEV_SLOT tag)
+# $6  DSC output file
+#
+function create_entry_dsc_m36n {
+	echo "Writing m36n_$2 section to system.dsc "
+	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
+	cat $1/m36n.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $6
+	if [ "$2" == "1" ]; then
+		G_makefileLlDriver+=" M036/DRIVER/COM/driver.mak"
+		G_makefileLlTool+=" M036/EXAMPLE/M36_SIMP/COM/program.mak\
+			 M036/TOOLS/M36_BLKREAD/COM/program.mak\
+			 M036/TOOLS/M36_READ/COM/program.mak"
 	fi
 }
 
@@ -750,16 +783,87 @@ function create_entry_dsc_m31 {
 # $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
 # $4  board name (subst. SCAN_BBIS_NAME tag)
 # $5  device slot number (subst. SCAN_DEV_SLOT tag)
+# $6  DSC output file
 #
 function create_entry_dsc_m66 {
 	echo "Writing m66_$2 section to system.dsc "
 	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
-	cat $1/m66.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $DSC_FILE
+	cat $1/m66.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $6
 	if [ "$2" == "1" ]; then
 		G_makefileLlDriver+=" M066/DRIVER/COM/driver.mak"
 		G_makefileLlTool+=" M066/EXAMPLE/M66_SIMP/COM/program.mak\
 			 M066/EXAMPLE/M66_DEMO/COM/program.mak\
 			 M066/TEST/M66_PERF/COM/program.mak"
+	fi
+}
+
+############################################################################
+# create a m72_x M-Module section
+#
+# parameters:
+# $1  DSC template directory
+# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
+# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
+# $4  board name (subst. SCAN_BBIS_NAME tag)
+# $5  device slot number (subst. SCAN_DEV_SLOT tag)
+# $6  DSC output file
+#
+function create_entry_dsc_m72 {
+	echo "Writing m72_$2 section to system.dsc "
+	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
+	cat $1/m72.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $6
+	if [ "$2" == "1" ]; then
+		G_makefileLlDriver+=" M072/DRIVER/COM/driver.mak"
+		G_makefileLlTool+=" M072/TOOLS/M72_COUNT/COM/program.mak\
+			 M072/EXAMPLE/M72_FREQ/COM/program.mak\
+			 M072/EXAMPLE/M72_OUT/COM/program.mak\
+			 M072/EXAMPLE/M72_PERIOD/COM/program.mak\
+			 M072/EXAMPLE/M72_PULSE/COM/program.mak\
+			 M072/EXAMPLE/M72_SINGLE/COM/program.mak\
+			 M072/EXAMPLE/M72_TIMER/COM/program.mak\
+			 M072/EXAMPLE/M72_PRETRIG/COM/program.mak"
+	fi
+}
+
+############################################################################
+# create a m77_x M-Module section
+#
+# parameters:
+# $1  DSC template directory
+# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
+# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
+# $4  board name (subst. SCAN_BBIS_NAME tag)
+# $5  device slot number (subst. SCAN_DEV_SLOT tag)
+# $6  DSC output file
+#
+function create_entry_dsc_m77 {
+	echo "Writing m77_$2 section to system.dsc "
+	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
+	cat $1/m77.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $6
+	if [ "$2" == "1" ]; then
+		G_makefileNatDriver+=" DRIVERS/M077/DRIVER/driver.mak"
+	fi
+}
+
+############################################################################
+# create a m82_x M-Module section
+#
+# parameters:
+# $1  DSC template directory
+# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
+# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
+# $4  board name (subst. SCAN_BBIS_NAME tag)
+# $5  device slot number (subst. SCAN_DEV_SLOT tag)
+# $6  DSC output file
+#
+function create_entry_dsc_m82 {
+	echo "Writing m82_$2 section to system.dsc "
+	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
+	cat $1/m82.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $6
+	if [ "$2" == "1" ]; then
+		G_makefileLlDriver+=" M031/DRIVER/COM/driver.mak"
+		G_makefileLlTool+=" M031/EXAMPLE/M31_SIMP/COM/program.mak\
+				 M031/EXAMPLE/M31_SIG/COM/program.mak"
 	fi
 }
 
@@ -834,6 +938,7 @@ function scan_for_pci_devs {
     bus_path_prim=$1
     bus_path_sec=0
     bus_path_sec_f223=0
+    reverse_enum_f205=0
 
     while read line; do
 	# Nr.| dom|bus|dev|fun| Ven ID | Dev ID | SubVen ID |
@@ -915,7 +1020,7 @@ function scan_for_pci_devs {
 		count_instance_d203_a24=`expr $count_instance_d203_a24 + 1`
 		G_cPciRackSlotSerial=`expr $G_cPciRackSlotSerial + 1`
 		echo "Found d203_a24 no. $count_instance_d203_a24"
-		create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_d203_a24 $pcibusslot $pcibus "G204_A24" $pcidevnr 
+		create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_d203_a24 $pcibusslot $pcibus "G204_A24" $pcidevnr $DSC_FILE
 	fi
 
 	# support for F204/F205 carrier board with A08 M-Module access boards
@@ -923,22 +1028,60 @@ function scan_for_pci_devs {
 		echo "Found d203 F204/F205 board with 1 or 2 M-Modules A08"
 		pcibusslot=$G_cPciRackSlotStandard
 		busif="1"     # for standard cPCI always "cpu,1"
-                count_instance_d203=`expr $count_instance_d203 + 1`
-                G_cPciRackSlotStandard=`expr $G_cPciRackSlotStandard + 1`
-                echo "Found d203 no. $count_instance_d203"
-                create_entry_dsc_d203 $DSC_TPL_DIR $count_instance_d203 $busif $pcibus "F205" $pcidevnr 
-        fi
+		if [ $reverse_enum_f205 == 0 ]; then
+			reverse_enum_f205=1
+			count_instance_d203=$(($count_instance_d203 + 1 + (15 - $pcidevnr)))
+			G_cPciRackSlotStandard=$(($G_cPciRackSlotStandard + 1 + (15 - $pcidevnr)))
+			echo "Found d203 no. $count_instance_d203"
+			create_entry_dsc_d203 $DSC_TPL_DIR $count_instance_d203 $busif $pcibus "F205" $pcidevnr "$TMP_F205_DSC.tmp"
+		else
+			echo "Found d203 no. $(($count_instance_d203 - $reverse_enum_f205))"
+			create_entry_dsc_d203 $DSC_TPL_DIR $(($count_instance_d203 - $reverse_enum_f205)) $busif $pcibus "F205" $pcidevnr "$TMP_F205_DSC.tmp"
+			reverse_enum_f205=$(($reverse_enum_f205 + 1))
+		fi
+		if [ -e "$TMP_F205_DSC.tmp" ]; then
+			if [ -e "$TMP_F205_DSC" ]; then
+				cat "$TMP_F205_DSC" >> "$TMP_F205_DSC.tmp"
+			fi
+			mv "$TMP_F205_DSC.tmp" "$TMP_F205_DSC"
+		fi
+		if [ $pcidevnr == 15 ]; then
+			if [ -e "$TMP_F205_DSC" ]; then
+				cat "$TMP_F205_DSC" >> "$DSC_FILE"
+			fi
+			reverse_enum_f205=0
+		fi
+	fi
 
 	# support for F204/F205 carrier board with A24 M-Module access boards
 	if [ "$pcivend" == "0x1172" ] && [ "$pcidevid" == "0x203d" ] && [ "$pcisubvend" == "0xff00" ]; then
 		echo "Found d203 F204/F205 board with 1 or 2 M-Modules A24"
 		pcibusslot=$G_cPciRackSlotStandard
 		busif="1"     # for standard cPCI always "cpu,1"
-                count_instance_d203_a24=`expr $count_instance_d203_a24 + 1`
-                G_cPciRackSlotStandard=`expr $G_cPciRackSlotStandard + 1`
-                echo "Found d203_a24 no. $count_instance_d203_a24"
-                create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_203d_a24 $busif $pcibus "F205" $pcidevnr 
-        fi
+		if [ $reverse_enum_f205 == 0 ]; then
+			reverse_enum_f205=1
+			count_instance_d203_a24=$(($count_instance_d203_a24 + 1 + (15 - $pcidevnr)))
+			G_cPciRackSlotStandard=$(($G_cPciRackSlotStandard + 1 + (15 - $pcidevnr)))
+			echo "Found d203_a24 no. $count_instance_d203_a24"
+			create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_d203_a24 $busif $pcibus "F205" $pcidevnr "$TMP_F205_DSC.tmp"
+		else
+			echo "Found d203_a24 no. $(($count_instance_d203_a24 - $reverse_enum_f205))"
+			create_entry_dsc_d203_a24 $DSC_TPL_DIR $(($count_instance_d203_a24 - $reverse_enum_f205)) $busif $pcibus "F205" $pcidevnr "$TMP_F205_DSC.tmp"
+			reverse_enum_f205=$(($reverse_enum_f205 + 1))
+		fi
+		if [ -e "$TMP_F205_DSC.tmp" ]; then
+			if [ -e "$TMP_F205_DSC" ]; then
+				cat "$TMP_F205_DSC" >> "$TMP_F205_DSC.tmp"
+			fi
+			mv "$TMP_F205_DSC.tmp" "$TMP_F205_DSC"
+		fi
+		if [ $pcidevnr == 15 ]; then
+			if [ -e "$TMP_F205_DSC" ]; then
+				cat "$TMP_F205_DSC" >> "$DSC_FILE"
+			fi
+			reverse_enum_f205=0
+		fi
+fi
 
     done <  $TMP_PCIDEVS
 }
@@ -954,6 +1097,7 @@ function scan_for_pci_devs {
 # $5  PCI device number to scan (decimal)
 # $6  PCI device function to scan (decimal)
 # $7  M-Module offset address array in hex (e.g. "0x0 0x3f0 0x47c 0x600")
+# $8  DSC output file
 #
 function scan_for_mmodules {
 	mm_device_slot=0
@@ -965,22 +1109,41 @@ function scan_for_mmodules {
 		mm_address=`printf "0x%x" $((0x$bar_address + $mm_offset))`
 		mm_name=`$MEN_LIN_DIR/BIN/$MM_IDENT $mm_address | grep Name | awk '{print $8}'`
 		case $mm_name in
-			M35)
-				echo "Found $mm_name on $3_$2"
-				G_count_instance_m35=$(($G_count_instance_m35 + 1))
-				create_entry_dsc_m35 $1 $G_count_instance_m35 $2 $3 $mm_device_slot
-				;;
 			M31)
 				echo "Found $mm_name on $3_$2"
 				G_count_instance_m31=$(($G_count_instance_m31 + 1))
-				create_entry_dsc_m31 $1 $G_count_instance_m31 $2 $3 $mm_device_slot
+				create_entry_dsc_m31 $1 $G_count_instance_m31 $2 $3 $mm_device_slot $8
+				;;
+			M35)
+				echo "Found $mm_name on $3_$2"
+				G_count_instance_m35=$(($G_count_instance_m35 + 1))
+				create_entry_dsc_m35 $1 $G_count_instance_m35 $2 $3 $mm_device_slot $8
+				;;
+			M36N)
+				echo "Found $mm_name on $3_$2"
+				G_count_instance_m36n=$(($G_count_instance_m36n + 1))
+				create_entry_dsc_m36n $1 $G_count_instance_m36n $2 $3 $mm_device_slot $8
 				;;
 			M66)
 				echo "Found $mm_name on $3_$2"
 				G_count_instance_m66=$(($G_count_instance_m66 + 1))
-				create_entry_dsc_m66 $1 $G_count_instance_m66 $2 $3 $mm_device_slot
+				create_entry_dsc_m66 $1 $G_count_instance_m66 $2 $3 $mm_device_slot $8
 				;;
-
+			M72)
+				echo "Found $mm_name on $3_$2"
+				G_count_instance_m72=$(($G_count_instance_m72 + 1))
+				create_entry_dsc_m72 $1 $G_count_instance_m72 $2 $3 $mm_device_slot $8
+				;;
+			M77)
+				echo "Found $mm_name on $3_$2"
+				G_count_instance_m77=$(($G_count_instance_m77 + 1))
+				create_entry_dsc_m77 $1 $G_count_instance_m77 $2 $3 $mm_device_slot $8
+				;;
+			M82)
+				echo "Found $mm_name on $3_$2"
+				G_count_instance_m82=$(($G_count_instance_m82 + 1))
+				create_entry_dsc_m82 $1 $G_count_instance_m82 $2 $3 $mm_device_slot $8
+				;;
 			*)
 				if [ "$mm_name" != "" ]; then
 					echo "Found unknown M-Module $mm_name"
@@ -990,7 +1153,6 @@ function scan_for_mmodules {
 		mm_device_slot=$(($mm_device_slot + 1))
 	done
 }
-
 
 ############################################################################
 # create MDIS Makefile from collected driver data
@@ -1214,29 +1376,33 @@ case $main_cpu in
 		wiz_model_smb=SMBPCI_FCH
 		;;
     SC25)
-        wiz_model_cpu=Bx70x
-        wiz_model_smb=SMBPCI_FCH
-        ;;
+		wiz_model_cpu=Bx70x
+		wiz_model_smb=SMBPCI_FCH
+		;;
     F011)
 		wiz_model_cpu=F11S
 		wiz_model_smb=SMBPCI_SCH
 		G_primPciPath=0x3c
 		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
 		add_xm01bc_support
+		add_smb2_generic_support
 		;;
     F11S)
 		wiz_model_cpu=F11S
 		wiz_model_smb=SMBPCI_SCH
 		G_primPciPath=0x3c
 		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
 		add_xm01bc_support
+		add_smb2_generic_support
 		;;
     F14|F014)
 		wiz_model_cpu=F14
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
-		add_xm01bc_support
 		bCreateXm01bcDrv=1
+		add_xm01bc_support
 		;;
     F15)
 		wiz_model_cpu=F15
@@ -1264,33 +1430,39 @@ case $main_cpu in
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
 		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
 		add_xm01bc_support
+		add_smb2_generic_support
 		;;
     F21P|F21C|F021)
 		wiz_model_cpu=F21P_F21C
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
 		wiz_model_busif=0
-		add_xm01bc_support
 		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
+		add_xm01bc_support
+		add_smb2_generic_support
 		;;
     F026)
 		wiz_model_cpu=F26L
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
 		wiz_model_busif=0
-		add_xm01bc_support
-                add_smb2_generic_support
 		bCreateXm01bcDrv=1
                 bCreateSmb2GenericDrv=1
+		add_xm01bc_support
+                add_smb2_generic_support
 		;;
     F022|F22P)
 		wiz_model_cpu=F22P
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1e
 		wiz_model_busif=0
-		add_xm01bc_support
 		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
+		add_xm01bc_support
+		add_smb2_generic_support
 		;;
     F023|F23P)
 		wiz_model_cpu=F23P
@@ -1307,20 +1479,26 @@ case $main_cpu in
 		wiz_model_smb=SMBPCI_SCH
 		G_primPciPath=0x18
 		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
 		add_xm01bc_support
+		add_smb2_generic_support
 		;;
     XM01)
 		wiz_model_cpu=XM1
 		wiz_model_smb=SMBPCI_SCH
 		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
 		add_xm01bc_support
+		add_smb2_generic_support
 		;;
     MM01)
 		wiz_model_cpu=MM1
 		wiz_model_smb=SMBPCI_SCH
 		G_primPciPath=0x1c
 		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
 		add_xm01bc_support
+		add_smb2_generic_support
 		;;
     G20-)
 		wiz_model_cpu=G20
@@ -1335,31 +1513,35 @@ case $main_cpu in
 		wiz_model_smb=SMBPCI_ICH
 		G_primPciPath=0x1c
 		wiz_model_busif=7
+		bCreateSmb2GenericDrv=1
+		bCreateXm01bcDrv=1
 		add_xm01bc_support
 		add_z001_io_support
-		bCreateXm01bcDrv=1
+		add_smb2_generic_support
 		;;
     G23-|G023)
-	    wiz_model_cpu=G23
-	    wiz_model_smb=SMBPCI_ICH
-	    G_primPciPath=0x1c
-	    wiz_model_busif=7
-            add_xm01bc_support
-            add_z001_io_support
-            bCreateXm01bcDrv=1
-	    ;;
+		wiz_model_cpu=G23
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1c
+		wiz_model_busif=7
+		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
+		add_xm01bc_support
+		add_z001_io_support
+		add_smb2_generic_support
+		;;
 
     G25-|G25A|G025)
-	    wiz_model_cpu=G25A
-	    wiz_model_smb=SMBPCI_ICH
-	    G_primPciPath=0x1c
-	    wiz_model_busif=7
-	    add_xm01bc_support
-	    add_z001_io_support
-            add_smb2_generic_support
-	    bCreateXm01bcDrv=1
-	    bCreateSmb2GenericDrv=1
-        ;;
+		wiz_model_cpu=G25A
+		wiz_model_smb=SMBPCI_ICH
+		G_primPciPath=0x1c
+		wiz_model_busif=7
+		bCreateXm01bcDrv=1
+		bCreateSmb2GenericDrv=1
+		add_xm01bc_support
+		add_z001_io_support
+		add_smb2_generic_support
+		;;
     *)
 		echo "No MEN CPU type found!"
 		;;
