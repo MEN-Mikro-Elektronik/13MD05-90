@@ -97,6 +97,7 @@
 [submodule "13Z025-90"]
 	path = 13Z025-90
 	url = ../13Z025-90.git
+	branch = jpe-dev
 [submodule "13Z044-90"]
 	path = 13Z044-90
 	url = ../13Z044-90.git
