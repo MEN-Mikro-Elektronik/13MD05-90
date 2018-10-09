@@ -1032,15 +1032,11 @@ function scan_for_pci_devs {
 			cat /dev/null > "$TMP_F205_DSC"
 			cat /dev/null > "$TMP_F205_DSC.tmp"
 			reverse_enum_f205=1
-			count_instance_d203=$(($count_instance_d203 + 1 + (15 - $pcidevnr)))
 			G_cPciRackSlotStandard=$(($G_cPciRackSlotStandard + 1 + (15 - $pcidevnr)))
-			echo "Found d203 no. $count_instance_d203"
-			create_entry_dsc_d203 $DSC_TPL_DIR $count_instance_d203 $busif $pcibus "F205" $pcidevnr "$TMP_F205_DSC.tmp"
-		else
-			echo "Found d203 no. $(($count_instance_d203 - $reverse_enum_f205))"
-			create_entry_dsc_d203 $DSC_TPL_DIR $(($count_instance_d203 - $reverse_enum_f205)) $busif $pcibus "F205" $pcidevnr "$TMP_F205_DSC.tmp"
-			reverse_enum_f205=$(($reverse_enum_f205 + 1))
 		fi
+		count_instance_d203=$((1 + (15 - $pcidevnr)))
+		echo "Found d203 no. $count_instance_d203"
+		create_entry_dsc_d203 $DSC_TPL_DIR $count_instance_d203 $busif $pcibus "F205" $pcidevnr "$TMP_F205_DSC.tmp"
 		if [ -e "$TMP_F205_DSC.tmp" ]; then
 			if [ -e "$TMP_F205_DSC" ]; then
 				cat "$TMP_F205_DSC" >> "$TMP_F205_DSC.tmp"
@@ -1064,15 +1060,11 @@ function scan_for_pci_devs {
 			cat /dev/null > "$TMP_F205_DSC"
 			cat /dev/null > "$TMP_F205_DSC.tmp"
 			reverse_enum_f205=1
-			count_instance_d203_a24=$(($count_instance_d203_a24 + 1 + (15 - $pcidevnr)))
 			G_cPciRackSlotStandard=$(($G_cPciRackSlotStandard + 1 + (15 - $pcidevnr)))
-			echo "Found d203_a24 no. $count_instance_d203_a24"
-			create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_d203_a24 $busif $pcibus "F205" $pcidevnr "$TMP_F205_DSC.tmp"
-		else
-			echo "Found d203_a24 no. $(($count_instance_d203_a24 - $reverse_enum_f205))"
-			create_entry_dsc_d203_a24 $DSC_TPL_DIR $(($count_instance_d203_a24 - $reverse_enum_f205)) $busif $pcibus "F205" $pcidevnr "$TMP_F205_DSC.tmp"
-			reverse_enum_f205=$(($reverse_enum_f205 + 1))
 		fi
+		count_instance_d203_a24=$((1 + (15 - $pcidevnr)))
+		echo "Found d203_a24 no. $count_instance_d203_a24"
+		create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_d203_a24 $busif $pcibus "F205" $pcidevnr "$TMP_F205_DSC.tmp"
 		if [ -e "$TMP_F205_DSC.tmp" ]; then
 			if [ -e "$TMP_F205_DSC" ]; then
 				cat "$TMP_F205_DSC" >> "$TMP_F205_DSC.tmp"
