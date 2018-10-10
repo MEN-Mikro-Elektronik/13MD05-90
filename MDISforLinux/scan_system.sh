@@ -1258,6 +1258,11 @@ echo "============================================================"
 echo "MDIS System Scan - generate initial system.dsc / Makefile"
 echo "============================================================"
 echo
+if [ $UID != 0 ]; then
+	echo "*** error: only root can run this script"
+	echo "*** if you are running this script via mdiswiz, please run mdiswiz as root" 
+	exit 1
+fi
 
 if [ $# -lt 1 ]; then
     usage
@@ -1302,21 +1307,6 @@ else
     TMP_PCIDEVS=$PCI_DRYTEST
 fi
 
-echo "checking if gksu/gksudo or pkexec exists..."
-have_gksu=`which gksu`
-if [ "$have_gksu" == "" ]; then
-    have_pkexec=`which pkexec`
-    if [ "$have_pkexec" == "" ]; then
-        echo "*** error: please install gksu or pkexec (PolicyKit). Examples: Ubuntu: apt-get install gksu, Fedora: yum install gksu"
-        exit 1
-    else
-        echo "OK."
-    fi
-else
-    echo "OK."
-fi
-
-
 echo "checking if I2C tools exists..."
 have_i2ctools=`which i2cdump`
 if [ "$have_i2ctools" == "" ]; then
@@ -1357,7 +1347,6 @@ G_SmBusNumber=$smbus
 main_cpu=`echo $G_cpu | awk '{print substr($1,1,4)}'`
 wiz_model_cpu=""
 echo "Found CPU: $main_cpu. Using SMB address $G_SmBusNumber for SMB2 based drivers"
-
 #default for most F1x cards
 wiz_model_busif=1
 bCreateXm01bcDrv=0
