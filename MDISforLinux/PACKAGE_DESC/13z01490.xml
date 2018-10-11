@@ -4,7 +4,6 @@
 	<description>Linux driver package for MEN PCI to VME bridge on A12, A13, A15, A17, A19, A20, B11</description>
 	<date>2012-08-08</date>
 	<revision>Release-2.16</revision>
-	<docroot>DRIVERS/VME4LX/DRIVER_K24/README_VME4L.txt</docroot>
 	<modellist>
 		<model>
 			<hwname>PLDZ002</hwname>
@@ -19,14 +18,14 @@
 			    <name>PLDZ002CHAM</name>
 				<description>LL VME driver for PLDZ002, chameleon variant</description>
 				<type>Native Driver</type>
-				<makefilepath>DRIVERS/VME4LX/DRIVER_K24/driver_pldz002_cham.mak</makefilepath>
+				<makefilepath>DRIVERS/VME_16Z002/driver_pldz002_cham.mak</makefilepath>
 				<os>Linux</os>
 			  </swmodule>
 			  <swmodule>
 			    <name>PLDZ002</name>
 				<description>LL VME driver for PLDZ002</description>
 				<type>Native Driver</type>
-				<makefilepath>DRIVERS/VME4LX/DRIVER_K24/driver_pldz002.mak</makefilepath>
+				<makefilepath>DRIVERS/VME_16Z002/driver_pldz002.mak</makefilepath>
 				<os>Linux</os>
 			  </swmodule>
 			</swmodulelist>
@@ -44,7 +43,7 @@
 			    <name>TSI148</name>
 				<description>LL VME driver for TSI148</description>
 				<type>Native Driver</type>
-				<makefilepath>DRIVERS/VME4LX/DRIVER_K24/driver_tsi148.mak</makefilepath>
+				<makefilepath>DRIVERS/VME_16Z002/driver_tsi148.mak</makefilepath>
 				<os>Linux</os>
 			  </swmodule>
 			</swmodulelist>
@@ -55,7 +54,7 @@
 			<name>VME4L-CORE</name>
 			<description>VME4L core driver</description>
 			<type>Native Driver</type>
-			<makefilepath>DRIVERS/VME4LX/DRIVER_K24/driver.mak</makefilepath>
+			<makefilepath>DRIVERS/VME_16Z002/driver.mak</makefilepath>
 			<os>Linux</os>
 		</swmodule>
 		<swmodule>
