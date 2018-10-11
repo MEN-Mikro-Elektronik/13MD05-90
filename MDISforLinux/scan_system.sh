@@ -99,6 +99,9 @@ G_cPciRackSlotStandard=2
 # default at 2 (1 = system slot)
 G_cPciRackSlotSerial=2
 
+# number of detected F205 like carrier boards
+G_cF205=0
+
 # lists for driver/library/program mak files
 G_makefileLlDriver=""
 G_makefileLlTool=""
@@ -1033,8 +1036,10 @@ function scan_for_pci_devs {
 			cat /dev/null > "$TMP_F205_DSC.tmp"
 			reverse_enum_f205=1
 			G_cPciRackSlotStandard=$(($G_cPciRackSlotStandard + 1 + (15 - $pcidevnr)))
+		else
+			reverse_enum_f205=$(($reverse_enum_f205 + 1))
 		fi
-		count_instance_d203=$((1 + (15 - $pcidevnr)))
+		count_instance_d203=$(($G_cF205 + 1 - $reverse_enum_f205))
 		echo "Found d203 no. $count_instance_d203"
 		create_entry_dsc_d203 $DSC_TPL_DIR $count_instance_d203 $busif $pcibus "F205" $pcidevnr "$TMP_F205_DSC.tmp"
 		if [ -e "$TMP_F205_DSC.tmp" ]; then
@@ -1061,8 +1066,10 @@ function scan_for_pci_devs {
 			cat /dev/null > "$TMP_F205_DSC.tmp"
 			reverse_enum_f205=1
 			G_cPciRackSlotStandard=$(($G_cPciRackSlotStandard + 1 + (15 - $pcidevnr)))
+		else
+			reverse_enum_f205=$(($reverse_enum_f205 + 1))
 		fi
-		count_instance_d203_a24=$((1 + (15 - $pcidevnr)))
+		count_instance_d203_a24=$(($G_cF205 + 1 - $reverse_enum_f205))
 		echo "Found d203_a24 no. $count_instance_d203_a24"
 		create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_d203_a24 $busif $pcibus "F205" $pcidevnr "$TMP_F205_DSC.tmp"
 		if [ -e "$TMP_F205_DSC.tmp" ]; then
@@ -1148,6 +1155,23 @@ function scan_for_mmodules {
 		esac
 		mm_device_slot=$(($mm_device_slot + 1))
 	done
+}
+
+############################################################################
+# count f205 like carrier boards
+#
+#   Nr.| dom|bus|dev|fun| Ven ID | Dev ID | SubVen ID |
+#     .
+#     .
+#     .
+#    15|  0   4  13   0   0x1172   0xd203    0xff00
+#    16|  0   4  15   0   0x1172   0xd203    0xff00
+#     .
+#     .
+#     .
+#
+function count_f205_boards {
+	G_cF205=`cat $TMP_PCIDEVS | awk '{if ($6 == "0x1172" && $7 == "0xd203" && $8 == "0xff00") print $1}' | wc -l`
 }
 
 ############################################################################
@@ -1258,6 +1282,7 @@ echo "============================================================"
 echo "MDIS System Scan - generate initial system.dsc / Makefile"
 echo "============================================================"
 echo
+
 if [ $UID != 0 ]; then
 	echo "*** error: only root can run this script"
 	echo "*** if you are running this script via mdiswiz, please run mdiswiz as root" 
@@ -1300,6 +1325,7 @@ if [ "$PCI_DRYTEST" == "" ]; then
     fi
     if [ $SCAN_SIM == 0 ]; then
 	$MEN_LIN_DIR/BIN/$FPGA_LOAD -s > $TMP_PCIDEVS
+	count_f205_boards
     fi
 
 else
