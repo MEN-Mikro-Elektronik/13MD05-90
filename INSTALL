@@ -39,9 +39,6 @@ MDIS_PACKAGE=MDISforLinux
 # system MDIS_PACKAGE tarfile name
 MDIS_DRIVER=./
 
-# last overwritten folder path
-last_overwritten_folder=
-
 # do_or_die {command-list}
 #
 # execute command-list and exit script if that fails
@@ -99,56 +96,15 @@ folder_recursive() {
          #################
          # It is a file
          #################
-         # TODO: do only check folders because it takes to long to accept all
-         #       file overwrites
-         #if  [ -f "$DST_FOLDER/$subfolder_base" ] ; then 
-         #   get_ynq_answer "Overwrite file $DST_FOLDER/$subfolder_base"
-         #   echo
-         #   case $? in
-         #       1 | 2) echo "Aborted."; continue;
-         #   esac
-         #fi
-         cp $subfolder $DST_FOLDER/
+         rsync --exclude=.git $subfolder $DST_FOLDER/
          continue;
      else
          #################
          # It is a folder
          #################
-         # if the folder already exists check ask the user
-         # for overwrite. Ignore standard folders
-         if  [ -d "$DST_FOLDER/$subfolder_base" ] ; then 
-            if    [ $subfolder_base != "COM" ]     \
-               && [ $subfolder_base != "NATIVE" ]  \
-               && [ $subfolder_base != "html" ]    \
-               && [ $subfolder_base != "MDIS_LL" ] \
-               && [ $subfolder_base != "DOC" ]     \
-               && [ $subfolder_base != "MEN" ] ; then
-               ynq_ask=1
-               if [ "$last_overwritten_folder" != "" ]; then
-                   if [ ${last_overwritten_folder: -1} != "/" ]; then
-                       last_overwritten_folder="$last_overwritten_folder/"
-                   fi
-                   if [[ "$DST_FOLDER/$subfolder_base" == $last_overwritten_folder* ]]; then
-                       ynq_ask=0
-                   fi
-               fi
-               if [ $ynq_ask -eq 1 ]; then
-                   get_ynq_answer "Overwrite folder $DST_FOLDER/$subfolder_base"
-                   if [ "$?" == "0" ]; then
-                       last_overwritten_folder="$DST_FOLDER/$subfolder_base"
-                   fi
-                   case $? in
-                      1 | 2) echo "Aborted."; continue;
-                   esac
-               fi
-            fi
-            # goto subfolder and go on searching
-            folder_recursive $subfolder $DST_FOLDER/$subfolder_base
-         else
-            echo -n "Install ${subfolder} to ${DST_FOLDER} ... "
-            do_or_die cp -ru ${subfolder} ${DST_FOLDER}/
-            echo "Done"
-         fi;
+         echo -n "Install ${subfolder} to ${DST_FOLDER} ... "
+         do_or_die rsync -ru --exclude=.git ${subfolder} ${DST_FOLDER}/
+         echo "Done"
       fi;
    done
 }
@@ -237,9 +193,6 @@ else
       echo
       echo "Directory $MENLINUX_ROOT already exists."
       get_ynq_answer "Overwrite existing files?"
-      if [ "$?" == "0" ]; then
-          last_overwritten_folder="$MENLINUX_ROOT"
-      fi
       case $? in
          1 | 2) echo "Aborted."; exit 1;;
       esac
@@ -253,7 +206,7 @@ fi
    echo ""
    cd $MENLINUX_ROOT
    echo -n "Copy $MDIS_PACKAGE..."
-   do_or_die cp -ru $CWD/$MDIS_PACKAGE/* .
+   do_or_die rsync -ru --exclude=.git  $CWD/$MDIS_PACKAGE/* .
    echo "ok"
    
    for i in * ; do
@@ -297,10 +250,6 @@ fi
    echo "ok"
    
    echo ""
-   cd ${STARTDIR}
-   echo -n "copy .git to ${MENLINUX_ROOT}..."
-   cp -a \.git ${MENLINUX_ROOT}
-   echo "ok"
 
    # set permissions in "BUILD" and "BIN" directory for all users
    cd ${MENLINUX_ROOT}
@@ -311,7 +260,7 @@ fi
 )
 
 echo
-echo "Gratulations, you installed MDIS System Package for Linux plus MDIS Low Level Drivers successfully."
+echo "Congratulations, you installed MDIS System Package for Linux plus MDIS Low Level Drivers successfully."
 echo ""
 echo ""
 get_ynq_answer "Would you like to run a system scan to automatically find MEN hardware and generate an MDIS project ?"
