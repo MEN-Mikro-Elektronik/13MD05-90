@@ -170,15 +170,18 @@
 [submodule "DRIVERS/BBIS/A201"]
 	path = MDISforLinux/DRIVERS/BBIS/A201
 	url = ../mdis_drivers_bbis_a201_com.git
+	branch = jpe-dev
 [submodule "DRIVERS/BBIS/A203N"]
 	path = MDISforLinux/DRIVERS/BBIS/A203N
 	url = ../mdis_drivers_bbis_a203n_com.git
+	branch = jpe-dev
 [submodule "DRIVERS/BBIS/CHAMELEON"]
 	path = MDISforLinux/DRIVERS/BBIS/CHAMELEON
 	url = ../mdis_drivers_bbis_chameleon_com.git
 [submodule "DRIVERS/BBIS/D201"]
 	path = MDISforLinux/DRIVERS/BBIS/D201
 	url = ../mdis_drivers_bbis_d201_com.git
+	branch = jpe-dev
 [submodule "DRIVERS/BBIS/D203"]
 	path = MDISforLinux/DRIVERS/BBIS/D203
 	url = ../mdis_drivers_bbis_d203n_com.git
