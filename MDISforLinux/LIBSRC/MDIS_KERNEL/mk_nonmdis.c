@@ -282,6 +282,8 @@ int mdis_close_external_dev( void *_dev )
 	return 0;
 }
 
+#define extra_enable	1
+
 /**********************************************************************/
 /** Install interrupt handler and enable interrupt for external device
  *
@@ -324,13 +326,33 @@ int mdis_install_external_irq(
 	if( (error = MDIS_InstallSysirq( dev )))
 		return -EINVAL;
 
+#if ! extra_enable
+	/* enable irq on carrier board */
+	if( (error = MDIS_EnableIrq( dev, TRUE )) )
+		return -EINVAL;
+#endif
+
+	return 0;
+}
+
+
+#if extra_enable
+int mdis_enable_external_irq(
+	void *_dev )
+{
+	MK_DEV *dev = (MK_DEV *)_dev;
+	DBGCMD(const char fname[] = "mdis_install_external_irq: "; )
+	int32 error;
+
+	DBGWRT_1((DBH,"%s\n", fname ));
+
 	/* enable irq on carrier board */
 	if( (error = MDIS_EnableIrq( dev, TRUE )) )
 		return -EINVAL;
 
 	return 0;
 }
-
+#endif
 
 /**********************************************************************/
 /** Disable IRQ and remove interrupt handler

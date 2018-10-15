@@ -56,6 +56,8 @@ int mdis_install_external_irq(
 	int (*handler)(void *data),
 	void *data );
 
+int mdis_enable_external_irq( void *_dev );
+
 int mdis_remove_external_irq( void *_dev );
 
 #endif /* _MK_NONMDISIF_H */
