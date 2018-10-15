@@ -36,6 +36,7 @@
 [submodule "13M058-06"]
 	path = 13M058-06
 	url = ../13M058-06.git
+	branch = jpe-dev
 [submodule "13M062-06"]
 	path = 13M062-06
 	url = ../13M062-06.git
