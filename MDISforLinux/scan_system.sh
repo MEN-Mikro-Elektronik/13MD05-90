@@ -39,7 +39,7 @@ MOD_DIR=/lib/modules/`uname -r`
 
 # currently detected CPU boards. ADD NEW BOARDS HERE!
 # also take care for special (native) driver adding etc.
-CPU_KNOWN_BOARDS="SC25 SC24 F011 F11S F14- F014 F15- F015 F17- F017 F075 F75P F19P F19C F019 F21P F22P F23P F21C F021 F026 XM01 MM01 G20- G22- G22A G23- G23A G25- G25A G025"
+CPU_KNOWN_BOARDS="SC25 SC24 SC31 F011 F11S F14- F014 F15- F015 F17- F017 F075 F75P F19P F19C F019 F21P F22P F23P F21C F021 F026 XM01 MM01 G20- G22- G22A G23- G23A G25- G25A G025"
 
 # which SMB adresses to scan for CPU ID eeproms
 ID_EEPROM_ADRESSES="0x57 0x55"
@@ -1390,6 +1390,10 @@ case $main_cpu in
 		wiz_model_cpu=Bx70x
 		wiz_model_smb=SMBPCI_FCH
 		;;
+    SC31)	
+		wiz_model_cpu=Bx51x
+		wiz_model_smb=SMBPCI_FCH
+		;;
     F011)
 		wiz_model_cpu=F11S
 		wiz_model_smb=SMBPCI_SCH
@@ -1569,6 +1573,9 @@ if [ "$main_cpu" == "SC24" ]; then
 elif  [ "$main_cpu" == "SC25" ]; then 
     cat $DSC_TPL_DIR/sc25.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
     cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE
+elif  [ "$main_cpu" == "SC31" ]; then 
+    cat $DSC_TPL_DIR/sc31.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
+    cat $DSC_TPL_DIR/Makefile.sc31.tpl >> $MAKE_FILE
 else
     #all other CPUs: detect PCI boards, start with CPU/SMB drivers
     create_entry_dsc_cpu_type $DSC_TPL_DIR $wiz_model_cpu
