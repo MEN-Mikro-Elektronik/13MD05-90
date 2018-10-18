@@ -42,7 +42,7 @@
 #include <linux/interrupt.h>
 
 #include <asm/fixmap.h>     /* fix_to_virt() */
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,10,0)
 #include <asm/uaccess.h>     /* copy_to/from_user */
 #else
 #include <linux/uaccess.h>     /* copy_to/from_user */
