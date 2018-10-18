@@ -187,6 +187,7 @@
 [submodule "DRIVERS/BBIS/D203"]
 	path = MDISforLinux/DRIVERS/BBIS/D203
 	url = ../mdis_drivers_bbis_d203n_com.git
+	branch = jpe-dev
 [submodule "DRIVERS/BBIS/D302"]
 	path = MDISforLinux/DRIVERS/BBIS/D302
 	url = ../mdis_drivers_bbis_d302_com.git
