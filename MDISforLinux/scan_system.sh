@@ -680,7 +680,7 @@ function create_entry_dsc_d203 {
 	if [ "$2" == "1" ]; then
 		G_makefileBbisDriver+=" D203/DRIVER/COM/driver.mak"
 	fi
-	scan_for_mmodules $1 $2 d203 $4 $6 0 "0x200 0x400 0x800 0xc00" $7
+	scan_for_mmodules $1 $2 d203 $4 $6 0 "A08/D16" $7
 }
 
 ############################################################################
@@ -702,11 +702,7 @@ function create_entry_dsc_d203_a24 {
 	if [ "$2" == "1" ]; then
 		G_makefileBbisDriver+=" D203/DRIVER/COM/driver_a24.mak"
 	fi
-	if [ "$5" == "G204_A24" ]; then
-		scan_for_mmodules $1 $2 d203_a24 $4 $6 0 "0x0" $7
-	else
-		scan_for_mmodules $1 $2 d203_a24 $4 $6 0 "0x0 0x200000 0x400000 0x600000" $7
-	fi
+	scan_for_mmodules $1 $2 d203_a24 $4 $6 0 "A24/D32" $7
 }
 
 ############################################################################
@@ -1090,6 +1086,70 @@ function scan_for_pci_devs {
 }
 
 ############################################################################
+# create M-Module section
+#
+# parameters:
+# $1  DSC template direcotry
+# $2  M-Module name
+# $3  board instance number
+# $4  board name
+# $5  DSC output file
+#
+function create_entry_dsc_mmodule {
+	case $2 in
+	M31)
+		echo "Found $2 on $4_$3"
+		G_count_instance_m31=$(($G_count_instance_m31 + 1))
+		create_entry_dsc_m31 $1 $G_count_instance_m31 $3 $4 $mm_device_slot $5
+		return 0
+		;;
+	M35)
+		echo "Found $2 on $4_$3"
+		G_count_instance_m35=$(($G_count_instance_m35 + 1))
+		create_entry_dsc_m35 $1 $G_count_instance_m35 $3 $4 $mm_device_slot $5
+		return 0
+		;;
+	M36N)
+		echo "Found $2 on $4_$3"
+		G_count_instance_m36n=$(($G_count_instance_m36n + 1))
+		create_entry_dsc_m36n $1 $G_count_instance_m36n $3 $4 $mm_device_slot $5
+		return 0
+		;;
+	M66)
+		echo "Found $2 on $4_$3"
+		G_count_instance_m66=$(($G_count_instance_m66 + 1))
+		create_entry_dsc_m66 $1 $G_count_instance_m66 $3 $4 $mm_device_slot $5
+		return 0
+		;;
+	M72)
+		echo "Found $2 on $4_$3"
+		G_count_instance_m72=$(($G_count_instance_m72 + 1))
+		create_entry_dsc_m72 $1 $G_count_instance_m72 $3 $4 $mm_device_slot $5
+		return 0
+		;;
+	M77)
+		echo "Found $2 on $4_$3"
+		G_count_instance_m77=$(($G_count_instance_m77 + 1))
+		create_entry_dsc_m77 $1 $G_count_instance_m77 $3 $4 $mm_device_slot $5
+		return 0
+		;;
+	M82)
+		echo "Found $2 on $4_$3"
+		G_count_instance_m82=$(($G_count_instance_m82 + 1))
+		create_entry_dsc_m82 $1 $G_count_instance_m82 $3 $4 $mm_device_slot $5
+		return 0
+		;;
+	*)
+		if [ "$2" != "" ]; then
+			echo "Found unknown M-Module $2"
+		fi
+		;;
+	esac
+
+	return 1
+}
+
+############################################################################
 # scan for M-Modules on specific board
 #
 # parameters:
@@ -1099,62 +1159,41 @@ function scan_for_pci_devs {
 # $4  PCI bus number to scan (decimal)
 # $5  PCI device number to scan (decimal)
 # $6  PCI device function to scan (decimal)
-# $7  M-Module offset address array in hex (e.g. "0x0 0x3f0 0x47c 0x600")
+# $7  carrier board type (A24/D32 or A08/D16)
 # $8  DSC output file
 #
 function scan_for_mmodules {
+	mm_a08d16xx="0x0000200 0x0000600 0x0000a00 0x0000e00"
+	mm_a24d32x0="0x0000000 0x1000000 0x1fffd00 0x1fffe00"
+	mm_a24d32x1="0x2000000 0x3000000 0x3fffd00 0x3fffe00"
+	mm_a24d32x2="0x4000000 0x5000000 0x5fffd00 0x5fffe00"
+	mm_a24d32x3="0x6000000 0x7000000 0x7fffd00 0x7fffe00"
 	mm_device_slot=0
 	mm_pci_bus=`printf "%x" $4`
 	mm_pci_dev=`printf "%x" $5`
 	mm_pci_fun=`printf "%x" $6`
 	bar_address=`lspci -s $mm_pci_bus:$mm_pci_dev.$mm_pci_fun -v | grep 'Memory at' | head -n 1 | awk '{print $3}'`
-	for mm_offset in $7; do
-		mm_address=`printf "0x%x" $((0x$bar_address + $mm_offset))`
-		mm_name=`$MEN_LIN_DIR/BIN/$MM_IDENT $mm_address | grep Name | awk '{print $8}'`
-		case $mm_name in
-			M31)
-				echo "Found $mm_name on $3_$2"
-				G_count_instance_m31=$(($G_count_instance_m31 + 1))
-				create_entry_dsc_m31 $1 $G_count_instance_m31 $2 $3 $mm_device_slot $8
-				;;
-			M35)
-				echo "Found $mm_name on $3_$2"
-				G_count_instance_m35=$(($G_count_instance_m35 + 1))
-				create_entry_dsc_m35 $1 $G_count_instance_m35 $2 $3 $mm_device_slot $8
-				;;
-			M36N)
-				echo "Found $mm_name on $3_$2"
-				G_count_instance_m36n=$(($G_count_instance_m36n + 1))
-				create_entry_dsc_m36n $1 $G_count_instance_m36n $2 $3 $mm_device_slot $8
-				;;
-			M66)
-				echo "Found $mm_name on $3_$2"
-				G_count_instance_m66=$(($G_count_instance_m66 + 1))
-				create_entry_dsc_m66 $1 $G_count_instance_m66 $2 $3 $mm_device_slot $8
-				;;
-			M72)
-				echo "Found $mm_name on $3_$2"
-				G_count_instance_m72=$(($G_count_instance_m72 + 1))
-				create_entry_dsc_m72 $1 $G_count_instance_m72 $2 $3 $mm_device_slot $8
-				;;
-			M77)
-				echo "Found $mm_name on $3_$2"
-				G_count_instance_m77=$(($G_count_instance_m77 + 1))
-				create_entry_dsc_m77 $1 $G_count_instance_m77 $2 $3 $mm_device_slot $8
-				;;
-			M82)
-				echo "Found $mm_name on $3_$2"
-				G_count_instance_m82=$(($G_count_instance_m82 + 1))
-				create_entry_dsc_m82 $1 $G_count_instance_m82 $2 $3 $mm_device_slot $8
-				;;
-			*)
-				if [ "$mm_name" != "" ]; then
-					echo "Found unknown M-Module $mm_name"
+	if [ "$7" == "A08/D16" ]; then
+		for mm_offset in $mm_a08d16xx; do
+			mm_address=`printf "0x%x" $((0x$bar_address + $mm_offset))`
+			mm_name=`$MEN_LIN_DIR/BIN/$MM_IDENT $mm_address | grep Name | awk '{print $8}'`
+			create_entry_dsc_mmodule $1 "$mm_name" $2 $3 $8
+			mm_device_slot=$(($mm_device_slot + 1))
+		done
+	elif [ "$7" == "A24/D32" ]; then
+		mm_a24d32xx="mm_a24d32x0 mm_a24d32x1 mm_a24d32x2 mm_a24d32x3"
+		for mm_a24d32 in $mm_a24d32xx; do
+			for mm_offset in ${!mm_a24d32}; do
+				mm_address=`printf "0x%x" $((0x$bar_address + $mm_offset))`
+				mm_name=`$MEN_LIN_DIR/BIN/$MM_IDENT $mm_address | grep Name | awk '{print $8}'`
+				create_entry_dsc_mmodule $1 "$mm_name" $2 $3 $8
+				if [ $? == 0 ]; then
+					break
 				fi
-				;;
-		esac
-		mm_device_slot=$(($mm_device_slot + 1))
-	done
+			done
+			mm_device_slot=$(($mm_device_slot + 1))
+		done
+	fi
 }
 
 ############################################################################
