@@ -173,36 +173,47 @@
 [submodule "INCLUDE/COM/MEN"]
 	path = MDISforLinux/INCLUDE/COM/MEN
 	url = ../mdis_include_com_men.git
+	branch = jpe-dev
 [submodule "LIBSRC/CHAMELEON/COM"]
 	path = MDISforLinux/LIBSRC/CHAMELEON/COM
 	url = ../mdis_libsrc_chameleon_com.git
+	branch = jpe-dev
 [submodule "LIBSRC/DESC/COM"]
 	path = MDISforLinux/LIBSRC/DESC/COM
 	url = ../mdis_libsrc_desc_com.git
+	branch = jpe-dev
 [submodule "LIBSRC/ID/COM"]
 	path = MDISforLinux/LIBSRC/ID/COM
 	url = ../mdis_libsrc_id_com.git
+	branch = jpe-dev
 [submodule "LIBSRC/MBUF/COM"]
 	path = MDISforLinux/LIBSRC/MBUF/COM
 	url = ../mdis_libsrc_mbuf_com.git
+	branch = jpe-dev
 [submodule "LIBSRC/PLD/COM"]
 	path = MDISforLinux/LIBSRC/PLD/COM
 	url = ../mdis_libsrc_pld_com.git
+	branch = jpe-dev
 [submodule "LIBSRC/USR_UTL/COM"]
 	path = MDISforLinux/LIBSRC/USR_UTL/COM
 	url = ../mdis_libsrc_usr_utl_com.git
+	branch = jpe-dev
 [submodule "LIBSRC/SMB/PORT/COM"]
 	path = MDISforLinux/LIBSRC/SMB/PORT/COM
 	url = ../mdis_libsrc_smb_port_com.git
+	branch = jpe-dev
 [submodule "LIBSRC/USR_OSS"]
 	path = MDISforLinux/LIBSRC/USR_OSS
 	url = ../mdis_libsrc_usr_oss.git
+	branch = jpe-dev
 [submodule "TOOLS/MDIS_API"]
 	path = MDISforLinux/TOOLS/MDIS_API
 	url = ../mdis_tools_mdis_api.git
+	branch = jpe-dev
 [submodule "DRIVERS/BBIS/A21"]
 	path = MDISforLinux/DRIVERS/BBIS/A21
 	url = ../mdis_drivers_bbis_a21_com.git
+	branch = jpe-dev
 [submodule "DRIVERS/BBIS/A201"]
 	path = MDISforLinux/DRIVERS/BBIS/A201
 	url = ../mdis_drivers_bbis_a201_com.git
@@ -214,6 +225,7 @@
 [submodule "DRIVERS/BBIS/CHAMELEON"]
 	path = MDISforLinux/DRIVERS/BBIS/CHAMELEON
 	url = ../mdis_drivers_bbis_chameleon_com.git
+	branch = jpe-dev
 [submodule "DRIVERS/BBIS/D201"]
 	path = MDISforLinux/DRIVERS/BBIS/D201
 	url = ../mdis_drivers_bbis_d201_com.git
@@ -225,12 +237,15 @@
 [submodule "DRIVERS/BBIS/D302"]
 	path = MDISforLinux/DRIVERS/BBIS/D302
 	url = ../mdis_drivers_bbis_d302_com.git
+	branch = jpe-dev
 [submodule "DRIVERS/BBIS/ISA"]
 	path = MDISforLinux/DRIVERS/BBIS/ISA
 	url = ../mdis_drivers_bbis_isa_com.git
+	branch = jpe-dev
 [submodule "DRIVERS/BBIS/PCI"]
 	path = MDISforLinux/DRIVERS/BBIS/PCI
 	url = ../mdis_drivers_bbis_pci_com.git
+	branch = jpe-dev
 [submodule "DRIVERS/BBIS/SMBPCI"]
 	path = MDISforLinux/DRIVERS/BBIS/SMBPCI
 	url = ../mdis_drivers_bbis_smbpci_com.git
@@ -241,9 +256,11 @@
 [submodule "LIBSRC/SMB/PORTCB/COM"]
 	path = MDISforLinux/LIBSRC/SMB/PORTCB/COM
 	url = ../mdis_libsrc_smb_portcb_com.git
+	branch = jpe-dev
 [submodule "TOOLS/WDOG"]
 	path = MDISforLinux/TOOLS/WDOG
 	url = ../mdis_tools_wdog.git
+	branch = jpe-dev
 [submodule "TOOLS/M_TMR"]
 	path = MDISforLinux/TOOLS/M_TMR
 	url = ../mdis_tools_m_tmr.git
@@ -251,10 +268,12 @@
 [submodule "LIBSRC/SMB2/COM"]
 	path = MDISforLinux/LIBSRC/SMB2/COM
 	url = ../mdis_libsrc_smb2_com.git
+	branch = jpe-dev
 [submodule "TOOLS/FPGA_LOAD"]
 	path = MDISforLinux/TOOLS/FPGA_LOAD
 	url = ../mdis_tools_fpga_load
 [submodule "LIBSRC/pciutils"]
 	path = MDISforLinux/LIBSRC/pciutils
 	url = ../pciutils
+	branch = jpe-dev
 
