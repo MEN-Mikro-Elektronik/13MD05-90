@@ -13,44 +13,6 @@
  *     Switches: DBG
  *
  * ??? Exception IRQ disable
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: close.c,v $
- * Revision 2.6  2011/04/14 17:58:05  CRuff
- * R: 1. make en-/disabling of Board Interrupt and LL Interrupt to be an atomic
- *       operation
- *    2. really disable board interrupts during MDIS close
- * M: 1. call MK_UNLOCK before disabling interrupts (will be locked inside)
- *    2. set initialized flag of device to false after diabling the interrupts
- *       to avoid calling ll irq handler after the board hdl is already closed
- *
- * Revision 2.5  2007/06/27 11:58:38  ts
- * assert that dev->drv is valid
- *
- * Revision 2.4  2005/03/21 10:00:25  ts
- * module.h included, unresolved "module_put can occur without
- *
- * Revision 2.3  2005/01/19 11:31:09  ts
- * removed unnecessary module.h include
- *
- * Revision 2.2  2004/06/09 11:12:28  kp
- * added module_put to LL driver module (Linux 2.6)
- *
- * Revision 2.1  2003/04/11 16:26:17  kp
- * added use of MK_RTAI_SET_DEVLISTLOCK_FLAG
- *
- * Revision 2.0  2003/02/21 13:34:31  kp
- * added support for RTAI and non-mdis drivers
- *
- * Revision 1.3  2003/02/21 10:11:32  kp
- * fixed problem when mapping PCI I/O spaces
- *
- * Revision 1.2  2001/08/16 10:15:48  kp
- * support VME devices
- *
- * Revision 1.1  2001/01/19 14:58:30  kp
- * Initial Revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

@@ -10,27 +10,6 @@
  *
  *     Switches: -
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: men_vme_kernelif.h,v $
- * Revision 1.5  2005/08/11 16:18:15  ts
- * leave declarations for vme_rt_xxx inside unconditional
- *
- * Revision 1.4  2005/01/18 17:45:00  ts
- * Changed parameter type of passed handler
- *
- * Revision 1.3  2004/12/04 18:52:28  ts
- * changes for VME RTAI support
- *
- * Revision 1.2  2003/12/15 15:02:20  kp
- * prepared for CONFIG_MEN_VME_RTAI_KERNELIF
- *
- * Revision 1.1  2002/07/19 10:44:47  UFranke
- * ELINOS PPC 2.1
- *
- * Revision 1.1.2.1  2001/08/20 12:23:54  kp
- * *** empty log message ***
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

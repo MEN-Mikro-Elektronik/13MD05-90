@@ -9,27 +9,23 @@
  *
  *  Description: switch on/off echo
  *                      
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: echo.c,v $
- * Revision 1.5  2008/03/07 09:50:39  aw
- * + define OS9000
- *
- * Revision 1.4  1999/01/20 14:54:14  kp
- * updated for LINUX
- *
- * Revision 1.3  1998/01/08 08:51:39  popp
- * Updated for Visual C 4.0
- *
- * Revision 1.2  1997/12/19 14:51:27  kp
- * HP/OS9 merge
- *
- * Revision 1.1  1996/12/19 15:24:38  kp
- * Initial revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 1996 by MEN mikro elektronik GmbH, Nuernberg, Germany 
  ****************************************************************************/
+ /*
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
  
 static char *RCSid="$Header: /dd2/CVSR/COM/LIBSRC/UTI/echo.c,v 1.5 2008/03/07 09:50:39 aw Exp $";
 

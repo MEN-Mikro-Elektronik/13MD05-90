@@ -12,51 +12,6 @@
  *     Required: -
  *     Switches: DBG
  *
- *-------------------------------[ History ]---------------------------------
- *
- * 
- * ts@18.02.2015   SC24 specific code removed, BIOS was updated.
- * ------ from here on code is maintained in Git -----------
- * 
- * $Log: bk_module.c,v $
- * Revision 1.9  2014/07/29 14:35:51  ts
- * R: compiler warnings remained under 3.134 kernel: unused return value,
- *    incompatible pointer type
- * M: fixed return type of read_proc_mem, used copy_to_user() return value
- *
- * Revision 1.8  2014/07/14 16:46:58  ts
- * R: proc interface changed from 3.10 on
- * M: use new API with proc fops depending on kernel version
- *
- * Revision 1.7  2013/10/24 10:03:45  ts
- * R: compiler warnings on A21 build about unused Variables
- * M: embraced variable declarations with CONFIG_X86 like SC24 APIC code
- *
- * Revision 1.6  2012/08/08 20:09:46  ts
- * R: 1. SC24: IOAPIC address might vary depending on the linux distro
- *    2. SC24: future distros might use different IOAPIC setup
- * M: 1. made address evaluation of IOAPIC flexible
- *    2. change only relevant bits (polarity & edge/level)
- *
- * Revision 1.5  2012/08/07 18:58:17  ts
- * R: 1. Mapping of SC24 FPGA into LPC space required pciset commands on init
- *    2. SC24 FPGA IRQ is connected to IRQ14 with default type edge, needs level
- * M: 1. added automatic PCI config access to map FPGA if SC24 is found
- *    2. added IRQ type adjustment for chameleon FPGA if SC24 is found
- *
- * Revision 1.4  2004/06/09 09:07:41  kp
- * added try_module_get for kernel 2.6
- *
- * Revision 1.3  2003/04/11 16:07:15  kp
- * Added MODULE_LICENSE/AUTHOR etc.
- *
- * Revision 1.2  2003/02/21 11:36:37  kp
- * changed for new OSS_Init rtMode parameter.
- * Bug fix: If BoardOpen fails, make sure node is correctly cleaned up
- *
- * Revision 1.1  2001/01/19 14:37:58  kp
- * Initial Revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

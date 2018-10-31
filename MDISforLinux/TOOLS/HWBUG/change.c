@@ -19,30 +19,23 @@
  *  void _change_data( adr, size, incr, wonly )
  *  fill_data( argc, argv )             
  *  
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: change.c,v $
- * Revision 1.2  2008/09/15 13:15:15  GLeonhardt
- * Avoid warnings
- *
- * Revision 1.1  2003/05/26 10:05:48  ub
- * Initial Revision
- *
- * Revision 1.4  1996/12/20 16:05:58  see
- * fill B/W/L added
- *
- * Revision 1.3  95/06/12  17:19:46  17:19:46  see (Roland Seeberger)
- * fill_data: bug fixed, return error if argc<4
- * 
- * Revision 1.2  95/06/09  12:14:53  12:14:53  see (Roland Seeberger)
- * fill_data added
- * 
- * Revision 1.1  93/05/04  11:26:20  kp
- * Initial revision
- * 
  *---------------------------------------------------------------------------
  * (c) Copyright 1993 by MEN mikro elektronik GmbH, Nuernberg, Germany 
  ****************************************************************************/
+ /*
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
  
 static char RCSid[]="$Header: /dd2/CVSR/LINUX/TOOLS/HWBUG/change.c,v 1.2 2008/09/15 13:15:15 GLeonhardt Exp $";
 #include "hwbug.h"

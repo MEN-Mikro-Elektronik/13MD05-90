@@ -18,21 +18,23 @@
  *---------------------------[ Public Functions ]----------------------------
  *  
  *  
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: smatch.c,v $
- * Revision 1.2  2008/09/15 12:49:18  GLeonhardt
- * Avoid warnings
- *
- * Revision 1.1  1994/11/21 08:48:40  kp
- * Initial revision
- *
- * Revision 1.1  94/04/18  15:51:30  kp
- * Initial revision
- * 
  *---------------------------------------------------------------------------
  * (c) Copyright 1992 by MEN mikro elektronik GmbH, Nuernberg, Germany 
  ****************************************************************************/
+ /*
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
  
 static char RCSid[]="$Header: /dd2/CVSR/COM/LIBSRC/UTI/smatch.c,v 1.2 2008/09/15 12:49:18 GLeonhardt Exp $";
 

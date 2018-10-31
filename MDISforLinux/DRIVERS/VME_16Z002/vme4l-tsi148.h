@@ -17,28 +17,6 @@
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation; version 2 of the License.
- *-------------------------------[ History ]---------------------------------
- * $Log: vme4l-tsi148.h,v $
- * Revision 1.4  2009/07/09 10:43:33  rt
- * R: 1.) Adjust minimal window size for outbound windows.
- * M: 1.) Reduce size for A32/D32 and A64/D32 from 256 MB to 128 MB.
- *
- * Revision 1.3  2009/06/03 18:41:49  rt
- * R: 1.) Make timing/arbitration adjustable.
- *    2.) Inbound window for TSI148 register access missing.
- * M: 1.) TSI148_VMCTRL, TSI148_VCTRL, TSI148_BLT_DCTL, TSI148_VMEFL
- *        and TSI148_PCIXCAP defines added.
- *     2.a) Default setting for TSI148_SLV0 are TSI148 registers now.
- *       b) TSI148_SLVx_TARGET defines added.
- *
- * Revision 1.2  2009/04/30 21:30:55  rt
- * R: 1) Reworked.
- * M: 1a) All defines for user adjustments moved into vme4l-tsi148.h.
- *     b) vme4l-tsi148_int.h removed.
- *     c) Other defines and typedefs moved into vme4l-tsi148.c.
- *
- * Revision	1.1	 2009/02/27	13:59:22  rt
- * Initial Revision	(by	sv)
  *---------------------------------------------------------------------------
  * (c) Copyright 2008-2009 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

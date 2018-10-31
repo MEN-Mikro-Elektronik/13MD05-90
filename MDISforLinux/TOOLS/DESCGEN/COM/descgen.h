@@ -10,39 +10,6 @@
  *
  *     Switches: GLOBAL
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: descgen.h,v $
- * Revision 1.9  2009/09/23 18:34:22  CRuff
- * R: compiler warnings on linux 64bit system
- * M: explicitly declare constants as unsigned long long in macro
- *    _TWISTLONGLONG()
- *
- * Revision 1.8  2009/09/23 13:02:41  CRuff
- * R: not 64bit compatible
- * M: added type conversions to make 64bit compatible on linux system
- *
- * Revision 1.7  2000/07/04 09:21:21  Schmidt
- * OutRegFile() prototype added
- *
- * Revision 1.6  1999/12/02 12:09:28  Schmidt
- * enum OUTPUT_MODE: binary replaced with bin_big and bin_lit
- *
- * Revision 1.5  1999/04/28 16:27:09  kp
- * prepared for OS9K
- *
- * Revision 1.4  1999/03/09 10:05:16  see
- * TWISTWORD/LONG macros were wrong for LITTLE_ENDIAN
- *
- * Revision 1.3  1998/07/17 09:26:10  kp
- * changed G_version to array due to problem with HP-UX gcc sscanf
- *
- * Revision 1.2  1998/03/27 17:11:11  see
- * various defs, globals and prototypes added
- *
- * Revision 1.1  1998/01/16 14:49:13  popp
- * Added by mcvs
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 1997 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

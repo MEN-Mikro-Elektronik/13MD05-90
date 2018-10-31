@@ -10,28 +10,6 @@
  *
  *     Switches: -
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: mdis_mk.h,v $
- * Revision 1.6  2010/02/18 15:37:16  CRuff
- * R: wrong setStat results on 64bit systems
- * M: changed type of union member 'value' in MDIS_LINUX_SGSTAT to INT32_OR_64
- *
- * Revision 1.5  2004/06/09 11:12:23  kp
- * changed proto of mdis_register_ll_driver
- *
- * Revision 1.4  2003/02/21 12:19:38  kp
- * added defs for new MDIS API calls (CreateDevice, OpenBoard etc.)
- *
- * Revision 1.3  2001/09/18 15:18:43  kp
- * added proto for mdis_find_ll_handle
- *
- * Revision 1.2  2001/08/16 10:15:43  kp
- * added error number compression table for PPC
- *
- * Revision 1.1  2001/01/19 14:58:25  kp
- * Initial Revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

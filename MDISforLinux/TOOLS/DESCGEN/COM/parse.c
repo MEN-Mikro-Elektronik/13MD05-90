@@ -16,30 +16,6 @@
  *---------------------------[ Public Functions ]----------------------------
  *
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: parse.c,v $
- * Revision 1.7  2007/04/03 11:20:05  DPfeuffer
- * fixed: _WIZ tags will be ignored (for mdis config wizard)
- *
- * Revision 1.6  2004/06/09 09:01:51  kp
- * removed "ignoring..." printf
- *
- * Revision 1.5  2003/02/21 12:11:55  kp
- * check for mdis wizard internal tags. Ignore these
- *
- * Revision 1.4  1999/08/12 09:02:00  kp
- * allow zero length BINARY fields
- *
- * Revision 1.3  1998/03/27 17:11:01  see
- * all error messages trailed with "***"
- *
- * Revision 1.2  1998/01/19 10:50:56  kp
- * use Id rather Header RCS string
- *
- * Revision 1.1  1998/01/16 14:49:25  popp
- * Added by mcvs
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 1997 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

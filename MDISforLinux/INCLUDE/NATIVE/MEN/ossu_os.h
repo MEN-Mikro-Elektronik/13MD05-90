@@ -10,23 +10,6 @@
  *
  *     Switches: -
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: ossu_os.h,v $
- * Revision 2.4  2010/12/06 10:20:57  CRuff
- * R: new prototypes OSS_SPINL_* defined in oss.h
- * M: added typedef OSS_SPINL_HANDLE
- *
- * Revision 2.3  2007/07/13 18:12:19  cs
- * changed: include pci.h directly from LIBSRC/pciutils directory
- *
- * Revision 2.2  2007/02/16 15:00:58  ts
- * renamed VME4L_xxx Macros to VME_xxx
- *
- * Revision 2.1  2005/07/08 11:32:50  cs
- * Initial Revision
- *
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2005 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

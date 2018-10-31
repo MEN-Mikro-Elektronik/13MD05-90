@@ -20,40 +20,6 @@
  *---------------------------[ Public Functions ]----------------------------
  *
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: binary.c,v $
- * Revision 1.9  2012/05/14 21:26:28  ts
- * R: compiler warning about unused variable res
- * M: removed variable
- *
- * Revision 1.8  2009/09/23 18:33:01  CRuff
- * R: compiler warning on linux systems
- * M: fix compiler warnings
- *
- * Revision 1.7  2009/09/23 13:02:39  CRuff
- * R: not 64bit compatible
- * M: added type conversions to make 64bit compatible on linux system
- *
- * Revision 1.6  2001/01/19 14:37:11  kp
- * added LINUX switch
- *
- * Revision 1.5  1999/04/28 16:27:04  kp
- * support Big/Little Endian targets
- *
- * Revision 1.4  1999/03/09 10:05:11  see
- * byte swapping-problems fixed (BINARY, STRING)
- *
- * Revision 1.3  1998/07/17 08:47:42  kp
- * cosmetics
- *
- * Revision 1.2  1998/04/17 15:37:42  see
- * BuildBinaryData: bug fixed: subkey name was not written
- * BuildBinaryData: bug fixed: final end dir was not written
- *
- * Revision 1.1  1998/03/27 17:11:10  see
- * Added by mcvs
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 1998 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

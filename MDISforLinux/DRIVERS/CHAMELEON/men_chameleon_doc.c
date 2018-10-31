@@ -13,26 +13,7 @@
  *
  *     \switches -
  */
- /*-------------------------------[ History ]--------------------------------
- *
- * $Log: men_chameleon_doc.c,v $
- * Revision 1.5  2007/03/28 15:53:58  ts
- * Cosmetics, added Description for kernel build
- *
- * Revision 1.4  2006/02/01 10:03:26  cs
- * enhanced docu for building driver as pure native
- *
- * Revision 1.3  2005/02/11 11:56:10  ub
- * documentation improved
- *
- * Revision 1.2  2005/02/04 14:02:41  ub
- * added descripion about driver parameter
- *
- * Revision 1.1  2004/12/06 11:18:43  cs
- * Initial Revision
- *
- *
- *
+ /*
  *---------------------------------------------------------------------------
  * (c) Copyright 2004 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

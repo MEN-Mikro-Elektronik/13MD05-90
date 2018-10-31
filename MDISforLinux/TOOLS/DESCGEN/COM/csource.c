@@ -16,27 +16,6 @@
  *---------------------------[ Public Functions ]----------------------------
  *
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: csource.c,v $
- * Revision 1.5  2001/01/19 14:37:13  kp
- * cosmetics
- *
- * Revision 1.4  1998/07/17 08:47:46  kp
- * cosmetics
- *
- * Revision 1.3  1998/03/27 17:11:04  see
- * all error messages trailed with "***"
- * file name is created here now
- * check for already existing output file
- * ouput dir added
- *
- * Revision 1.2  1998/01/19 10:50:58  kp
- * align all tags on 4 byte boundaries
- *
- * Revision 1.1  1998/01/16 14:49:01  popp
- * Added by mcvs
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 1997 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

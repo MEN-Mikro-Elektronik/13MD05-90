@@ -10,27 +10,6 @@
  *
  *     Switches: MAC_MEM_MAPPED, MAC_IO_MAPPED, MAC_BYTESWAP
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: maccess_linux.h,v $
- * Revision 1.5  2012/04/16 13:09:15  ts
- * R: build of customer specific userland application failed
- * M: make include of io.h dependent on define __KERNEL__ (kernelspace builds)
- *
- * Revision 1.4  2009/03/18 13:12:04  ts
- * R: the wrong native header was included for PowerPCs
- * M: base conditional include on CONFIG_PPC, not _PPC_IO_H
- *
- * Revision 1.3  2007/07/13 17:56:22  cs
- * added:
- *   + support for user space
- *
- * Revision 1.2  2004/06/09 11:12:21  kp
- * added UML support (for testing)
- *
- * Revision 1.1  2001/01/19 14:58:22  kp
- * Initial Revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

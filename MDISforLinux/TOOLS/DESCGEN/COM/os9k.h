@@ -10,15 +10,6 @@
  *
  *     Switches: -
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: os9k.h,v $
- * Revision 1.2  1999/06/09 16:02:56  kp
- * changed totally for MDISFM/BBISFM
- *
- * Revision 1.1  1999/04/28 16:27:15  kp
- * Initial Revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 1999 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

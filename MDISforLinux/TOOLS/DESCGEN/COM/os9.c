@@ -17,40 +17,6 @@
  *---------------------------[ Public Functions ]----------------------------
  *
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: os9.c,v $
- * Revision 1.9  2009/09/23 13:02:43  CRuff
- * R: not 64bit compatible
- * M: added type conversions to make 64bit compatible on linux system
- *
- * Revision 1.8  2001/01/19 14:37:17  kp
- * cosmetics
- *
- * Revision 1.7  1999/06/09 16:02:52  kp
- * cosmetics
- *
- * Revision 1.6  1999/04/28 16:27:11  kp
- * Bug fix: open descriptor with "wb"
- *
- * Revision 1.5  1999/03/09 10:05:19  see
- * byte swapping-problems fixed (mport, mparity, CRC)
- * CRC: unused vars removed
- *
- * Revision 1.4  1998/07/17 09:26:06  kp
- * - changed old OS-9 types (u_char) to MEN std types
- * - fixed bug: mopt_offs computation wrong
- * - fixed problem with HPUX-gcc structure alignment
- *
- * Revision 1.3  1998/07/17 08:47:53  kp
- * cosmetics
- *
- * Revision 1.2  1998/04/17 15:37:49  see
- * bug fixed: head->_mmode: SHARE flag must be cleared
- *
- * Revision 1.1  1998/03/27 17:11:08  see
- * Added by mcvs
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 1998 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

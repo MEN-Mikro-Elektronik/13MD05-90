@@ -25,65 +25,23 @@
  *  main(argc,argv)
  *  int make_hex( argp, hexval )
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: hwbug.c,v $
- * Revision 1.5  2010/09/24 17:02:30  rt
- * R: 1) Option to pass commands from shell added (e.g. for scripts).
- *    2) Line editing features (history...) improved.
- * M: 1) main() changed.
- *    2) get_line() changed.
- *
- * Revision 1.4  2009/02/27 19:43:31  rt
- * R:1. Don't say "what?" every time.
- * M:1. Added return value to help_screen(), quit(), access_io_mapped()...
- *
- * Revision 1.3  2008/09/15 13:15:22  GLeonhardt
- * Avoid warnings
- *
- * Revision 1.2  2004/11/30 17:28:36  cs
- * Added support for IO-mapped access (for LINUX only)
- *
- * Revision 1.1  2003/05/26 10:06:00  ub
- * Initial Revision
- *
- * Revision 1.9  1997/01/22 10:02:17  kp
- * V1.7: Bug fix in display.c if no arguments given
- * Bug fix in os9.c (stackframe size for 68040)
- *
- * Revision 1.8  1996/12/20 16:07:02  see
- * fill byte/word/long commands added
- * fill pattern added
- * version 1.6
- *
- * Revision 1.7  1996/08/15 13:23:33  see
- * dump byte/word/long commands added
- * version 1.5
- *
- * Revision 1.6  95/06/12  17:20:15  17:20:15  see (Roland Seeberger)
- * bug fixed, call os_init before the add_command's to accept the DI
- * logo changed
- *
- * Revision 1.5  95/06/09  12:15:49  12:15:49  see (Roland Seeberger)
- * call os_usage() before printing logo
- * version 1.4
- *
- * Revision 1.4  93/08/11  08:19:38  kp
- * Version 1.3: bug fix in display.c (chars 0x7f and 0xff)
- *              bug fix in os9.c (^C Handling in running programs)
- *
- * Revision 1.3  93/05/26  14:49:49  kp
- * Version 1.2: bug fix in os_init (SSM was already assumed to be installed)
- *
- * Revision 1.2  93/05/10  10:47:38  kp
- * Version 1.1: support for MC683xx.
- *
- * Revision 1.1  93/05/04  11:26:27  kp
- * Initial revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 1993 by MEN mikro elektronik GmbH, Nuernberg, Germany
  ****************************************************************************/
+ /*
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 static char RCSid[]="$Header: /dd2/CVSR/LINUX/TOOLS/HWBUG/hwbug.c,v 1.5 2010/09/24 17:02:30 rt Exp $";
 

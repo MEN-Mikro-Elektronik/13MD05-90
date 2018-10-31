@@ -10,55 +10,6 @@
  *
  *     Switches: -
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: oss_os.h,v $
- * Revision 1.7  2014/07/17 17:49:54  ts
- * R: compiler warning distinctive pointertype lacks conversion info
- * M: changed type OSS_IRQ_STATE to unsigned long, is also either 32- or 64bit
- *
- * Revision 1.6  2014/07/14 18:29:33  ts
- * R: on new 3.x kernels include of kernel.h breaks compile
- * M: removed include, not necessary anymore
- *
- * Revision 1.5  2010/12/06 10:48:24  CRuff
- * R: new prototypes OSS_SPINL_* defined in oss.h
- * M: added dummy typedef OSS_SPINL_HANDLE for non-kernel builds
- *
- * Revision 1.4  2010/12/06 10:20:49  CRuff
- * R: new prototypes OSS_SPINL_* defined in oss.h
- * M: added typedef OSS_SPINL_HANDLE
- *
- * Revision 1.3  2009/09/23 09:05:20  CRuff
- * R: type conversion error for OSS_IRQ_STATE on 64bit systems
- * M: use variable data type U_INT32_OR_64 to match the expected "unsigned long"
- *
- * Revision 1.2  2007/02/16 15:01:54  ts
- * corrected wrong previous checking
- *
- * Revision 2.6  2004/10/27 14:34:07  kp
- * adapted to RTAI 3.0
- *
- * Revision 2.5  2004/06/09 09:24:43  kp
- * adaptions to Linux 2.6
- * MDIS4/2004 compliance
- * default debug level changed
- *
- * Revision 2.3  2003/10/07 11:47:34  kp
- * removed ENDIAN switches (now controlled by Makefile)
- *
- * Revision 2.2  2003/06/06 09:19:51  kp
- * added OSS_ALARM_STATE
- *
- * Revision 2.1  2003/04/11 16:13:04  kp
- * changed CONFIG_RTHAL switch to MDIS_RTAI_SUPPORT
- *
- * Revision 2.0  2003/02/21 11:24:58  kp
- * reworked for RTAI integration
- *
- * Revision 1.1  2001/01/19 14:39:01  kp
- * Initial Revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

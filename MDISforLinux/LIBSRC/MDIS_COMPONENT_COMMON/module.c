@@ -13,18 +13,6 @@
  *     Switches: COMP_NAME		name of component as a string
  *				 DBG_MODULE		set when compiling DBG module
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: module.c,v $
- * Revision 1.3  2004/06/09 11:12:43  kp
- * Linux 2.6 support
- *
- * Revision 1.2  2003/02/21 11:39:02  kp
- * added module description, author and license
- *
- * Revision 1.1  2001/01/19 14:58:41  kp
- * Initial Revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

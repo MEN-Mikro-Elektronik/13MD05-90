@@ -12,25 +12,6 @@
  *     Required: -
  *     Switches: DBG
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: mk_calls.c,v $
- * Revision 1.4  2009/08/04 16:49:20  CRuff
- * R: make 64bit compatible
- * M: 1. change function signature for MDIS_MkGetStat
- *       (use INT32_OR_64* for valueP)
- *    2. change type casts from int32 to INT32_OR_64 where necessary
- *
- * Revision 1.3  2008/08/22 12:23:31  dpfeuffer
- * R: M_ADDRSPACE struct in mdis_api.h: native_int replaced by U_INT32_OR_64
- * M: native_int casts replaced by U_INT32_OR_64
- *
- * Revision 1.2  2003/02/21 13:34:37  kp
- * added some comments
- *
- * Revision 1.1  2001/01/19 14:58:33  kp
- * Initial Revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

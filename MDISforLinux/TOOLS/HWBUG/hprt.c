@@ -28,18 +28,23 @@
  *	static  u_int32 _access_vmebus( physadr, size, read, value, be_flag )
  *	static  u_int32 _access_shmem( physadr, size, read, value, be_flag )
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: hprt.c,v $
- * Revision 1.1  2003/05/26 10:05:53  ub
- * Initial Revision
- *
- * Revision 1.1  95/06/09  12:12:41  12:12:41  see (Roland Seeberger)
- * Initial revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 1995 by MEN mikro elektronik GmbH, Nuernberg, Germany 
  ****************************************************************************/
+ /*
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
  
 static char RCSid[]="$Header: /dd2/CVSR/LINUX/TOOLS/HWBUG/hprt.c,v 1.1 2003/05/26 10:05:53 ub Exp $";
 

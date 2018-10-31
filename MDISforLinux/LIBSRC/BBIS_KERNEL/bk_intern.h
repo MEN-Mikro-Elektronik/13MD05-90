@@ -10,35 +10,6 @@
  *
  *     Switches: -
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: bk_intern.h,v $
- * Revision 1.7  2013/10/24 10:02:18  ts
- * R: system.h include not longer needed (deprecated)
- * M: removed include
- *
- * Revision 1.6  2012/08/08 19:59:12  ts
- * R: IOAPIC address might vary depending on the linux distro
- * M: made address evaluation of IOAPIC flexible, cleaned up defines for SC24
- *
- * Revision 1.5  2012/08/07 18:57:21  ts
- * R: 1. Mapping of SC24 FPGA into LPC space required pciset commands on init
- *    2. SC24 FPGA IRQ is connected to IRQ14 with default type edge, needs level
- * M: 1. added automatic PCI config access to map FPGA if SC24 is found
- *    2. added IRQ type adjustment for chameleon FPGA if SC24 is found
- *
- * Revision 1.4  2006/08/02 11:03:58  ts
- * removed include of <linux/segment.h>
- *
- * Revision 1.3  2004/06/09 09:07:44  kp
- * 2.6 enhancements
- *
- * Revision 1.2  2002/05/31 15:10:07  kp
- * include slab.h
- *
- * Revision 1.1  2001/01/19 14:37:59  kp
- * Initial Revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

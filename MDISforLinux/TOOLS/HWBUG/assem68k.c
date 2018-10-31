@@ -18,21 +18,23 @@
  *	disassemble( argc, argv )
  *	assemble( argc, argv )
  *  
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: assem68k.c,v $
- * Revision 1.1  2003/05/26 10:05:46  ub
- * Initial Revision
- *
- * Revision 1.2  95/06/09  12:09:21  12:09:21  see (Roland Seeberger)
- * newly checked in
- * 
- * Revision 1.1  93/05/04  11:26:13  kp
- * Initial revision
- * 
  *---------------------------------------------------------------------------
  * (c) Copyright 1993 by MEN mikro elektronik GmbH, Nuernberg, Germany 
  ****************************************************************************/
+ /*
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
  
 static char RCSid[]="$Header: /dd2/CVSR/LINUX/TOOLS/HWBUG/assem68k.c,v 1.1 2003/05/26 10:05:46 ub Exp $";
 #include "hwbug.h"

@@ -10,24 +10,6 @@
  *
  *     Switches: -
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: mac_linux_generic.h,v $
- * Revision 1.4  2009/09/08 18:43:00  CRuff
- * R: support I/O mapped hardware
- * M: make MACCESS for I/O mapped hardware 64bit compatible
- *
- * Revision 1.3  2009/08/04 16:43:58  CRuff
- * R: make macros 64bit compatible
- * M: add type casts where necessary to avoid type incompatibilities on
- *    64bit systems
- *
- * Revision 1.2  2006/12/15 13:24:23  ts
- * changed type of MACCESS to void*
- *
- * Revision 1.1  2001/01/19 14:58:23  kp
- * Initial Revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

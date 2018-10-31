@@ -24,38 +24,23 @@
  *  void os_restterm()
  *  u_int32 os_access_address( physadr, size, read, value, be_flag )
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: linux.c,v $
- * Revision 1.6  2010/09/24 16:51:56  rt
- * R: 1) Option to pass commands from shell missing (e.g. for scripts).
- *    2) CTRL-C not working.
- *    3) Line editing features (history...) not working.
- * M: 1) os_usage() changed.
- *    2) catch_sigint() changed.
- *    3) os_setterm() changed.
- *
- * Revision 1.5  2009/02/27 19:24:24  rt
- * R:1. Not compilable for ppc architecture.
- * M:1. Don't use inb/outb... if MAC_IO_MAPPED_EN is not set.
- *
- * Revision 1.4  2008/12/16 16:54:23  GLeonhardt
- * R:1. address range 0x0..0x0FFF could not be dumped
- * M:1. changed return value of mmap from 0 to MAP_FAILED
- *
- * Revision 1.3  2008/09/15 13:15:26  GLeonhardt
- * Avoid warnings
- *
- * Revision 1.2  2004/11/30 17:29:06  cs
- * Added support for IO-mapped access (for LINUX only)
- *
- * Revision 1.1  2003/05/26 10:06:06  ub
- * Initial Revision
- *
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2003 by MEN mikro elektronik GmbH, Nuernberg, Germany
  ****************************************************************************/
+ /*
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 static char RCSid[]="$Header: /dd2/CVSR/LINUX/TOOLS/HWBUG/linux.c,v 1.6 2010/09/24 16:51:56 rt Exp $";
 

@@ -12,18 +12,6 @@
  *     Required: -
  *     Switches: COMP_NAME		name of component as a string
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: ll_module.c,v $
- * Revision 1.3  2004/06/09 11:12:45  kp
- * pass THIS_MODULE to mdis_register_ll_driver
- *
- * Revision 1.2  2003/02/21 12:22:35  kp
- * added module description, license, author
- *
- * Revision 1.1  2001/01/19 14:58:42  kp
- * Initial Revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

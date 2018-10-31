@@ -14,16 +14,6 @@
  *
  *     Switches: -
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: mac_linux_ppc.h,v $
- * Revision 1.2  2009/09/08 18:43:02  CRuff
- * R: make 64bit compatible
- * M: add typecast to U_INT32_OR_64 in MBLOCK_WRITE_D16 macro
- *
- * Revision 1.1  2001/01/19 14:58:24  kp
- * Initial Revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

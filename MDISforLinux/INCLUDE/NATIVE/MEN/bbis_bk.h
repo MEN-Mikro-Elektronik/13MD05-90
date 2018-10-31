@@ -10,15 +10,6 @@
  *
  *     Switches: __KERNEL__
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: bbis_bk.h,v $
- * Revision 1.2  2004/06/09 09:07:39  kp
- * bbis_register_bb_driver proto changed
- *
- * Revision 1.1  2001/01/19 14:37:56  kp
- * Initial Revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

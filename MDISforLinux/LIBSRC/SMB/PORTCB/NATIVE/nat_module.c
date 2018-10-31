@@ -13,12 +13,6 @@
  *     Switches: COMP_NAME		name of component as a string
  *				 DBG_MODULE		set when compiling DBG module
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: nat_module.c,v $
- * Revision 1.1  2004/06/09 11:12:19  kp
- * Initial Revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2004 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

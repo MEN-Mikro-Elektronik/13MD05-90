@@ -10,18 +10,6 @@
  *
  *     Switches: UTL_FOR_RTAI - set to compile for RTAI mode
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: utl_os.h,v $
- * Revision 1.3  2003/04/11 16:26:14  kp
- * removed men_rtai_ prefixes, since now again a static lib
- *
- * Revision 1.2  2003/02/21 12:20:52  kp
- * preparations for RTAI
- *
- * Revision 1.1  2001/01/19 14:58:28  kp
- * Initial Revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 1999 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

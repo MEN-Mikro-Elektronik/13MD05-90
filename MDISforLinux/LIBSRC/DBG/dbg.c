@@ -16,27 +16,6 @@
  *     Required: -
  *     Switches: -
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: dbg.c,v $
- * Revision 1.6  2006/09/27 18:51:21  ts
- * use correct printk Variant in Realtime Linux
- *
- * Revision 1.5  2005/07/07 14:54:06  cs
- * Copyright line changed
- *
- * Revision 1.4  2004/06/09 09:15:51  kp
- * include sysdep.h
- *
- * Revision 1.3  2003/04/11 16:08:03  kp
- * changed CONFIG_RTHAL switch against MDIS_RTAI_SUPPORT
- *
- * Revision 1.2  2003/02/21 11:15:46  kp
- * use rt_printk if CONFIG_RTHAL is defined
- *
- * Revision 1.1  2001/01/19 14:38:27  kp
- * Initial Revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2001 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

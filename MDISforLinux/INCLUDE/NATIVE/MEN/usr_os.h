@@ -10,16 +10,6 @@
  *
  *     Switches: UOS_FOR_RTAI - set by RTAI "stdio.h"
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: usr_os.h,v $
- * Revision 1.2  2007/05/11 13:57:47  ts
- * use SIGUSR1/2 instead SIGRTMIN for UOS_SIG_USR1/2
- *
- * Revision 1.1  2007/02/06 13:10:35  aw
- * Initial Revision
- *
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

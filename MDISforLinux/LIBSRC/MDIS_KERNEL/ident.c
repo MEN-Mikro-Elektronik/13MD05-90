@@ -12,22 +12,6 @@
  *     Required: -
  *     Switches: -
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: ident.c,v $
- * Revision 2.0  2003/02/21 13:34:33  kp
- * Added interface for non-MDIS drivers.
- * Prepare for RTAI
- *
- * Revision 1.3  2003/02/21 10:11:49  kp
- * fixed problem when mapping PCI I/O spaces
- *
- * Revision 1.2  2001/09/18 15:27:50  kp
- * Ident string changed
- *
- * Revision 1.1  2001/01/19 14:58:31  kp
- * Initial Revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

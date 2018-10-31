@@ -13,25 +13,6 @@
  *     Switches: COMP_NAME		name of component as a string
  *				 DBG_MODULE		set when compiling DBG module
  *
- *-------------------------------[ History ]---------------------------------
- *
- * $Log: nat_module.c,v $
- * Revision 1.5  2007/12/10 12:56:29  ts
- * CHAMELEONV2_EXPORT_CHAMELEONV0 not longer defined here
- * Exporting CHAM_Init, CHAM_DevIdToModCode
- *
- * Revision 1.4  2007/08/09 19:21:23  ts
- * Now explicitely define CHAMELEONV2_EXPORT_CHAMELEONV0
- *
- * Revision 1.3  2006/08/04 10:55:13  ts
- * + EXPORT_SYMBOL CHAM_ModCodeToDevId/CHAM_InitMem/CHAM_DevIdToName
- *
- * Revision 1.2  2005/07/08 14:41:38  ub
- * ChameleonHwName() removed
- *
- * Revision 1.1  2004/06/09 11:12:20  kp
- * Initial Revision
- *
  *---------------------------------------------------------------------------
  * (c) Copyright 2004 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/
