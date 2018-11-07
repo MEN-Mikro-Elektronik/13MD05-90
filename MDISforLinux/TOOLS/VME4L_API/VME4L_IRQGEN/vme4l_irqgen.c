@@ -11,12 +11,7 @@
  *     Switches: -
  *     Required: libraries: vme4l_api
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: vme4l_irqgen.c,v $
- * Revision 1.1  2003/12/15 15:02:43  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2003 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

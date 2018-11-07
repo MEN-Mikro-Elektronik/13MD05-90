@@ -10,15 +10,7 @@
  *
  *     Switches: -
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: vme4l_api.h,v $
- * Revision 2.2  2004/07/26 16:31:32  kp
- * added support for slave windows, mailbox, location
- *
- * Revision 2.1  2003/12/15 15:02:15  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2003 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

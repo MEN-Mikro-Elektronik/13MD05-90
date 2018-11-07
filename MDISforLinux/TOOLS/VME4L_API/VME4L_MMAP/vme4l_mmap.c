@@ -11,16 +11,7 @@
  *     Switches: -
  *     Required: libraries: vme4l_api
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: vme4l_mmap.c,v $
- * Revision 1.2  2009/06/03 19:18:59  rt
- * R: 1.) No support for VME addresses > 0xFFFFFFFF.
- * M: 1.) Use strtoull for VME address.
- *
- * Revision 1.1  2003/12/15 15:02:32  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2003 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

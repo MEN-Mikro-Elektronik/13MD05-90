@@ -11,29 +11,7 @@
  *     Switches: -
  *     Required: libraries: vme4l_api
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: vme4l_mtest.c,v $
- * Revision 1.5  2013/10/24 09:56:13  ts
- * R: gcc 4.6 under Ubuntu 12.10 suggested parentheses around if statement
- * M: added parentheses
- *
- * Revision 1.4  2013/09/02 13:50:58  ts
- * R: 1. address modifiers on A21 VME bridge should be user programmable
- *    2. test memory range for DMA tests on A21 VME spaces was too small
- * M: 1. add option -m to set privileged or non privileged accesses
- *    2. enlarged test memory array
- *
- * Revision 1.3  2009/09/24 11:14:50  CRuff
- * R: compiler warnings
- * M: fix compiler warnings
- *
- * Revision 1.2  2004/07/26 16:31:41  kp
- * added -x option
- *
- * Revision 1.1  2003/12/15 15:02:34  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2003 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

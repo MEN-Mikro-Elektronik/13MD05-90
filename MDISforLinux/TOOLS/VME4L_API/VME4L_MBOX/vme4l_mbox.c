@@ -22,19 +22,7 @@
  *     Switches: -
  *     Required: libraries: vme4l_api
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: vme4l_mbox.c,v $
- * Revision 1.3  2009/06/03 19:18:11  rt
- * R: 1.) Support for newer kernels.
- * M: 1.) Use SIGRTMIN to determine signal no.
- *
- * Revision 1.2  2004/10/27 09:05:20  kp
- * bug fix: number of mailbox writes not correctly printed
- *
- * Revision 1.1  2004/07/26 16:31:40  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2004 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

@@ -11,26 +11,7 @@
  *
  *    \switches  MAC_USERSPACE
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: dbg_os.h,v $
- * Revision 1.5  2006/09/27 18:38:03  ts
- * Support for MDIS Xenomai added
- *
- * Revision 1.4  2005/07/08 11:40:38  cs
- * added support for userspace
- * changed header to doxygen
- * Copyright line changed
- *
- * Revision 1.3  2003/04/11 16:08:05  kp
- * changed CONFIG_RTHAL switch against MDIS_RTAI_SUPPORT
- *
- * Revision 1.2  2003/02/21 12:18:48  kp
- * use rt_printk if CONFIG_RTHAL defined
- *
- * Revision 1.1  2001/01/19 14:38:30  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2000 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

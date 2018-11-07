@@ -11,19 +11,7 @@
  *     Switches: -
  *     Required: libraries: vme4l_api
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: vme4l_rwspeed.c,v $
- * Revision 1.2  2009/06/03 19:30:07  rt
- * R: 1.) No support for VME addresses > 0xFFFFFFFF.
- *    2.) Cosmetics.
- * M: 1.) Use strtoull for VME address.
- *    2.a) Avoid compiler warnings.
- *    2.b) Comment added.
- *
- * Revision 1.1  2003/12/15 15:02:30  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2003 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

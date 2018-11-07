@@ -22,16 +22,7 @@
  *     Switches: -
  *     Required: libraries: vme4l_api
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: vme4l_pldz002_locmon.c,v $
- * Revision 1.2  2009/06/03 19:19:33  rt
- * R: 1.) Support for newer kernels.
- * M: 1.) Use SIGRTMIN to determine signal no.
- *
- * Revision 1.1  2004/07/26 16:31:38  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2004 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

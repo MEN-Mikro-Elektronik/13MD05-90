@@ -11,20 +11,7 @@
  *     Switches: -
  *     Required: libraries: vme4l_api
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: vme4l_slvwin.c,v $
- * Revision 1.3  2009/06/03 19:30:40  rt
- * R: 1.) No support for VME addresses > 0xFFFFFFFF.
- * M: 1.) Use strtoull for VME address.
- *
- * Revision 1.2  2009/04/30 21:15:18  rt
- * R: 1.) Improved tool.
- * M: 1.) Added parameter to read/write from/to shared RAM.
- *
- * Revision 1.1  2004/07/26 16:31:45  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2004 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

@@ -11,20 +11,7 @@
  *     Switches: -
  *     Required: libraries: vme4l_api
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: vme4l_spcycle.c,v $
- * Revision 1.3  2009/07/09 11:04:50  rt
- * R: 1.) Missing parameter for swap mode.
- * M: 1.) Optional swap parameter added.
- *
- * Revision 1.2  2009/06/03 19:30:58  rt
- * R: 1.) No support for VME addresses > 0xFFFFFFFF.
- * M: 1.) Use strtoull for VME address.
- *
- * Revision 1.1  2003/12/15 15:02:41  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2003 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

@@ -9,32 +9,8 @@
  *  	 \brief  VME4L definitions/structure shared between user/kernel-mode
  *
  *     Switches: -
- */
-/*-------------------------------[ History ]---------------------------------
  *
- * $Log: vme4l.h,v $
- * Revision 2.6  2014/09/30 16:50:22  ts
- * R: Address modifiers (AM) can now be set dynamically in Z002
- * M: added 2 new ioctl codes for AM get and set
- *
- * Revision 2.5  2009/06/03 19:37:12  rt
- * R: 1.) Cosmetics.
- * M: 1.) Tsi148 comment removed.
- *
- * Revision 2.4  2009/04/30 22:00:05  rt
- * R: 1) Support for TSI148 VME bridge.
- * M: 1) Comments for TSI148 added.
- *
- * Revision 2.3  2009/03/24 12:47:56  rt
- * R: 1. Support for TSI148 VMEbus-bridge
- * M: 1. A64/slave windows defines added (by sv)
- *
- * Revision 2.2  2004/07/26 16:31:30  kp
- * added support for slave windows, mailbox, location
- *
- * Revision 2.1  2003/12/15 15:02:16  kp
- * Initial Revision
- *
+ *-----------------------------------------------------------------------------
  * (c) Copyright 2003 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/
 /*

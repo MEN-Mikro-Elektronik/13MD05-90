@@ -17,19 +17,7 @@
  *
  *     Switches: -
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: vme4l_old.h,v $
- * Revision 1.3  2003/12/15 15:02:18  kp
- * marked file as obsolete
- *
- * Revision 1.2  2003/09/18 16:32:13  UFranke
- * added
- *  - A32/D32 support
- *
- * Revision 1.1  2002/07/19 10:02:27  UFranke
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2002 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

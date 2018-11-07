@@ -22,13 +22,7 @@
  *     Switches: -
  *     Required: libraries: vme4l_api
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: vme4l_tsi148_locmon.c,v $
- * Revision 1.1  2009/06/03 19:43:12  rt
- * Initial Revision
- *
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2009 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/
