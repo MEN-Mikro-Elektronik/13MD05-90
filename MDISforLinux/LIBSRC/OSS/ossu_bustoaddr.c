@@ -12,19 +12,7 @@
  *
  *    \switches  OSS_CONFIG_VME
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: ossu_bustoaddr.c,v $
- * Revision 2.3  2007/07/13 17:46:45  cs
- * changed: include pci.h directly from pciutils folder
- *
- * Revision 2.2  2007/03/28 16:11:52  ts
- * changed Namings VME4L... to generic VME...
- *
- * Revision 2.1  2005/07/08 11:32:53  cs
- * Initial Revision
- *
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2005 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

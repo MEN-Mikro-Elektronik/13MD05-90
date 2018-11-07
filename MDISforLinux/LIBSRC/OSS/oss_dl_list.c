@@ -11,21 +11,7 @@
  *
  *    \switches  -
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: oss_dl_list.c,v $
- * Revision 1.4  2005/07/07 17:17:12  cs
- * Copyright line changed
- *
- * Revision 1.3  2003/10/07 11:47:40  kp
- * fixed typo
- *
- * Revision 1.2  2003/04/11 16:13:17  kp
- * Comments changed for Doxygen
- *
- * Revision 1.1  2001/01/19 14:39:07  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2000-2005 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

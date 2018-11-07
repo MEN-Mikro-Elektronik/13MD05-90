@@ -12,55 +12,7 @@
  *               MAC_USERSPACE
  *               OXX_IO_ACCESS_EN
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: oss_intern.h,v $
- * Revision 1.15  2012/08/07 19:06:28  ts
- * R: include file asm/io.h unnecessary
- * M: removed include
- *
- * Revision 1.14  2012/04/23 13:49:56  ts
- * R: spinlock declaration changed in kernel 3.x
- * M: include spinlock_types.h, use DEFINE_SPINLOCK if defined
- *
- * Revision 1.13  2007/03/28 16:06:58  ts
- * renamed defines with naming VME4L.. to be generic
- *
- * Revision 1.12  2007/02/06 17:04:45  ts
- * cosmetics
- *
- * Revision 1.10  2006/11/14 12:15:34  ts
- * added version.h include for KERNEL_VERSION
- *
- * Revision 1.9  2006/09/26 10:17:21  ts
- * adapted for either classic RTAI or Xenomai usage
- *
- * Revision 1.8  2005/07/08 11:32:54  cs
- * added support for userspace
- * Copyright line changed
- *
- * Revision 1.7  2004/10/27 14:34:11  kp
- * adapted to RTAI 3.0
- *
- * Revision 1.6  2004/07/16 15:00:34  kp
- * adapted to Redhat9 kernel
- *
- * Revision 1.5  2004/06/09 09:24:56  kp
- * Linux 2.6 adaptions
- *
- * Revision 1.4  2003/04/11 16:13:19  kp
- * use MDIS_RTAI_SUPPORT switch
- *
- * Revision 1.3  2003/02/21 11:25:07  kp
- * added rtMode flag to OSS_HANDLE.
- * added OSS_RtaiXXX prototypes
- *
- * Revision 1.2  2002/05/31 15:10:45  kp
- * include "slab.h"
- *
- * Revision 1.1  2001/01/19 14:39:08  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2003-2005 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

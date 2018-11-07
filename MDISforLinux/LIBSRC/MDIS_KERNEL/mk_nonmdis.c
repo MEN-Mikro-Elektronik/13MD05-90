@@ -10,15 +10,7 @@
  *
  *     Switches: -
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: mk_nonmdis.c,v $
- * Revision 2.2  2003/04/11 16:26:26  kp
- * changed switch CONFIG_RTHAL -> MDIS_RTAI_SUPPORT
- *
- * Revision 2.1  2003/02/21 13:34:45  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2003 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

@@ -11,51 +11,7 @@
  *
  *    \switches  -
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: oss_bustoaddr.c,v $
- * Revision 1.11  2012/08/07 19:04:11  ts
- * R: compiler warned about uninitialized variable pci_bus
- * M: set variable to NULL
- *
- * Revision 1.10  2011/04/14 17:45:34  CRuff
- * R: support of pci domains
- * M: in PciGetConfig, PciSetConfig and BusToPhysAddr, call pci_find_bus by using
- *    the correct pci domain (merged into the bus number)
- *
- * Revision 1.9  2010/04/14 10:00:03  CRuff
- * R: pci_find_slot is removed from kernel 2.6.31
- * M: replace pci_find_slot by pci_get_slot; thereby, set pci domain to 0 for now
- *
- * Revision 1.8  2009/08/28 15:27:20  CRuff
- * R: Irqs did not work any more
- * M: re-activated irq reg check in OSS_PciGetConfig(); was removed accidently
- *
- * Revision 1.7  2009/08/19 10:47:04  CRuff
- * R: BAR attributes were masked out; could not determine if I/O or Mem mapped
- * M: use HW access for BARs instead of pci_resource_start()
- *
- * Revision 1.6  2007/06/27 11:57:16  ts
- * added call to pci_enable_device() so PCI Interrupts are enabled
- *
- * Revision 1.5  2005/07/07 17:17:08  cs
- * Copyright line changed
- *
- * Revision 1.4  2004/06/09 09:24:53  kp
- * - changed to use pci_xxx rather pcibios_xxx function
- * - OSS_PciGetConfig returns values from pci_dev structure for interrupt and
- *   BARs
- *
- * Revision 1.3  2003/04/11 16:13:13  kp
- * Comments changed for Doxygen
- *
- * Revision 1.2  2001/08/16 09:59:38  kp
- * - Support VME devices using MEN's VME kernel interface
- * - Bug fix in OSS_PciGetConfig: Don't return error for non-existant devs
- *
- * Revision 1.1  2001/01/19 14:39:05  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2000-2005 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

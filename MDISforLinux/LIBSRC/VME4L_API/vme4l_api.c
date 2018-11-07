@@ -10,42 +10,7 @@
  *
  *     Switches: -
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: vme4l_api.c,v $
- * Revision 1.9  2013/09/02 18:31:16  ts
- * R: VME Address modifiers were requested to be changeable by A21 customer
- * M: added API functions VME4L_AddrModifierSet/Get
- *
- * Revision 1.8  2010/06/28 17:14:10  rt
- * R: 1) DMA mode is not supported by Non-BLT spaces.
- * M: 1) Added note to documentation.
- *
- * Revision 1.7  2009/07/09 14:15:45  rt
- * R: 1.) VME4L_Map does not support addresses > 0xFFFFFFFF
- * M: 1.) Note added to ducumentation.
- *
- * Revision 1.6  2009/06/03 19:46:08  rt
- * R: 1.) Support for TSI148 increased.
- * M: 1.) Comments for tsi148 changed.
- *
- * Revision 1.5  2009/04/30 22:02:42  rt
- * R: 1) Support for TSI148 VME bridge.
- * M: 1a) Comments for TSI148 added.
- *     b) New address spaces added.
- *
- * Revision 1.4  2006/12/15 13:47:56  ts
- * Cosmetic, described VME Spaces in comment
- *
- * Revision 1.3  2004/07/26 16:31:34  kp
- * added support for slave windows, mailbox, location
- *
- * Revision 1.2  2003/12/16 12:21:05  kp
- * Comments corrected by Technical Publications Department
- *
- * Revision 1.1  2003/12/15 15:02:23  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2003 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

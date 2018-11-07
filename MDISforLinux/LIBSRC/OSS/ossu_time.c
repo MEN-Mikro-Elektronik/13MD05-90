@@ -10,13 +10,7 @@
  *  	 \brief  Time related routines of the OSS module for user space
  *
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: ossu_time.c,v $
- * Revision 2.1  2005/07/08 11:33:01  cs
- * Initial Revision
- *
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2005 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

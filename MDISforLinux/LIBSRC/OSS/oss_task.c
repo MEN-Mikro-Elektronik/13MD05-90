@@ -10,21 +10,7 @@
  *  	 \brief  Task routines
  *
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: oss_task.c,v $
- * Revision 1.4  2005/07/07 17:17:41  cs
- * Copyright line changed
- *
- * Revision 1.3  2003/04/11 16:13:38  kp
- * Comments changed to Doxygen
- *
- * Revision 1.2  2003/02/21 11:25:17  kp
- * added RTAI dispatching functions
- *
- * Revision 1.1  2001/01/19 14:39:18  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2000-2005 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

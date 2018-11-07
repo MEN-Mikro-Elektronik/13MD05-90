@@ -10,72 +10,7 @@
  *  	 \brief  Core functions of the OSS module
  *
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: oss.c,v $
- * Revision 2.16  2012/05/14 20:29:47  ts
- * R: cat /sys/module/men_oss/parameters/oss_pci_slot_devnbrs caused crash
- * M: corrected bug in module_param declaration, provided count variable
- *
- * Revision 2.15  2011/04/07 16:42:09  CRuff
- * R: OSS_SpinlockXxx functions added
- * M: export OSS_SpinlockXxx functions
- *
- * Revision 2.14  2009/02/18 10:24:11  ts
- * R: complete set of OSS functions is integrated either in kernel or as module
- * M: removed unnecessary #ifdef KERNEL, MDIS build system must care to
- *    not install the men_oss.ko and other modules not needed when chameleon
- *    driver is built statically into kernel
- *
- * Revision 2.13  2007/12/03 18:09:03  ts
- * change rights in module_param_array into 0664, 0666 causes error at 2.6.19
- * and up
- *
- * Revision 2.12  2007/10/08 14:36:18  ts
- * make all EXPORT_SYMBOL except OSS_Init depend on -DMODULE (for built-in use)
- * bugfix: removed comma between KERN_WARNING and text (for printk)
- *
- * Revision 2.11  2006/11/14 12:16:32  ts
- * added helper function to add signals under 2.4 kernels
- * use correct Macro for Linux Kernel Version comparison
- *
- * Revision 2.10  2006/11/08 15:26:16  ts
- * added cast to remove compiler warning in array module parameter
- *
- * Revision 2.9  2006/08/04 11:18:01  ts
- * GetSmbHdl moved to SMB2 pseudo BBIS
- *
- * Revision 2.8  2006/06/21 17:51:09  ts
- * + EXPORT(OSS_GetSmbHdl)
- *
- * Revision 2.7  2006/06/01 12:15:57  ts
- * change MODULE_PARM to module_param for kernels > 2.6.13
- *
- * Revision 2.6  2005/07/07 17:16:56  cs
- * Copyright line changed
- *
- * Revision 2.5  2004/06/09 09:24:46  kp
- * added export of OSS_irqLock
- *
- * Revision 2.4  2004/04/20 12:42:56  cs
- * Added OSS_IrqMaskR and OSS_IrqRestore
- *
- * Revision 2.3  2003/10/07 11:47:38  kp
- * removed OSS_Ident (now separate file)
- *
- * Revision 2.2  2003/06/06 09:19:55  kp
- * cosmetics
- *
- * Revision 2.1  2003/04/11 16:13:09  kp
- * Comments changed for Doxygen
- *
- * Revision 2.0  2003/02/21 11:25:03  kp
- * enhanced for RTAI.
- * OSS_Init has now additional parameter rtMode
- *
- * Revision 1.1  2001/01/19 14:39:03  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2000-2005 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

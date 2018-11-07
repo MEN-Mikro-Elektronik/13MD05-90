@@ -11,20 +11,7 @@
  *
  *    \switches  OSS_USR_IO_MAPPED_ACC_EN
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: ossu_map.c,v $
- * Revision 2.3  2014/01/20 17:43:26  awerner
- * R: fpga_load segmentation fault in 64bit Linux
- * M: Added support for 64bit in ossu_map.c (Cast U_INT32_OR_64)
- *
- * Revision 2.2  2007/07/13 17:49:16  cs
- * added support for OSS_BUSTYPE_NONE (handle like OSS_BUSTYPE_PCI)
- *
- * Revision 2.1  2005/07/08 11:32:56  cs
- * Initial Revision
- *
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2005 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

@@ -10,27 +10,7 @@
  *  	 \brief  Semaphore routines
  *
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: oss_sem.c,v $
- * Revision 2.2  2007/12/04 16:26:58  ts
- * removed warning about possible use of uninitialized signal_t members
- *
- * Revision 2.1  2005/07/07 17:17:31  cs
- * Copyright line changed
- *
- * Revision 2.0  2004/06/09 09:25:04  kp
- * - reimplementation using spin locks and schedule_timeout
- *
- * Revision 1.3  2003/04/11 16:13:31  kp
- * Comments changed to Doxygen
- *
- * Revision 1.2  2003/02/21 11:25:13  kp
- * added RTAI dispatching functions
- *
- * Revision 1.1  2001/01/19 14:39:15  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2000-2005 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

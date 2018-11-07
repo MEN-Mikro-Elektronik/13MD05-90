@@ -18,61 +18,7 @@
  *
  *     Switches: -
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: vme4l-pldz002.c,v $
- * Revision 1.13  2013/10/24 10:17:02  ts
- * R: 1. Linux 2.4 and RTAI not longer supported
- * M: 1. removed Linux 2.4 and RTAI specific code
- *
- * Revision 1.12  2009/07/09 10:52:05  rt
- * R: 1.) Large zero-copy DMAs  (>64k) read/write wrong data.
- *    2.) Not compilable with kernel > 2.6.21.
- * M: 1.) Changed vmeAddr parameter to pointer to vmeAddr.
- *    2.) Add switch for pci_module_init.
- *
- * Revision 1.11  2009/06/03 18:26:17  rt
- * R: 1.) TSI148 needs physical Address to perform RMW cycle
- *    2.) Not compilable with kernel > 2.6.19
- * M: 1.) physAddr parameter added to rmwCycle()
- *    2.) regs parameter removed from PldZ002Irq for kernel > 2.6.19
- *
- * Revision 1.10  2009/04/30 21:50:24  rt
- * R: 1) Support for newer kernels.
- *    2) Wrong debug messages.
- * M: 1a) AUTOCONF_INCLUDED switch added.
- *     b) pci_module_init renamed.
- *    2) Debug messages reformated, arguments added/removed.
- *
- * Revision 1.9  2007/12/10 12:00:28  ts
- * use new Irq handler Flags (IRQF_xxx) from 2.6.20 on
- *
- * Revision 1.8  2006/09/26 11:02:23  ts
- * adapted for either classic RTAI or Xenomai usage
- *
- * Revision 1.7  2005/01/19 14:15:54  ts
- * Name of called IRQ sharing functions changed
- *
- * Revision 1.6  2004/12/04 18:48:46  ts
- * added VME RTAI support
- *
- * Revision 1.5  2004/10/27 12:11:31  kp
- * bug fix in address validity check for slave windows (A12/B11 only)
- *
- * Revision 1.4  2004/10/26 16:09:29  kp
- * adapted to PLDZ002 Rev 18 (decimal). Support bus master DMA
- *
- * Revision 1.3  2004/07/27 07:56:17  kp
- * cosmetic
- *
- * Revision 1.2  2004/07/26 16:31:28  kp
- * intermediate alpha release
- * - support for slave windows, mailbox, location
- * - Linux 2.6 support (zerocopy DMA untested!)
- *
- * Revision 1.1  2003/12/15 15:02:11  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2004 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

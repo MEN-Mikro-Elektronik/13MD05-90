@@ -11,21 +11,7 @@
  *
  *    \switches  -
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: oss_clib.c,v $
- * Revision 1.5  2007/02/06 17:04:41  ts
- * cosmetics
- *
- * Revision 1.3  2005/07/07 17:17:10  cs
- * Copyright line changed
- *
- * Revision 1.2  2003/04/11 16:13:15  kp
- * Comments changed for Doxygen
- *
- * Revision 1.1  2001/01/19 14:39:06  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2000-2005 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

@@ -11,21 +11,7 @@
  *
  *    \switches  -
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: oss_resource.c,v $
- * Revision 1.4  2005/07/07 17:17:28  cs
- * Copyright line changed
- *
- * Revision 1.3  2003/04/11 16:13:29  kp
- * Comments changed to Doxygen
- *
- * Revision 1.2  2001/08/16 09:59:40  kp
- * added debug-msg in OSS_UnAssignResources
- *
- * Revision 1.1  2001/01/19 14:39:14  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2000-2005 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

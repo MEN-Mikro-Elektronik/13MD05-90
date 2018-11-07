@@ -10,46 +10,7 @@
  *  	 \brief  Interrupt related routines
  *
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: oss_irq.c,v $
- * Revision 1.9  2012/04/23 13:51:16  ts
- * R: update for kernels 3.x
- * M: use new spinlock define DEFINE_SPINLOCK if already declared
- *
- * Revision 1.8  2011/02/18 09:51:01  CRuff
- * R: cosmetics
- * M: OSS_IrqMaskR: added some comments for clarification of spinlock
- *    functionality
- *
- * Revision 1.7  2009/09/23 09:14:42  CRuff
- * R: spinlocks cause application freeze in SMP mode
- * M: in OSS_IrqMaskR and OSS_IrqRestore:
- *    a) only set G_irqLockProcessorId just after we really got the lock
- *    b) reset G_irqLockProcessorId to -1 when spinlock is released
- *    c) add error handling: enter endless loop if unexpected system state
- *       apears in OSS_IrqRestore
- *
- * Revision 1.6  2009/08/13 18:13:59  CRuff
- * R: OSS_IrqMaskR(): Spinlock recursion if kernel switch
- *    CONFIG_DEBUG_SPINLOCK is set
- * M: use spin_trylock() to avoid recursive lock
- *
- * Revision 1.5  2005/07/07 17:17:16  cs
- * Copyright line changed
- *
- * Revision 1.4  2004/06/09 09:24:59  kp
- * made SMP/Preemption save using spinlocks
- *
- * Revision 1.3  2003/04/11 16:13:21  kp
- * Comments changed to Doxygen
- *
- * Revision 1.2  2003/02/21 11:25:09  kp
- * added RTAI dispatching functions
- *
- * Revision 1.1  2001/01/19 14:39:09  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2000-2005 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

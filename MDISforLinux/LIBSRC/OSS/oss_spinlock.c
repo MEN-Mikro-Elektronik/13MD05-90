@@ -12,26 +12,7 @@
  *    \switches  DBG - enable debugging
  *
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: oss_spinlock.c,v $
- * Revision 2.4  2012/10/11 13:58:05  ts
- * R: 1a. spinlock usage in bb_chameleon.c is unnecessary under linux
- *    1b. spin_lock function caused CPU lock up under kernels 3.x
- * M: 1. replaced functions to return always ERR_SUCCESS so bb_chameleon is
- *       unchanged
- *
- * Revision 2.3  2012/04/25 18:07:24  ts
- * R: kernel oops when board handler finally closed
- * M: removed OSS_MemFree because OSS_MemAlloc was removed in OSS_SpinLockCreate
- *
- * Revision 2.2  2012/04/23 13:53:02  ts
- * R: update for kernels 3.x, spinlock declaration changed
- * M: init spinlock with DEFINE_SPINLOCK if defined
- *
- * Revision 2.1  2011/04/04 17:32:38  CRuff
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * Copyright (c) 2011 MEN Mikro Elektronik GmbH. All rights reserved.
  ******************************************************************************/

@@ -10,41 +10,7 @@
  *  	 \brief  Time related routines of the OSS module
  *
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: oss_time.c,v $
- * Revision 1.9  2009/09/08 16:44:13  CRuff
- * R: compiler warning
- * M: changed variable initialization
- *
- * Revision 1.8  2009/07/28 12:03:52  CRuff
- * R: OSS_Delay causes too short delay if tickrollover occurs and delay is
- *    interrupted by signal
- * M: keep delay independent from tickrollover by not using system tick
- *    differences
- *
- * Revision 1.7  2007/12/04 16:27:22  ts
- * removed warning about possible use of uninitialized signal_t members
- *
- * Revision 1.6  2005/07/07 17:17:45  cs
- * Copyright line changed
- *
- * Revision 1.5  2004/06/09 09:25:06  kp
- * use macros for spin locks and signal mask accesses to be more independent
- * of kernel version
- *
- * Revision 1.4  2003/04/11 16:13:40  kp
- * Comments changed to Doxygen
- *
- * Revision 1.3  2003/02/21 11:25:19  kp
- * added RTAI dispatching functions
- *
- * Revision 1.2  2001/08/16 09:59:42  kp
- * Bug fix: OSS_Delay returned always 0
- *
- * Revision 1.1  2001/01/19 14:39:19  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2000-2005 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

@@ -11,19 +11,7 @@
  *
  *    \switches  MAC_USERSPACE
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: ossu.c,v $
- * Revision 2.3  2007/03/28 16:11:37  ts
- * changed Namings VME4L... to generic VME...
- *
- * Revision 2.2  2005/07/08 16:49:10  cs
- * added some user space specific documentation
- *
- * Revision 2.1  2005/07/08 11:32:52  cs
- * Initial Revision
- *
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2005 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

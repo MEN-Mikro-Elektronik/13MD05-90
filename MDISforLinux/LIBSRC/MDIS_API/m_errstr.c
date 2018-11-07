@@ -8,15 +8,7 @@
  *
  *  	 \brief  MDIS error string functions for MDIS_API
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: m_errstr.c,v $
- * Revision 1.1  2003/06/06 09:09:41  kp
- * Initial Revision
- *
- * Revision 1.1  2001/01/19 14:58:44  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 1997-2003 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

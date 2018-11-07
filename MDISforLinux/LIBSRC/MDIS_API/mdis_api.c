@@ -8,36 +8,7 @@
  *
  *  	 \brief  MDIS user interface for Linux
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: mdis_api.c,v $
- * Revision 1.8  2014/07/17 12:29:39  ts
- * R: compiler warning about different prototypes of function tolower()
- * M: renaming tolower() in tolower_mdis() prevents collision with libc tolower
- *
- * Revision 1.7  2009/08/04 17:06:04  CRuff
- * R: make 64bit compatible
- * M: change type of device path to MDIS_PATH for all path occurrences
- *
- * Revision 1.6  2004/06/09 11:12:49  kp
- * M_open/M_setblock arguments changed (const)
- *
- * Revision 1.5  2003/10/07 12:54:54  kp
- * added \menimages for Doxygen
- *
- * Revision 1.4  2003/06/06 09:14:53  kp
- * changed everything for doxygen docu
- *
- * Revision 1.3  2003/02/21 11:34:05  kp
- * added MDIS_CreateDevice, MDIS_OpenBoard and their related Remove functions.
- * Used for RTAI and non-MDIS devices
- *
- * Revision 1.2  2001/08/16 10:15:57  kp
- * added error number decompression for PPC
- *
- * Revision 1.1  2001/01/19 14:59:37  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 1997-2003 by MEN mikro elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/

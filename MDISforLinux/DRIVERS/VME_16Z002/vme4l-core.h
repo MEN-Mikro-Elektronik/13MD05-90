@@ -11,58 +11,7 @@
  *
  *     Switches: -
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: vme4l-core.h,v $
- * Revision 1.13  2014/07/22 14:15:27  ts
- * R: 1. additional API functions for AM setting needed
- *    2. struct for VME4L entries needed in different source files
- * M: 1. added address modifier get/set functions
- *    2. moved struct here from vme4l_core.c
- *
- * Revision 1.12  2009/07/09 10:38:25  rt
- * R: 1.) Large zero-copy DMAs  (>64k at PLDZ002; >408k at TSI148)
- *        read/write wrong data.
- * M: 1.) Changed vmeAddr parameter to pointer to vmeAddr.
- *
- * Revision 1.11  2009/06/03 18:22:35  rt
- * R: 1.) TSI148 needs physical Address to perform RMW cycle
- * M: 1.) physAddr parameter added to rmwCycle()
- *
- * Revision 1.10  2009/04/30 21:46:19  rt
- * R: 1) Support for newer kernels.
- * M: 1) AUTOCONF_INCLUDED switch added.
- *
- * Revision 1.9  2007/12/10 11:59:30  ts
- * define VERSION_CODE_NEW_IRQFLAGS added for new IRQ handler Flags
- *
- * Revision 1.8  2007/05/10 14:49:33  ts
- * Bugfix: Include <linux/devfs_fs_kernel.h> only when CONFIG_DEVFS_FS is set
- *
- * Revision 1.7  2006/09/26 11:01:04  ts
- * adapted for either classic RTAI or Xenomai usage
- *
- * Revision 1.6  2005/08/11 11:32:48  ts
- * define CONFIG_MEN_VME_RTAI_KERNELIF if (MDIS_RTAI_SUPPORT &&
- * CONFIG_MEN_VME_KERNELIF) defined
- *
- * Revision 1.5  2005/01/19 14:13:12  ts
- * reordered some includes from RTAI
- *
- * Revision 1.4  2004/12/04 18:46:33  ts
- * added VME RTAI support
- *
- * Revision 1.3  2004/07/26 16:31:25  kp
- * intermediate alpha release
- * - support for slave windows, mailbox, location
- * - Linux 2.6 support (zerocopy DMA untested!)
- *
- * Revision 1.2  2004/06/09 10:52:08  kp
- * include men_vme_kernelif.h from different paths depend on build environment
- *
- * Revision 1.1  2003/12/15 15:02:10  kp
- * Initial Revision
- *
+/*
  *---------------------------------------------------------------------------
  * (c) Copyright 2003 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
  ******************************************************************************/
