@@ -28,7 +28,7 @@ sc31_fpga {
     DEVICE_IDV2_2 = U_INT32 0x2500
     DEVICE_IDV2_3 = U_INT32 0x1d00
     DEVICE_IDV2_4 = U_INT32 0x5200
-    DEVICE_ADDR = U_INT32 0xe000e000
+    DEVICE_ADDR = U_INT32 0xf000e000
     DEVICE_ADDR_IO = U_INT32 0x0
 
     # ------------------------------------------------------------------------
