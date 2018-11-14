@@ -633,15 +633,15 @@ function check_for_cham_devs {
 # parameters:
 # $1  DSC template directory
 # $2  instance number (subst. SCAN_BBIS_INSTANCE tag)
-# $3  PCI_BUS primary path (subst. SCAN_PCIPATH_PRIM tag)
-# $4  PCI_BUS sec. path (subst. SCAN_PCIPATH_SEC tag)
+# $3  PCI bus number (subst. SCAN_PCI_BUS_NR tag)
+# $4  PCI device number (subst. SCAN_PCI_DEV_NR tag)
 #
 function create_entry_dsc_f223 {
     echo "Writing f223_$2 section to system.dsc "
     debug_args " \$1 = $1   \$2 = $2    \$3 = $3    \$4 = $4  "
     cat $1/f223.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;"\
-"s/SCAN_MDIS_INSTANCE/$2/g;s/SCAN_PCIPATH_PRIM/`printf \"0x%x\" $3`/g;"\
-"s/SCAN_PCIPATH_SEC/`printf \"0x%x\" $4`/g" >> $DSC_FILE
+"s/SCAN_MDIS_INSTANCE/$2/g;s/SCAN_PCI_BUS_NR/`printf \"0x%x\" $3`/g;"\
+"s/SCAN_PCI_DEV_NR/`printf \"0x%x\" $4`/g" >> $DSC_FILE
 
 }
 
@@ -936,7 +936,8 @@ function scan_for_pci_devs {
     count_instance_d203_a24=0
     bus_path_prim=$1
     bus_path_sec=0
-    bus_path_sec_f223=0
+    bus_num_f223=0
+    dev_num_f223=0
     reverse_enum_f205=0
 
     while read line; do
@@ -961,13 +962,22 @@ function scan_for_pci_devs {
                 count_usb_devs=0
             fi
 
+            if [ "$count_usb_devs" == "1" ] && [ "$pcidevid" == "0x400a" ]; then
+                bus_num_f223=$pcibus
+		dev_num_f223=$pcidevnr
+            fi
+
             if [ "$count_usb_devs" == "4" ] && [ "$pcidevid" == "0x400a" ]; then
                 count_instance_f223=`expr $count_instance_f223 + 1`
                 echo " -> F223 nr. $count_instance_f223 found, adding to system descriptor"
                 count_usb_devs=0
                 state_check_f223=0
+                if [ "$count_instance_f223" == "1" ]; then
+                    G_makefileLlDriver+=" PI7C9_GPIO/DRIVER/COM/driver.mak"
+                    G_makefileLlTool+=" PI7C9_GPIO/EXAMPLE/PI7C9_GPIO_SIMP/COM/program.mak"
+                fi
                 create_entry_dsc_f223 $DSC_TPL_DIR $count_instance_f223 \
-                    $bus_path_prim $bus_path_sec_f223
+                    $bus_num_f223 $dev_num_f223
             fi
         fi
 
@@ -990,8 +1000,6 @@ function scan_for_pci_devs {
 	# check if a F223 starts here
         if [ "$pcivend" == "0x12d8" ] && [ "$pcidevid" == "0xe110" ]; then
             echo "Found Pericom PCI bridge. Keep looking if F223 appears"
-            # store PCI devnr. in case its a F223
-            bus_path_sec_f223=$pcidevnr
             state_check_f223=1
         fi
 

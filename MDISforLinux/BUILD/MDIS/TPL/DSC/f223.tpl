@@ -11,7 +11,8 @@ f223_SCAN_BBIS_INSTANCE {
     # ------------------------------------------------------------------------
     #  		PCI configuration
     # ------------------------------------------------------------------------
-    PCI_BUS_PATH = BINARY SCAN_PCIPATH_PRIM,SCAN_PCIPATH_SEC
+    PCI_BUS_NUMBER = U_INT32 SCAN_PCI_BUS_NR
+    PCI_DEVICE_NUMBER = U_INT32 SCAN_PCI_DEV_NR
     DEVICE_SLOT_0 = U_INT32 0x0
     SKIP_DEV_BRIDGE_CHECK = U_INT32 0x1
 
