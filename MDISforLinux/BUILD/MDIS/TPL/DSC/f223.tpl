@@ -6,7 +6,7 @@ f223_SCAN_BBIS_INSTANCE {
     DESC_TYPE = U_INT32 0x2
     HW_TYPE = STRING PCI
     _WIZ_MODEL = STRING F223
-    _WIZ_BUSIF = STRING cpu,0
+    _WIZ_BUSIF = STRING cpu,1
 
     # ------------------------------------------------------------------------
     #  		PCI configuration
