@@ -278,13 +278,28 @@ int mk_ioctl (
 			MDIS_OPEN_DEVICE_DATA mop;
 			BBIS_ENTRY bbEnt;	/* thrown away */
 			BBIS_HANDLE *bh; 	/* thrown away */
+			void *brdData;
 
 			if( copy_from_user ((void *)&mop, (void *)arg, sizeof(mop)) ){
 				ret = -EFAULT;
 				break;
 			}
+
+			brdData = mop.brdData;
+			mop.brdData = kmalloc( mop.brdDescLen, GFP_KERNEL );
+			if( mop.brdData == NULL ){
+				ret = -ENOMEM;
+				break;
+			}
+			if( copy_from_user ((void *)mop.brdData, brdData, mop.brdDescLen) ){
+ 				ret = -EFAULT;
+				break;
+			}
+
 			ret = bbis_open( mop.brdName, (DESC_SPEC)mop.brdData, 	
 							 &bh, &bbEnt );
+
+			kfree( mop.brdData );
 		}
 		break;
 
