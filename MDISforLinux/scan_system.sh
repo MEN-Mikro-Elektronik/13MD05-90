@@ -1052,7 +1052,9 @@ function scan_for_pci_devs {
 			fi
 			mv "$TMP_F205_DSC.tmp" "$TMP_F205_DSC"
 		fi
-		if [ $pcidevnr == 15 ]; then
+                boardPosition=$(get_board_outermost_position "0x1172" "0xd203" "0xff00" $pcibus)
+		echo "boardPosition: ${boardPosition}"
+		if [ "$pcidevnr" == "$boardPosition" ]; then
 			if [ -e "$TMP_F205_DSC" ]; then
 				cat "$TMP_F205_DSC" >> "$DSC_FILE"
 			fi
@@ -1065,29 +1067,9 @@ function scan_for_pci_devs {
 		echo "Found d203 F204/F205 board with 1 or 2 M-Modules A24"
 		pcibusslot=$G_cPciRackSlotStandard
 		busif="1"     # for standard cPCI always "cpu,1"
-		if [ $reverse_enum_f205 == 0 ]; then
-			cat /dev/null > "$TMP_F205_DSC"
-			cat /dev/null > "$TMP_F205_DSC.tmp"
-			reverse_enum_f205=1
-			G_cPciRackSlotStandard=$(($G_cPciRackSlotStandard + 1 + (15 - $pcidevnr)))
-		else
-			reverse_enum_f205=$(($reverse_enum_f205 + 1))
-		fi
-		count_instance_d203_a24=$(($G_cF205 + 1 - $reverse_enum_f205))
+		count_instance_d203_a24=`expr $count_instance_d203_a24 + 1`
 		echo "Found d203_a24 no. $count_instance_d203_a24"
-		create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_d203_a24 $busif $pcibus "F205" $pcidevnr "$TMP_F205_DSC.tmp"
-		if [ -e "$TMP_F205_DSC.tmp" ]; then
-			if [ -e "$TMP_F205_DSC" ]; then
-				cat "$TMP_F205_DSC" >> "$TMP_F205_DSC.tmp"
-			fi
-			mv "$TMP_F205_DSC.tmp" "$TMP_F205_DSC"
-		fi
-		if [ $pcidevnr == 15 ]; then
-			if [ -e "$TMP_F205_DSC" ]; then
-				cat "$TMP_F205_DSC" >> "$DSC_FILE"
-			fi
-			reverse_enum_f205=0
-		fi
+		create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_d203_a24 $busif $pcibus "F205_A24" $pcidevnr $DSC_FILE
 	fi
 
     done <  $TMP_PCIDEVS
@@ -1219,6 +1201,40 @@ function scan_for_mmodules {
 #
 function count_f205_boards {
 	G_cF205=`cat $TMP_PCIDEVS | awk '{if ($6 == "0x1172" && $7 == "0xd203" && $8 == "0xff00") print $1}' | wc -l`
+}
+
+############################################################################
+# Check Compact PCI board outermost dev position on bus
+#
+#   Nr.| dom|bus|dev|fun| Ven ID | Dev ID | SubVen ID |
+#     .
+#
+#    15|  0   4  13   0   0x1172   0x203d    0xff00
+#    16|  0   4  15   0   0x1172   0x203d    0xff00
+#
+# parameters:
+# $1 Ven ID
+# $2 Dev ID
+# $3 SubVen ID
+# $4 Bus number
+#
+function get_board_outermost_position {
+	PciDevNrLast=0
+
+        DeviceNr=`grep "$1 * $2 * $3" $TMP_PCIDEVS | wc -l`
+        if [ $DeviceNr -eq "0" ]; then
+                echo "No device found: $1 $2 $3 "
+        fi
+
+        for i in `seq 1 $DeviceNr`
+        do
+                PciBus=`grep "$1 * $2 * $3" $TMP_PCIDEVS | awk NR==$i'{print $3}'`
+                PciDevNr=`grep "$1 * $2 * $3" $TMP_PCIDEVS | awk NR==$i'{print $4}'`
+                if [ $PciBus -eq $4 ] && [ $PciDevNrLast -lt $PciDevNr ]; then
+                        PciDevNrLast=$PciDevNr
+                fi
+        done
+        echo $PciDevNrLast
 }
 
 ############################################################################
