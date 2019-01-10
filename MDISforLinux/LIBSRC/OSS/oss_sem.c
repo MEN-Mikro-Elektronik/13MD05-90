@@ -217,7 +217,7 @@ int32 OSS_SemWait(
 
 	/* sem->lock is locked here */
 	{
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,13,0)
 		wait_queue_t __wait;
 #else
 		wait_queue_entry_t __wait;
