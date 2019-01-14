@@ -23,15 +23,47 @@ OPT=/opt
 MENLINUX=menlinux
 MENHISTORY=HISTORY
 
-if [ $# -gt 0 ]; then
-   if [ ! -z $1 ]; then
-      echo "Use $1 as MDIS installation path"
-      MENLINUX_ROOT=$1
-   fi
-else
-   MENLINUX_ROOT=$OPT/$MENLINUX
-fi
+# default path
+MENLINUX_ROOT=$OPT/$MENLINUX
+# default install parameter
+FORCE_INSTALL="0"
 
+# read parameters
+while test $# -gt 0 ; do
+   case "$1" in 
+        -h|--help)
+                echo "options:"
+                echo "-h, --help        show brief help"
+                echo "-p, --path=PATH   specify a installation path"
+                echo "-f, --forceyes    install without asking, do not scan the hw"
+                exit 0
+                ;;
+        -p)
+                shift
+                if test $# -gt 0; then
+                        export MENLINUX_ROOT=$1
+                else
+                        echo "no path specified"
+                        exit 1
+                fi
+                shift
+                ;;
+        --path*)
+                export MENLINUX_ROOT=`echo $1 | sed -e 's/^[^=]*=//g'`
+                shift
+                ;;
+        -f|--forceyes)
+                shift
+                export FORCE_INSTALL="1"
+                echo "INSTALL without asking:"
+                echo "install sources into /opt/menlinux"
+                echo "do not scan the hardware"
+                ;;
+        *)
+                break
+                ;;
+        esac
+done
 
 # system package git repository name
 MDIS_PACKAGE=MDISforLinux
@@ -116,10 +148,12 @@ echo " | This installer will guide you through the installation process and perf
 echo " | steps. Upon installation the availability of some tools will be checked.              |"
 echo " |_______________________________________________________________________________________|"
 
-get_ynq_answer "Continue ? "
-case $? in
-    1 | 2) echo "Aborted."; exit 1;;
-esac
+if [ $FORCE_INSTALL -ne "1" ]; then
+    get_ynq_answer "Continue ? "
+    case $? in
+        1 | 2) echo "Aborted."; exit 1;;
+    esac
+fi
 
 STARTDIR=`pwd`
 
@@ -192,10 +226,13 @@ else
    if [ -d "$MENLINUX_ROOT" ]; then
       echo
       echo "Directory $MENLINUX_ROOT already exists."
-      get_ynq_answer "Overwrite existing files?"
-      case $? in
-         1 | 2) echo "Aborted."; exit 1;;
-      esac
+        
+      if [ $FORCE_INSTALL -ne "1" ]; then
+          get_ynq_answer "Overwrite existing files?"
+          case $? in
+              1 | 2) echo "Aborted."; exit 1;;
+          esac
+      fi
    fi
 fi
 
@@ -263,12 +300,16 @@ echo
 echo "Congratulations, you installed MDIS System Package for Linux plus MDIS Low Level Drivers successfully."
 echo ""
 echo ""
-get_ynq_answer "Would you like to run a system scan to automatically find MEN hardware and generate an MDIS project ?"
-case $? in
-	     0 ) run_scan_system ${MENLINUX_ROOT};;
-         1 | 2) show_next_steps ;;
-esac
 
+if [ $FORCE_INSTALL -ne "1" ]; then
+   get_ynq_answer "Would you like to run a system scan to automatically find MEN hardware and generate an MDIS project ?"
+   case $? in
+	        0 ) run_scan_system ${MENLINUX_ROOT};;
+            1 | 2) show_next_steps ;;
+   esac
+else
+   show_next_steps
+fi
 
 echo
 echo "Please download and read 21md05-90 for further instructions."
