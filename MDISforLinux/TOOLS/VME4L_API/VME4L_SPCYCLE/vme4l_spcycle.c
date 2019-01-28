@@ -30,8 +30,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-static const char RCSid[]="$Id: vme4l_spcycle.c,v 1.3 2009/07/09 11:04:50 rt Exp $";
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

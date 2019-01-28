@@ -41,8 +41,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-static const char RCSid[]="$Id: vme4l_mbox.c,v 1.3 2009/06/03 19:18:11 rt Exp $";
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -38,8 +38,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-static const char RCSid[]="$Id: vme4l_m99irq.c,v 1.4 2009/09/24 11:10:10 CRuff Exp $";
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

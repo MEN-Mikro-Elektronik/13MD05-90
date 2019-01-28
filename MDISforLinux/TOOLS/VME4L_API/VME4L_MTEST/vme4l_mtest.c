@@ -30,8 +30,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-static const char RCSid[]="$Id: vme4l_mtest.c,v 1.5 2013/10/24 09:56:13 ts Exp $";
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

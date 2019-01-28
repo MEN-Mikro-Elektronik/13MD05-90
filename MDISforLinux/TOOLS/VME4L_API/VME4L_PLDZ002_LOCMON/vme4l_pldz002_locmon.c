@@ -41,8 +41,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-static const char RCSid[]="$Id: vme4l_pldz002_locmon.c,v 1.2 2009/06/03 19:19:33 rt Exp $";
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

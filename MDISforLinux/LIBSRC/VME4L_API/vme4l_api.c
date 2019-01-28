@@ -29,8 +29,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-static const char _RCSid[] = "$Id: vme4l_api.c,v 1.9 2013/09/02 18:31:16 ts Exp $";
-
 /***************************************************************************/
 /*! \mainpage
 
