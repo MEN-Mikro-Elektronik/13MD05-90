@@ -1259,6 +1259,14 @@ function create_makefile {
     # start with the template
     cat $DSC_TPL_DIR/Makefile.tpl > $TMP_MAKE_FILE
 
+    # write library installation directory
+    local LIB_INSTALL_DIR="/usr/local/lib"
+    local LIN_DISTRO_NAME="$(grep -oPs "(?<=^NAME=\")[^\"]+(?=\")" /etc/os-release)"
+    if [ "${LIN_DISTRO_NAME}" == "CentOS Linux" ]; then
+        LIB_INSTALL_DIR="/usr/lib"
+    fi
+    sed -i.bak "s/SCAN_LIB_INSTALL_DIR/${LIB_INSTALL_DIR}/g" $TMP_MAKE_FILE
+
     # write linux kernel directory
     kern_dir=`echo "$LIN_SRC_DIR" | sed "s/\//@/g"`
     sed -i.bak "s/SCAN_LIN_KERNEL_DIR/$kern_dir/g" $TMP_MAKE_FILE

@@ -75,14 +75,14 @@ BIN_INSTALL_DIR = /usr/local/bin
 # are to be installed. Often something like /usr/local/lib.
 # (relative to the target's root tree)
 ##REPLNEWLINE023
-LIB_INSTALL_DIR = /usr/local/lib
+LIB_INSTALL_DIR = SCAN_LIB_INSTALL_DIR
 ##REPLNEWLINE024
 # The directory in which the static user mode libraries are to
 # be installed. Often something like /usr/local/lib on
 # development host. For cross compilation select a path
 # relative to your cross compilers lib directory.
 ##REPLNEWLINE025
-STATIC_LIB_INSTALL_DIR = /usr/local/lib
+STATIC_LIB_INSTALL_DIR = SCAN_LIB_INSTALL_DIR
 ##REPLNEWLINE026
 # The directory in which the MDIS descriptors are to be
 # installed. Often something like /etc/mdis. (Relative to the
