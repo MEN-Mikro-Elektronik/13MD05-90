@@ -1265,7 +1265,8 @@ function create_makefile {
     if [ "${LIN_DISTRO_NAME}" == "CentOS Linux" ]; then
         LIB_INSTALL_DIR="/usr/lib"
     fi
-    sed -i.bak "s/SCAN_LIB_INSTALL_DIR/${LIB_INSTALL_DIR}/g" $TMP_MAKE_FILE
+    local lib_dir="$(echo "${LIB_INSTALL_DIR}" | sed "s/\//@/g")"
+    sed -i.bak "s/SCAN_LIB_INSTALL_DIR/${lib_dir}/g" $TMP_MAKE_FILE
 
     # write linux kernel directory
     kern_dir=`echo "$LIN_SRC_DIR" | sed "s/\//@/g"`
