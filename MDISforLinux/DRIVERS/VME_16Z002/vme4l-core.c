@@ -1013,7 +1013,7 @@ static int vme4l_start_wait_dma(void)
 	int rv;
 	uint32_t ticks = 5 * HZ;
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4,14,0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,13,0)
 	wait_queue_t __wait;
 #else
 	wait_queue_entry_t __wait;

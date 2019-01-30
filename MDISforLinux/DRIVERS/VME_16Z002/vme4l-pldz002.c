@@ -509,9 +509,6 @@ static int DmaSetup(
 	int direction,
 	int swapMode,
 	vmeaddr_t *vmeAddr,
-	dma_addr_t *dmaAddr,
-	int *dmaLeft,
-	int vme_block_size,
 	int flags)
 {
 	int alignVme=4, sg, rv=0, endBd;
