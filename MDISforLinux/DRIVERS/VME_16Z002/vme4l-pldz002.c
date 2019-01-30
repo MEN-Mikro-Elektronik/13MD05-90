@@ -1527,8 +1527,8 @@ static VME4L_BRIDGE_DRV G_bridgeDrv = {
 	.writePio8			= WritePio8,
 	.writePio16			= WritePio16,
 	.writePio32			= WritePio32,
-//	.dmaSetup			= DmaSetup,
-	.dmaSetup			= NULL, /* this function is optional */ 
+	.dmaSetup			= DmaSetup,
+//	.dmaSetup			= NULL, /* this function is optional */ 
 	.dmaBounceSetup		= NULL,
 	.dmaStart			= DmaStart,
 	.dmaStop			= DmaStop,
@@ -2004,8 +2004,7 @@ static int DEVINIT pci_init_one (
 		G_bridgeDrv.dmaBounceSetup 	= DmaBounceSetup;
 
 	if( _PLDZ002_USE_BM_DMA(h) ){
-//		G_bridgeDrv.dmaSetup 		= DmaSetup;
-                G_bridgeDrv.dmaSetup 		= NULL; /* this function is optional */ 
+		G_bridgeDrv.dmaSetup 		= DmaSetup;
 		pci_set_master( pdev );	/* enable bus mastering */
 	}
 		
