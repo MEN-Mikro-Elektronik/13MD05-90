@@ -1233,7 +1233,7 @@ static int Tsi148_RequestAddrWindow(
 	*physAddrP = (void *)(U_INT32_OR_64) vme4l_bh->vmeOut[winNo].phys;
 	*sizeP = size;
 	*vmeAddrP = startAddr;
-	*bDrvDataP = (void *) winNo;
+	*bDrvDataP = (void *)(U_INT32_OR_64) winNo;
 	winResP->spc = spc;
 
 	rv = TSI148_OK;
@@ -1613,7 +1613,7 @@ static int Tsi148_SlaveWindowCtrl(
 	winResP->size = size;
 	winResP->spc = spc;
 	*physAddrP = (void *) dmaAddr;
-	*bDrvDataP = (void *) winNo;
+	*bDrvDataP = (void *)(U_INT32_OR_64) winNo;
 
 	rv = TSI148_OK;
 CLEANUP:
@@ -2549,7 +2549,7 @@ static void DEVEXIT tsi148_pci_remove_one( struct pci_dev *pdev )
 
 	/* outbound windows */
 	for( i=0; i<TSI148_OUTBOUND_NO; i++ ) {
-		Tsi148_ReleaseAddrWindow( vme4l_bh, 0, 0, 0, 0, (void *) i );
+		Tsi148_ReleaseAddrWindow( vme4l_bh, 0, 0, 0, 0, (void *)(U_INT32_OR_64) i );
 	}
 
 	/* registers */

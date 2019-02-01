@@ -46,6 +46,8 @@ typedef uint32_t u_int32;
 
 #include <MEN/pldz002.h>
 
+#define VERSION_CODE_NEW_IRQFLAGS 0 /* evaluates to 0 by compiler if not defined */
+
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0)
 #define DEVINIT     __devinit
 #define DEVINITDATA __devinitdata

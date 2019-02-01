@@ -39,7 +39,10 @@
 #endif
 
 #ifdef __KERNEL__
+# include <linux/types.h>
 # include <asm/io.h>
+#else
+# include <stdint.h>
 #endif
 
 /*---- MEMORY MAPPED I/O ---*/
@@ -48,12 +51,12 @@ typedef void* MACCESS;         	/* access pointer */
 
 #define MACCESS_CLONE(ma_src,ma_dst,offs)	ma_dst=(ma_src)+((offs))
 
-#define MREAD_D8(ma,offs)		readb((MACCESS)((ma)+(offs)))
-#define MREAD_D16(ma,offs)		RSWAP16(readw((MACCESS)((int*)((ma)+(offs)))))
+#define MREAD_D8(ma,offs)		readb((MACCESS)(uintptr_t)((ma)+(offs)))
+#define MREAD_D16(ma,offs)		RSWAP16(readw((MACCESS)(uintptr_t)((ma)+(offs))))
 #define MREAD_D32(ma,offs)		RSWAP32(readl((MACCESS)((int*)((ma)+(offs)))))
 
 #define MWRITE_D8(ma,offs,val)		writeb(val,(MACCESS)(int*)((ma)+(offs)))
-#define MWRITE_D16(ma,offs,val)		writew(WSWAP16(val),(MACCESS)(ma)+(offs))
+#define MWRITE_D16(ma,offs,val)		writew(WSWAP16(val),(MACCESS)(uintptr_t)(ma)+(offs))
 #define MWRITE_D32(ma,offs,val)		writel(WSWAP32(val),(MACCESS)(ma)+(offs))
 
 #define MSETMASK_D8(ma,offs,mask)	\
