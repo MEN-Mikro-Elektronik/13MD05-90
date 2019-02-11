@@ -8,11 +8,11 @@ change_to_gpl_2.sh
 .settings
 .kernelsettings
 .kernelsubdirs
-BIN/
-LIB/
+/BIN/
+/LIB/
 /Makefile
 /Makefile.*
-OBJ/
-DESC/
+/OBJ/
+/DESC/
 /system.dsc
 /system.dsc.*
