@@ -1646,7 +1646,7 @@ elif  [ "$main_cpu" == "SC25" ]; then
     cat $DSC_TPL_DIR/sc25.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
     cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE
 elif  [ "$main_cpu" == "SC31" ]; then 
-    cat $DSC_TPL_DIR/sc31.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
+	cat $DSC_TPL_DIR/sc31.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g; s/SCAN_SMB_BUS_NR/`printf \"0x%x\" $G_SmBusNumber`/g;" >> $DSC_FILE
     cat $DSC_TPL_DIR/Makefile.sc31.tpl >> $MAKE_FILE
 else
     #all other CPUs: detect PCI boards, start with CPU/SMB drivers
