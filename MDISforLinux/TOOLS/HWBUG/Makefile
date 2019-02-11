@@ -15,7 +15,7 @@ CC=gcc
 
 CFLAGS	= -g -s $(MAK_SWITCH) -I$(MEN_LIN_DIR)/INCLUDE/COM -I=. -I/usr/src/linux-4.9.0/include
 
-WARN_LEVEL := -Wall -Wno-format
+WARN_LEVEL := -Wall -Wno-format -Wno-strict-aliasing
 
 %.o : %.c  MEN/typdefs.h
 	echo Compiling $<

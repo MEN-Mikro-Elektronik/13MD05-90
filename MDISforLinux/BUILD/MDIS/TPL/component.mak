@@ -128,8 +128,10 @@ ifndef MAK_SWITCH
 endif
 
 ifndef WARN_LEVEL
-# enable all warnings, but disable warning about wrong type passing to kprintf 
-    WARN_LEVEL := -Wno-format
+# enable all warnings, but disable warning about wrong type passing to kprintf
+# and disable warning about breaking strict aliasing rules when optimization is
+# above level 1 (compilers prior to gcc 7)
+    WARN_LEVEL := -Wno-format -Wno-strict-aliasing
 endif
 
 # check if we have a 64bit system

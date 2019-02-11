@@ -112,8 +112,10 @@ ifeq ($(LONG_WIDTH),_64)
 endif
 
 ifndef WARN_LEVEL
-# enable all warnings, but disable warning about wrong type passing to printf 
-    WARN_LEVEL := -Wall -Wno-format
+# enable all warnings, but disable warning about wrong type passing to printf
+# and disable warning about breaking strict aliasing rules when optimization is
+# above level 1 (compilers prior to gcc 7)
+    WARN_LEVEL := -Wall -Wno-format -Wno-strict-aliasing
 endif
 
 CFLAGS          :=  $(FLAGS) $(DEF) $(MAK_SWITCH) $(INC_DIRS) \
