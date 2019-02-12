@@ -972,11 +972,11 @@ static int Tsi148_OutboundWinSet(
 
 	/* set-up registers */
 	VME4LDBG( "vme4l(%s):\n", __FUNCTION__ );
-	VME4LDBG( "\tOTSA 0x%x_%x\n", win.otsau, win.otsal );
-	VME4LDBG( "\tOTEA 0x%x_%x\n", win.oteau, win.oteal );
-	VME4LDBG( "\tOTOF 0x%x_%x\n", win.otofu, win.otofl );
-	VME4LDBG( "\tOTBS 0x%x\n", win.otbs );
-	VME4LDBG( "\tOTAT 0x%x\n", win.otat );
+	VME4LDBG( "\tOTSA 0x%x_%x\n", (unsigned int)win.otsau, (unsigned int)win.otsal );
+	VME4LDBG( "\tOTEA 0x%x_%x\n", (unsigned int)win.oteau, (unsigned int)win.oteal );
+	VME4LDBG( "\tOTOF 0x%x_%x\n", (unsigned int)win.otofu, (unsigned int)win.otofl );
+	VME4LDBG( "\tOTBS 0x%x\n", (unsigned int)win.otbs );
+	VME4LDBG( "\tOTAT 0x%x\n", (unsigned int)win.otat );
 
 	/* disable window first */
 	TSI148_CTRL_CLRMASK( lcsr.outbound[winNo].otat, TSI148_OTAT_EN );
@@ -1053,10 +1053,10 @@ static int Tsi148_InboundWinSet(
 
 	/* set-up registers */
 	VME4LDBG( "vme4l(%s):\n", __FUNCTION__ );
-	VME4LDBG( "\tITSA 0x%08x_%08x\n", win.itsau, win.itsal );
-	VME4LDBG( "\tITEA 0x%08x_%08x\n", win.iteau, win.iteal );
-	VME4LDBG( "\tITOF 0x%08x_%08x\n", win.itofu, win.itofl );
-	VME4LDBG( "\tITAT 0x%08x\n", win.itat );
+	VME4LDBG( "\tITSA 0x%08x_%08x\n", (unsigned int)win.itsau, (unsigned int)win.itsal );
+	VME4LDBG( "\tITEA 0x%08x_%08x\n", (unsigned int)win.iteau, (unsigned int)win.iteal );
+	VME4LDBG( "\tITOF 0x%08x_%08x\n", (unsigned int)win.itofu, (unsigned int)win.itofl );
+	VME4LDBG( "\tITAT 0x%08x\n", (unsigned int)win.itat );
 
 	/* disable window first */
 	TSI148_CTRL_CLRMASK( lcsr.inbound[winNo].itat, TSI148_ITAT_EN );
@@ -1113,14 +1113,14 @@ static int Tsi148_AllocOutbResource(
 	if( (allocFailed = pci_bus_alloc_resource( vme4l_bh->pdev->bus, &winResP->pciResrc, winSize, (~TSI148_OTOF_OFFL_MASK)+1,
 							PCIBIOS_MIN_MEM, 0, /* non prefetching */ NULL,	NULL)) != 0 ) {
 
-		printk( KERN_ERR "*** vme4l(%s): failed to allocate PCI memory (size 0x%lx), check BIOS settings\n", __FUNCTION__, winSize );
+		printk( KERN_ERR "*** vme4l(%s): failed to allocate PCI memory (size 0x%lx), check BIOS settings\n", __FUNCTION__, (long unsigned int)winSize );
 
 		goto CLEANUP;
 	}
 
 	winResP->phys = winResP->pciResrc.start;
 
-	VME4LDBG( "vme4l(%s): outbound window %d allocated 0x%llx..0x%llx\n", __FUNCTION__, winNo, winResP->pciResrc.start, winResP->pciResrc.end );
+	VME4LDBG( "vme4l(%s): outbound window %d allocated 0x%llx..0x%llx\n", __FUNCTION__, winNo, (long long unsigned int)winResP->pciResrc.start, (long long unsigned int)winResP->pciResrc.end );
 	
 	winResP->memReq = 1;
 	winResP->inUse = 1;
@@ -1208,12 +1208,12 @@ static int Tsi148_RequestAddrWindow(
 	}
 	if( (endAddr-1) >  G_winSettings[spc].out.spaceEnd ) {
 
-		printk( KERN_ERR "*** vme4l(%s): wrong window end addr 0x%lx\n", __FUNCTION__, endAddr-1 );
+		printk( KERN_ERR "*** vme4l(%s): wrong window end addr 0x%lx\n", __FUNCTION__, (long unsigned int)(endAddr-1) );
 
 		goto CLEANUP;
 	}
 
-	VME4LDBG( "vme4l(%s): set-up outbound window %d (vmeAddr=0x%lx size=0x%lx)\n", __FUNCTION__, winNo, startAddr, size);
+	VME4LDBG( "vme4l(%s): set-up outbound window %d (vmeAddr=0x%lx size=0x%lx)\n", __FUNCTION__, winNo, (long unsigned int)startAddr, (long unsigned int)size);
 
 	/* get PCI memory */
 	if( Tsi148_AllocOutbResource(vme4l_bh, winNo, size, spc) != TSI148_OK ){
@@ -1456,7 +1456,7 @@ static int Tsi148_SlaveWindowCtrl(
 	
 	TSI148_LOCK_STATE_IRQ( ps );
 
-	VME4LDBG( "vme4l(%s): spc=%d vmeAddr=0x%lx size=0x%lx\n",  __FUNCTION__, spc, vmeAddr, size);
+	VME4LDBG( "vme4l(%s): spc=%d vmeAddr=0x%lx size=0x%lx\n",  __FUNCTION__, spc, (long unsigned int)vmeAddr, (long unsigned int)size);
 
 	/* check parameters */
 	if( spc >= VME4L_TSI148_WINSETTINGS_NO || spc < VME4L_SPC_SLV0
@@ -1473,7 +1473,7 @@ static int Tsi148_SlaveWindowCtrl(
 	}
 	if( vmeAddr & ~vmeMask ) {
 		printk( KERN_ERR "*** vme4l(%s): VME addr 0x%lx invalid\n",
-				__FUNCTION__, vmeAddr );
+				__FUNCTION__, (long unsigned int)vmeAddr );
 		goto CLEANUP;
 	}
 	if( size & ~vmeMask ) {
@@ -1483,7 +1483,7 @@ static int Tsi148_SlaveWindowCtrl(
 	}
 	if( (vmeAddr+size-1) > G_winSettings[spc].in.spaceEnd ) {
 		printk( KERN_ERR "*** vme4l(%s): 0x%lx..0x%lx outside addr range\n",
-				__FUNCTION__, vmeAddr, vmeAddr+size-1 );
+				__FUNCTION__, (long unsigned int)vmeAddr, (long unsigned int)(vmeAddr+size-1) );
 		goto CLEANUP;
 	}
 	
@@ -1598,7 +1598,7 @@ static int Tsi148_SlaveWindowCtrl(
 	}
 	
 	VME4LDBG( "vme4l(%s): %s inbound window %d (vmeAddr=0x%lx size=0x%lx)\n",
-			  __FUNCTION__, (size) ? "set-up" : "disable", winNo, vmeAddr, size );
+			  __FUNCTION__, (size) ? "set-up" : "disable", winNo, (long unsigned int)vmeAddr, (long unsigned int)size );
 	
 	if( Tsi148_InboundWinSet(winNo, spc, vmeAddr, dmaAddr, size)
 		!= TSI148_OK ){
