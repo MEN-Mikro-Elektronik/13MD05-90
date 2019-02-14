@@ -528,7 +528,12 @@ function scan_cham_table {
 			G_makefileLlDriver+=" "$lldrv
 
 			lltool=`fgrep "program.mak" $xmlfile | sed "s/<makefilepath>//;s/<\/makefilepath>//"`
-			G_makefileLlTool+=" "$lltool
+			for llt in ${lltool}; do
+				# QSPIM_CB example is for OS-9, so do not add it
+				if [ "${llt}" != "QSPIM/EXAMPLE/QSPIM_CB/COM/program.mak" ]; then
+					G_makefileLlTool+=" ${llt}"
+				fi
+			done
 			usrlib=`fgrep "library.mak" $xmlfile | sed "s/<makefilepath>//;s/<\/makefilepath>//"`
 			G_makefileUsrLibs+=" "$usrlib
 		    fi
