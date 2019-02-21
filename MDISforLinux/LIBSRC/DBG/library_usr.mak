@@ -6,15 +6,8 @@
 #
 #    Description: makefile descriptor for user space DBG library
 #
-#---------------------------------[ History ]---------------------------------
-#
-#   $Log: library_usr.mak,v $
-#   Revision 1.1  2005/07/08 11:40:36  cs
-#   Initial Revision
-#
-#
 #-----------------------------------------------------------------------------
-# (c) Copyright 2005 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
+#   Copyright (c) 2005-2019, MEN Mikro Elektronik GmbH
 #*****************************************************************************
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

@@ -7,22 +7,8 @@
 #    Description: Makefile descriptor file for switch confgiration lib
 #                  (Marvell 88E6095)
 #                      
-#---------------------------------[ History ]---------------------------------
-#
-#   $Log: library.mak,v $
-#   Revision 1.1  2008/09/15 12:57:33  GLeonhardt
-#   Initial Revision
-#
-#   Revision 1.2  2008/05/19 13:13:53  GLeonhardt
-#   R:1. Virtual LANs added
-#   M:1. Added dependency of mrvl88E6095.h
-#
-#   Revision 1.1  2008/03/03 14:09:18  GLeonhardt
-#   Initial Revision
-#
-#
 #-----------------------------------------------------------------------------
-#   (c) Copyright 2008 by MEN mikro elektronik GmbH, Nuernberg, Germany 
+#   Copyright (c) 2008-2019, MEN Mikro Elektronik GmbH
 #*****************************************************************************
 
 MAK_NAME=uti

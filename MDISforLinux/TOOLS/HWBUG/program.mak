@@ -6,18 +6,8 @@
 #
 #    Description: Makefile definitions for the FILETYPE mcvs tool
 #
-#---------------------------------[ History ]---------------------------------
-#
-#   $Log: program.mak,v $
-#   Revision 1.1  2008/09/15 13:15:41  GLeonhardt
-#   Initial Revision
-#
-#   Revision 1.1  2008/09/01 16:04:54  ts
-#   Initial Revision
-#
-#
 #-----------------------------------------------------------------------------
-#   (c) Copyright by MEN mikro elektronik GmbH, Germany
+#   Copyright (c) 2019, MEN Mikro Elektronik GmbH
 #*****************************************************************************
 
 MAK_NAME=hwbug

@@ -6,25 +6,8 @@
 #
 #    Description: makefile for Linux OSS lib for user space
 #
-#---------------------------------[ History ]---------------------------------
-#
-#   $Log: library_usr.mak,v $
-#   Revision 2.4  2007/07/16 09:55:10  cs
-#   added: use specific ident file for user space lib
-#
-#   Revision 2.3  2007/07/13 17:44:32  cs
-#   added:
-#     + pciutils header files to dependancies
-#
-#   Revision 2.2  2005/07/08 16:49:08  cs
-#   removed pciutils linking from oss_usr linking
-#
-#   Revision 2.1  2005/07/08 11:32:51  cs
-#   Initial Revision
-#
-#
 #-----------------------------------------------------------------------------
-# (c) Copyright 2005 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
+#   Copyright (c) 2005-2019, MEN Mikro Elektronik GmbH
 #*****************************************************************************
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

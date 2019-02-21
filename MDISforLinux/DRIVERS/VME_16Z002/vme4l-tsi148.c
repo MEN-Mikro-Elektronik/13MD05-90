@@ -13,7 +13,7 @@
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation; version 2 of the License.
  *---------------------------------------------------------------------------
- * (c) Copyright 2008-2016 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
+ * Copyright (c) 2008-2019, MEN Mikro Elektronik GmbH
  ******************************************************************************/
 /*
  * This program is free software: you can redistribute it and/or modify

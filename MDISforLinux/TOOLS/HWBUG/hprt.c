@@ -29,7 +29,7 @@
  *	static  u_int32 _access_shmem( physadr, size, read, value, be_flag )
  *
  *---------------------------------------------------------------------------
- * (c) Copyright 1995 by MEN mikro elektronik GmbH, Nuernberg, Germany 
+ * Copyright (c) 1995-2019, MEN Mikro Elektronik GmbH
  ****************************************************************************/
  /*
  * This program is free software: you can redistribute it and/or modify

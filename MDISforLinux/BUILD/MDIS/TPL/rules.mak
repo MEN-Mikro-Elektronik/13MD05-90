@@ -11,80 +11,8 @@
 #				 configurations makefile
 #
 #
-#-------------------------------[ History ]---------------------------------
-#
-#  $Log: rules.mak,v $
-#  Revision 2.27  2012/11/02 14:41:39  ts
-#  R: with late 2.6 and 3.x kernels surplus lines are written to .kernsettings
-#  M: use tail to use only the wanted settings in any case.
-#
-#  Revision 2.26  2011/05/25 16:52:23  CRuff
-#  R: 1. support for mixed io/mem mapped chameleon tables
-#  M: 1a) always build chameleon_io variant if chameleon
-#         variant is used
-#     1b) content of _ALL_CORE_COM_X86 not longer needed
-#
-#  Revision 2.25  2011/02/11 16:08:44  CRuff
-#  R: device nodes not persistent if udev device manager used
-#  M: cp mdis device node to persistent udev device directory (if existing)
-#
-#  Revision 2.24  2010/10/19 13:50:25  CRuff
-#  R: 1. build method is different for common and native core libraries
-#     2. cosmetics
-#  M: 1a) do not add all content of ALL_CORE_LIBS to _ALL_CORE1, but
-#         differentiate and add to _ALL_CORE1 or _ALL_CORE2 as needed
-#     2. rename symbol _ALL_CORE_X86 to _ALL_CORE_COM_X86
-#
-#  Revision 2.23  2010/07/14 10:44:55  CRuff
-#  R: 1. make building of core lib chameleon configurable in MDIS Wizard
-#  M: 1a) move CHAMELEON lib to symbol _ALL_CORE1
-#     1b) only include chameleon io variant if x86 architecture AND chameleon
-#         lib is selected by user
-#
-#  Revision 2.22  2010/07/01 11:06:59  CRuff
-#  R: generated linux header autoconf.h was moved to directory include/generated
-#     with kernel version 2.6.33
-#  M: 1. export TPL_DIR before getting the linux version
-#     2. make path to autoconf.h variable
-#     3. set autoconf.h path dependent on the linux version
-#
-#  Revision 2.21  2010/02/25 16:10:42  amorbach
-#  R: Gcov code coverage needed
-#  M: Variable CODE_COVERAGE added
-#
-#  Revision 2.20  2009/08/20 10:10:25  CRuff
-#  R: Descgen objects not deleted with make clean; may cause compiler errors
-#  M: define new variable _DESCGEN_OBJ (path to descgen objects)
-#
-#  Revision 2.19  2009/08/19 17:08:02  CRuff
-#  R: module men_chameleon_io should be built only for x86 systems
-#  M: 1. define new variable _ALL_CORE_X86 which holds makefile for module
-#     2. add _ALL_CORE_X86 to ALL_CORE if system architecture is x86
-#
-#  Revision 2.18  2009/05/12 16:01:41  CRuff
-#  R: Cyclic dependency for symbol ALL_CORE
-#  M: Changed symbol name of external symbol to ALL_CORE_LIBS
-#
-#  Revision 2.17  2009/04/30 16:26:53  CRuff
-#  R: make Kernel modules OSS and DBG configurable
-#  M: external symbol ALL_CORE has value 'no' if not defined; handle this
-#
-#  Revision 2.16  2009/04/27 18:00:07  CRuff
-#  R: make Kernel modules OSS and DBG configurable
-#  M: allow external definition of symbol _ALL_CORE1
-#
-#  Revision 2.15  2007/08/14 16:35:54  ts
-#  export VERSION_SUFFIX for driver.mak files to use 2.4/2.6 specific source
-#
-#  Revision 2.14  2007/05/11 15:14:53  ts
-#  use uname -r command to determine kernelversion on Selfhosted systems
-#
-#  Revision 2.13  2006/09/26 11:05:48  ts
-#  Adapted for either classic RTAI or Xenomai usage
-#
-#  Initial Revision
-#---------------------------------------------------------------------------
-# (c) Copyright 2006 by MEN mikro elektronik GmbH, Nuernberg, Germany
+#-----------------------------------------------------------------------------
+#   Copyright (c) 2006-2019, MEN Mikro Elektronik GmbH
 #***************************************************************************/
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

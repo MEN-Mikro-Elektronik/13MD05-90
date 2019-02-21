@@ -5,17 +5,8 @@
 #
 #    Description: makefile for Linux DBG module
 #
-#---------------------------------[ History ]---------------------------------
-#
-#   $Log: library.mak,v $
-#   Revision 1.2  2005/07/07 14:54:09  cs
-#   Copyright line changed
-#
-#   Revision 1.1  2001/01/19 14:38:26  kp
-#   Initial Revision
-#
 #-----------------------------------------------------------------------------
-# (c) Copyright 2000 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
+#   Copyright (c) 2000-2019, MEN Mikro Elektronik GmbH
 #*****************************************************************************
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

@@ -17,7 +17,7 @@
  *     Switches: -
  *
  *---------------------------------------------------------------------------
- * (c) Copyright 2001 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
+ * Copyright (c) 2001-2019, MEN Mikro Elektronik GmbH
  ******************************************************************************/
 /*
  * This program is free software: you can redistribute it and/or modify

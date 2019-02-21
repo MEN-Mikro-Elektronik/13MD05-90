@@ -13,7 +13,7 @@
  *     Switches: COMP_NAME		name of component as a string
  *
  *---------------------------------------------------------------------------
- * (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuremberg, Germany
+ * Copyright (c) 2000-2019, MEN Mikro Elektronik GmbH
  ******************************************************************************/
 /*
  * This program is free software: you can redistribute it and/or modify

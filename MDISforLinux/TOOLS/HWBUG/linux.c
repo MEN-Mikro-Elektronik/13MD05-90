@@ -25,7 +25,7 @@
  *  u_int32 os_access_address( physadr, size, read, value, be_flag )
  *
  *---------------------------------------------------------------------------
- * (c) Copyright 2003 by MEN mikro elektronik GmbH, Nuernberg, Germany
+ * Copyright (c) 2003-2019, MEN Mikro Elektronik GmbH
  ****************************************************************************/
  /*
  * This program is free software: you can redistribute it and/or modify

@@ -6,17 +6,8 @@
 #                      
 #    Description: Makefile descriptor file for MDIS_API lib
 #                      
-#---------------------------------[ History ]---------------------------------
-#
-#   $Log: library.mak,v $
-#   Revision 1.2  2003/06/06 09:09:42  kp
-#   new name m_errstr
-#
-#   Revision 1.1  2001/01/19 14:58:45  kp
-#   Initial Revision
-#
 #-----------------------------------------------------------------------------
-#   (c) Copyright 2000 by MEN mikro elektronik GmbH, Nuernberg, Germany 
+#   Copyright (c) 2000-2019, MEN Mikro Elektronik GmbH
 #*****************************************************************************
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

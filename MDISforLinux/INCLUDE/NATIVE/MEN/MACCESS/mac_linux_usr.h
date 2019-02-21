@@ -11,7 +11,7 @@
  *     Switches: OSS_USR_IO_MAPPED_ACC_EN
  *
  *---------------------------------------------------------------------------
- * (c) Copyright 2005-2007 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
+ * Copyright (c) 2005-2019, MEN Mikro Elektronik GmbH
  ******************************************************************************/
 /*
  * This program is free software: you can redistribute it and/or modify

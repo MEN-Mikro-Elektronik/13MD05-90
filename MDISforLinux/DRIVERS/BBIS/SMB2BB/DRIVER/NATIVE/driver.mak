@@ -6,16 +6,8 @@
 #  
 #    Description: Makefile definitions for the SMB2 pseudo BBIS driver
 #                      
-#---------------------------------[ History ]---------------------------------
-#   $Log: driver.mak,v $
-#   Revision 1.3  2006/11/14 18:38:41  ts
-#   remove include of bb_smb2.h (outdated)
-#
-#   Revision 1.2  2006/06/20 18:26:10  ts
-#   adapted for SMB2 pseudo BBIS driver
-#
 #-----------------------------------------------------------------------------
-#   (c) Copyright 1999 by MEN mikro elektronik GmbH, Nuernberg, Germany 
+#   Copyright (c) 1999-2019, MEN Mikro Elektronik GmbH
 #*****************************************************************************
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
