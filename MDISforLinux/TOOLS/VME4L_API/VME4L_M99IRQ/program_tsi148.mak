@@ -8,17 +8,8 @@
 #                 (TSI148 doesn't support hardware swapping, therefore user
 #                  applications has to care for swapping)
 #
-#---------------------------------[ History ]---------------------------------
-#
-#   $Log: program_tsi148.mak,v $
-#   Revision 1.1  2009/04/30 21:06:36  rt
-#   Initial Revision
-#
-#   Revision 1.1  2003/12/15 15:02:35  kp
-#   Initial Revision
-#
 #-----------------------------------------------------------------------------
-#   (c) Copyright 2009 by MEN mikro elektronik GmbH, Nuernberg, Germany
+#   Copyright (c) 2009-2019, MEN Mikro Elektronik GmbH
 #*****************************************************************************
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

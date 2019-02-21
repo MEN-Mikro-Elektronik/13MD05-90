@@ -6,14 +6,8 @@
 #
 #    Description: Makefile definitions for VME4L_IRQGEN
 #
-#---------------------------------[ History ]---------------------------------
-#
-#   $Log: program.mak,v $
-#   Revision 1.1  2003/12/15 15:02:42  kp
-#   Initial Revision
-#
 #-----------------------------------------------------------------------------
-#   (c) Copyright 2003 by MEN mikro elektronik GmbH, Nuernberg, Germany
+#   Copyright (c) 2003-2019, MEN Mikro Elektronik GmbH
 #*****************************************************************************
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
