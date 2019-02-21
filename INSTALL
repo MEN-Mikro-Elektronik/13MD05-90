@@ -263,13 +263,15 @@ fi
 
    # Create history for submodules 
    for i in $CWD/13* $CWD/$MDIS_PACKAGE; do
-      CUR_DIR=`pwd`
-      cd $i
-      git log > "${MENLINUX_ROOT}/${MENHISTORY}/$(basename ${i})_history.txt"
-      git rev-parse --verify HEAD > "${MENLINUX_ROOT}/${MENHISTORY}/$(basename ${i})_version.txt"
-      #git describe --exact-match --tags $(git log -n1 --pretty='%h') > "${MENLINUX_ROOT}/${MENHISTORY}/$(basename ${i})_tag.txt"
-      git remote -v > "${MENLINUX_ROOT}/${MENHISTORY}/$(basename ${i})_url.txt"
-      cd $CUR_DIR
+      if [ -d "$i" ]; then
+         CUR_DIR=`pwd`
+         cd $i
+         git log > "${MENLINUX_ROOT}/${MENHISTORY}/$(basename ${i})_history.txt"
+         git rev-parse --verify HEAD > "${MENLINUX_ROOT}/${MENHISTORY}/$(basename ${i})_version.txt"
+         #git describe --exact-match --tags $(git log -n1 --pretty='%h') > "${MENLINUX_ROOT}/${MENHISTORY}/$(basename ${i})_tag.txt"
+         git remote -v > "${MENLINUX_ROOT}/${MENHISTORY}/$(basename ${i})_url.txt"
+         cd $CUR_DIR
+      fi
    done
    echo "ok"
    echo ""
