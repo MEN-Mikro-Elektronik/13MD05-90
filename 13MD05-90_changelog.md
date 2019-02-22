@@ -4,17 +4,17 @@
 
 ### Added
 - 13z12590 package description
-- Readme file with brief description where missing
-- License where missing
+- Readme files with brief description
+- GNU License for MEN source files
 - SMBus generic support in system scanner for F11S, F19, F21, F022/F22P, F075/F75P, XM01, MM01, G22-G022, G23-G023
 - M-Module support in system scanner for M36N, M72, M77N, M82
 - Support for BL51E in system scanner
 - Changelog
 
 ### Changed
-- License
-- Copyright
-- Readme file
+- GNU License for MEN source files
+- MEN Copyright for MEN source files
+- Readme files update
 - MDIS Wizard binary update
 - System scanner only runs as root
 - descgen not cross-compiled on cross compilation
@@ -28,10 +28,11 @@
 
 ### Fixed
 - 13z04490 package name
-- Compilation of 13Z077-90 on kernels 4.11-4.14
-- Compilation of men_lx_z77 driver on CentOS 7.5
-- Compilation of vme4l related drivers
-- Compiler warnings
-- System scanner interoperability
+- Compiler warnings and errors
+	- 13Z077-90 on kernels 4.11-4.14
+	- men_lx_z77 driver on CentOS 7.5
+	- vme4l related drivers
+	- and others
+- System scanner portability
 - Board support in system scanner for D203, F205, F204, SC31, F223
-- Ignored files and directories in .gitignore
+- List of ignored files and directories in .gitignore
