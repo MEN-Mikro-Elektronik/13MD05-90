@@ -1,23 +1,30 @@
 /*****************************************************************************
+* 
+* Project...........: IO-Library for general purposes
+* Filename..........: GETINT.C
+* Author............: schn
+* Creation Date.....: 23.02.90
+* 
+* Description.......: ask for integer value from terminal 
+* 
+*---------------------------------------------------------------------------
+* Copyright (c) 2019, MEN Mikro Elektronik GmbH
+****************************************************************************/
+/*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
-Project...........: IO-Library for general purposes
-Filename..........: GETINT.C
-Author............: schn
-Creation Date.....: 23.02.90
-
-Description.......: ask for integer value from terminal 
-
-********************* ALL RIGHTS RESERVED BY MEN GMBH ************************
-
-******************************************************************************
-* ED | DATE     | CHANGES                                      		| EDITOR *
-*----------------------------------------------------------------------------*
-*              <<<--- OS-9/68000 V2.3 Release --->>>                         *
-*----------------------------------------------------------------------------*
-* 01 | 23.02.90 | First Installation                           		| schn   *
-* 02 | 05.04.90 | add this header, put it into IO.L
-* 03 | 02.07.90 | add helptext										| K.P.   *
-******************************************************************************/
 #include <stdio.h>
 /*
 #include <modes.h>

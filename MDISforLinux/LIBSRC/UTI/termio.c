@@ -1,26 +1,29 @@
 /*****************************************************************************
-
-Project...........: io.lib
-Filename..........: termio.c 
-Author............: kp
-Creation Date.....: 15.10.90
-
-Description.......: 
-
-********************* ALL RIGHTS RESERVED BY MEN GMBH ************************
-
-******************************************************************************
-* ED | DATE     | CHANGES                                      		| EDITOR *
-*----------------------------------------------------------------------------*
-*              <<<--- OS-9/68000 V2.3 Release --->>>                         *
-*----------------------------------------------------------------------------*
-* 01 |          | First Installation                           		|        *
-* 02 | 10.06.91 | added cursor-keys/semigraphic						| kp	 *
-*	 |			| changed from unbuffered to buffered I/O			|		 *
-* 03 | 10.07.95	| cursor_on/off added                               | see    *
-* 04 | 04.04.97	| clear_to_eol added                                | see    *
-* 05 | 07.04.97	| get_screen_size added                             | see    *
-******************************************************************************/
+* 
+* Project...........: io.lib
+* Filename..........: termio.c 
+* Author............: kp
+* Creation Date.....: 15.10.90
+* 
+* Description.......: 
+* 
+*---------------------------------------------------------------------------
+* Copyright (c) 2019, MEN Mikro Elektronik GmbH
+****************************************************************************/
+/*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include <stdio.h>
 
