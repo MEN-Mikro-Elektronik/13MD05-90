@@ -2383,9 +2383,10 @@ static int __init vme4l_pldz002_init_module(void)
 {
 	printk( KERN_INFO "%s ", __FUNCTION__);
 
-    if (!men_chameleonV2_register_driver( &G_driver ))
+    if (!men_chameleonV2_register_driver( &G_driver )) {
+		men_chameleonV2_unregister_driver( &G_driver );
 		return -ENODEV;  /* couldnt find requested unit */
-	else
+    } else
 		return 0;
 }
 
