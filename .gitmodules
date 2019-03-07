@@ -1,280 +1,280 @@
 [submodule "13AD78-06"]
 	path = 13AD78-06
 	url = ../13AD78-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13M011-06"]
 	path = 13M011-06
 	url = ../13M011-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13M022-06"]
 	path = 13M022-06
 	url = ../13M022-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13M027-06"]
 	path = 13M027-06
 	url = ../13M027-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13M031-06"]
 	path = 13M031-06
 	url = ../13M031-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13M033-06"]
 	path = 13M033-06
 	url = ../13M033-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13M034-06"]
 	path = 13M034-06
 	url = ../13M034-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13M036-06"]
 	path = 13M036-06
 	url = ../13M036-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13M037-06"]
 	path = 13M037-06
 	url = ../13M037-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13M043-06"]
 	path = 13M043-06
 	url = ../13M043-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13M058-06"]
 	path = 13M058-06
 	url = ../13M058-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13M062-06"]
 	path = 13M062-06
 	url = ../13M062-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13M065-06"]
 	path = 13M065-06
 	url = ../13M065-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13M066-06"]
 	path = 13M066-06
 	url = ../13M066-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13M072-06"]
 	path = 13M072-06
 	url = ../13M072-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13M075-06"]
 	path = 13M075-06
 	url = ../13M075-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13M077-90"]
 	path = 13M077-90
 	url = ../13M077-90.git
-	branch = jpe-dev
+	branch = master
 [submodule "13M099-06"]
 	path = 13M099-06
 	url = ../13M099-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13P7C9-06"]
 	path = 13P7C9-06
 	url = ../13P7C9-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13PP04-06"]
 	path = 13PP04-06
 	url = ../13PP04-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13XC02-06"]
 	path = 13XC02-06
 	url = ../13XC02-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13XM01-06"]
 	path = 13XM01-06
 	url = ../13XM01-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13Y001-06"]
 	path = 13Y001-06
 	url = ../13Y001-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13Y002-06"]
 	path = 13Y002-06
 	url = ../13Y002-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13Y004-06"]
 	path = 13Y004-06
 	url = ../13Y004-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13Y007-06"]
 	path = 13Y007-06
 	url = ../13Y007-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13Z001-90"]
 	path = 13Z001-90
 	url = ../13Z001-90.git
-	branch = jpe-dev
+	branch = master
 [submodule "13Z010-06"]
 	path = 13Z010-06
 	url = ../13Z010-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13Z005-06"]
 	path = 13Z005-06
 	url = ../13Z005-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13Z015-06"]
 	path = 13Z015-06
 	url = ../13Z015-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13Z017-06"]
 	path = 13Z017-06
 	url = ../13Z017-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13Z024-06"]
 	path = 13Z024-06
 	url = ../13Z024-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13Z025-90"]
 	path = 13Z025-90
 	url = ../13Z025-90.git
-	branch = jpe-dev
+	branch = master
 [submodule "13Z044-90"]
 	path = 13Z044-90
 	url = ../13Z044-90.git
-	branch = jpe-dev
+	branch = master
 [submodule "13Z047-06"]
 	path = 13Z047-06
 	url = ../13Z047-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13Z051-06"]
 	path = 13Z051-06
 	url = ../13Z051-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13Z069-90"]
 	path = 13Z069-90
 	url = ../13Z069-90.git
-	branch = jpe-dev
+	branch = master
 [submodule "13Z077-90"]
 	path = 13Z077-90
 	url = ../13Z077-90.git
-	branch = jpe-dev
+	branch = master
 [submodule "13M054-06"]
 	path = 13M054-06
 	url = ../13M054-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13Z082-06"]
 	path = 13Z082-06
 	url = ../13Z082-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13Z140-06"]
 	path = 13Z140-06
 	url = ../13Z140-06.git
-	branch = jpe-dev
+	branch = master
 [submodule "13Z135-90"]
 	path = 13Z135-90
 	url = ../13Z135-90.git
-	branch = jpe-dev
+	branch = master
 [submodule "13SC24-91"]
 	path = 13SC24-91
 	url = ../13SC24-91.git
-	branch = jpe-dev
+	branch = master
 [submodule "INCLUDE/COM/MEN"]
 	path = MDISforLinux/INCLUDE/COM/MEN
 	url = ../mdis_include_com_men.git
-	branch = jpe-dev
+	branch = master
 [submodule "LIBSRC/CHAMELEON/COM"]
 	path = MDISforLinux/LIBSRC/CHAMELEON/COM
 	url = ../mdis_libsrc_chameleon_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "LIBSRC/DESC/COM"]
 	path = MDISforLinux/LIBSRC/DESC/COM
 	url = ../mdis_libsrc_desc_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "LIBSRC/ID/COM"]
 	path = MDISforLinux/LIBSRC/ID/COM
 	url = ../mdis_libsrc_id_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "LIBSRC/MBUF/COM"]
 	path = MDISforLinux/LIBSRC/MBUF/COM
 	url = ../mdis_libsrc_mbuf_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "LIBSRC/PLD/COM"]
 	path = MDISforLinux/LIBSRC/PLD/COM
 	url = ../mdis_libsrc_pld_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "LIBSRC/USR_UTL/COM"]
 	path = MDISforLinux/LIBSRC/USR_UTL/COM
 	url = ../mdis_libsrc_usr_utl_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "LIBSRC/SMB/PORT/COM"]
 	path = MDISforLinux/LIBSRC/SMB/PORT/COM
 	url = ../mdis_libsrc_smb_port_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "LIBSRC/USR_OSS"]
 	path = MDISforLinux/LIBSRC/USR_OSS
 	url = ../mdis_libsrc_usr_oss.git
-	branch = jpe-dev
+	branch = master
 [submodule "TOOLS/MDIS_API"]
 	path = MDISforLinux/TOOLS/MDIS_API
 	url = ../mdis_tools_mdis_api.git
-	branch = jpe-dev
+	branch = master
 [submodule "DRIVERS/BBIS/A21"]
 	path = MDISforLinux/DRIVERS/BBIS/A21
 	url = ../mdis_drivers_bbis_a21_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "DRIVERS/BBIS/A201"]
 	path = MDISforLinux/DRIVERS/BBIS/A201
 	url = ../mdis_drivers_bbis_a201_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "DRIVERS/BBIS/A203N"]
 	path = MDISforLinux/DRIVERS/BBIS/A203N
 	url = ../mdis_drivers_bbis_a203n_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "DRIVERS/BBIS/CHAMELEON"]
 	path = MDISforLinux/DRIVERS/BBIS/CHAMELEON
 	url = ../mdis_drivers_bbis_chameleon_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "DRIVERS/BBIS/D201"]
 	path = MDISforLinux/DRIVERS/BBIS/D201
 	url = ../mdis_drivers_bbis_d201_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "DRIVERS/BBIS/D203"]
 	path = MDISforLinux/DRIVERS/BBIS/D203
 	url = ../mdis_drivers_bbis_d203n_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "DRIVERS/BBIS/D302"]
 	path = MDISforLinux/DRIVERS/BBIS/D302
 	url = ../mdis_drivers_bbis_d302_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "DRIVERS/BBIS/ISA"]
 	path = MDISforLinux/DRIVERS/BBIS/ISA
 	url = ../mdis_drivers_bbis_isa_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "DRIVERS/BBIS/PCI"]
 	path = MDISforLinux/DRIVERS/BBIS/PCI
 	url = ../mdis_drivers_bbis_pci_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "DRIVERS/BBIS/SMBPCI"]
 	path = MDISforLinux/DRIVERS/BBIS/SMBPCI
 	url = ../mdis_drivers_bbis_smbpci_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "DRIVERS/BBIS/A12"]
 	path = MDISforLinux/DRIVERS/BBIS/A12
 	url = ../mdis_drivers_bbis_a12_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "LIBSRC/SMB/PORTCB/COM"]
 	path = MDISforLinux/LIBSRC/SMB/PORTCB/COM
 	url = ../mdis_libsrc_smb_portcb_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "TOOLS/WDOG"]
 	path = MDISforLinux/TOOLS/WDOG
 	url = ../mdis_tools_wdog.git
-	branch = jpe-dev
+	branch = master
 [submodule "TOOLS/M_TMR"]
 	path = MDISforLinux/TOOLS/M_TMR
 	url = ../mdis_tools_m_tmr.git
-	branch = jpe-dev
+	branch = master
 [submodule "LIBSRC/SMB2/COM"]
 	path = MDISforLinux/LIBSRC/SMB2/COM
 	url = ../mdis_libsrc_smb2_com.git
-	branch = jpe-dev
+	branch = master
 [submodule "TOOLS/FPGA_LOAD"]
 	path = MDISforLinux/TOOLS/FPGA_LOAD
 	url = ../mdis_tools_fpga_load
 [submodule "LIBSRC/pciutils"]
 	path = MDISforLinux/LIBSRC/pciutils
 	url = ../pciutils
-	branch = jpe-dev
+	branch = master
 
