@@ -53,6 +53,7 @@
 	 printf("\n*** Error during: %s\nfile %s\nline %d\n", \
       #expression,__FILE__,__LINE__);\
       printf("%s\n",strerror(errno));\
+     tot_errors++;\
      goto ABORT;\
  }
 
@@ -715,6 +716,6 @@ int main( int argc, char *argv[] )
  ABORT:
 
 	show_test_result();
-	return 0;
+	return tot_errors;
 }
 
