@@ -142,6 +142,10 @@
 	path = 13Z051-06
 	url = ../13Z051-06.git
 	branch = jpe-dev
+[submodule "13Z061-06"]
+	path = 13Z061-06
+	url = ../13Z061-06
+        branch = master
 [submodule "13Z069-90"]
 	path = 13Z069-90
 	url = ../13Z069-90.git
@@ -277,4 +281,3 @@
 	path = MDISforLinux/LIBSRC/pciutils
 	url = ../pciutils
 	branch = jpe-dev
-
