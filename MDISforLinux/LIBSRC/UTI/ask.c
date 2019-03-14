@@ -35,8 +35,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
-static const char RCSid[]="$Id: ask.c,v 1.6 2008/09/15 12:48:39 GLeonhardt Exp $";
-
 #include <stdio.h>
 
 
@@ -61,7 +59,7 @@ char *txt,*keys,defaultkey,*help;
 		if(read(0,&c,1) <= 0) c = defaultkey;
 #endif
 #if defined (HPUX) || defined (HPRT) || defined(LINUX)
-		if(gets(buf) == 0 ) 
+		if(fgets(buf, sizeof(buf), stdin) == 0 )
 		    c = defaultkey;
 		else
 			c = *buf;

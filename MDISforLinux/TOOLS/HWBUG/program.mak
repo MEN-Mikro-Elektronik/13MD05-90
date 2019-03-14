@@ -39,6 +39,6 @@ MAK_INP5=linux$(INP_SUFFIX)
 
 MAK_SWITCH=-DLINUX
 
-MAK_LD_SWITCH=-Wl,-elf2flt -Wl,-Map -Wl,hwbug.map
+MAK_LD_SWITCH=-Wl -Wl,-Map -Wl,hwbug.map
 
 MAK_INP=$(MAK_INP1) $(MAK_INP2) $(MAK_INP3) $(MAK_INP4) $(MAK_INP5) 

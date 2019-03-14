@@ -33,8 +33,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-static const char RCSid[]="$Header: /dd2/CVSR/COM/LIBSRC/UTI/panic.c,v 1.6 2009/10/28 18:36:40 rt Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>

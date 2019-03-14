@@ -13,7 +13,7 @@ MAK_SWITCH = -DLINUX\
 
 CC=gcc
 
-CFLAGS	= -g -s $(MAK_SWITCH) -I$(MEN_LIN_DIR)/INCLUDE/COM -I=. -I/usr/src/linux-4.9.0/include
+CFLAGS	= -g -s $(MAK_SWITCH) -I$(MEN_LIN_DIR)/INCLUDE/COM -I=. -I/usr/src/linux/include
 
 WARN_LEVEL := -Wall -Wno-format -Wno-strict-aliasing
 

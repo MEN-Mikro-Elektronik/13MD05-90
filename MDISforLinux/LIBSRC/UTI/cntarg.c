@@ -25,10 +25,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-int cntarg(argc,argv)
+int cntarg(int argc,char *argv[])
 /* counts the 'real' arguments in argc,argv */
 /* (program call and options are not counted */
-char **argv;
 {
 	int i,n;
 	char *index();

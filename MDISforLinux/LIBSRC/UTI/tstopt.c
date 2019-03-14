@@ -29,15 +29,15 @@
 #include <string.h>
 #include <stdlib.h>
 
-char *tstopt(argc,argv,option,deflt)
-char **argv;
-char *option;	/* option character to test, followed by */
+
+//char *option;	/* option character to test, followed by */
 				/* nothing : no argument */
 				/*     ':' : optional argument, */ 
 				/*			 deflt returned if no argument given */ 
 				/* 	   '=' : argument required */
 				/* 	   '!' : toggle argument (like -x/-nx) */
-char *deflt;	
+//char *deflt;	
+char *tstopt(int argc,char *argv[],char *option,char *deflt)
 {
 	int i;
 	char *p,*p1,*p2;
@@ -71,8 +71,7 @@ char *deflt;
 	return NULL;	/* option not found */
 }
 
-void illiopt(argc,argv,opts)
-char **argv,*opts;
+void illiopt(int argc,char *argv[],char *opts)
 {
 	int i;
 	char *p,*p1;

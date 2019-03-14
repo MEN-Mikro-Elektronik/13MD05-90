@@ -52,7 +52,7 @@ static char RCSid[]="$Header: /dd2/CVSR/LINUX/TOOLS/HWBUG/linux.c,v 1.6 2010/09/
 #include <termios.h>
 #include <signal.h>
 #include <sys/mman.h>
-#include <asm/io.h>
+#include <sys/io.h>
 #include <asm/errno.h>
 void os_setterm(), os_restterm(), os_exit();
 static struct termios MyOpts, OrgOpts;

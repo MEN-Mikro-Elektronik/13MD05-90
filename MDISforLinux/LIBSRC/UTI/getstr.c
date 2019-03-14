@@ -33,8 +33,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-static const char RCSid[]="$Id: getstr.c,v 1.3 2008/09/15 12:49:04 GLeonhardt Exp $";
 
 #include <stdio.h>
 #include <string.h>

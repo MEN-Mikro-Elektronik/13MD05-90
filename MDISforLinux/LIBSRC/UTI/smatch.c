@@ -35,8 +35,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-static char RCSid[]="$Header: /dd2/CVSR/COM/LIBSRC/UTI/smatch.c,v 1.2 2008/09/15 12:49:18 GLeonhardt Exp $";
 
 /*################### SMATCH #########################*/
 /* Don't try to understand the following one... */
@@ -44,7 +42,6 @@ int smatch(s, t)    /* shell-like matching */
         char *s, *t;
 {
         /* include ident string, suppress warning */
-        char a = a = RCSid[0];
         register int n;
 
         if (*t == '\0')

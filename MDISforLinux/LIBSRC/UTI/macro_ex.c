@@ -33,8 +33,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-static const char RCSid[]="$Id: macro_ex.c,v 1.4 2008/09/15 12:49:11 GLeonhardt Exp $";
 
 #include <stdio.h>
 #include <string.h>

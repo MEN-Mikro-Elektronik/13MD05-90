@@ -124,7 +124,7 @@ void add_command(char *command, void *func, char *helpline, int repeat )
 /*----------------------------------------------------------------------
  * clearline - clear line with backspace
  */
-void clearline( n )
+void clearline( int n )
 {
 	while( n-- ) printf("\b \b");
 }

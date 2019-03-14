@@ -33,9 +33,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-static const char RCSid[]="$Header: /dd2/CVSR/COM/LIBSRC/UTI/getshorterrmsg.c,v 1.5 2009/10/28 18:38:44 rt Exp $";
 
+#include <string.h>
 #include <stdio.h>
 #include <errno.h>
 

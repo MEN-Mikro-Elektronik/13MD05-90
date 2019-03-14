@@ -24,9 +24,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-int cntopt(argc,argv)
+int cntopt(int argc,char *argv[])
 /* counts the options in argc,argv */
-char **argv;
 {
 	int i,j,n;
 	char *index();
