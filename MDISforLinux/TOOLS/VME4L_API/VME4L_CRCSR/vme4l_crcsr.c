@@ -82,6 +82,8 @@ static void usage(int excode)
 	printf("-r            Read func_ader\n");
 	printf("-w            Write fun_ader\n");
 	printf("-f=<fun_ader> Which func_ader to use\n");
+	printf("\n");
+	printf("git version: %s\n", GIT_VERSION);
 	exit(excode);
 }
 

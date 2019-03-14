@@ -116,6 +116,8 @@ static void usage(int excode)
 	printf("-c            in conjuction with -w and -f, verifies written data\n");
 	printf("              if fails, store read data in <file>"VERIFY_FILE_POSTFIX"\n");
 	printf("-m            memory map instead of using ioctl calls\n");
+	printf("\n");
+	printf("git version: %s\n", GIT_VERSION);
 	exit(excode);
 }
 

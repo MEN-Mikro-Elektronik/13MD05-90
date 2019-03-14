@@ -84,9 +84,11 @@ LIN_KERNEL_COMMON_DIR ?= $(LIN_KERNEL_DIR)
 #
 MDIS_FORCE_32BIT=$(FORCE_32BIT_BUILD)
 
+GIT_VERSION=$(shell sed -e 's/ /_/g' -e 's/fatal:_//g' $(MEN_LIN_DIR)/HISTORY/13MD05-90_tag.txt)
 # for CERN variant only!
 # MDIS_EXTRA_DEFS += -DCONFIG_MEN_VME_KERNELIF -DA25_WRAPPER
-MDIS_EXTRA_DEFS +=
+DGIT_VERSION=\"$(GIT_VERSION)\"
+MDIS_EXTRA_DEFS += -DGIT_VERSION=\"$(GIT_VERSION)\"
 
 #-----------------------------------------------------------
 # MDIS COMMON COMPONENTS
