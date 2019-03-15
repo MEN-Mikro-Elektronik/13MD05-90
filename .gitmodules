@@ -285,3 +285,8 @@
 	path = MDISforLinux/LIBSRC/pciutils
 	url = ../pciutils
 	branch = jpe-dev
+[submodule "MDISforLinux/TOOLS/mm_ident"]
+	path = MDISforLinux/TOOLS/mm_ident
+	url = ../mm_ident
+	branch = jpe-dev
+
