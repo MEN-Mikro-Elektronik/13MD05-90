@@ -177,7 +177,7 @@
 [submodule "mdis_ll_mt"]
 	path = mdis_ll_mt
 	url = ../mdis_ll_mt
-	branch=master
+	branch = jpe-dev
 [submodule "INCLUDE/COM/MEN"]
 	path = MDISforLinux/INCLUDE/COM/MEN
 	url = ../mdis_include_com_men.git
