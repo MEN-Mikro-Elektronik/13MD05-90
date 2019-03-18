@@ -72,11 +72,6 @@ else
  endif
 endif
 
-# on Debian a workaround for kernel headers is needed
-LIN_DISTRO_ID := $(findstring Debian,"$(shell uname --kernel-version)")
-ifeq ($(LIN_DISTRO_ID),Debian)
-	LIN_KERNEL_COMMON_DIR := $(LIN_KERNEL_DIR)/source
-endif
 LIN_KERNEL_COMMON_DIR ?= $(LIN_KERNEL_DIR)
 
 #
