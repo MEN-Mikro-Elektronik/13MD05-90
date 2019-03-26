@@ -113,14 +113,53 @@ G_deviceIdV2=""
 # SMB device list 
 G_smbDeviceList=""
 
-# M-Module instance counters
-G_count_instance_m31=0
-G_count_instance_m35=0
-G_count_instance_m36n=0
-G_count_instance_m66=0
-G_count_instance_m72=0
-G_count_instance_m77=0
-G_count_instance_m82=0
+### @brief M-Moudle instance counters
+declare -A mModuleInstances=()
+
+### @brief Filenames for M-Module XMLs
+declare -A mModuleXmls=( \
+	["M11"]="13m01106.xml" \
+	["M22"]="13m02206.xml" \
+	["M24"]="13m02206.xml" \
+	["M27"]="13m02706.xml" \
+	["M28"]="13m02706.xml" \
+	["M81"]="13m02706.xml" \
+	["M31"]="13m03106.xml" \
+	["M32"]="13m03106.xml" \
+	["M82"]="13m03106.xml" \
+	["M33"]="13m03306.xml" \
+	["M34"]="13m03406.xml" \
+	["M35"]="13m03406.xml" \
+	["M36"]="13m03606.xml" \
+	["M36N"]="13m03606.xml" \
+	["M37"]="13m03706.xml" \
+	["M43"]="13m04306.xml" \
+	["M54"]="13m05406.xml" \
+	["M58"]="13m05806.xml" \
+	["M62"]="13m06206.xml" \
+	["M62N"]="13m06206.xml" \
+	["M65"]="13m06506.xml" \
+	["P5"]="13m06506.xml" \
+	["M66"]="13m06606.xml" \
+	["M66_D302"]="13m06606.xml" \
+	["M72"]="13m07206.xml" \
+	["M75"]="13m07506.xml" \
+	["M77"]="13m07790.xml" \
+	["M69"]="13m07790.xml" \
+	["M45"]="13m07790.xml" \
+	["M99"]="13m09906.xml" \
+	)
+
+### @brief Filenames for M-Module templates
+declare -A mModuleTemplates=( \
+	["M31"]="m31.tpl" \
+	["M35"]="m35.tpl" \
+	["M36N"]="m36n.tpl" \
+	["M66"]="m66.tpl" \
+	["M72"]="m72.tpl" \
+	["M77"]="m77.tpl" \
+	["M82"]="m82.tpl" \
+	)
 
 
 ############################################################################
@@ -711,167 +750,6 @@ function create_entry_dsc_d203_a24 {
 }
 
 ############################################################################
-# create a m31_x M-Module section
-#
-# parameters:
-# $1  DSC template directory
-# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
-# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
-# $4  board name (subst. SCAN_BBIS_NAME tag)
-# $5  device slot number (subst. SCAN_DEV_SLOT tag)
-# $6  DSC output file
-#
-function create_entry_dsc_m31 {
-	echo "Writing m31_$2 section to system.dsc "
-	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
-	cat $1/m31.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $6
-	if [ "$2" == "1" ]; then
-		G_makefileLlDriver+=" M031/DRIVER/COM/driver.mak"
-		G_makefileLlTool+=" M031/EXAMPLE/M31_SIMP/COM/program.mak\
-			 M031/EXAMPLE/M31_SIG/COM/program.mak"
-	fi
-}
-
-############################################################################
-# create a m35_x M-Module section
-#
-# parameters:
-# $1  DSC template directory
-# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
-# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
-# $4  board name (subst. SCAN_BBIS_NAME tag)
-# $5  device slot number (subst. SCAN_DEV_SLOT tag)
-# $6  DSC output file
-#
-function create_entry_dsc_m35 {
-	echo "Writing m35_$2 section to system.dsc "
-	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
-	cat $1/m35.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $6
-	if [ "$2" == "1" ]; then
-		G_makefileLlDriver+=" M034/DRIVER/COM/driver.mak"
-		G_makefileLlTool+=" M034/EXAMPLE/M34_SIMP/COM/program.mak\
-			 M034/TOOLS/M34_READ/COM/program.mak\
-			 M034/TOOLS/M34_BLKREAD/COM/program.mak"
-	fi
-}
-
-############################################################################
-# create a m36n_x M-Module section
-#
-# parameters:
-# $1  DSC template directory
-# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
-# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
-# $4  board name (subst. SCAN_BBIS_NAME tag)
-# $5  device slot number (subst. SCAN_DEV_SLOT tag)
-# $6  DSC output file
-#
-function create_entry_dsc_m36n {
-	echo "Writing m36n_$2 section to system.dsc "
-	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
-	cat $1/m36n.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $6
-	if [ "$2" == "1" ]; then
-		G_makefileLlDriver+=" M036/DRIVER/COM/driver.mak"
-		G_makefileLlTool+=" M036/EXAMPLE/M36_SIMP/COM/program.mak\
-			 M036/TOOLS/M36_BLKREAD/COM/program.mak\
-			 M036/TOOLS/M36_READ/COM/program.mak"
-	fi
-}
-
-############################################################################
-# create a m66_x M-Module section
-#
-# parameters:
-# $1  DSC template directory
-# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
-# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
-# $4  board name (subst. SCAN_BBIS_NAME tag)
-# $5  device slot number (subst. SCAN_DEV_SLOT tag)
-# $6  DSC output file
-#
-function create_entry_dsc_m66 {
-	echo "Writing m66_$2 section to system.dsc "
-	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
-	cat $1/m66.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $6
-	if [ "$2" == "1" ]; then
-		G_makefileLlDriver+=" M066/DRIVER/COM/driver.mak"
-		G_makefileLlTool+=" M066/EXAMPLE/M66_SIMP/COM/program.mak\
-			 M066/EXAMPLE/M66_DEMO/COM/program.mak\
-			 M066/TEST/M66_PERF/COM/program.mak"
-	fi
-}
-
-############################################################################
-# create a m72_x M-Module section
-#
-# parameters:
-# $1  DSC template directory
-# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
-# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
-# $4  board name (subst. SCAN_BBIS_NAME tag)
-# $5  device slot number (subst. SCAN_DEV_SLOT tag)
-# $6  DSC output file
-#
-function create_entry_dsc_m72 {
-	echo "Writing m72_$2 section to system.dsc "
-	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
-	cat $1/m72.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $6
-	if [ "$2" == "1" ]; then
-		G_makefileLlDriver+=" M072/DRIVER/COM/driver.mak"
-		G_makefileLlTool+=" M072/TOOLS/M72_COUNT/COM/program.mak\
-			 M072/EXAMPLE/M72_FREQ/COM/program.mak\
-			 M072/EXAMPLE/M72_OUT/COM/program.mak\
-			 M072/EXAMPLE/M72_PERIOD/COM/program.mak\
-			 M072/EXAMPLE/M72_PULSE/COM/program.mak\
-			 M072/EXAMPLE/M72_SINGLE/COM/program.mak\
-			 M072/EXAMPLE/M72_TIMER/COM/program.mak\
-			 M072/EXAMPLE/M72_PRETRIG/COM/program.mak"
-	fi
-}
-
-############################################################################
-# create a m77_x M-Module section
-#
-# parameters:
-# $1  DSC template directory
-# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
-# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
-# $4  board name (subst. SCAN_BBIS_NAME tag)
-# $5  device slot number (subst. SCAN_DEV_SLOT tag)
-# $6  DSC output file
-#
-function create_entry_dsc_m77 {
-	echo "Writing m77_$2 section to system.dsc "
-	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
-	cat $1/m77.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $6
-	if [ "$2" == "1" ]; then
-		G_makefileNatDriver+=" DRIVERS/M077/DRIVER/driver.mak"
-	fi
-}
-
-############################################################################
-# create a m82_x M-Module section
-#
-# parameters:
-# $1  DSC template directory
-# $2  M-Module instance number (subst. SCAN_MMODULE_INSTANCE tag)
-# $3  board instance number (subst. USCORESCAN_BBIS_INSTANCE tag)
-# $4  board name (subst. SCAN_BBIS_NAME tag)
-# $5  device slot number (subst. SCAN_DEV_SLOT tag)
-# $6  DSC output file
-#
-function create_entry_dsc_m82 {
-	echo "Writing m82_$2 section to system.dsc "
-	debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 "
-	cat $1/m82.tpl | sed "s/SCAN_MMODULE_INSTANCE/$2/g;s/SCAN_BBIS_NAME/$4/g;s/USCORESCAN_BBIS_INSTANCE/_$3/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $5`/g" >> $6
-	if [ "$2" == "1" ]; then
-		G_makefileLlDriver+=" M031/DRIVER/COM/driver.mak"
-		G_makefileLlTool+=" M031/EXAMPLE/M31_SIMP/COM/program.mak\
-				 M031/EXAMPLE/M31_SIG/COM/program.mak"
-	fi
-}
-
-############################################################################
 # add the xm01bc LL driver, tool to LL driver and LL tool list. Some
 # F-Cards have a BMC, some dont (F21P). bundle necessary mak file adding here
 #
@@ -1080,68 +958,72 @@ function scan_for_pci_devs {
     done <  $TMP_PCIDEVS
 }
 
-############################################################################
-# create M-Module section
-#
-# parameters:
-# $1  DSC template direcotry
-# $2  M-Module name
-# $3  board instance number
-# $4  board name
-# $5  DSC output file
-#
+### @brief Create M-Module section
+###
+### @param $1 DSC template directory
+### @param $2 M-Module name
+### @param $3 Board instance number
+### @param $4 Board name
+### @param $5 DSC output file
 function create_entry_dsc_mmodule {
-	case $2 in
-	M31)
-		echo "Found $2 on $4_$3"
-		G_count_instance_m31=$(($G_count_instance_m31 + 1))
-		create_entry_dsc_m31 $1 $G_count_instance_m31 $3 $4 $mm_device_slot $5
-		return 0
-		;;
-	M35)
-		echo "Found $2 on $4_$3"
-		G_count_instance_m35=$(($G_count_instance_m35 + 1))
-		create_entry_dsc_m35 $1 $G_count_instance_m35 $3 $4 $mm_device_slot $5
-		return 0
-		;;
-	M36N)
-		echo "Found $2 on $4_$3"
-		G_count_instance_m36n=$(($G_count_instance_m36n + 1))
-		create_entry_dsc_m36n $1 $G_count_instance_m36n $3 $4 $mm_device_slot $5
-		return 0
-		;;
-	M66)
-		echo "Found $2 on $4_$3"
-		G_count_instance_m66=$(($G_count_instance_m66 + 1))
-		create_entry_dsc_m66 $1 $G_count_instance_m66 $3 $4 $mm_device_slot $5
-		return 0
-		;;
-	M72)
-		echo "Found $2 on $4_$3"
-		G_count_instance_m72=$(($G_count_instance_m72 + 1))
-		create_entry_dsc_m72 $1 $G_count_instance_m72 $3 $4 $mm_device_slot $5
-		return 0
-		;;
-	M77)
-		echo "Found $2 on $4_$3"
-		G_count_instance_m77=$(($G_count_instance_m77 + 1))
-		create_entry_dsc_m77 $1 $G_count_instance_m77 $3 $4 $mm_device_slot $5
-		return 0
-		;;
-	M82)
-		echo "Found $2 on $4_$3"
-		G_count_instance_m82=$(($G_count_instance_m82 + 1))
-		create_entry_dsc_m82 $1 $G_count_instance_m82 $3 $4 $mm_device_slot $5
-		return 0
-		;;
-	*)
-		if [ "$2" != "" ]; then
-			echo "Found unknown M-Module $2"
-		fi
-		;;
-	esac
+	local tplDir
+	local mModule
+	local boardNum
+	local boardName
+	local xmlFile
+	local tplFile
+	local outFile
+	local xData
+	local mkFiles
 
-	return 1
+	tplDir="${1}"
+	mModule="${2}"
+	boardNum="${3}"
+	boardName="${4}"
+	outFile="${5}"
+
+	if [ "${mModule}" == "" ]; then
+		return 22
+	fi
+
+	xmlFile="${mModuleXmls["${mModule}"]}"
+	tplFile="${mModuleTemplates["${mModule}"]}"
+	if [ "${xmlFile}" == "" ] || \
+		[ "${tplFile}" == "" ]; then
+		echo "Found unknown M-Module ${mModule}"
+		return 2
+	fi
+	if [ "${mModuleInstances["${mModule}"]}" == "" ]; then
+		mModuleInstances["${mModule}"]="1"
+	else
+		mModuleInstances["${mModule}"]="$((mModuleInstances["${mModule}"]+=1))"
+	fi
+
+	echo "Found ${mModule} on ${boardName}_${boardNum}"
+
+	echo "Writing ${mModule,,}_${mModuleInstances["${mModule}"]} section to system.dsc"
+	cat "${tplDir}/${tplFile}" | sed "s/SCAN_MMODULE_INSTANCE/${mModuleInstances["${mModule}"]}/g;s/SCAN_BBIS_NAME/${boardName}/g;s/USCORESCAN_BBIS_INSTANCE/_${boardNum}/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" ${mm_device_slot}`/g" >> "${outFile}"
+	if [ "${mModuleInstances["${mModule}"]}" == "1" ]; then
+		readarray -t xData <<< "$(xmlParseXml "${MEN_LIN_DIR}/PACKAGE_DESC/${xmlFile}")"
+		if [ "${xData[0]}" != "" ]; then
+			readarray -t mkFiles <<< "$(xGetMakefiles "${xData[@]}" "${mModule}" "Low Level Driver")"
+			if [ "${mkFiles[0]}" != "" ]; then
+				G_makefileLlDriver+=" ${mkFiles[@]}"
+			fi
+			readarray -t mkFiles <<< "$(xGetMakefiles "${xData[@]}" "${mModule}" "Native Driver")"
+			if [ "${mkFiles[0]}" != "" ]; then
+				G_makefileNatDriver+=" ${mkFiles[@]}"
+			fi
+			readarray -t mkFiles <<< "$(xGetMakefiles "${xData[@]}" "${mModule}" "Driver Specific Tool")"
+			if [ "${mkFiles[0]}" != "" ]; then
+				G_makefileLlTool+=" ${mkFiles[@]}"
+			fi
+			readarray -t mkFiles <<< "$(xGetMakefiles "${xData[@]}" "${mModule}" "User Library")"
+			if [ "${mkFiles[0]}" != "" ]; then
+				G_makefileUsrLibs+=" ${mkFiles[@]}"
+			fi
+		fi
+	fi
 }
 
 ############################################################################
@@ -1347,6 +1229,228 @@ function create_makefile {
 
     sed -i.bak "s/##REPLNEWLINE.../\n/g" $MAKE_FILE
 
+}
+
+### @brief Read XML file
+###
+### @param[out] xmlEntity Parsed entity
+### @param[out] xmlContent Parsed content
+xmlReadDom() {
+	local IFS
+
+	IFS=">"
+
+	read -rd "<" "xmlEntity" "xmlContent"
+}
+
+### @brief Get the tag pushed to path
+xmlPathPush() {
+	local xmlTag
+
+	xmlTag=""
+
+	if [[ "${xmlEntity}" =~ ${xmlRegex} ]]; then
+		if [[ "${BASH_REMATCH[1]}" == "" && \
+			"${BASH_REMATCH[5]}" == "" ]] || \
+			[[ "${BASH_REMATCH[1]}" == "" && \
+			"${BASH_REMATCH[5]}" != "" ]]; then
+			xmlTag="${BASH_REMATCH[2]}"
+		fi
+	fi
+
+	echo "${xmlTag}"
+}
+
+### @brief Get the tag popped from path
+xmlPathPop() {
+	local xmlTag
+
+	xmlTag=""
+
+	if [[ "${xmlEntity}" =~ ${xmlRegex} ]]; then
+		if [ "${BASH_REMATCH[1]}" != "" ] || \
+			[ "${BASH_REMATCH[5]}" != "" ]; then
+			xmlTag="${BASH_REMATCH[2]}"
+		fi
+	fi
+
+	echo "${xmlTag}"
+}
+
+### @brief Get current tag path
+xmlPathGet() {
+	local xPart
+
+	for xPart in "${xPath[@]}"; do
+		echo -n "/${xPart}"
+	done
+}
+
+### @brief Parse XML file
+###
+### All data is echoed as: /root/tag1/tagN=value
+###
+### @param $1 Input XML file
+xmlParseXml() {
+	local inFile
+	local xmlRegex
+	local xPath
+	local xPart
+	local arrLen
+
+	inFile="${1}"
+	xmlRegex='^(/?)([[:alnum:]]+)[[:space:]]*(([[:alnum:]:]+="[[:alnum:]!#$%&()*+,-./:;<=>?@[\^_`{|}~]*"[[:space:]]*)*)(/?)'
+	xPath=()
+
+	while xmlReadDom; do
+		if [[ "${xmlEntity}" =~ ${xmlRegex} ]]; then
+			xPart="$(xmlPathPush)"
+			if [ "${xPart}" != "" ]; then
+				xPath+=("${xPart}")
+			fi
+			if [[ "${xmlContent}" =~ [^[:space:]]+ ]]; then
+				currPath="$(xmlPathGet)"
+				echo "${currPath}=${xmlContent}"
+			fi
+			xPart="$(xmlPathPop "${xmlEntity}")"
+			if [ "${xPart}" != "" ]; then
+				arrLen="${#xPath[@]}"
+				xPath=("${xPath[@]:0:$((arrLen-=1))}")
+			fi
+		fi
+	done < "${inFile}"
+}
+
+### @brief Clear xGetMakefiles variables
+xClearMk() {
+	xName=""
+	xType=""
+	xMakefile=""
+	xOs=""
+}
+
+### @brief Get makefile if ready
+xProcessMk1() {
+	if [ "${xName}" == "${mmName}" ] && \
+		[ "${xType}" == "${mkType}" ] && \
+		[ "${xMakefile}" != "" ] && \
+		[[ "${xOs}" == "" || "${xOs}" == "Linux" ]]; then
+		echo "${xMakefile}"
+	fi
+
+	xClearMk
+}
+
+### @brief Get makefile if ready
+xProcessMk2() {
+	if [ "${xType}" == "${mkType}" ] && \
+		[ "${xMakefile}" != "" ] && \
+		[[ "${xOs}" == "" || "${xOs}" == "Linux" ]]; then
+		echo "${xMakefile}"
+	fi
+
+	xClearMk
+}
+
+
+### @brief Get makefiles
+###
+### @param $@0:-2 Data
+### @param $@-2:1 M-Module name
+### @param $@-1:1 Makefile type
+xGetMakefiles() {
+	local arrLen
+	local xData
+	local mmName
+	local mkType
+	local xEntry
+	local curPath
+	local curTag
+	local curValue
+	local xName
+	local xType
+	local xMakefile
+	local xOs
+
+	xData=("${@}")
+	arrLen="${#xData[@]}"
+	mkType="${xData[*]:$((arrLen-=1)):1}"
+	mmName="${xData[*]:$((arrLen-=1)):1}"
+	xData=("${xData[@]:0:${arrLen}}")
+
+	for xEntry in "${xData[@]}"; do
+		arrLen="$((arrLen-=1))"
+		if [[ "${xEntry}" =~ ^(/([[:alnum:]]+/)+)([[:alnum:]]+)=(.*) ]]; then
+			curPath="${BASH_REMATCH[1]}"
+			curTag="${BASH_REMATCH[3]}"
+			curValue="${BASH_REMATCH[4]}"
+			if [ "${curPath}" == "/package/modellist/model/" ] && \
+				[ "${curTag}" == "hwname" ]; then
+				if [ "${xName}" != "" ]; then
+					xProcessMk1
+				fi
+				xName="${curValue}"
+			elif [ "${curPath}" == "/package/modellist/model/swmodulelist/swmodule/" ]; then
+				if [ "${curTag}" == "type" ]; then
+					if [ "${xType}" != "" ]; then
+						xProcessMk1
+					fi
+					xType="${curValue}"
+				elif [ "${curTag}" == "makefilepath" ]; then
+					if [ "${xMakefile}" != "" ]; then
+						xProcessMk1
+					fi
+					xMakefile="${curValue}"
+				elif [ "${curTag}" == "os" ]; then
+					if [ "${xOs}" != "" ]; then
+						xProcessMk1
+					fi
+					xOs="${curValue}"
+				fi
+			fi
+		fi
+
+		if [ "${arrLen}" == "0" ]; then
+			xProcessMk1
+		fi
+	done
+
+	arrLen="${#xData[@]}"
+	for xEntry in "${xData[@]}"; do
+		arrLen="$((arrLen-=1))"
+		if [[ "${xEntry}" =~ ^(/([[:alnum:]]+/)+)([[:alnum:]]+)=(.*) ]]; then
+			curPath="${BASH_REMATCH[1]}"
+			curTag="${BASH_REMATCH[3]}"
+			curValue="${BASH_REMATCH[4]}"
+			if [ "${curPath}" == "/package/swmodulelist/swmodule/" ]; then
+				if [ "${curTag}" == "name" ]; then
+					if [ "${xName}" != "" ]; then
+						xProcessMk2
+					fi
+					xName="${curValue}"
+				elif [ "${curTag}" == "type" ]; then
+					if [ "${xType}" != "" ]; then
+						xProcessMk2
+					fi
+					xType="${curValue}"
+				elif [ "${curTag}" == "makefilepath" ]; then
+					if [ "${xMakefile}" != "" ]; then
+						xProcessMk2
+					fi
+					xMakefile="${curValue}"
+				elif [ "${curTag}" == "os" ]; then
+					if [ "${xOs}" != "" ]; then
+						xProcessMk2
+					fi
+					xOs="${curValue}"
+				fi
+			fi
+		fi
+
+		if [ "${arrLen}" == "0" ]; then
+			xProcessMk2
+		fi
+	done
 }
 
 ############################################################################
