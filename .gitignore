@@ -14,5 +14,6 @@ change_to_gpl_2.sh
 /Makefile.*
 /OBJ/
 /DESC/
+/HISTORY/
 /system.dsc
 /system.dsc.*
