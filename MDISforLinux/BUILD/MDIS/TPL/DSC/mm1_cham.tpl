@@ -9,7 +9,7 @@ fpga {
     _WIZ_BUSIF = STRING cpu,0
 
     # ------------------------------------------------------------------------
-    #  		PCI configuration
+    #        PCI configuration
     # ------------------------------------------------------------------------
     PCI_BUS_PATH = BINARY SCAN_PCIPATH_PRIM
     PCI_DEVICE_NUMBER = U_INT32 0

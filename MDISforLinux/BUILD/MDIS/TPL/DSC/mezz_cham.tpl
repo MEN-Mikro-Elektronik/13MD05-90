@@ -1,4 +1,3 @@
-
 mezz_cham_SCAN_BBIS_INSTANCE {
 
     # ------------------------------------------------------------------------
@@ -10,7 +9,7 @@ mezz_cham_SCAN_BBIS_INSTANCE {
     _WIZ_BUSIF = STRING SCAN_WIZ_BUSIF
 
     # ------------------------------------------------------------------------
-    #  		PCI configuration
+    #        PCI configuration
     # ------------------------------------------------------------------------
     PCI_BUS_NUMBER = U_INT32 SCAN_PCI_BUS_NR
     PCI_DEVICE_NUMBER = U_INT32 SCAN_PCI_DEV_NR

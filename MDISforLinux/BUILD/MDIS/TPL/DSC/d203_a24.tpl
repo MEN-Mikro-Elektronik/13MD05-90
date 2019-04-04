@@ -18,7 +18,7 @@ d203_a24_SCAN_BBIS_INSTANCE {
     # --- C-PCI parameters
     PCI_BUS_NUMBER = U_INT32 SCAN_PCI_BUS_NR
     PCI_DEVICE_NUMBER = U_INT32 SCAN_PCI_DEV_NR
-    PCI_DEVICE_ID = U_INT32 SCAN_PCI_DEV_NR #required by mdiswiz
+    PCI_DEVICE_ID = U_INT32 SCAN_PCI_DEV_NR
 
     # ------------------------------------------------------------------------
     #        debug levels (optional)

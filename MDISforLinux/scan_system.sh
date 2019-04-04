@@ -325,7 +325,12 @@ function fill_entry_dsc_smb_scan_list {
 function add_device_smb_scan_list {
     echo "add_device_smb_scan_list"
     tmpSmbDeviceList=$(cat $1/smb_device.tpl | sed "s/SCAN_SMB_DEV_NUMBER/$2/g;s/SCAN_SMB_DEV_NAME/$3/g")
-    G_smbDeviceList+="\n$tmpSmbDeviceList"
+    # new line is not required for the first device    
+    if [ "$2" == "0" ]; then
+        G_smbDeviceList+="$tmpSmbDeviceList"
+    else
+        G_smbDeviceList+="\n$tmpSmbDeviceList"
+    fi
 }
 
 ############################################################################
@@ -1787,4 +1792,8 @@ else
     # dsc section build done, now create the Makefile
     create_makefile
 fi
+
+#remove unnecessary fields from dsc file
+sed -i ':a;N;$!ba;s/#SCAN_NEXT_DEVID\n//g' $DSC_FILE
+
 echo "finished."

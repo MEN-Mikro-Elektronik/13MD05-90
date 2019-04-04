@@ -12,7 +12,7 @@ smb2_bus0 {
     #           SMBus parameters
     # ------------------------------------------------------------------------
     SMB_BUSNBR = U_INT32 SCAN_SMBNR
-    SCAN_LIST_OF_SMB_DEVICES
+SCAN_LIST_OF_SMB_DEVICES
 
     # ------------------------------------------------------------------------
     #        debug levels (optional)
@@ -23,4 +23,3 @@ smb2_bus0 {
     DEBUG_LEVEL_OSS = U_INT32 0xc0008000
     DEBUG_LEVEL_DESC = U_INT32 0xc0008000
 }
-

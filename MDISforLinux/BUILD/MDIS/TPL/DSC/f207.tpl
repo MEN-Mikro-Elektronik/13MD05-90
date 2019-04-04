@@ -9,7 +9,7 @@ f207_SCAN_BBIS_INSTANCE {
     _WIZ_BUSIF = STRING cpu,0
 
     # ------------------------------------------------------------------------
-    #  		PCI configuration
+    #         PCI configuration
     # ------------------------------------------------------------------------
     PCI_BUS_PATH = BINARY SCAN_PCIPATH_PRIM,SCAN_PCIPATH_SEC
     DEVICE_SLOT_0 = U_INT32 0x4

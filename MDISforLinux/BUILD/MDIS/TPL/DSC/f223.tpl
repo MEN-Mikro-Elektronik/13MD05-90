@@ -9,7 +9,7 @@ f223_SCAN_BBIS_INSTANCE {
     _WIZ_BUSIF = STRING cpu,1
 
     # ------------------------------------------------------------------------
-    #  		PCI configuration
+    #        PCI configuration
     # ------------------------------------------------------------------------
     PCI_BUS_NUMBER = U_INT32 SCAN_PCI_BUS_NR
     PCI_DEVICE_NUMBER = U_INT32 SCAN_PCI_DEV_NR
