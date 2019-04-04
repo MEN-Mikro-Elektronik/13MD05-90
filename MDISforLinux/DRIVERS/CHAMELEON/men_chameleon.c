@@ -185,6 +185,7 @@ static LIST_HEAD( G_drvLst); 		/**< list of registered drivers 	*/
 static LIST_HEAD( G_drvV2Lst); 		/**< list of registered V2 drivers  	*/
 static CHAM_FUNCTBL G_chamFctTable; 	/**< Chameleon function table       	*/
 static struct device *G_cham_devs;  	/**< base node for sysfs entries  	*/
+static int G_tblIdx = 0;		/**< index of chameleon table		*/
 
 /* helpers for sysfs attribute names */
 static const char *G_sysChamTblAttrname[NR_CHAM_TBL_ATTRS] = { "fpga_file","model","revision", "magic" };
@@ -678,7 +679,9 @@ static int __devinit pci_init_one(struct pci_dev *pdev,
 	/* store right aligned chars from table.file[] to normal left aligned tblfile[] and skip leading zeroes */
 	for(i = 0, j = 0; i < CHAM_TBL_FILE_LEN; i++) {
 		if (table.file[i] != 0) {
-			tblfile[j++] = table.file[i];
+			if (table.file[i] != ' ' || j > 0) {
+				tblfile[j++] = table.file[i];
+			}
 		}
 	}
 	tblfile[j] = '\0';
@@ -694,8 +697,10 @@ static int __devinit pci_init_one(struct pci_dev *pdev,
 	printk( KERN_INFO " Unit                devId   Grp Rev  Var  Inst IRQ   BAR  Offset       Addr\n");
 	printk( "================================================================================\n");
 
-	/* add this table as subdirectory to G_cham_devs and create table info files in it */
-	h->chamTblObj = kobject_create_and_add( tblfile,  &G_cham_devs->kobj );
+	/* add this table as subdirectory to G_cham_devs and create table info files in it.
+	 * Because multiple tables with same name can occur, we add the index as prefix. */
+	snprintf( name, sizeof(name), "%02d_%s", G_tblIdx++, tblfile);
+	h->chamTblObj = kobject_create_and_add( name, &G_cham_devs->kobj );
 
 	/* assemble attribute group and populate info entries per chameleon table */
 	for ( i=0; i < NR_CHAM_TBL_ATTRS; i++) {

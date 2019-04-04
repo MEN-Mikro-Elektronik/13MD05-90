@@ -152,11 +152,11 @@ declare -A mModuleXmls=( \
 
 ### @brief Filenames for M-Module templates
 declare -A mModuleTemplates=( \
-	["M31"]="m31.tpl" \
+	["M31"]="mX.tpl" \
 	["M35"]="m35.tpl" \
 	["M36N"]="m36n.tpl" \
-	["M66"]="m66.tpl" \
-	["M72"]="m72.tpl" \
+	["M66"]="mX.tpl" \
+	["M72"]="mX.tpl" \
 	["M77"]="m77.tpl" \
 	["M82"]="m82.tpl" \
 	)
@@ -1007,7 +1007,7 @@ function create_entry_dsc_mmodule {
 	echo "Found ${mModule} on ${boardName}_${boardNum}"
 
 	echo "Writing ${mModule,,}_${mModuleInstances["${mModule}"]} section to system.dsc"
-	cat "${tplDir}/${tplFile}" | sed "s/SCAN_MMODULE_INSTANCE/${mModuleInstances["${mModule}"]}/g;s/SCAN_BBIS_NAME/${boardName}/g;s/USCORESCAN_BBIS_INSTANCE/_${boardNum}/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" ${mm_device_slot}`/g" >> "${outFile}"
+	cat "${tplDir}/${tplFile}" | sed "s/SCAN_MMODULE_INSTANCE/${mModuleInstances["${mModule}"]}/g;s/SCAN_BBIS_NAME/${boardName}/g;s/USCORESCAN_BBIS_INSTANCE/_${boardNum}/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" ${mm_device_slot}`/g;s/SCAN_MMODULE_NAMELCASE/${mModule,,}/g;s/SCAN_MMODULE_NAME/${mModule}/g" >> "${outFile}"
 	if [ "${mModuleInstances["${mModule}"]}" == "1" ]; then
 		readarray -t xData <<< "$(xmlParseXml "${MEN_LIN_DIR}/PACKAGE_DESC/${xmlFile}")"
 		if [ "${xData[0]}" != "" ]; then
