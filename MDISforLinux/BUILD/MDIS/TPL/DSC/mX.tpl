@@ -1,11 +1,11 @@
-m72_SCAN_MMODULE_INSTANCE {
+SCAN_MMODULE_NAMELCASE_SCAN_MMODULE_INSTANCE {
 
     # ------------------------------------------------------------------------
     #        general parameters (don't modify)
     # ------------------------------------------------------------------------
     DESC_TYPE = U_INT32 0x1
-    HW_TYPE = STRING M72
-    _WIZ_MODEL = STRING M72
+    HW_TYPE = STRING SCAN_MMODULE_NAME
+    _WIZ_MODEL = STRING SCAN_MMODULE_NAME
 
     # ------------------------------------------------------------------------
     #        reference to base board
