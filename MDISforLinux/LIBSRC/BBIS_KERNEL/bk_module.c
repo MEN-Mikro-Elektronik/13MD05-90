@@ -648,6 +648,7 @@ static ssize_t bk_read_procmem( struct file *filp, char *buf, size_t count, loff
 
 	vfree(locbuf);
 
+  (void)rv;
   DBGWRT_3((DBH,"bk_read_procmem: ex rv=%d\n", rv));
   BK_UNLOCK;
   return len;

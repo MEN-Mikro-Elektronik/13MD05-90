@@ -1510,6 +1510,7 @@ static ssize_t mk_read_procmem( struct file *filp, char *buf, size_t count, loff
 
 	vfree(locbuf);
 
+  (void)rv;
   DBGWRT_3((DBH,"mk_read_procmem: ex rv=%d\n", rv));
   MK_UNLOCK;
   return len;
