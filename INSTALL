@@ -274,7 +274,13 @@ copy_sources_into_installation_directory(){
         cp  "${CWD}/13MD05-90_changelog.md" "${MENLINUX_ROOT}/13MD05-90_changelog.md"
 
         echo "Copy MDIS drivers..."
-        for i in ${CWD}/13* ; do
+
+        dirToCopyList=$(ls -l ${CWD} | grep '^d' | awk '{ print $9 }' | grep "13.*")
+        # additional directories that have to be copied into install directory
+        dirToCopyList+=$'\n'"mdis_ll_mt"
+
+        while read -r i; do
+                i=${CWD}/${i}
                 if [ -d "$i" ]; then
                         for folder_type in BIN BUILD DOXYGENTMPL DRIVERS INCLUDE LIBSRC LICENSES PACKAGE_DESC TOOLS WINDOWS; do
                                 if [ -d "$i/${folder_type}" ]; then
@@ -287,7 +293,7 @@ copy_sources_into_installation_directory(){
                                 fi
                         done
                 fi
-        done
+        done <<< "${dirToCopyList}"
 
         # set permissions in "BUILD" and "BIN" directory for all users
         cd ${MENLINUX_ROOT}
