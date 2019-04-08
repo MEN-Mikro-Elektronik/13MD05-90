@@ -83,7 +83,7 @@ show_manual_steps() {
 
 show_status_message() {
         echo "________________________________________________________________________________"
-        echo "${1}"
+        echo -e "${1}"
         echo ""
 }
 
@@ -490,7 +490,7 @@ while ${run}; do
                                         state="Break_Failed"
                                         break
                                 fi
-                                show_status_message ${CALL_MAKE_INSTALL};;
+                                show_status_message "${CALL_MAKE_INSTALL}";;
                      1 | 2)     echo "*** Aborted by user. "
                                 state="Break_Failed";;
                 esac
