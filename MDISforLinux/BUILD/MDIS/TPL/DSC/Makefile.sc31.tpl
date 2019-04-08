@@ -53,7 +53,7 @@ LIB_MODE = shared
 # of the modules issue many debug messages using printk's for
 # trouble shooting
 
-ALL_DBGS = dbg
+ALL_DBGS = nodbg
 
 # The directory in which the kernel modules are to be
 # installed. Usually this is the target's

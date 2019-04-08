@@ -376,7 +376,7 @@ readonly ASK_SCAN_TARGET_SYSTEM="Would you like to create an MDIS configuration 
 Note: This make only sense at your MEN target system!"
 
 readonly ASK_BUILD_MDIS_MODULES="Would you like to build MDIS modules with the configuration from the system scan?\n
-Note: This requires installed Linux kernel sources\/headers at the system!"
+Note: This requires installed Linux kernel sources/headers at the system!"
 
 readonly ASK_INSTALL_MDIS_MODULES="Would you like to install the built MDIS modules at your system?"
 
@@ -490,7 +490,7 @@ while ${run}; do
                                         state="Break_Failed"
                                         break
                                 fi
-                                show_status_message "Make install success";;
+                                show_status_message ${CALL_MAKE_INSTALL};;
                      1 | 2)     echo "*** Aborted by user. "
                                 state="Break_Failed";;
                 esac

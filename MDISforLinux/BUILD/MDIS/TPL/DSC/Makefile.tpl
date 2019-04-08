@@ -57,7 +57,7 @@ LIB_MODE = shared
 # of the modules issue many debug messages using printk's for
 # trouble shooting
 ##REPLNEWLINE017
-ALL_DBGS = dbg
+ALL_DBGS = nodbg
 ##REPLNEWLINE018
 # The directory in which the kernel modules are to be
 # installed. Usually this is the target's
