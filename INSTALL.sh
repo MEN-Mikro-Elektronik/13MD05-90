@@ -107,7 +107,7 @@ show_insufficient_rights() {
 get_ynq_answer() {
         while true
         do
-                echo -n $1 '(y/n/q): '
+                echo -e -n $1 '(y/n/q): '
                 read answer
                 case ${answer} in
                 [Yy]) return 0;;
@@ -370,11 +370,19 @@ echo "__________________________________________________________________________
 echo "                                                                                "
 
 # User Questions
-readonly INSTALL_Q="Would you like to proceed, and install MDIS sources into ${MENLINUX_ROOT}?"
-readonly TARGET_SYSTEM_Q="Do you run this script at your target system (selfhosted environment)?"
-readonly PERFORM_SCAN_Q="Would you like to perform a system scan to detect MEN hardware and generate the MDIS configuration?"
-readonly PERFORM_MAKE_Q="Would you like to build the MDIS sources?"
-readonly PERFORM_MAKE_INSTALL_Q="Would you like to install the MDIS sources?"
+readonly ASK_INSTALL_MDIS_SOURCES="Would you like to proceed, and install MDIS sources into ${MENLINUX_ROOT}?"
+
+readonly ASK_SCAN_TARGET_SYSTEM="Would you like to create an MDIS configuration for your system by scanning your system's hardware?\n
+Note: This make only sense at your MEN target system!"
+
+readonly ASK_BUILD_MDIS_MODULES="Would you like to build MDIS modules with the configuration from the system scan?\n
+Note: This requires installed Linux kernel sources\/headers at the system!"
+
+readonly ASK_INSTALL_MDIS_MODULES="Would you like to install the built MDIS modules at your system?"
+
+linux_kernel_version=$(readlink -f /usr/src/linux)
+readonly CALL_MAKE_INSTALL="The kernel modules are compiled for ${linux_kernel_version}\n
+If you update your kernel you have to rebuild the modules for the new kernel!"
 
 run=true
 state="OverwriteExistingSources"
@@ -389,7 +397,7 @@ fi
 # If force_install is set, install is done without asking user for action,
 # scan, make, make install is not performed
 if [ ${force_install} -ne "1" ]; then
-    get_ynq_answer "${INSTALL_Q}"
+    get_ynq_answer "${ASK_INSTALL_MDIS_SOURCES}"
     case $? in
         1 | 2) echo "*** Aborted by user."; run=false;;
     esac
@@ -435,7 +443,7 @@ while ${run}; do
                         break
                 fi
                 state="Scan"
-                get_ynq_answer "${TARGET_SYSTEM_Q}"
+                get_ynq_answer "${ASK_SCAN_TARGET_SYSTEM}"
                 case $? in
                         1 | 2)  show_manual_steps
                                 state="Break_Failed"
@@ -445,24 +453,19 @@ while ${run}; do
                 curr_dir=$(pwd)
                 cd ${CWD}
                 state="Make"
-                get_ynq_answer "${PERFORM_SCAN_Q}"
-                case $? in
-                        0 )     run_scan_system ${MENLINUX_ROOT}
-                                result=$?
-                                if [ ${result} -ne 0 ]; then
-                                        state="Break_Failed"
-                                        break
-                                fi
-                                show_status_message "Scan success";;
-                        1 | 2)  show_manual_steps
-                                state="Break_Success" ;;
-                esac
+                run_scan_system ${MENLINUX_ROOT}
+                result=$?
+                if [ ${result} -ne 0 ]; then
+                        state="Break_Failed"
+                        break
+                fi
+                show_status_message "Scan success"
                 cd ${curr_dir};;
         Make)
                 curr_dir=$(pwd)
                 cd ${CWD}
                 state="MakeInstall"
-                get_ynq_answer "${PERFORM_MAKE_Q}"
+                get_ynq_answer "${ASK_BUILD_MDIS_MODULES}"
                 case $? in
                         0 )     make
                                 result=$?
@@ -479,7 +482,7 @@ while ${run}; do
                 curr_dir=$(pwd)
                 cd ${CWD}
                 state="Break_Success"
-                get_ynq_answer "${PERFORM_MAKE_INSTALL_Q}"
+                get_ynq_answer "${ASK_INSTALL_MDIS_MODULES}"
                 case $? in
                         0 )     make install
                                 result=$?
