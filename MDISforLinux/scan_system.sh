@@ -422,62 +422,45 @@ function create_entry_dsc_cpu_type {
 #  each card type (cPCI serial, standard cPCI)
 #
 function create_entry_dsc_bbis_cham {
-    echo "create chameleon BBIS device..."
-    debug_args " \$1 = $1  \$2 = $2  \$3 = $3  \$4 = $4  \$5 = $5  \$6 = $6"
-    # BBIS driver name = WIZ_MODEL in lower letters
-    bbis_instance=$2
-    wiz_mod=$3
-    pci_busnr=$4
-    pci_devnr=$5
-    device_id=$6
-    pcibusslot=""
+    echo "create chameleon BBIS device - based on lspci data"
+    debug_args " \$1 = ${1}  \$2 = ${2}  \$3 = ${3}  \$4 = ${4}  \$5 = ${5}"
     
-    # basic algorithm:    
-    # if bbis_name[0] == 'F' then 
-    #      PCI_BUS_SLOT = G_cPciRackSlotStandard
-    #      busif = "cpu,1"
-    #      G_cPciRackSlotStandard++;
-    # else # 'G' -> cPCI Serial
-    #      PCI_BUS_SLOT = G_cPciRackSerialSlot
-    #      busif = "cpu,"$G_cPciRackSerialSlot
-    #      G_cPciRackSerialSlot ++;
+    local pci_vd=$(echo ${1} | sed "s:"0x":"":g")
+    local pci_dev=$(echo ${2} | sed "s:"0x":"":g")
+    local pci_devnr=${3}
+    local pci_subv=$(echo ${4} | sed "s:"0x":"":g")
+    local tpl_dir=${5}
+
+	local wiz_mod="MEZZ_CHAM"
     
-    is_F2xx=`echo $bbis_name | awk '{print substr($1,1,1)}'`
+    local lspci_device_verbose_data=$(lspci -s $(lspci -d ${pci_vd}:${pci_dev} -m | grep "${pci_subv}" | cut -f 1 -d " ") -v)
+    debug_args "${lspci_device_verbose_data}"
 
-    if [ "$is_F2xx"=="f"  ] ; then
-	pcibusslot=$G_cPciRackSlotStandard
-	busif="cpu,1"     # for standard cPCI always
-	wiz_mod="MEZZ_CHAM"
-	# count to next stndard cPCI slot nr.
-	G_cPciRackSlotStandard=`expr $G_cPciRackSlotStandard + 1`
-    fi
-    if [ "$is_F2xx"=="g"  ] ; then    
-	echo "using Gxxxx definitions" 
-	pcibusslot=$G_cPciRackSlotSerial
-	# on cPCI serial the businterface nr. is equal to its slot.
-	busif="cpu,"$G_cPciRackSlotSerial
-	wiz_mod="MEZZ_CHAM"
-	# count to next cPCI serial slot nr.
-	G_cPciRackSlotSerial=`expr $G_cPciRackSlotSerial + 1`
-    fi
-
-    bbis_name=`echo $3 | awk '{print tolower($1)}'`
-    # calculate bus_slot from given PCI devnr. on standard backplanes
-       
-    # cat template to temp file that gets DEVICE_IDV2_xx added after IPcore scan
-    # unfortunately some FPGA BBIS models dont match the IC file name. E.g. on MM1
-    # the IC filename starts with "MM01-IC..." but modelname is just 'fpga'
-    if [ "$bbis_name" == "mm01" ]; then
-	tplname=mm1_cham.tpl
+    local is_pcie=$(echo "${lspci_device_verbose_data}" | grep "Capabilities.*Express Legacy Endpoint")
+    if [ -z "${is_pcie}" ]; then
+        echo  "Device: ${pci_vd}:${pci_dev} PCI subvendor: ${pci_subv} is CPCI device"
+	    local pcibus_slot=${G_cPciRackSlotStandard}
+        # for standard cPCI always
+	    local bus_if="cpu,1"
+	    # count to next stndard cPCI slot nr.
+	    G_cPciRackSlotStandard=`expr ${G_cPciRackSlotStandard} + 1`
     else
-	tplname=mezz_cham.tpl
+        echo  "Device: ${pci_vd}:${pci_dev} PCI subvendor: ${pci_subv} is CPCI serial device"
+	    local pcibus_slot=${G_cPciRackSlotSerial}
+	    # on cPCI serial the businterface nr. is equal to its slot
+        # what about boards that are connected to CPU board?
+	    local bus_if="cpu,"${G_cPciRackSlotSerial}
+	    # count to next cPCI serial slot nr.
+	    G_cPciRackSlotSerial=`expr ${G_cPciRackSlotSerial} + 1`
     fi
+
+    # no support for "MM01-IC..."
+    tpl_name=mezz_cham.tpl
 
     # TODO generate the long filter commands dynamically..
-    cat $1/$tplname | sed "s/SCAN_BBIS_INSTANCE/$bbis_instance/g;s/SCAN_WIZ_MODEL/$wiz_mod/g;s/SCAN_WIZ_BUSIF/$busif/g;s/SCAN_PCI_BUS_NR/`printf \"0x%x\" $pci_busnr`/g;s/SCAN_PCI_BUS_SLOT/`printf \"0x%x\" $pcibusslot`/g;s/SCAN_PCI_DEV_NR/`printf \"0x%x\" $pci_devnr`/g" > $TMP_BBIS_DSC
+    cat ${tpl_dir}/${tpl_name} | sed "s/SCAN_BBIS_INSTANCE/${bbis_instance}/g;s/SCAN_WIZ_MODEL/${wiz_mod}/g;s/SCAN_WIZ_BUSIF/${bus_if}/g;s/SCAN_PCI_BUS_NR/`printf \"0x%x\" ${pci_busnr}`/g;s/SCAN_PCI_BUS_SLOT/`printf \"0x%x\" ${pcibus_slot}`/g;s/SCAN_PCI_DEV_NR/`printf \"0x%x\" ${pci_devnr}`/g" > ${TMP_BBIS_DSC}
 
 }
-
 ############################################################################
 # write all MDIS device sections for the detected BBIS entry (cham device)
 #
@@ -651,7 +634,7 @@ function check_for_cham_devs {
 	scan_cham_table $DSC_TPL_DIR $cham_file $inst_count 0
 
         # Now add the found device IDs to temporary BBIS desc file
-        create_entry_dsc_bbis_cham $DSC_TPL_DIR $6 $cham_file $7 $4
+        create_entry_dsc_bbis_cham $2 $3 $4 $5 $DSC_TPL_DIR
 	for id in $G_deviceIdV2; do
             # format data into a DEVICE_IDV2 entry and add same scan tag in next line
             idv2line="    DEVICE_IDV2_$device_id_count = U_INT32 $id\n#SCAN_NEXT_DEVID"
