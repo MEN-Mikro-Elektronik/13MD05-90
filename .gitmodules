@@ -281,6 +281,7 @@
 [submodule "TOOLS/FPGA_LOAD"]
 	path = MDISforLinux/TOOLS/FPGA_LOAD
 	url = ../mdis_tools_fpga_load
+	branch = jpe-dev
 [submodule "LIBSRC/pciutils"]
 	path = MDISforLinux/LIBSRC/pciutils
 	url = ../pciutils
