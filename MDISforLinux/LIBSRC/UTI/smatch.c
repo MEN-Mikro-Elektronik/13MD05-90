@@ -64,15 +64,16 @@ int smatch(s, t)    /* shell-like matching */
                 while (*++t != ']') {
                         if (*t == '\\')
                                 ++t;
-                        if (*(t+1) != '-')
+                        if (*(t+1) != '-') {
                                 if (*t == *s) {
                                         while (*++t != ']')
                                                 if (*t == '\\')
                                                         ++t;
                                         return smatch(++s, ++t);
                                 }
-                                else
-                                        continue;
+                        }
+                        else
+                                continue;
                         if (*(t+2) == ']')
                                 return (*s == *t || *s == '-');
                         n =  (*(t+2) == '\\') ? 3 : 2;
