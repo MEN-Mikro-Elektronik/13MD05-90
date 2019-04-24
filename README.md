@@ -9,4 +9,4 @@ For more information read [MDIS5 under Linux User Manual](https://www.men.de/loa
 
 ## Installation
 
-Run the '**INSTALL**' script to copy the files to the default location **/opt/menlinux/** or pass another folder name to the script.
+Run the '**INSTALL.sh**' script to copy the files to the default location **/opt/menlinux/** or pass another folder name to the script.
