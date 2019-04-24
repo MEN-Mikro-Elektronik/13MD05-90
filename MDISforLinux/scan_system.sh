@@ -431,7 +431,7 @@ function create_entry_dsc_bbis_cham {
     local pci_subv=$(echo ${4} | sed "s:"0x":"":g")
     local tpl_dir=${5}
 
-	local wiz_mod="MEZZ_CHAM"
+    local wiz_mod="MEZZ_CHAM"
     
     local lspci_device_verbose_data=$(lspci -s $(lspci -d ${pci_vd}:${pci_dev} -m | grep "${pci_subv}" | cut -f 1 -d " ") -v)
     debug_args "${lspci_device_verbose_data}"
@@ -1441,6 +1441,54 @@ xGetMakefiles() {
 	done
 }
 
+function check_tools_compilation_prerequisites {
+    echo "checking compilation prerequisites"
+
+}
+
+function compile_mm_ident {
+    echo "compiling mm_ident"
+    if [ -d "${MEN_LIN_DIR}TOOLS/mm_ident" ]; then
+        make clean -C "${MEN_LIN_DIR}TOOLS/mm_ident" &> ${MEN_LIN_DIR}TOOLS/mm_ident/make_clean.log
+        make -C "${MEN_LIN_DIR}TOOLS/mm_ident" &> ${MEN_LIN_DIR}TOOLS/mm_ident/make_mm_ident.log
+        local CmdResult=$?
+        if [ ${CmdResult} -ne "0" ]; then
+            echo "mm_ident compilation failed, see log: "
+            echo "${MEN_LIN_DIR}TOOLS/mm_ident/make_mm_ident.log"
+        else
+            echo "mm_ident compilation succeed, see log:"
+            echo "${MEN_LIN_DIR}TOOLS/mm_ident/make_mm_ident.log"
+            rm ${MEN_LIN_DIR}TOOLS/mm_ident/make_clean.log
+        fi
+    else
+        echo "mm_ident tool not found in MDIS - error "
+    fi
+
+    return ${CmdResult}
+}
+
+function compile_fpga_tools {
+    echo "compiling fpga_tools"
+    echo "compiling fpga_tools, and other requried libraries like pciutils..."
+    if [ -d "${MEN_LIN_DIR}TOOLS/FPGA_LOAD" ]; then
+        make clean -C "${MEN_LIN_DIR}TOOLS/FPGA_LOAD" &> ${MEN_LIN_DIR}TOOLS/FPGA_LOAD/make_clean.log
+        make -C "${MEN_LIN_DIR}TOOLS/FPGA_LOAD" &> ${MEN_LIN_DIR}TOOLS/FPGA_LOAD/make_fpga_load.log
+        local CmdResult=$?
+        if [ ${CmdResult} -ne "0" ]; then
+            echo "fpga_tools compilation failed, see log: "
+            echo "${MEN_LIN_DIR}TOOLS/FPGA_LOAD/make_fpga_load.log"
+        else
+            echo "fpga_tools compilation succeed"
+            echo "${MEN_LIN_DIR}TOOLS/FPGA_LOAD/make_fpga_load.log"
+            rm ${MEN_LIN_DIR}TOOLS/FPGA_LOAD/make_clean.log
+        fi
+    else
+        echo "fpga_tools tool not found in MDIS - error "
+    fi
+
+    return ${CmdResult}
+}
+
 ############################################################################
 ############################################################################
 ## main
@@ -1463,7 +1511,16 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
-VERBOSE_PRINT=$2
+VERBOSE_PRINT=""
+PCI_DRYTEST=""
+
+if [ "$2" != "" ]; then
+    BUILD_TOOLS="1"
+else
+    BUILD_TOOLS=""
+fi
+
+VERBOSE_PRINT=$3
 if [ "$3" != "" ]; then
     PCI_DRYTEST=$3
 else
@@ -1531,6 +1588,31 @@ else
     echo "*** error: please set a symlink /usr/src/linux to the headers of your current running kernel:"
     echo "           e.g.   ln -s /usr/src/linux-headers.x.y.z /usr/src/linux"
     exit 1
+fi
+
+# check target architecture, for non -x86 target system rebuild tools:
+# fpga_load, mm_ident tool
+
+if [ "${BUILD_TOOLS}" == "1" ]; then
+    check_tools_compilation_prerequisites
+    compile_mm_ident
+    CmdResult=$?
+    echo "compile_mm_ident=${CmdResult}"
+
+    if [ "${CmdResult}" == "0" ]; then
+        # Rewrite mm_ident binary in MDIS installed sources
+        cp ${MEN_LIN_DIR}TOOLS/mm_ident/mm_ident ${MEN_LIN_DIR}BIN/mm_ident
+        echo "mm_ident tool copied into ${MEN_LIN_DIR}BIN/"
+    fi
+
+    compile_fpga_tools
+    CmdResult=$?
+    echo "compile_fpga_tools=${CmdResult}"
+    if [ "${CmdResult}" == "0" ]; then
+        # Rewrite mm_ident binary in MDIS installed sources
+        cp ${MEN_LIN_DIR}TOOLS/FPGA_LOAD/fpga_load ${MEN_LIN_DIR}BIN/fpga_load
+        echo "fpga_load tool copied into ${MEN_LIN_DIR}BIN/"
+    fi        
 fi
 
 # all ok, let the games begin...
