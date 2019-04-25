@@ -59,7 +59,7 @@ TMP_CHAM_TBL=/tmp/men_cham_tbl.tmp
 TMP_F205_DSC=/tmp/men_f205.dsc.tmp
 # fpga_load to use (32/64 bit)
 # (Mind: without ia32 lib 32bit programs cant run under 64bit)
-FPGA_LOAD=fpga_load_x86-32
+FPGA_LOAD=fpga_load
 # mm_ident to use
 MM_IDENT=mm_ident
 # debugging/verbosity: 0=none, 1=verbose 2=verbose+function arguments
