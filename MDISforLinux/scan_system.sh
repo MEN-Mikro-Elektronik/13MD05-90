@@ -24,7 +24,7 @@
 #                     default file /tmp/men_pci_devs is not written. Used to
 #                     test system.dsc generation with predefined test data.
 ############################################################################
-# copyright (c) 2113 MEN Mikro Elektronik GmbH Nuremberg
+# copyright (c) 2013-2019 MEN Mikro Elektronik GmbH Nuremberg
 ############################################################################
 
 ##########
@@ -1446,6 +1446,7 @@ function check_tools_compilation_prerequisites {
 
 }
 
+### @brief Compile mm_ident tool
 function compile_mm_ident {
     echo "compiling mm_ident"
     if [ -d "${MEN_LIN_DIR}TOOLS/mm_ident" ]; then
@@ -1467,6 +1468,7 @@ function compile_mm_ident {
     return ${CmdResult}
 }
 
+### @brief Compile fpga_load tool
 function compile_fpga_tools {
     echo "compiling fpga_tools"
     echo "compiling fpga_tools, and other requried libraries like pciutils..."
@@ -1489,6 +1491,52 @@ function compile_fpga_tools {
     return ${CmdResult}
 }
 
+### @brief script usage --help
+function scan_system_usage {
+    echo "scan_system.sh   script to generate an automatic MDIS configuration"
+    echo "                 when doing a selfhosted project"
+    echo ""
+    echo "The script checks which CPU we are on. The SMB2 drivers"
+    echo "are always added to the CPU to provide BMC and watchdog"
+    echo "drivers."
+    echo ""
+    echo "IMPORTANT: path to MDIS install dir has to passed as first argument"
+    echo ""
+    echo "parameters:"
+    echo "          'MEN_LIN_DIR'  path to MDIS installation dir - default"
+    echo "                         /opt/menlinux/"
+    echo "          --verbose      if 1 or 2 then additional debug info is dumped"
+    echo "                         ex: --verbose 1"
+    echo "          --buildtools   build mm_ident and fpga_load from source"
+    echo "          --drytest      run drytest with test PCI device list "
+    echo "                         if passed as alternative PCI devices temp" 
+    echo "                         file the default file /tmp/men_pci_devs is"
+    echo "                         not written. Used to test system.dsc"
+    echo "                         generation with predefined test data."   
+    echo "                         ex: --drytest sth"
+    echo "          --help         print help"
+    echo ""
+}
+
+### @brief check if passed argument is valid directory in system
+function check_if_mdis_path {
+    local dirPath=${1}
+    echo "${dirPath}" | grep "/.*"
+    local CmdResult=$?
+
+    if [ ${CmdResult} -ne 0 ]; then
+        return 0
+    fi
+
+    if [ -d "${dirPath}" ]; then
+        return 1
+    else
+        echo "Wrong MDIS INSTALL path"
+        echo "PATH: ${dirPath} does not exists"
+        return 2
+    fi
+}
+
 ############################################################################
 ############################################################################
 ## main
@@ -1500,36 +1548,79 @@ echo "MDIS System Scan - generate initial system.dsc / Makefile"
 echo "============================================================"
 echo
 
-if [ $UID != 0 ]; then
+PCI_DRYTEST=""
+BUILD_TOOLS=""
+MEN_LIN_DIR=""
+
+if [ $# -lt 1 ]; then
+    scan_system_usage
+    exit 1
+fi
+
+check_if_mdis_path $1
+CmdResult=$?
+if [ ${CmdResult} -eq 0 ]; then
+    echo "$1 :is not path"
+    exit 1
+elif [ ${CmdResult} -eq 1 ]; then
+    MEN_LIN_DIR=$1
+    shift
+else
+    echo "$1 :invalid path"
+    exit 1
+fi  
+
+# read parameters
+while test $# -gt 0 ; do
+    # This 'check_if_mdis_path' part is necessary to make scan_system.sh script  
+    # compatible with  previous versions
+    case "$1" in
+        -h|--help)
+                scan_system_usage
+                exit 1
+                ;;
+        --buildtools)
+                shift
+                export BUILD_TOOLS="1"
+                echo "Build mm_ident and fpga_load tool"
+                ;;
+        --verbose)
+                shift
+                if test $# -gt 0; then
+                        VERBOSE_PRINT=$1
+                        echo "Verbose option: ${VERBOSE_PRINT}"
+                else
+                        echo "VERBOSE_PRINT unspecified"
+                        exit 1
+                fi
+                shift
+                ;;
+        --drytest)
+                shift
+                if test $# -gt 0; then
+                        PCI_DRYTEST=$1
+                        echo "drytest option: ${PCI_DRYTEST}"
+                else
+                        echo "PCI_DRYTEST unspecified"
+                        exit 1
+                fi
+                shift
+                ;;
+        *)
+                echo "No valid parameters"
+                break
+                ;;
+        esac
+done
+
+if [ ${UID} != 0 ]; then
 	echo "*** error: only root can run this script"
 	echo "*** if you are running this script via mdiswiz, please run mdiswiz as root" 
 	exit 1
 fi
 
-if [ $# -lt 1 ]; then
-    usage
-    exit 1
-fi
-
-VERBOSE_PRINT=""
-PCI_DRYTEST=""
-
-if [ "$2" != "" ]; then
-    BUILD_TOOLS="1"
-else
-    BUILD_TOOLS=""
-fi
-
-VERBOSE_PRINT=$3
-if [ "$3" != "" ]; then
-    PCI_DRYTEST=$3
-else
-    PCI_DRYTEST=""
-fi
-
-MEN_LIN_DIR=$1
-DSC_TPL_DIR=$MEN_LIN_DIR/BUILD/MDIS/TPL/DSC
-debug_print "MEN_LIN_DIR = $1"
+DSC_TPL_DIR=${MEN_LIN_DIR}/BUILD/MDIS/TPL/DSC
+debug_print "MEN_LIN_DIR = ${MEN_LIN_DIR}"
 
 ##
 # prerequisites
