@@ -1441,11 +1441,6 @@ xGetMakefiles() {
 	done
 }
 
-function check_tools_compilation_prerequisites {
-    echo "checking compilation prerequisites"
-
-}
-
 ### @brief Compile mm_ident tool
 function compile_mm_ident {
     echo "compiling mm_ident"
@@ -1496,45 +1491,90 @@ function scan_system_usage {
     echo "scan_system.sh   script to generate an automatic MDIS configuration"
     echo "                 when doing a selfhosted project"
     echo ""
-    echo "The script checks which CPU we are on. The SMB2 drivers"
-    echo "are always added to the CPU to provide BMC and watchdog"
-    echo "drivers."
+    echo "  The script checks which CPU we are on. The SMB2 drivers"
+    echo "  are always added to the CPU to provide BMC and watchdog"
+    echo "  drivers."
     echo ""
-    echo "IMPORTANT: path to MDIS install dir has to passed as first argument"
+    echo "IMPORTANT:"
+    echo "     1. Path to MDIS install dir has to passed as first argument"
+    echo "     2. Tools must be available in system: i2cdump, setpci, lspci,"
+    echo "        libelf-dev or libelf-devel."
+    echo "     3. /usr/src/linux/ points to valid kernel headers"
     echo ""
     echo "parameters:"
-    echo "          'MEN_LIN_DIR'  path to MDIS installation dir - default"
-    echo "                         /opt/menlinux/"
-    echo "          --verbose      if 1 or 2 then additional debug info is dumped"
-    echo "                         ex: --verbose 1"
-    echo "          --buildtools   build mm_ident and fpga_load from source"
-    echo "          --drytest      run drytest with test PCI device list "
-    echo "                         if passed as alternative PCI devices temp" 
-    echo "                         file the default file /tmp/men_pci_devs is"
-    echo "                         not written. Used to test system.dsc"
-    echo "                         generation with predefined test data."   
-    echo "                         ex: --drytest sth"
-    echo "          --help         print help"
+    echo "     'MEN_LIN_DIR'     path to MDIS installation dir - default"
+    echo "                       /opt/menlinux/"
+    echo "     --verbose         if 1 or 2 then additional debug info is dumped"
+    echo "                       ex: --verbose 1"
+    echo "     --buildtools      build mm_ident and fpga_load from source"
+    echo "     --drytest         run drytest with test PCI device list "
+    echo "                       if passed as alternative PCI devices temp" 
+    echo "                       file the default file /tmp/men_pci_devs is"
+    echo "                       not written. Used to test system.dsc"
+    echo "                       generation with predefined test data."   
+    echo "                       ex: --drytest sth"
+    echo "     --prerequisites   check if all prerequisites are met"
+    echo "     --help            print help"
     echo ""
 }
 
 ### @brief check if passed argument is valid directory in system
 function check_if_mdis_path {
-    local dirPath=${1}
-    echo "${dirPath}" | grep "/.*"
+    local DirPath=${1}
+    echo "${DirPath}" | grep "/.*"
     local CmdResult=$?
 
     if [ ${CmdResult} -ne 0 ]; then
         return 0
     fi
 
-    if [ -d "${dirPath}" ]; then
+    if [ -d "${DirPath}" ]; then
         return 1
     else
         echo "Wrong MDIS INSTALL path"
-        echo "PATH: ${dirPath} does not exists"
+        echo "PATH: ${DirPath} does not exists"
         return 2
     fi
+}
+
+### @brief check if all system prerequisites are met
+### return 0 if success
+function check_scan_system_prerequisites {
+
+    local prerequisites_result=0
+    echo "checking if I2C tools exists..."
+    local have_i2ctools=`which i2cdump`
+    if [ "${have_i2ctools}" == "" ]; then
+        echo "*** error: please install i2c-tools. Examples: Ubuntu: apt-get install i2c-tools, Fedora: yum install i2c-tools"
+        prerequisites_result=1
+    else
+        echo "I2C tools exists: PASSED"
+    fi
+
+    echo "checking if PCI utils exists..."
+    local have_pciutils1=`which setpci`
+    local have_pciutils2=`which lspci`
+    if [[ "$have_pciutils1" == "" || \
+          "$have_pciutils2" == "" ]]; then
+        echo "*** error: please install pciutils. Ubuntu: apt-get install pciutils, Fedora: yum install pciutils"
+        prerequisites_result=2
+    else
+        echo "PCI utils exists: PASSED"
+    fi
+
+    # check if /usr/src/linux/ exists and if its a valid kernel src/header folder
+    echo "checking if /usr/src/linux/ points to valid kernel headers..."
+    find ${LIN_SRC_DIR}/include/ -name "autoconf.h" > /dev/null 2>&1
+    local linux_src_link=$?
+    if [ "${linux_src_link}" == "0" ]; then
+        echo "/usr/src/linux/ points to valid kernel headers: PASSED"
+    else
+        echo "*** error: please set a symlink /usr/src/linux to the headers of your current running kernel:"
+        echo "           e.g.   ln -s /usr/src/linux-headers.x.y.z /usr/src/linux"
+        prerequisites_result=3
+    fi
+
+    return ${prerequisites_result}
 }
 
 ############################################################################
@@ -1606,6 +1646,11 @@ while test $# -gt 0 ; do
                 fi
                 shift
                 ;;
+        --prerequisites)
+                shift
+                check_scan_system_prerequisites
+                exit 1
+                ;;
         *)
                 echo "No valid parameters"
                 break
@@ -1625,6 +1670,13 @@ debug_print "MEN_LIN_DIR = ${MEN_LIN_DIR}"
 ##
 # prerequisites
 #
+check_scan_system_prerequisites
+CmdResult=$?
+if [ "${CmdResult}" != "0" ]; then
+    echo "*** error: prerequisites are not met, see help"
+    exit 1
+fi
+
 if [[ -e "$DSC_FILE" && $SCAN_SIM == 0 ]]; then
     echo "backing up system.dsc..."
     mv $DSC_FILE $DSC_FILE.bak
@@ -1650,42 +1702,11 @@ else
     TMP_PCIDEVS=$PCI_DRYTEST
 fi
 
-echo "checking if I2C tools exists..."
-have_i2ctools=`which i2cdump`
-if [ "$have_i2ctools" == "" ]; then
-    echo "*** error: please install i2c-tools. Examples: Ubuntu: apt-get install i2c-tools, Fedora: yum install i2c-tools"
-    exit 1
-else
-    echo "OK."
-fi
-
-echo "checking if PCI utils exists..."
-have_pciutils1=`which setpci`
-have_pciutils2=`which lspci`
-if [[ "$have_pciutils1" == "" || \
-      "$have_pciutils2" == "" ]]; then
-    echo "*** error: please install pciutils. Ubuntu: apt-get install pciutils, Fedora: yum install pciutils"
-    exit 1
-else
-    echo "OK."
-fi
-
-# check if /usr/src/linux/ exists and if its a valid kernel src/header folder
-echo "checking if /usr/src/linux/ points to valid kernel headers..."
-find $LIN_SRC_DIR/include/ -name "autoconf.h" > /dev/null 2>&1
-if [ "$?" == "0" ]; then
-    echo "OK"
-else
-    echo "*** error: please set a symlink /usr/src/linux to the headers of your current running kernel:"
-    echo "           e.g.   ln -s /usr/src/linux-headers.x.y.z /usr/src/linux"
-    exit 1
-fi
 
 # check target architecture, for non -x86 target system rebuild tools:
 # fpga_load, mm_ident tool
 CPU_ARCHITECTURE=$(arch | grep "86")
 if [ "${BUILD_TOOLS}" == "1" ] || [ "${CPU_ARCHITECTURE}" == "" ]; then
-    check_tools_compilation_prerequisites
     compile_mm_ident
     CmdResult=$?
     echo "compile_mm_ident=${CmdResult}"
