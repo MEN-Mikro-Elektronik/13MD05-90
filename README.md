@@ -4,7 +4,9 @@ This repository represents the complete MEN MDIS for Linux System Package plus l
 
 MDIS, the MEN Driver Interface System, is a framework to develop device drivers for almost any kind of I/O hardware. A properly written driver runs on all operating systems supported by MDIS. Operating systems currently supported include Windows, VxWorks and Linux.
 
-For more information read [MDIS5 under Linux User Manual](https://www.men.de/loadfile.php?t=2&f=21md05-90.pdf).
+## Official Release and Documentation
+For the latest official released version, please visit the MEN website https://www.men.de/software/13md05-90  
+There you can also download the MDIS Documentation.
 
 
 ## Installation
