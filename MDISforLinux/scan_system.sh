@@ -1684,7 +1684,7 @@ fi
 # check target architecture, for non -x86 target system rebuild tools:
 # fpga_load, mm_ident tool
 CPU_ARCHITECTURE=$(arch | grep "86")
-if [ "${BUILD_TOOLS}" == "1" ] || [ "${CPU_ARCHITECTURE}" == "1" ]; then
+if [ "${BUILD_TOOLS}" == "1" ] || [ "${CPU_ARCHITECTURE}" == "" ]; then
     check_tools_compilation_prerequisites
     compile_mm_ident
     CmdResult=$?
