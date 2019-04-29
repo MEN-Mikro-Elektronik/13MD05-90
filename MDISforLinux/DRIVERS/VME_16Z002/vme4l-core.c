@@ -2651,6 +2651,11 @@ int vme4l_register_bridge_driver(
  */
 void vme4l_unregister_bridge_driver(void)
 {
+	if( G_bDrv && G_bHandle ){
+		char buf[200];
+		G_bDrv->revisionInfo( G_bHandle, buf );
+		printk( KERN_INFO "VME4L bridge driver has unregistered:\n%s\n", buf );
+	}
 	G_bDrv    = NULL;
 	G_bHandle = NULL;
 }
@@ -3174,6 +3179,8 @@ static void vme_bridge_procfs_unregister(void)
 }
 #endif /* CONFIG_PROC_FS */
 
+static struct class *class_vme4l;
+
 static void vme4l_cleanup(void)
 {
 	vme_bridge_procfs_unregister();
@@ -3192,8 +3199,13 @@ static void vme4l_cleanup(void)
 					list_entry( ent->lstAdrsWins.next, VME4L_ADRSWIN, node );
 				vme4l_discard_adrswin( win );
 			}
+			if (!ent->dev)
+				continue;
+			device_destroy(class_vme4l, MKDEV(major, minor));
 		}
 	}
+	if (class_vme4l)
+		class_destroy(class_vme4l);
 	unregister_chrdev(major, "vme4l");
 
 }
@@ -3221,9 +3233,9 @@ static int __init vme4l_init_module(void)
 		printk( KERN_INFO "%s\n", vme4l_rev_info( buf ));
 	}
 
-	/*------------------------+
-	|  Create device entries  |
-	+------------------------*/
+	/*----------------------------+
+	|  Register character device  |
+	+----------------------------*/
 
 	if( (rv =       register_chrdev( major, "vme4l", &vme4l_fops )) < 0)
 	{
@@ -3244,6 +3256,10 @@ static int __init vme4l_init_module(void)
 #endif
 	init_waitqueue_head( &G_dmaWq );
 
+	class_vme4l = class_create(THIS_MODULE, "vme4l");
+	if (IS_ERR(class_vme4l))
+		goto CLEANUP;
+	
 	VME4LDBG("vme4l: using major %d\n", major);
   	{
 		int minor;
@@ -3253,6 +3269,14 @@ static int __init vme4l_init_module(void)
 			/* init list headers */
 			INIT_LIST_HEAD( &ent->lstAdrsWins );
 
+			if (!ent->devName || !*ent->devName)
+				continue;
+			
+			ent->dev = device_create(class_vme4l, NULL,
+						 MKDEV(major, minor), NULL,
+						 ent->devName);
+			if (IS_ERR(ent->dev))
+				goto CLEANUP;
 		}
 	}
 
