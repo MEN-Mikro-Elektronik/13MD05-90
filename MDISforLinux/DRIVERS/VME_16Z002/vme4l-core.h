@@ -675,6 +675,7 @@ typedef struct {
 	vmeaddr_t spcEnd;			/**< VME end addr of this space  */
 	int maxWidth;				/**< max accessWidth  */
 	struct list_head lstAdrsWins; /**< list of address windows  */
+	struct device *dev;			/**< devfs node  */
 } VME4L_SPACE_ENT;
 
 
