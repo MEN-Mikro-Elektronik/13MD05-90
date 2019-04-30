@@ -37,7 +37,8 @@ MAK_INP3=history$(INP_SUFFIX)
 MAK_INP4=change$(INP_SUFFIX)
 MAK_INP5=linux$(INP_SUFFIX)
 
-MAK_SWITCH=-DLINUX
+MAK_SWITCH=-DLINUX \
+         -DMAC_IO_MAPPED_EN
 
 MAK_LD_SWITCH=-Wl -Wl,-Map -Wl,hwbug.map
 

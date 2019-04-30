@@ -1,3 +1,4 @@
+#CREATION_NOTE
 ifndef MEN_LIN_DIR
 MEN_LIN_DIR = /opt/menlinux
 endif

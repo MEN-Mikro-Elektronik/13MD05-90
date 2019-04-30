@@ -79,10 +79,10 @@ int display_data( int argc, char **argv)
 	}
 	else {
 		if( argc > 1 ){
-			if( sscanf(argv[1],"%x", &adr ) < 1 )
+			if( sscanf(argv[1],"%lx", &adr ) < 1 )
 				return 1;		
 			if( argc > 2 ){
-				if( sscanf( argv[2],"%x", &count ) < 1 )
+				if( sscanf( argv[2],"%lx", &count ) < 1 )
 					return 1;		
 			}
 		}
@@ -115,7 +115,7 @@ int32 n,fmt;
     char a = a = RCSid[0];
     
     for (k=k0=buf; k0<kmax; k0+=16) {   
-        printf("%08x+%04x: ",(int32)buf, (int16)(k-buf));
+        printf("%08lx+%04x: ",(int32)buf, (int16)(k-buf));
 
         switch(fmt) {                                       			/* dump hex: */
            case 4 : for (k=k0,i=0; i<16 && !control_c; i+=4, k+=4) {    /* long  */
@@ -123,7 +123,7 @@ int32 n,fmt;
 						   value = os_access_address(k,4,1,0,&buserr);
 						   if (buserr) return(1);
 						   *(u_int32*)&lbuf[i] = value;
-						   printf("%08x ",value);
+						   printf("%08lx ",value);
 					   }
                        else         
 						   printf("         ");
@@ -134,7 +134,7 @@ int32 n,fmt;
 						   value = os_access_address(k,2,1,0,&buserr) & 0xffff;
 						   if (buserr) return(1);
 						   *(u_int16*)&lbuf[i] = value;
-						   printf("%04x ",value);
+						   printf("%04lx ",value);
 					   }
                        else
 						   printf("     ");
@@ -145,7 +145,7 @@ int32 n,fmt;
 						   value = os_access_address(k,1,1,0,&buserr) & 0xff;
 						   if (buserr) return(1);
 						   *(u_int8*)&lbuf[i] = value;
-						   printf("%02x ",value);
+						   printf("%02lx ",value);
 					   }
                        else
 						   printf("   ");
