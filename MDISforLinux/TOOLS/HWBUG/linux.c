@@ -186,15 +186,15 @@ int *be_flag;
 	if( G_iomapped ) {
 		if( read ){
 			switch(size){
-				case 1: 	value = inb((unsigned short int *)physadr); break;
-				case 2: 	value = inw((unsigned short int *)physadr); break;
-				case 4: 	value = inl((unsigned long *)physadr); break;
+				case 1: 	value = inb(physadr); break;
+				case 2: 	value = inw(physadr); break;
+				case 4: 	value = inl(physadr); break;
 			}
 		} else {
 			switch(size){
-				case 1: 	outb((unsigned char)value,      (unsigned short int *)physadr); break;
-				case 2: 	outw((unsigned short int)value, (unsigned short int *)physadr); break;
-				case 4: 	outl((unsigned int)value,       (unsigned short int *)physadr); break;
+				case 1: 	outb((unsigned char)value,      physadr); break;
+				case 2: 	outw((unsigned short int)value, physadr); break;
+				case 4: 	outl((unsigned int)value,       physadr); break;
 			}
 		}
 	} else

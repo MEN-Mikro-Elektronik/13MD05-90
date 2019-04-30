@@ -107,7 +107,7 @@ int size, incr, wonly;
 	sprintf( value_fmt, "%%0%dlx ", size*2 );
 	
 	do {
-		printf( "%08x: ", adr );
+		printf( "%08lx: ", adr );
 		if( !wonly ){
 			value = os_access_address( adr, size, 1, 0, &buserr );
 			if( buserr ) return;				
@@ -201,7 +201,7 @@ int fill_data( int argc, char **argv)
 		return 0;
 	}
 
-	printf(" Filling %08X..%08X with ",adr,adr+size-1);
+	printf(" Filling %08lX..%08lX with ",adr,adr+size-1);
 
 	if (o_patt == 0) {
 		/*-------------------------+
