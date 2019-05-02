@@ -287,3 +287,7 @@
 	url = ../mm_ident
 	branch = jpe-dev
 
+[submodule "MDISforLinux/TOOLS/HWBUG"]
+	path = MDISforLinux/TOOLS/HWBUG
+	url = https://github.com/MEN-Mikro-Elektronik/mdis_tools_hwbug
+	branch = jpe-dev
