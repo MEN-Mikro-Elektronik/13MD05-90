@@ -1,6 +1,0 @@
-HWBUG ideas
-===========
-
-- binary mode:	edit (%01010), dump as binary	(see)
-- poll mode: cyclic dump memory area until key pressed (kp)
-- dump/fill: byte/word dump/fill 
