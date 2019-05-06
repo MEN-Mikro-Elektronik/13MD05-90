@@ -691,7 +691,7 @@
 */
 
 /*!
- * \page dummy
+ * \page vme4ldummy MEN logo
  * \menimages
  */
 

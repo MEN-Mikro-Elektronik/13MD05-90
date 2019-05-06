@@ -55,7 +55,7 @@
    MDIS_RemoveBoard()
 
 */
-/*! \page dummy
+/*! \page mdisapidummy MEN logo
  \menimages
 */
 

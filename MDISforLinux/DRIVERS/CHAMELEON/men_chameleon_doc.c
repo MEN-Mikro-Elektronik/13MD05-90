@@ -95,7 +95,7 @@
 */
 
 
-/** \page dummy
+/** \page menchameleondummy MEN logo
   \menimages
 */
 
