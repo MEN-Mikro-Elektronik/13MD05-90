@@ -117,5 +117,10 @@ void cleanup_module(void)
 MODULE_DESCRIPTION( COMP_NAME " MDIS low level driver");
 MODULE_AUTHOR("Klaus Popp <klaus.popp@men.de>");
 #ifdef MODULE_LICENSE
-MODULE_LICENSE("GPL");
+    MODULE_LICENSE("GPL");
 #endif
+
+#ifdef MAK_REVISION
+    MODULE_VERSION(MENT_XSTR(MAK_REVISION));
+#endif
+
