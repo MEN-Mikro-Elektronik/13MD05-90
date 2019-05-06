@@ -1,6 +1,6 @@
 /*********************  P r o g r a m  -  M o d u l e ***********************/
 /*!
- *        \file  errstr.c
+ *        \file  m_errstr.c
  *
  *      \author  klaus.popp@men.de
  *        $Date: 2003/06/06 09:09:41 $
