@@ -3,7 +3,10 @@
 
 PROJECT_NAME           = "OSS module for Linux/RTAI"
 PROJECT_NUMBER         = $(MEN_FILESET_REVISION)
-INPUT                  = .. $(MEN_COM_INC)/MEN/oss.h ../COM
+INPUT                  = ../ \
+                         $(MEN_COM_INC)/MEN/oss.h \
+                         ../COM
+
 OUTPUT_DIRECTORY       = .
 EXTRACT_ALL            = NO
 EXTRACT_STATIC         = NO
@@ -13,6 +16,5 @@ WARN_IF_DOC_ERROR      = YES
 WARN_IF_UNDOCUMENTED   = YES
 GENERATE_HTMLHELP      = YES
 PREDEFINED             = MDIS_RTAI_SUPPORT
-
 GENERATE_TAGFILE       = oss.tag
 
