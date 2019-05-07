@@ -4,8 +4,7 @@
 PROJECT_NAME           = "MDIS_API Library for Linux"
 PROJECT_NUMBER         = "for MDIS4Linux fileset $(MEN_FILESET_REVISION)"
 INPUT                  = ../ \
-                         $(MEN_COM_INC)/MEN/mdis_api.h \
-                         ../COM
+                         $(MEN_COM_INC)/MEN/mdis_api.h
 
 OUTPUT_DIRECTORY       = .
 EXTRACT_ALL            = NO
