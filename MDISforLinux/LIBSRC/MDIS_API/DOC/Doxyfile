@@ -1,0 +1,17 @@
+@INCLUDE_PATH = $(MEN_DOXYGENTMPL)
+@INCLUDE = DoxyfileCommon
+
+PROJECT_NAME           = "MDIS_API Library for Linux"
+PROJECT_NUMBER         = "for MDIS4Linux fileset $(MEN_FILESET_REVISION)"
+INPUT                  = .. $(MEN_COM_INC)/MEN/mdis_api.h ../COM
+OUTPUT_DIRECTORY       = .
+EXTRACT_ALL            = NO
+EXTRACT_STATIC         = NO
+GENERATE_HTMLHELP      = YES
+WARNINGS               = YES
+WARN_IF_DOC_ERROR      = YES
+WARN_IF_UNDOCUMENTED   = YES
+GENERATE_HTMLHELP      = YES
+PREDEFINED             = 
+TAGFILES               = ../../USR_OSS/DOC/lin_usr_oss.tag=../../../../USR_OSS/DOC/html
+GENERATE_TAGFILE       = mdis_api.tag
