@@ -2,7 +2,7 @@
 @INCLUDE = DoxyfileCommon
 
 PROJECT_NAME           = "VME4L API"
-PROJECT_NUMBER         = "for VME4L fileset $(MEN_FILESET_REVISION)"
+PROJECT_NUMBER         = 
 INPUT                  = ../vme4l_api.c \
                          ../../../INCLUDE/NATIVE/MEN/vme4l_api.h \
                          ../../../INCLUDE/NATIVE/MEN/vme4l.h \

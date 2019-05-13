@@ -2,7 +2,7 @@
 @INCLUDE = DoxyfileCommon
 
 PROJECT_NAME           = "OSS module for Linux/RTAI"
-PROJECT_NUMBER         = $(MEN_FILESET_REVISION)
+PROJECT_NUMBER         = 
 INPUT                  = ../ \
                          $(MEN_COM_INC)/MEN/oss.h
 

@@ -2,7 +2,7 @@
 @INCLUDE = DoxyfileCommon
 
 PROJECT_NAME           = "MDIS_API Library for Linux"
-PROJECT_NUMBER         = "for MDIS4Linux fileset $(MEN_FILESET_REVISION)"
+PROJECT_NUMBER         = 
 INPUT                  = ../ \
                          $(MEN_COM_INC)/MEN/mdis_api.h
 
