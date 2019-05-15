@@ -24,6 +24,7 @@ MENHISTORY=HISTORY
 
 # default path
 MENLINUX_ROOT=${OPT}/${MENLINUX}
+MDIS_HISTORY_PATH="${CWD}/${MENHISTORY}"
 
 # system package git repository name
 MDIS_PACKAGE=MDISforLinux
@@ -137,7 +138,6 @@ make_history_script() {
         # If NO -> do not remove HISTORY, copy history into MENLINUX_ROOT dir
         #
         local GIT_VERSION
-        local MDIS_HISTORY_PATH="${CWD}/${MENHISTORY}"
         GIT_VERSION=$(which git 2> /dev/null)
 
         if [ -d "${CWD}/.git" ] && [ "${GIT_VERSION}" != "" ]; then
@@ -163,26 +163,40 @@ make_history_script() {
         mkdir "${MDIS_HISTORY_PATH}"
 
         # Add 13MD05-90 History
+        local gitRevision=$(git --git-dir "${CWD}/.git" describe --dirty --long --tags --always)
+        local gitDate=$(git --git-dir "${CWD}/.git" --no-pager show -s --date=short --format=format:"%cd%n")
         git --git-dir "${CWD}/.git" log > "${MDIS_HISTORY_PATH}/13MD05-90_history.txt"
         git --git-dir "${CWD}/.git" remote -v > "${MDIS_HISTORY_PATH}/13MD05-90_url.txt"
-        git --git-dir "${CWD}/.git" rev-parse --verify HEAD > "${MDIS_HISTORY_PATH}/13MD05-90_version.txt"
-        git --git-dir "${CWD}/.git" describe --exact-match --tags $(git --git-dir "${CWD}/.git" rev-parse --verify HEAD) &> "${MDIS_HISTORY_PATH}/13MD05-90_tag.txt"
+        echo "${gitRevision}_${gitDate}" > "${MDIS_HISTORY_PATH}/13MD05-90_version.txt"
+        git --git-dir "${CWD}/.git" describe --exact-match --tags $(git --git-dir \
+"${CWD}/.git" rev-parse --verify HEAD) &> "${MDIS_HISTORY_PATH}/13MD05-90_tag.txt"
 
-        # Add history for submodules 13*
-        for i in ${CWD}/13* ${CWD}/${MDIS_PACKAGE}; do
-        if [ -d "$i" ]; then
-                local COMMIT_ID
-                local CUR_DIR
-                CUR_DIR=$(pwd)
-                cd $i
-                git log > "${MDIS_HISTORY_PATH}/$(basename ${i})_history.txt"
-                git remote -v > "${MDIS_HISTORY_PATH}/$(basename ${i})_url.txt"
-                COMMIT_ID=$(git rev-parse --verify HEAD)
-                echo "${COMMIT_ID}" > "${MDIS_HISTORY_PATH}/$(basename ${i})_version.txt"
-                git describe --exact-match --tags ${COMMIT_ID} &> "${MDIS_HISTORY_PATH}/$(basename ${i})_tag.txt"
-                cd ${CUR_DIR}
-        fi
+        # Add history files for all submodules within 13MD05-90 repository.
+        submoduleList=$(git --git-dir "${CWD}/.git" config --file "${CWD}/.gitmodules" \
+--get-regexp path | sed 's/submodule.//g' | sed 's/.url//g' | awk '{print $2}' | sed 's/\.\.\///g' | sed 's/.git//g')
+        submoduleShortUrlList=$(git --git-dir "${CWD}/.git" config --file "${CWD}/.gitmodules" \
+--get-regexp url | sed 's/submodule.//g' | sed 's/.url//g' | awk '{print $2}' | sed 's/\.\.\///g' | sed 's/.git//g')
+
+        rm "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt" 2> /dev/null
+        submoduleCnt=$(echo "${submoduleList}" | wc -l)
+        for ((i=1;i<=submoduleCnt;i++)); do
+           echo $(echo "${submoduleList}" | awk -v i="${i}" NR==i) " " $(echo "${submoduleShortUrlList}" \
+| awk -v i="${i}" NR==i) >> "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt"
         done
+
+        while read -r var1 var2; do
+                i=${CWD}/${var1}
+                if [ -d "${i}" ]; then
+                    cd ${i}
+                    git log > "${MDIS_HISTORY_PATH}/${var2}_history.txt"
+                    git remote -v > "${MDIS_HISTORY_PATH}/${var2}_url.txt"
+                    gitRevision=$(git describe --dirty --long --tags --always)
+                    gitDate=$(git --no-pager show -s --date=short --format=format:"%cd%n")
+                    echo "${gitRevision}_${gitDate}" > "${MDIS_HISTORY_PATH}/${var2}_version.txt"
+                    git describe --exact-match --tags $(git rev-parse --verify HEAD) &> "${MDIS_HISTORY_PATH}/${var2}_tag.txt"
+                    cd ${CWD}
+                fi
+        done < <(cat "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt")
 
 }
 
@@ -263,12 +277,13 @@ copy_sources_into_installation_directory(){
                 return 1
         fi
 
-        cp -r "${CWD}/HISTORY" "${MENLINUX_ROOT}/HISTORY"
-        for i in * ; do
-                if [ -d "$i" ]; then
-                        echo "$i"
-                fi
-        done
+        echo "Copy History..."
+        rsync -ru --exclude=.git  ${CWD}/${MENHISTORY}/* ${MENHISTORY}/ 2> /dev/null
+        result=$?
+        if [ ${result} -ne 0 ]; then
+                show_insufficient_rights
+                return 1
+        fi
 
         # Copy changelog into ${MENLINUX_ROOT}
         cp  "${CWD}/13MD05-90_changelog.md" "${MENLINUX_ROOT}/13MD05-90_changelog.md"
@@ -294,6 +309,31 @@ copy_sources_into_installation_directory(){
                         done
                 fi
         done <<< "${dirToCopyList}"
+
+        # create list of all *.mak files that need to be updated during INSTALL
+        cd ${CWD}
+        makFilesToUpdate=$(find . -type f -name "*.mak" -exec grep -Hl "STAMPED_REVISION=" {} \;)
+        # update *.mak files
+        echo "Modified STAMPED_REVISION in below .mak files: "
+        local makFilesModified=""
+        while read -r var1 var2; do
+            local makFilesInSubmodule
+            makFilesInSubmodule=$(echo "${makFilesToUpdate}" | grep "${var1}")
+
+            if [ ! -z "${makFilesInSubmodule}" ]; then
+                while read -r makfile; do
+                    local stampedRevision=$(cat "${MDIS_HISTORY_PATH}/${var2}_version.txt")
+                    local menlinuxMakPath=$(echo "${makfile}" | awk -F / '{for (i=3; i<NF; i++) printf $i "/"; print $NF}')
+                    sed -i 's/'"STAMPED_REVISION=.*"'/'"STAMPED_REVISION=${stampedRevision}"'/g' ${MENLINUX_ROOT}/${menlinuxMakPath}
+                    echo "${MENLINUX_ROOT}/${menlinuxMakPath}"
+                    makFilesModified="true"
+                done <<< ${makFilesInSubmodule}
+            fi
+        done < <(cat "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt")
+
+        if [ -z "${makFilesModified}" ]; then
+            echo "... no files ..."
+        fi
 
         # set permissions in "BUILD" and "BIN" directory for all users
         cd ${MENLINUX_ROOT}
