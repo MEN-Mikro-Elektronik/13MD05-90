@@ -288,5 +288,5 @@
 	branch = jpe-dev
 [submodule "MDISforLinux/TOOLS/HWBUG"]
 	path = MDISforLinux/TOOLS/HWBUG
-	url = ../mdis_tools_hwbug
+	url = ../hwbug
 	branch = jpe-dev
