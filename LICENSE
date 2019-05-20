@@ -1,16 +1,16 @@
 --------------------------------------------------------------------------------
-License information for the MDIS5 System Package for Linux (article 13MD05-90)
+License information for package with GPL as well as LGPL licensed software
 --------------------------------------------------------------------------------
 
-All MDIS user mode libraries which can be statically linked or dynamically used
-from application SW are licensed under the LGPL v2.1.
+All user mode libraries which can be statically linked or dynamically used from
+application SW are licensed under the LGPL v2.1.
 
-All other MDIS SW modules are licensed under the GPL v2.
+All other SW modules are licensed under the GPL v2.
 
-Please refer to the license comments in the MDIS sources.
+Please refer to the license comments in the sources.
 This file contains the GPL v2 and LGPL v2.1 license text.
 
-Copyright 2019, MEN Mikro Elektronik GmbH
+MEN Mikro Elektronik GmbH
 
 --------------------------------------------------------------------------------
 Source: https://www.gnu.org/licenses/gpl-2.0.txt
