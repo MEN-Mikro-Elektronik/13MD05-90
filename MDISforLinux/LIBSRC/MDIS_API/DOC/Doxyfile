@@ -1,6 +1,8 @@
 @INCLUDE_PATH = $(MEN_DOXYGENTMPL)
 @INCLUDE = DoxyfileCommon
 
+#MDIS_COMMIT=
+
 PROJECT_NAME           = "MDIS_API Library for Linux"
 PROJECT_NUMBER         = 
 INPUT                  = ../ \

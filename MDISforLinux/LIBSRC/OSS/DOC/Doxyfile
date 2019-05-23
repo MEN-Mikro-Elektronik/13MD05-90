@@ -1,6 +1,8 @@
 @INCLUDE_PATH = $(MEN_DOXYGENTMPL)
 @INCLUDE = DoxyfileCommon
 
+#MDIS_COMMIT=
+
 PROJECT_NAME           = "OSS module for Linux/RTAI"
 PROJECT_NUMBER         = 
 INPUT                  = ../ \
