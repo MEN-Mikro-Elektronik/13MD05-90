@@ -1582,6 +1582,46 @@ function check_scan_system_prerequisites {
     return ${prerequisites_result}
 }
 
+### @brief display question 'arg1' 
+### @input: arg1 message to print
+###       check for y/n/q
+### @returns: 0="y"
+###           1="n"
+###           2="q"
+get_ynq_answer() {
+        while true
+        do
+                echo -e -n $1 '(y/n/q): '
+                read answer
+                case ${answer} in
+                [Yy]) return 0;;
+                [Nn]) return 1;;
+                [Qq]) return 2;;
+                esac
+        done
+}
+
+### @brief display mcb mcb_pci blacklist warning
+blacklist_warning_message() {
+    # display warning if any F2xx/G2xx carrier is present in system
+    readonly blacklist_warning="Starting with Linux kernel 3.15, the modules mcb and mcb_pci
+must be blacklisted to avoid inconveniences which could led to a kernel panic.
+Please refer to the MDIS User Manual 21md05-90.pdf for details."
+
+    # if user choose 'n' or 'q' option, then Makefile is not generated
+    readonly blacklist_warning_question="Would you like to proceed? (y/n):"
+    echo ""
+    echo "${blacklist_warning}"
+    get_ynq_answer "${blacklist_warning_question}"
+    case $? in
+    1 | 2)
+        echo "*** Aborted by user."
+        exit 1;
+        ;;
+    esac
+
+}
+
 ############################################################################
 ############################################################################
 ## main
@@ -1942,13 +1982,16 @@ debug_print "Using _WIZ_MODEL = $wiz_model_cpu"
 if [ "$main_cpu" == "SC24" ]; then
     map_sc24_fpga
     cat $DSC_TPL_DIR/sc24.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g; s/SCAN_SMBNR1/`printf \"0x%x\" $((G_SmBusNumber - 1))`/g; s/SCAN_SMBNR2/`printf \"0x%x\" $G_SmBusNumber`/g;" >> $DSC_FILE
+    blacklist_warning_message
     cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE
 # create SC25 based Bx70x CPU model - no FPGA mapping necessary here
 elif  [ "$main_cpu" == "SC25" ]; then 
     cat $DSC_TPL_DIR/sc25.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g;" >> $DSC_FILE
+    blacklist_warning_message
     cat $DSC_TPL_DIR/Makefile.sc24.tpl >> $MAKE_FILE
 elif  [ "$main_cpu" == "SC31" ]; then 
 	cat $DSC_TPL_DIR/sc31.tpl | sed "s/SCAN_WIZ_MODEL/$wiz_model_cpu/g; s/SCAN_SMB_BUS_NR/`printf \"0x%x\" $G_SmBusNumber`/g;" >> $DSC_FILE
+    blacklist_warning_message
     cat $DSC_TPL_DIR/Makefile.sc31.tpl >> $MAKE_FILE
 else
     #all other CPUs: detect PCI boards, start with CPU/SMB drivers
@@ -1976,12 +2019,15 @@ else
     G_makefileUsrLibs+=" SMB2_API/COM/library.mak"
     echo " Scanning for MEN PCI devices: "
     scan_for_pci_devs $G_primPciPath
-
+    # display mcb blacklist warning if fpga is in use 
+    if [ ! "${count_instance_f2xx}" == "0" ]; then
+        blacklist_warning_message
+    fi
     # dsc section build done, now create the Makefile
     create_makefile
 fi
 
-#remove unnecessary fields from dsc file
+# remove unnecessary fields from dsc file
 sed -i ':a;N;$!ba;s/#SCAN_NEXT_DEVID\n//g' $DSC_FILE
 
 echo "finished."
