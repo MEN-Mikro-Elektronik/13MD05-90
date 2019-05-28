@@ -14,10 +14,9 @@
   </UL>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="Data Structures"><param name="Local" value="annotated.html"><param name="ImageNumber" value="1"></OBJECT>
   <UL>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="CAMELEON_API_VERSION"><param name="Local" value="structCAMELEON__API__VERSION.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="CHAM_FUNCTBL"><param name="Local" value="structCHAM__FUNCTBL.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="CHAM_IPCORE_SYSFS_T"><param name="Local" value="structCHAM__IPCORE__SYSFS__T.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="CHAMELEON_DRIVER_T"><param name="Local" value="structCHAMELEON__DRIVER__T.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="CHAMELEON_EARLY_T"><param name="Local" value="structCHAMELEON__EARLY__T.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="CHAMELEON_HANDLE_T"><param name="Local" value="structCHAMELEON__HANDLE__T.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="CHAMELEON_UNIT"><param name="Local" value="structCHAMELEON__UNIT.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="CHAMELEON_UNIT_T"><param name="Local" value="structCHAMELEON__UNIT__T.html"><param name="ImageNumber" value="11"></OBJECT>
@@ -54,6 +53,6 @@
 <LI><OBJECT type="text/sitemap"><param name="Name" value="Globals"><param name="Local" value="globals.html"><param name="ImageNumber" value="11"></OBJECT>
 <LI><OBJECT type="text/sitemap"><param name="Name" value="Related Pages"><param name="Local" value="pages.html"><param name="ImageNumber" value="1"></OBJECT>
   <UL>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="dummy"><param name="Local" value="dummy.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="MEN logo"><param name="Local" value="menchameleondummy.html"><param name="ImageNumber" value="11"></OBJECT>
   </UL>
 </UL>

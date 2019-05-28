@@ -11,8 +11,8 @@
 
 <div class="left_to_right" style="padding-top: 6px; background-color: #F0F0F0; height: 110px; border-bottom: 2px solid #D1D1D2;">
 	<!-- Titel -->
-	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;"></a>
-	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">OSS module for Linux/RTAI &nbsp; 2.15</h1>
+	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;">
+	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">OSS module for Linux/RTAI &nbsp; </h1>
 	<h3>ossu_sem.c File Reference</h3>
 </div>
 
@@ -98,24 +98,12 @@ Semaphore routines for user space.
 <p>
 Create a semaphore. 
 <p>
-Creates a binary or counting semaphore.<p>
-<dl compact><dt><b>Remarks:</b></dt><dd>Don't use in IRQ or Alarm routines.</dd></dl>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>semType</em>&nbsp;</td><td><b>IN</b> semaphore type<ul>
-<li><code>OSS_SEM_BIN</code>: binary semaphore</li><li><code>OSS_SEM_COUNT</code>: counting semaphore </li></ul>
-</td></tr>
-    <tr><td valign=top><em>initVal</em>&nbsp;</td><td><b>IN</b> initial semaphore value<ul>
-<li>0..1 (for <code>OSS_SEM_BIN</code>)</li><li>0..+n (for <code>OSS_SEM_COUNT</code>) </li></ul>
-</td></tr>
-    <tr><td valign=top><em>semP</em>&nbsp;</td><td><b>OUT</b> will receive created semaphore handle. Must be passed to further OSS_SemXXX() routines.</td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>0 on success or <code>ERR_OSS_xxx</code> error code on error</dd></dl>
 <p>
 See <a class="el" href="linsemusage.html#linsemusagesect">Linux notes to OSS semaphores</a> for more info.<p>
-<dl compact><dt><b>Linux notes:</b></dt><dd>The behaviour of this function depends on the <em>rtMode</em> flag passed to the <a class="el" href="oss_8c.html#a66">OSS_Init()</a> function. Either the standard Linux kernel or RTAI implementation is called. For RTAI implementation, see <a class="el" href="oss__sem__rtai_8c.html#a4">OSS_RtaiSemCreate()</a>.</dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss_8h.html#a148">OSS_SemRemove</a>, <a class="el" href="oss_8h.html#a149">OSS_SemWait</a>, <a class="el" href="oss_8h.html#a150">OSS_SemSignal</a></dd></dl>
+<p>
+See <a class="el" href="linsemusage.html#linsemusagesect">Linux notes to OSS semaphores</a> for more info.<p>
+<dl compact><dt><b>Linux notes:</b></dt><dd>The behaviour of this function depends on the <em>rtMode</em> flag passed to the <a class="el" href="oss_8c.html#a66">OSS_Init()</a> function. Either the standard Linux kernel or RTAI implementation is called. For RTAI implementation, see OSS_RtaiSemCreate().</dd></dl>
 <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="ossu__sem_8c.html#a2">OSS_SemRemove</a>, <a class="el" href="ossu__sem_8c.html#a3">OSS_SemWait</a>, <a class="el" href="ossu__sem_8c.html#a4">OSS_SemSignal</a> </dd></dl>
     </td>
   </tr>
@@ -157,18 +145,12 @@ See <a class="el" href="linsemusage.html#linsemusagesect">Linux notes to OSS sem
 <p>
 Destroy semaphore handle. 
 <p>
-Frees all resources allocated by <a class="el" href="oss__sem_8c.html#a14">OSS_SemCreate()</a>.<p>
-<dl compact><dt><b>Remarks:</b></dt><dd>Don't use in IRQ or Alarm routines.</dd></dl>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>semP</em>&nbsp;</td><td><b>IN</b> pointer to semaphore handle to remove <b>OUT</b> *semP set to NULL</td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>0 on success or <code>ERR_OSS_xxx</code> error code on error</dd></dl>
 <p>
 See <a class="el" href="linsemusage.html#linsemusagesect">Linux notes to OSS semaphores</a> for more info.<p>
-<dl compact><dt><b>Linux notes:</b></dt><dd>The behaviour of this function depends on the <em>rtMode</em> flag passed to the <a class="el" href="oss_8c.html#a66">OSS_Init()</a> function. Either the standard Linux kernel or RTAI implementation is called. For RTAI implementation, see <a class="el" href="oss__sem__rtai_8c.html#a5">OSS_RtaiSemRemove()</a>.</dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss_8h.html#a147">OSS_SemCreate</a>, <a class="el" href="oss_8h.html#a149">OSS_SemWait</a>, <a class="el" href="oss_8h.html#a150">OSS_SemSignal</a></dd></dl>
+<p>
+See <a class="el" href="linsemusage.html#linsemusagesect">Linux notes to OSS semaphores</a> for more info.<p>
+<dl compact><dt><b>Linux notes:</b></dt><dd>The behaviour of this function depends on the <em>rtMode</em> flag passed to the <a class="el" href="oss_8c.html#a66">OSS_Init()</a> function. Either the standard Linux kernel or RTAI implementation is called. For RTAI implementation, see OSS_RtaiSemRemove().</dd></dl>
 <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="ossu__sem_8c.html#a1">OSS_SemCreate</a>, <a class="el" href="ossu__sem_8c.html#a3">OSS_SemWait</a>, <a class="el" href="ossu__sem_8c.html#a4">OSS_SemSignal</a> </dd></dl>
     </td>
   </tr>
@@ -210,17 +192,12 @@ See <a class="el" href="linsemusage.html#linsemusagesect">Linux notes to OSS sem
 <p>
 Signal semaphore. 
 <p>
-The function increments the semaphores value by <code>1</code> and wakes up the next queued process waiting for the event.<p>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>sem</em>&nbsp;</td><td><b>IN</b> semaphore handle, returned by <a class="el" href="oss__sem_8c.html#a14">OSS_SemCreate()</a></td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>0 on success or <code>ERR_OSS_xxx</code> error code on error</dd></dl>
 <p>
 See <a class="el" href="linsemusage.html#linsemusagesect">Linux notes to OSS semaphores</a> for more info.<p>
-<dl compact><dt><b>Linux notes:</b></dt><dd>The behaviour of this function depends on the <em>rtMode</em> flag passed to the <a class="el" href="oss_8c.html#a66">OSS_Init()</a> function. Either the standard Linux kernel or RTAI implementation is called. For RTAI implementation, see <a class="el" href="oss__sem__rtai_8c.html#a7">OSS_RtaiSemSignal()</a>.</dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss_8h.html#a147">OSS_SemCreate</a>, <a class="el" href="oss_8h.html#a148">OSS_SemRemove</a>, <a class="el" href="oss_8h.html#a149">OSS_SemWait</a></dd></dl>
+<p>
+See <a class="el" href="linsemusage.html#linsemusagesect">Linux notes to OSS semaphores</a> for more info.<p>
+<dl compact><dt><b>Linux notes:</b></dt><dd>The behaviour of this function depends on the <em>rtMode</em> flag passed to the <a class="el" href="oss_8c.html#a66">OSS_Init()</a> function. Either the standard Linux kernel or RTAI implementation is called. For RTAI implementation, see OSS_RtaiSemSignal().</dd></dl>
 <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="ossu__sem_8c.html#a1">OSS_SemCreate</a>, <a class="el" href="ossu__sem_8c.html#a2">OSS_SemRemove</a>, <a class="el" href="ossu__sem_8c.html#a3">OSS_SemWait</a> </dd></dl>
     </td>
   </tr>
@@ -268,27 +245,18 @@ See <a class="el" href="linsemusage.html#linsemusagesect">Linux notes to OSS sem
 <p>
 Wait for semaphore. 
 <p>
-The function waits with a given timeout until the semaphore value is larger than zero and decrements the event value.<p>
-Error <code>ERR_OSS_TIMEOUT</code> is returned if the semaphore was not released within the timeout period.<p>
-Error <code>ERR_OSS_TIMEOUT</code> is returned if <code>OSS_SEM_NOWAIT</code> specified and semaphore was not available.<p>
-Error <code>ERR_OSS_SIG_OCCURED</code> is returned if a deadly signal occured while waiting.<p>
-<dl compact><dt><b>Remarks:</b></dt><dd>Only some OSes may abort a semaphore wait with a signal, currently OS-9 and Linux.</dd></dl>
-Given timeout <em>msec</em> will be rounded up to system ticks<p>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>sem</em>&nbsp;</td><td><b>IN</b> semaphore handle, returned by <a class="el" href="oss__sem_8c.html#a14">OSS_SemCreate()</a> </td></tr>
-    <tr><td valign=top><em>msec</em>&nbsp;</td><td><b>IN</b> wait timeout:<ul>
-<li>0 no wait, just take sem (<code>OSS_SEM_NOWAIT</code>)</li><li>-1 endless timeout (<code>OSS_SEM_WAITFOREVER</code>)</li><li>&gt;0 timeout [msec]</li></ul>
-</td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>0 on success or <code>ERR_OSS_xxx</code> error code on error</dd></dl>
 <p>
 See <a class="el" href="linsemusage.html#linsemusagesect">Linux notes to OSS semaphores</a> for more info.<p>
 <dl compact><dt><b>Linux notes:</b></dt><dd></dd></dl>
 <ul>
-<li>all signals &lt; <code>SIGRTMIN</code> are assumed to be deadly.</li><li>LL drivers trying to ignore <b>all</b> signals while waiting for a signal will cause a busy loop under linux, because the scheduler awakes a process always immediately when a non masked signal is pending.</li><li>The behaviour of this function depends on the <em>rtMode</em> flag passed to the <a class="el" href="oss_8c.html#a66">OSS_Init()</a> function. Either the standard Linux kernel or RTAI implementation is called. For RTAI implementation, see <a class="el" href="oss__sem__rtai_8c.html#a6">OSS_RtaiSemWait()</a>.</li></ul>
+<li>all signals &lt; <code>SIGRTMIN</code> are assumed to be deadly.</li><li>LL drivers trying to ignore <b>all</b> signals while waiting for a signal will cause a busy loop under linux, because the scheduler awakes a process always immediately when a non masked signal is pending.</li></ul>
+<p>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss_8h.html#a147">OSS_SemCreate</a>, <a class="el" href="oss_8h.html#a148">OSS_SemRemove</a>, <a class="el" href="oss_8h.html#a150">OSS_SemSignal</a></dd></dl>
+<p>
+See <a class="el" href="linsemusage.html#linsemusagesect">Linux notes to OSS semaphores</a> for more info.<p>
+<dl compact><dt><b>Linux notes:</b></dt><dd></dd></dl>
+<ul>
+<li>all signals &lt; <code>SIGRTMIN</code> are assumed to be deadly.</li><li>LL drivers trying to ignore <b>all</b> signals while waiting for a signal will cause a busy loop under linux, because the scheduler awakes a process always immediately when a non masked signal is pending.</li><li>The behaviour of this function depends on the <em>rtMode</em> flag passed to the <a class="el" href="oss_8c.html#a66">OSS_Init()</a> function. Either the standard Linux kernel or RTAI implementation is called. For RTAI implementation, see OSS_RtaiSemWait().</li></ul>
 <p>
 <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="ossu__sem_8c.html#a1">OSS_SemCreate</a>, <a class="el" href="ossu__sem_8c.html#a2">OSS_SemRemove</a>, <a class="el" href="ossu__sem_8c.html#a4">OSS_SemSignal</a> </dd></dl>
     </td>
@@ -302,7 +270,7 @@ See <a class="el" href="linsemusage.html#linsemusagesect">Linux notes to OSS sem
 <!-- Footer -->
 	<p class="footer">
 	Generated for OSS module for Linux/RTAI using <a href="http://www.doxygen.org">doxygen</a>.<br>
-	Copyright &copy; 2012 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
+	Copyright &copy; 2019 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
 	</p>
 </div>
 

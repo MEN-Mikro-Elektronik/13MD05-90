@@ -11,8 +11,8 @@
 
 <div class="left_to_right" style="padding-top: 6px; background-color: #F0F0F0; height: 110px; border-bottom: 2px solid #D1D1D2;">
 	<!-- Titel -->
-	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;"></a>
-	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">OSS module for Linux/RTAI &nbsp; 2.15</h1>
+	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;">
+	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">OSS module for Linux/RTAI &nbsp; </h1>
 	<h3>oss_sig.c File Reference</h3>
 </div>
 
@@ -27,18 +27,18 @@
 <table border=0 cellpadding=0 cellspacing=0>
 <tr><td></td></tr>
 <tr><td colspan=2><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int32&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="oss__sig_8c.html#a14">OSS_SigCreate</a> (OSS_HANDLE *oss, int32 signal, OSS_SIG_HANDLE **sigP)</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int32&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="oss__sig_8c.html#a1">OSS_SigCreate</a> (OSS_HANDLE *oss, int32 signal, OSS_SIG_HANDLE **sigP)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Create signal handle. </em> <a href="#a14"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int32&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="oss__sig_8c.html#a15">OSS_SigRemove</a> (OSS_HANDLE *oss, OSS_SIG_HANDLE **sigP)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Create signal handle. </em> <a href="#a1"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int32&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="oss__sig_8c.html#a2">OSS_SigRemove</a> (OSS_HANDLE *oss, OSS_SIG_HANDLE **sigP)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Destroy signal handle. </em> <a href="#a15"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int32&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="oss__sig_8c.html#a16">OSS_SigSend</a> (OSS_HANDLE *oss, OSS_SIG_HANDLE *sig)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Destroy semaphore handle. </em> <a href="#a2"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int32&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="oss__sig_8c.html#a3">OSS_SigSend</a> (OSS_HANDLE *oss, OSS_SIG_HANDLE *sig)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Send signal to a process. </em> <a href="#a16"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int32&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="oss__sig_8c.html#a17">OSS_SigInfo</a> (OSS_HANDLE *oss, OSS_SIG_HANDLE *sig, int32 *signalP, int32 *pidP)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Send signal to a process. </em> <a href="#a3"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int32&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="oss__sig_8c.html#a4">OSS_SigInfo</a> (OSS_HANDLE *oss, OSS_SIG_HANDLE *sig, int32 *signalP, int32 *pidP)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get info about signal. </em> <a href="#a17"></a><em><br><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get info about signal. </em> <a href="#a4"></a><em><br><br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Signal routines. 
@@ -47,9 +47,8 @@ Signal routines.
 <dl compact><dt><b>Revision</b></dt><dd>1.11 </dd></dl>
 </dd></dl>
 <dl compact><dt><b>Project:</b></dt><dd>MDISforLinux </dd></dl>
-<dl compact><dt><b>Preprocessor Switches:</b></dt><dd>MDIS_RTAI_SUPPORT</dd></dl>
 <hr><h2>Function Documentation</h2>
-<a name="a14" doxytag="oss_sig.c::OSS_SigCreate"></a><p>
+<a name="a1" doxytag="oss_sig.c::OSS_SigCreate"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -92,25 +91,16 @@ Signal routines.
 <p>
 Create signal handle. 
 <p>
-This creates an OS specific handle to store an identifier for the calling task. To send the signal, use <a class="el" href="oss__sig_8c.html#a16">OSS_SigSend()</a>.<p>
-This routine must be called in the context of the process/task that wishes to receive the signal.<p>
-<dl compact><dt><b>Remarks:</b></dt><dd>Don't use in IRQ or Alarm routines.</dd></dl>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>signal</em>&nbsp;</td><td><b>IN</b> signal code to install </td></tr>
-    <tr><td valign=top><em>sigP</em>&nbsp;</td><td><b>OUT</b> will receive created signal handle. Must be passed to further OSS_SigXXX() routines.</td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>0 on success or <code>ERR_OSS_xxx</code> error code on error</dd></dl>
 <p>
 See <a class="el" href="linsigusage.html#linsigusagesect">Linux notes to OSS signals</a> for more info.<p>
-<dl compact><dt><b>Linux notes:</b></dt><dd>The behaviour of this function depends on the <em>rtMode</em> flag passed to the <a class="el" href="oss_8c.html#a66">OSS_Init()</a> function. Either the standard Linux kernel or RTAI implementation is called. For RTAI implementation, see <a class="el" href="oss__sig__rtai_8c.html#a13">OSS_RtaiSigCreate()</a>.</dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss__sig_8c.html#a15">OSS_SigRemove</a>, <a class="el" href="oss__sig_8c.html#a16">OSS_SigSend</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss_8h.html#a145">OSS_SigRemove</a>, <a class="el" href="oss_8h.html#a144">OSS_SigSend</a></dd></dl>
+<p>
+See <a class="el" href="linsigusage.html#linsigusagesect">Linux notes to OSS signals</a> for more info.<p>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss__sig_8c.html#a2">OSS_SigRemove</a>, <a class="el" href="oss__sig_8c.html#a3">OSS_SigSend</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a17" doxytag="oss_sig.c::OSS_SigInfo"></a><p>
+<a name="a4" doxytag="oss_sig.c::OSS_SigInfo"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -159,19 +149,10 @@ See <a class="el" href="linsigusage.html#linsigusagesect">Linux notes to OSS sig
 <p>
 Get info about signal. 
 <p>
-<dl compact><dt><b><a class="el" href="deprecated.html#_deprecated000003">Deprecated:</a></b></dt><dd>Don't use it. Not all OSes have a process ID.</dd></dl>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>sig</em>&nbsp;</td><td><b>IN</b> signal handle, returned by <a class="el" href="oss__sig_8c.html#a14">OSS_SigCreate()</a> </td></tr>
-    <tr><td valign=top><em>signalP</em>&nbsp;</td><td><b>OUT</b> signal code </td></tr>
-    <tr><td valign=top><em>pidP</em>&nbsp;</td><td><b>OUT</b> process id</td></tr>
-  </table>
-</dl>
      </td>
   </tr>
 </table>
-<a name="a15" doxytag="oss_sig.c::OSS_SigRemove"></a><p>
+<a name="a2" doxytag="oss_sig.c::OSS_SigRemove"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -206,25 +187,18 @@ Get info about signal.
     <td>
 
 <p>
-Destroy signal handle. 
+Destroy semaphore handle. 
 <p>
-Frees all resources allocated by <a class="el" href="oss__sig_8c.html#a14">OSS_SigCreate()</a>. The function fails if the calling process id is not equal to the installing process.<p>
-<dl compact><dt><b>Remarks:</b></dt><dd>Don't use in IRQ or Alarm routines.</dd></dl>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>sigP</em>&nbsp;</td><td><b>IN</b> pointer to signal handle to remove <b>OUT</b> *sigP set to NULL</td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>0 on success or <code>ERR_OSS_xxx</code> error code on error</dd></dl>
 <p>
 See <a class="el" href="linsigusage.html#linsigusagesect">Linux notes to OSS signals</a> for more info.<p>
-<dl compact><dt><b>Linux notes:</b></dt><dd>The behaviour of this function depends on the <em>rtMode</em> flag passed to the <a class="el" href="oss_8c.html#a66">OSS_Init()</a> function. Either the standard Linux kernel or RTAI implementation is called. For RTAI implementation, see <a class="el" href="oss__sig__rtai_8c.html#a14">OSS_RtaiSigRemove()</a>.</dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss__sig_8c.html#a14">OSS_SigCreate</a>, <a class="el" href="oss__sig_8c.html#a16">OSS_SigSend</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss_8h.html#a143">OSS_SigCreate</a>, <a class="el" href="oss_8h.html#a144">OSS_SigSend</a></dd></dl>
+<p>
+See <a class="el" href="linsigusage.html#linsigusagesect">Linux notes to OSS signals</a> for more info.<p>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss__sig_8c.html#a1">OSS_SigCreate</a>, <a class="el" href="oss__sig_8c.html#a3">OSS_SigSend</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a16" doxytag="oss_sig.c::OSS_SigSend"></a><p>
+<a name="a3" doxytag="oss_sig.c::OSS_SigSend"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -261,18 +235,12 @@ See <a class="el" href="linsigusage.html#linsigusagesect">Linux notes to OSS sig
 <p>
 Send signal to a process. 
 <p>
-Sends the signal previously created by <a class="el" href="oss__sig_8c.html#a14">OSS_SigCreate()</a> to the process that called <a class="el" href="oss__sig_8c.html#a14">OSS_SigCreate()</a>.<p>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>sig</em>&nbsp;</td><td><b>IN</b> signal handle, returned by <a class="el" href="oss__sig_8c.html#a14">OSS_SigCreate()</a> </td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>0 on success or <code>ERR_OSS_xxx</code> error code on error</dd></dl>
 <p>
 See <a class="el" href="linsigusage.html#linsigusagesect">Linux notes to OSS signals</a> for more info.<p>
-<dl compact><dt><b>Linux notes:</b></dt><dd>The behaviour of this function depends on the <em>rtMode</em> flag passed to the <a class="el" href="oss_8c.html#a66">OSS_Init()</a> function. Either the standard Linux kernel or RTAI implementation is called. For RTAI implementation, see <a class="el" href="oss__sig__rtai_8c.html#a15">OSS_RtaiSigSend()</a>.</dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss__sig_8c.html#a14">OSS_SigCreate</a>, <a class="el" href="oss__sig_8c.html#a15">OSS_SigRemove</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss_8h.html#a143">OSS_SigCreate</a>, <a class="el" href="oss_8h.html#a145">OSS_SigRemove</a></dd></dl>
+<p>
+See <a class="el" href="linsigusage.html#linsigusagesect">Linux notes to OSS signals</a> for more info.<p>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss__sig_8c.html#a1">OSS_SigCreate</a>, <a class="el" href="oss__sig_8c.html#a2">OSS_SigRemove</a> </dd></dl>
     </td>
   </tr>
 </table>
@@ -284,7 +252,7 @@ See <a class="el" href="linsigusage.html#linsigusagesect">Linux notes to OSS sig
 <!-- Footer -->
 	<p class="footer">
 	Generated for OSS module for Linux/RTAI using <a href="http://www.doxygen.org">doxygen</a>.<br>
-	Copyright &copy; 2012 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
+	Copyright &copy; 2019 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
 	</p>
 </div>
 

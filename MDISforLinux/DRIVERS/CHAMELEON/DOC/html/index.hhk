@@ -96,14 +96,18 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAM__FUNCTBL.html#o8"><param name="Name" value="Term"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAM__FUNCTBL.html#o4"><param name="Name" value="UnitIdent"></OBJECT>
   </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="cham_sysfs_read"><param name="Name" value="cham_sysfs_read"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a55"><param name="Name" value="men_chameleon.c"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="chameleon_8h.html"><param name="Name" value="chameleon.h"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="chameleon_8h.html#a140"><param name="Name" value="CHAMELEONV2_FILENAME_SIZE"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="chameleon_8h.html#a156"><param name="Name" value="CHAMELEONV2_HANDLE"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="chameleon_8h.html#a117"><param name="Name" value="CHAMELEONV2_FILENAME_SIZE"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="chameleon_8h.html#a133"><param name="Name" value="CHAMELEONV2_HANDLE"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="chameleon_announce"><param name="Name" value="chameleon_announce"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a15"><param name="Name" value="men_chameleon.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a46"><param name="Name" value="men_chameleon.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAMELEON__DRIVER__T.html"><param name="Name" value="CHAMELEON_DRIVER_T"></OBJECT>
   <UL>
@@ -134,7 +138,7 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="chameleonV2_announce"><param name="Name" value="chameleonV2_announce"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a16"><param name="Name" value="men_chameleon.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a47"><param name="Name" value="men_chameleon.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAMELEONV2__BA.html"><param name="Name" value="CHAMELEONV2_BA"></OBJECT>
   <UL>
@@ -217,7 +221,7 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="CHAMELEONV2_FILENAME_SIZE"><param name="Name" value="CHAMELEONV2_FILENAME_SIZE"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="chameleon_8h.html#a140"><param name="Name" value="chameleon.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="chameleon_8h.html#a117"><param name="Name" value="chameleon.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAMELEONV2__FIND.html"><param name="Name" value="CHAMELEONV2_FIND"></OBJECT>
   <UL>
@@ -231,7 +235,7 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="CHAMELEONV2_HANDLE"><param name="Name" value="CHAMELEONV2_HANDLE"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="chameleon_8h.html#a156"><param name="Name" value="chameleon.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="chameleon_8h.html#a133"><param name="Name" value="chameleon.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="CHAMELEONV2_HANDLE_ILL"><param name="Name" value="CHAMELEONV2_HANDLE_ILL"></OBJECT>
   <UL>
@@ -269,8 +273,8 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAMELEONV2__TABLE.html#o0"><param name="Name" value="busType"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAMELEONV2__TABLE.html#o4"><param name="Name" value="file"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAMELEONV2__TABLE.html#o5"><param name="Name" value="magicWord"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAMELEONV2__TABLE.html#o6"><param name="Name" value="minRevision"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAMELEONV2__TABLE.html#o2"><param name="Name" value="model"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAMELEONV2__TABLE.html#o6"><param name="Name" value="reserved"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAMELEONV2__TABLE.html#o3"><param name="Name" value="revision"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="CHAMELEONV2_TABLE_ERR"><param name="Name" value="CHAMELEONV2_TABLE_ERR"></OBJECT>
@@ -346,10 +350,6 @@
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAM__FUNCTBL.html#o2"><param name="Name" value="CHAM_FUNCTBL"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="init_one"><param name="Name" value="init_one"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a24"><param name="Name" value="men_chameleon.c"></OBJECT>
-  </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="InitInside"><param name="Name" value="InitInside"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAM__FUNCTBL.html#o1"><param name="Name" value="CHAM_FUNCTBL"></OBJECT>
@@ -383,15 +383,16 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html"><param name="Name" value="men_chameleon.c"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a15"><param name="Name" value="chameleon_announce"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a16"><param name="Name" value="chameleonV2_announce"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a24"><param name="Name" value="init_one"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a18"><param name="Name" value="men_chameleon_register_driver"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a22"><param name="Name" value="men_chameleon_unit_find"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a20"><param name="Name" value="men_chameleon_unregister_driver"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a19"><param name="Name" value="men_chameleonV2_register_driver"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a23"><param name="Name" value="men_chameleonV2_unit_find"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a21"><param name="Name" value="men_chameleonV2_unregister_driver"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a55"><param name="Name" value="cham_sysfs_read"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a46"><param name="Name" value="chameleon_announce"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a47"><param name="Name" value="chameleonV2_announce"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a49"><param name="Name" value="men_chameleon_register_driver"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a53"><param name="Name" value="men_chameleon_unit_find"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a51"><param name="Name" value="men_chameleon_unregister_driver"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a50"><param name="Name" value="men_chameleonV2_register_driver"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a54"><param name="Name" value="men_chameleonV2_unit_find"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a52"><param name="Name" value="men_chameleonV2_unregister_driver"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a56"><param name="Name" value="pci_init_one"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8h.html"><param name="Name" value="men_chameleon.h"></OBJECT>
   <UL>
@@ -404,33 +405,37 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="men_chameleon_register_driver"><param name="Name" value="men_chameleon_register_driver"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a18"><param name="Name" value="men_chameleon.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a49"><param name="Name" value="men_chameleon.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8h.html#a8"><param name="Name" value="men_chameleon.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="men_chameleon_unit_find"><param name="Name" value="men_chameleon_unit_find"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a22"><param name="Name" value="men_chameleon.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a53"><param name="Name" value="men_chameleon.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8h.html#a10"><param name="Name" value="men_chameleon.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="men_chameleon_unregister_driver"><param name="Name" value="men_chameleon_unregister_driver"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a20"><param name="Name" value="men_chameleon.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a51"><param name="Name" value="men_chameleon.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8h.html#a9"><param name="Name" value="men_chameleon.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="men_chameleonV2_register_driver"><param name="Name" value="men_chameleonV2_register_driver"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a19"><param name="Name" value="men_chameleon.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a50"><param name="Name" value="men_chameleon.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8h.html#a11"><param name="Name" value="men_chameleon.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="men_chameleonV2_unit_find"><param name="Name" value="men_chameleonV2_unit_find"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a23"><param name="Name" value="men_chameleon.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a54"><param name="Name" value="men_chameleon.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8h.html#a13"><param name="Name" value="men_chameleon.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="men_chameleonV2_unregister_driver"><param name="Name" value="men_chameleonV2_unregister_driver"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a21"><param name="Name" value="men_chameleon.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a52"><param name="Name" value="men_chameleon.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8h.html#a12"><param name="Name" value="men_chameleon.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="minRevision"><param name="Name" value="minRevision"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAMELEONV2__TABLE.html#o6"><param name="Name" value="CHAMELEONV2_TABLE"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="modCode"><param name="Name" value="modCode"></OBJECT>
   <UL>
@@ -450,6 +455,10 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAMELEONV2__BRIDGE.html#o10"><param name="Name" value="CHAMELEONV2_BRIDGE"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAMELEONV2__UNIT.html#o8"><param name="Name" value="CHAMELEONV2_UNIT"></OBJECT>
   </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="pci_init_one"><param name="Name" value="pci_init_one"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="men__chameleon_8c.html#a56"><param name="Name" value="men_chameleon.c"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="probe"><param name="Name" value="probe"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAMELEON__DRIVER__T.html#o3"><param name="Name" value="CHAMELEON_DRIVER_T"></OBJECT>
@@ -463,7 +472,6 @@
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="reserved"><param name="Name" value="reserved"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAMELEONV2__CPU.html#o9"><param name="Name" value="CHAMELEONV2_CPU"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAMELEONV2__TABLE.html#o6"><param name="Name" value="CHAMELEONV2_TABLE"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structCHAMELEONV2__UNIT.html#o11"><param name="Name" value="CHAMELEONV2_UNIT"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="revision"><param name="Name" value="revision"></OBJECT>

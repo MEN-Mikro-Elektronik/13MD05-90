@@ -11,8 +11,8 @@
 
 <div class="left_to_right" style="padding-top: 6px; background-color: #F0F0F0; height: 110px; border-bottom: 2px solid #D1D1D2;">
 	<!-- Titel -->
-	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;"></a>
-	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">OSS module for Linux/RTAI &nbsp; 2.15</h1>
+	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;">
+	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">OSS module for Linux/RTAI &nbsp; </h1>
 	<h3>oss.c File Reference</h3>
 </div>
 
@@ -29,7 +29,7 @@
 <tr><td colspan=2><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align=right valign=top>&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="oss_8c.html#a7">EXPORT_SYMBOL</a> (OSS_Init)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>int32&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="oss_8c.html#a66">OSS_Init</a> (char *instName, OSS_HANDLE **ossP, int rtMode)</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int32&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="oss_8c.html#a66">OSS_Init</a> (char *instName, OSS_HANDLE **ossP)</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Initializes the OSS module. </em> <a href="#a66"></a><em><br><br></td></tr>
 <tr><td class="memItemLeft" nowrap align=right valign=top>int32&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="oss_8c.html#a67">OSS_Exit</a> (OSS_HANDLE **ossP)</td></tr>
@@ -49,7 +49,6 @@ Core functions of the OSS module.
 <dl compact><dt><b>Revision</b></dt><dd>2.16 </dd></dl>
 </dd></dl>
 <dl compact><dt><b>Project:</b></dt><dd>MDISforLinux </dd></dl>
-<dl compact><dt><b>Preprocessor Switches:</b></dt><dd>MDIS_RTAI_SUPPORT</dd></dl>
 <hr><h2>Function Documentation</h2>
 <a name="a7" doxytag="oss.c::EXPORT_SYMBOL"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
@@ -111,13 +110,7 @@ Core functions of the OSS module.
 <p>
 Get debug level of OSS instance. 
 <p>
-gets the debug level of this OSS instance.<p>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>current debug level mask</dd></dl>
+ <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss_8h.html#a151">OSS_DbgLevelSet</a></dd></dl>
  <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss_8c.html#a68">OSS_DbgLevelSet</a> </dd></dl>
     </td>
   </tr>
@@ -159,13 +152,7 @@ gets the debug level of this OSS instance.<p>
 <p>
 Set debug level of OSS instance. 
 <p>
-Sets the debug level of this OSS instance. Has no effect if the module is not compiled with <code>DBG</code> switch set.<p>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>newLevel</em>&nbsp;</td><td><b>IN</b> new debug level mask, a combination of the <code>DBG_xxx</code> constants from <em>MEN/dbg</em>.h, e.g. <code>DBG_ALL</code>, DBG_LEV1...</td></tr>
-  </table>
-</dl>
+ <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss_8h.html#a152">OSS_DbgLevelGet</a></dd></dl>
  <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss_8c.html#a69">OSS_DbgLevelGet</a> </dd></dl>
     </td>
   </tr>
@@ -225,13 +212,7 @@ Destructs an instance of OSS.<p>
           <td></td>
           <td></td>
           <td class="md" nowrap>OSS_HANDLE **&nbsp;</td>
-          <td class="mdname" nowrap> <em>ossP</em>, </td>
-        </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          <td class="md" nowrap>int&nbsp;</td>
-          <td class="mdname" nowrap> <em>rtMode</em></td>
+          <td class="mdname" nowrap> <em>ossP</em></td>
         </tr>
         <tr>
           <td></td>
@@ -258,11 +239,7 @@ Creates an instance of OSS and returns a handle for that instance.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign=top><em>instName</em>&nbsp;</td><td><b>IN</b> name of calling module </td></tr>
-    <tr><td valign=top><em>ossP</em>&nbsp;</td><td><b>OUT</b> contains the created handle for that instance </td></tr>
-    <tr><td valign=top><em>rtMode</em>&nbsp;</td><td><b>IN</b> real time mode<br>
-<ul>
-<li>0=create OSS instance for linux</li><li>1=create OSS instance for RTAI (returns <code>ERR_OSS</code> if switch MDIS_RTAI_SUPPORT is not set) </li></ul>
-</td></tr>
+    <tr><td valign=top><em>ossP</em>&nbsp;</td><td><b>OUT</b> contains the created handle for that instance</td></tr>
   </table>
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>0 on success or <code>ERR_OSS_xxx</code> error code on error</dd></dl>
@@ -278,7 +255,7 @@ Creates an instance of OSS and returns a handle for that instance.<p>
 <!-- Footer -->
 	<p class="footer">
 	Generated for OSS module for Linux/RTAI using <a href="http://www.doxygen.org">doxygen</a>.<br>
-	Copyright &copy; 2012 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
+	Copyright &copy; 2019 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
 	</p>
 </div>
 

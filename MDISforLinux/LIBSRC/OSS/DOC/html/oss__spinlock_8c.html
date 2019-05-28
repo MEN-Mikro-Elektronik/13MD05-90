@@ -11,8 +11,8 @@
 
 <div class="left_to_right" style="padding-top: 6px; background-color: #F0F0F0; height: 110px; border-bottom: 2px solid #D1D1D2;">
 	<!-- Titel -->
-	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;"></a>
-	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">OSS module for Linux/RTAI &nbsp; 2.15</h1>
+	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;">
+	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">OSS module for Linux/RTAI &nbsp; </h1>
 	<h3>oss_spinlock.c File Reference</h3>
 </div>
 
@@ -43,8 +43,8 @@
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Spinlock functions. 
 <p>
-<dl compact><dt><b>Author:</b></dt><dd><a href="mailto:christine.ruff@men.de">christine.ruff@men.de</a> <dl compact><dt><b>Date</b></dt><dd>2012/04/25 18:07:24 </dd></dl>
-<dl compact><dt><b>Revision</b></dt><dd>2.3 </dd></dl>
+<dl compact><dt><b>Author:</b></dt><dd><a href="mailto:christine.ruff@men.de">christine.ruff@men.de</a> <dl compact><dt><b>Date</b></dt><dd>2012/10/11 13:58:05 </dd></dl>
+<dl compact><dt><b>Revision</b></dt><dd>2.4 </dd></dl>
 </dd></dl>
 <dl compact><dt><b>Project:</b></dt><dd>MDISforLinux (OSS lib) </dd></dl>
 <dl compact><dt><b>Preprocessor Switches:</b></dt><dd>DBG - enable debugging</dd></dl>
@@ -86,15 +86,9 @@ Spinlock functions.
 <p>
 Acquire spin lock. 
 <p>
-The method spins until the specified spin lock has been acquired.<p>
-<dl compact><dt><b>Remarks:</b></dt><dd>Don't use in IRQ or Alarm routines.</dd></dl>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>spinl</em>&nbsp;</td><td><b>IN</b> spin lock handle, returned by <a class="el" href="oss__spinlock_8c.html#a0">OSS_SpinLockCreate()</a></td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>0 on success or <code>ERR_OSS_xxx</code> error code on error</dd></dl>
+<p>
+<dl compact><dt><b>Windows notes:</b></dt><dd>IRQL requirement: Any IRQL</dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss_8h.html#a142">OSS_SpinLockRelease</a></dd></dl>
 <p>
 <dl compact><dt><b>Windows notes:</b></dt><dd>IRQL requirement: Any IRQL</dd></dl>
 <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss__spinlock_8c.html#a3">OSS_SpinLockRelease</a> </dd></dl>
@@ -138,15 +132,9 @@ The method spins until the specified spin lock has been acquired.<p>
 <p>
 Create a spin lock. 
 <p>
-This routine must be called before any other OSS_SpinLockXXX() routines.<p>
-<dl compact><dt><b>Remarks:</b></dt><dd>Don't use in IRQ or Alarm routines.</dd></dl>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>spinlP</em>&nbsp;</td><td><b>OUT</b> will receive created spin lock handle. Must be passed to further OSS_SpinLockXXX() routines.</td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>0 on success or <code>ERR_OSS_xxx</code> error code on error</dd></dl>
+<p>
+<dl compact><dt><b>Windows notes:</b></dt><dd>IRQL requirement: Any IRQL</dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss_8h.html#a140">OSS_SpinLockRemove</a></dd></dl>
 <p>
 <dl compact><dt><b>Windows notes:</b></dt><dd>IRQL requirement: Any IRQL</dd></dl>
 <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss__spinlock_8c.html#a1">OSS_SpinLockRemove</a> </dd></dl>
@@ -190,15 +178,9 @@ This routine must be called before any other OSS_SpinLockXXX() routines.<p>
 <p>
 Release spin lock. 
 <p>
-The method releases the spin lock gotten by previously calling OSS_SpinLockAcquire.<p>
-<dl compact><dt><b>Remarks:</b></dt><dd>Don't use in IRQ or Alarm routines.</dd></dl>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>spinl</em>&nbsp;</td><td><b>IN</b> spin lock handle, returned by <a class="el" href="oss__spinlock_8c.html#a0">OSS_SpinLockCreate()</a></td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>0 on success or <code>ERR_OSS_xxx</code> error code on error</dd></dl>
+<p>
+<dl compact><dt><b>Windows notes:</b></dt><dd>IRQL requirement: Any IRQL</dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss_8h.html#a141">OSS_SpinLockAcquire</a></dd></dl>
 <p>
 <dl compact><dt><b>Windows notes:</b></dt><dd>IRQL requirement: Any IRQL</dd></dl>
 <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss__spinlock_8c.html#a2">OSS_SpinLockAcquire</a> </dd></dl>
@@ -242,15 +224,10 @@ The method releases the spin lock gotten by previously calling OSS_SpinLockAcqui
 <p>
 Destroy spin lock handle. 
 <p>
-Frees all resources allocated by <a class="el" href="oss__spinlock_8c.html#a0">OSS_SpinLockCreate()</a>.<p>
-<dl compact><dt><b>Remarks:</b></dt><dd>Don't use in IRQ or Alarm routines.</dd></dl>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>spinlP</em>&nbsp;</td><td><b>IN</b> pointer to spin lock handle to remove <b>OUT</b> *spinlP set to NULL</td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>0 on success or <code>ERR_OSS_xxx</code> error code on error</dd></dl>
+<p>
+<dl compact><dt><b>Windows notes:</b></dt><dd>Do nothing<br>
+ IRQL requirement: Any IRQL</dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss_8h.html#a139">OSS_SpinLockCreate</a></dd></dl>
 <p>
 <dl compact><dt><b>Windows notes:</b></dt><dd>Do nothing<br>
  IRQL requirement: Any IRQL</dd></dl>
@@ -266,7 +243,7 @@ Frees all resources allocated by <a class="el" href="oss__spinlock_8c.html#a0">O
 <!-- Footer -->
 	<p class="footer">
 	Generated for OSS module for Linux/RTAI using <a href="http://www.doxygen.org">doxygen</a>.<br>
-	Copyright &copy; 2012 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
+	Copyright &copy; 2019 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
 	</p>
 </div>
 

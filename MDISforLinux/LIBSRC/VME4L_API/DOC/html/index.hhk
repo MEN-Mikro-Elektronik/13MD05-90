@@ -4,10 +4,6 @@
 <param name="FrameName" value="right">
 </OBJECT>
 <UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="_RCSid"><param name="Name" value="_RCSid"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a1"><param name="Name" value="vme4l_api.c"></OBJECT>
-  </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="accWidth"><param name="Name" value="accWidth"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structVME4L__RMW__CYCLE.html#o1"><param name="Name" value="VME4L_RMW_CYCLE"></OBJECT>
@@ -16,6 +12,10 @@
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="addr"><param name="Name" value="addr"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structVME4L__BUS__ERROR__INFO.html#o1"><param name="Name" value="VME4L_BUS_ERROR_INFO"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="attr"><param name="Name" value="attr"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structVME4L__BUS__ERROR__INFO.html#o0"><param name="Name" value="VME4L_BUS_ERROR_INFO"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="clear"><param name="Name" value="clear"></OBJECT>
   <UL>
@@ -41,7 +41,7 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="G_devNameTbl"><param name="Name" value="G_devNameTbl"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a2"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a1"><param name="Name" value="vme4l_api.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="G_IrqPriority"><param name="Name" value="G_IrqPriority"></OBJECT>
   <UL>
@@ -71,10 +71,6 @@
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structVME4L__RW__BLOCK.html#o3"><param name="Name" value="VME4L_RW_BLOCK"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structVME4L__SLAVE__WINDOW__CTRL.html#o1"><param name="Name" value="VME4L_SLAVE_WINDOW_CTRL"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="space"><param name="Name" value="space"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="structVME4L__BUS__ERROR__INFO.html#o0"><param name="Name" value="VME4L_BUS_ERROR_INFO"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="TSI148_BLT_DCTL"><param name="Name" value="TSI148_BLT_DCTL"></OBJECT>
   <UL>
@@ -689,62 +685,79 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html"><param name="Name" value="vme4l.h"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a47"><param name="Name" value="VME4L_IO_AONLY_CYCLE"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a39"><param name="Name" value="VME4L_IO_ARBITRATION_TIMEOUT_GET"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a40"><param name="Name" value="VME4L_IO_BUS_ERROR_GET"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a49"><param name="Name" value="VME4L_IO_IRQ_ENABLE2"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a44"><param name="Name" value="VME4L_IO_IRQ_GEN_ACKED"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a45"><param name="Name" value="VME4L_IO_IRQ_GEN_CLEAR"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a43"><param name="Name" value="VME4L_IO_IRQ_GENERATE2"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a52"><param name="Name" value="VME4L_IO_LOCMON_REG_RW"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a51"><param name="Name" value="VME4L_IO_MBOX_RW"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a36"><param name="Name" value="VME4L_IO_POSTED_WRITE_MODE_GET"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a37"><param name="Name" value="VME4L_IO_POSTED_WRITE_MODE_SET"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a41"><param name="Name" value="VME4L_IO_REQUESTER_MODE_GET"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a42"><param name="Name" value="VME4L_IO_REQUESTER_MODE_SET"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a46"><param name="Name" value="VME4L_IO_RMW_CYCLE"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a31"><param name="Name" value="VME4L_IO_RW_BLOCK"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a32"><param name="Name" value="VME4L_IO_SIG_INSTALL2"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a33"><param name="Name" value="VME4L_IO_SIG_UNINSTALL"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a50"><param name="Name" value="VME4L_IO_SLAVE_WINDOW_CTRL"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a48"><param name="Name" value="VME4L_IO_SWAP_MODE_SET"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a34"><param name="Name" value="VME4L_IO_SYS_CTRL_FUNCTION_GET"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a35"><param name="Name" value="VME4L_IO_SYS_CTRL_FUNCTION_SET"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a38"><param name="Name" value="VME4L_IO_SYS_RESET"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a53"><param name="Name" value="VME4L_IOC_MAXNR"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86"><param name="Name" value="VME4L_SPACE"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a55"><param name="Name" value="VME4L_SPC_A16_D16"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a56"><param name="Name" value="VME4L_SPC_A16_D16_BLT"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a57"><param name="Name" value="VME4L_SPC_A16_D32"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a58"><param name="Name" value="VME4L_SPC_A16_D32_BLT"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a59"><param name="Name" value="VME4L_SPC_A24_D16"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a60"><param name="Name" value="VME4L_SPC_A24_D16_BLT"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a61"><param name="Name" value="VME4L_SPC_A24_D32"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a62"><param name="Name" value="VME4L_SPC_A24_D32_BLT"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a63"><param name="Name" value="VME4L_SPC_A32_D32"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a64"><param name="Name" value="VME4L_SPC_A32_D32_BLT"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a65"><param name="Name" value="VME4L_SPC_A32_D64_BLT"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a84"><param name="Name" value="VME4L_SPC_A64_2ESST"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a83"><param name="Name" value="VME4L_SPC_A64_2EVME"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a82"><param name="Name" value="VME4L_SPC_A64_D32"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a85"><param name="Name" value="VME4L_SPC_INVALID"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a74"><param name="Name" value="VME4L_SPC_MST0"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a75"><param name="Name" value="VME4L_SPC_MST1"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a76"><param name="Name" value="VME4L_SPC_MST2"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a77"><param name="Name" value="VME4L_SPC_MST3"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a78"><param name="Name" value="VME4L_SPC_MST4"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a79"><param name="Name" value="VME4L_SPC_MST5"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a80"><param name="Name" value="VME4L_SPC_MST6"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a81"><param name="Name" value="VME4L_SPC_MST7"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a66"><param name="Name" value="VME4L_SPC_SLV0"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a67"><param name="Name" value="VME4L_SPC_SLV1"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a68"><param name="Name" value="VME4L_SPC_SLV2"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a69"><param name="Name" value="VME4L_SPC_SLV3"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a70"><param name="Name" value="VME4L_SPC_SLV4"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a71"><param name="Name" value="VME4L_SPC_SLV5"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a72"><param name="Name" value="VME4L_SPC_SLV6"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a73"><param name="Name" value="VME4L_SPC_SLV7"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a54"><param name="Name" value="vmeaddr_t"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a59"><param name="Name" value="VME4L_IO_ADDR_MOD_GET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a58"><param name="Name" value="VME4L_IO_ADDR_MOD_SET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a52"><param name="Name" value="VME4L_IO_AONLY_CYCLE"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a44"><param name="Name" value="VME4L_IO_ARBITRATION_TIMEOUT_GET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a45"><param name="Name" value="VME4L_IO_BUS_ERROR_GET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a64"><param name="Name" value="VME4L_IO_CRCSR_BAR_GET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a63"><param name="Name" value="VME4L_IO_CRCSR_BAR_SET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a60"><param name="Name" value="VME4L_IO_GEO_ADDR_GET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a54"><param name="Name" value="VME4L_IO_IRQ_ENABLE2"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a49"><param name="Name" value="VME4L_IO_IRQ_GEN_ACKED"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a50"><param name="Name" value="VME4L_IO_IRQ_GEN_CLEAR"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a48"><param name="Name" value="VME4L_IO_IRQ_GENERATE2"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a57"><param name="Name" value="VME4L_IO_LOCMON_REG_RW"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a56"><param name="Name" value="VME4L_IO_MBOX_RW"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a41"><param name="Name" value="VME4L_IO_POSTED_WRITE_MODE_GET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a42"><param name="Name" value="VME4L_IO_POSTED_WRITE_MODE_SET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a62"><param name="Name" value="VME4L_IO_REQUESTER_LVL_GET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a61"><param name="Name" value="VME4L_IO_REQUESTER_LVL_SET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a46"><param name="Name" value="VME4L_IO_REQUESTER_MODE_GET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a47"><param name="Name" value="VME4L_IO_REQUESTER_MODE_SET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a51"><param name="Name" value="VME4L_IO_RMW_CYCLE"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a36"><param name="Name" value="VME4L_IO_RW_BLOCK"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a37"><param name="Name" value="VME4L_IO_SIG_INSTALL2"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a38"><param name="Name" value="VME4L_IO_SIG_UNINSTALL"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a55"><param name="Name" value="VME4L_IO_SLAVE_WINDOW_CTRL"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a53"><param name="Name" value="VME4L_IO_SWAP_MODE_SET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a39"><param name="Name" value="VME4L_IO_SYS_CTRL_FUNCTION_GET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a40"><param name="Name" value="VME4L_IO_SYS_CTRL_FUNCTION_SET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a43"><param name="Name" value="VME4L_IO_SYS_RESET"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a65"><param name="Name" value="VME4L_IOC_MAXNR"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98"><param name="Name" value="VME4L_SPACE"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a67"><param name="Name" value="VME4L_SPC_A16_D16"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a69"><param name="Name" value="VME4L_SPC_A16_D32"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a70"><param name="Name" value="VME4L_SPC_A24_D16"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a71"><param name="Name" value="VME4L_SPC_A24_D16_BLT"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a72"><param name="Name" value="VME4L_SPC_A24_D32"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a73"><param name="Name" value="VME4L_SPC_A24_D32_BLT"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a68"><param name="Name" value="VME4L_SPC_A24_D64_BLT"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a74"><param name="Name" value="VME4L_SPC_A32_D32"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a75"><param name="Name" value="VME4L_SPC_A32_D32_BLT"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a76"><param name="Name" value="VME4L_SPC_A32_D64_BLT"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a95"><param name="Name" value="VME4L_SPC_A64_2ESST"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a94"><param name="Name" value="VME4L_SPC_A64_2EVME"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a93"><param name="Name" value="VME4L_SPC_A64_D32"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a96"><param name="Name" value="VME4L_SPC_CR_CSR"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a97"><param name="Name" value="VME4L_SPC_INVALID"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a85"><param name="Name" value="VME4L_SPC_MST0"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a86"><param name="Name" value="VME4L_SPC_MST1"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a87"><param name="Name" value="VME4L_SPC_MST2"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a88"><param name="Name" value="VME4L_SPC_MST3"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a89"><param name="Name" value="VME4L_SPC_MST4"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a90"><param name="Name" value="VME4L_SPC_MST5"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a91"><param name="Name" value="VME4L_SPC_MST6"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a92"><param name="Name" value="VME4L_SPC_MST7"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a77"><param name="Name" value="VME4L_SPC_SLV0"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a78"><param name="Name" value="VME4L_SPC_SLV1"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a79"><param name="Name" value="VME4L_SPC_SLV2"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a80"><param name="Name" value="VME4L_SPC_SLV3"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a81"><param name="Name" value="VME4L_SPC_SLV4"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a82"><param name="Name" value="VME4L_SPC_SLV5"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a83"><param name="Name" value="VME4L_SPC_SLV6"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a84"><param name="Name" value="VME4L_SPC_SLV7"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a66"><param name="Name" value="vmeaddr_t"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_AddrModifierGet"><param name="Name" value="VME4L_AddrModifierGet"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a7"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a21"><param name="Name" value="vme4l_api.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_AddrModifierSet"><param name="Name" value="VME4L_AddrModifierSet"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a6"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a20"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structVME4L__AONLY__CYCLE.html"><param name="Name" value="VME4L_AONLY_CYCLE"></OBJECT>
   <UL>
@@ -752,73 +765,82 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_AOnlyCycle"><param name="Name" value="VME4L_AOnlyCycle"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a28"><param name="Name" value="vme4l_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a26"><param name="Name" value="vme4l_api.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a32"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a31"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html"><param name="Name" value="vme4l_api.c"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a1"><param name="Name" value="_RCSid"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a0"><param name="Name" value="DEVNAME_TBL_SIZE"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a2"><param name="Name" value="G_devNameTbl"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a28"><param name="Name" value="VME4L_AOnlyCycle"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a18"><param name="Name" value="VME4L_ArbitrationTimeoutGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a19"><param name="Name" value="VME4L_BusErrorGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a4"><param name="Name" value="VME4L_Close"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a14"><param name="Name" value="VME4L_IrqDisable"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a13"><param name="Name" value="VME4L_IrqEnable"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a25"><param name="Name" value="VME4L_IrqGenAcked"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a26"><param name="Name" value="VME4L_IrqGenClear"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a24"><param name="Name" value="VME4L_IrqGenerate"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a32"><param name="Name" value="VME4L_LocMonRegRead"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a33"><param name="Name" value="VME4L_LocMonRegWrite"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a9"><param name="Name" value="VME4L_Map"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a30"><param name="Name" value="VME4L_MboxRead"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a31"><param name="Name" value="VME4L_MboxWrite"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a3"><param name="Name" value="VME4L_Open"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a22"><param name="Name" value="VME4L_PostedWriteModeGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a23"><param name="Name" value="VME4L_PostedWriteModeSet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a7"><param name="Name" value="VME4L_Read"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a20"><param name="Name" value="VME4L_RequesterModeGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a21"><param name="Name" value="VME4L_RequesterModeSet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a27"><param name="Name" value="VME4L_RmwCycle"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a11"><param name="Name" value="VME4L_SigInstall"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a12"><param name="Name" value="VME4L_SigUnInstall"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a29"><param name="Name" value="VME4L_SlaveWindowCtrl"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a5"><param name="Name" value="VME4L_SpaceName"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a6"><param name="Name" value="VME4L_SwapModeSet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a15"><param name="Name" value="VME4L_SysCtrlFunctionGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a16"><param name="Name" value="VME4L_SysCtrlFunctionSet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a17"><param name="Name" value="VME4L_SysReset"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a10"><param name="Name" value="VME4L_UnMap"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a8"><param name="Name" value="VME4L_Write"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a1"><param name="Name" value="G_devNameTbl"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a7"><param name="Name" value="VME4L_AddrModifierGet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a6"><param name="Name" value="VME4L_AddrModifierSet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a32"><param name="Name" value="VME4L_AOnlyCycle"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a22"><param name="Name" value="VME4L_ArbitrationTimeoutGet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a23"><param name="Name" value="VME4L_BusErrorGet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a3"><param name="Name" value="VME4L_Close"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a8"><param name="Name" value="VME4L_GeoAddrGet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a18"><param name="Name" value="VME4L_IrqDisable"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a17"><param name="Name" value="VME4L_IrqEnable"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a29"><param name="Name" value="VME4L_IrqGenAcked"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a30"><param name="Name" value="VME4L_IrqGenClear"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a28"><param name="Name" value="VME4L_IrqGenerate"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a36"><param name="Name" value="VME4L_LocMonRegRead"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a37"><param name="Name" value="VME4L_LocMonRegWrite"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a13"><param name="Name" value="VME4L_Map"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a34"><param name="Name" value="VME4L_MboxRead"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a35"><param name="Name" value="VME4L_MboxWrite"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a2"><param name="Name" value="VME4L_Open"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a26"><param name="Name" value="VME4L_PostedWriteModeGet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a27"><param name="Name" value="VME4L_PostedWriteModeSet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a11"><param name="Name" value="VME4L_Read"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a10"><param name="Name" value="VME4L_RequesterLevelGet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a9"><param name="Name" value="VME4L_RequesterLevelSet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a24"><param name="Name" value="VME4L_RequesterModeGet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a25"><param name="Name" value="VME4L_RequesterModeSet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a31"><param name="Name" value="VME4L_RmwCycle"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a15"><param name="Name" value="VME4L_SigInstall"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a16"><param name="Name" value="VME4L_SigUnInstall"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a33"><param name="Name" value="VME4L_SlaveWindowCtrl"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a4"><param name="Name" value="VME4L_SpaceName"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a5"><param name="Name" value="VME4L_SwapModeSet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a19"><param name="Name" value="VME4L_SysCtrlFunctionGet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a20"><param name="Name" value="VME4L_SysCtrlFunctionSet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a21"><param name="Name" value="VME4L_SysReset"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a14"><param name="Name" value="VME4L_UnMap"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a12"><param name="Name" value="VME4L_Write"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html"><param name="Name" value="vme4l_api.h"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a26"><param name="Name" value="VME4L_AOnlyCycle"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a21"><param name="Name" value="VME4L_AddrModifierGet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a20"><param name="Name" value="VME4L_AddrModifierSet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a31"><param name="Name" value="VME4L_AOnlyCycle"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a16"><param name="Name" value="VME4L_ArbitrationTimeoutGet"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a17"><param name="Name" value="VME4L_BusErrorGet"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a1"><param name="Name" value="VME4L_Close"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a22"><param name="Name" value="VME4L_GeoAddrGet"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a12"><param name="Name" value="VME4L_IrqDisable"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a11"><param name="Name" value="VME4L_IrqEnable"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a23"><param name="Name" value="VME4L_IrqGenAcked"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a24"><param name="Name" value="VME4L_IrqGenClear"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a22"><param name="Name" value="VME4L_IrqGenerate"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a30"><param name="Name" value="VME4L_LocMonRegRead"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a31"><param name="Name" value="VME4L_LocMonRegWrite"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a28"><param name="Name" value="VME4L_IrqGenAcked"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a29"><param name="Name" value="VME4L_IrqGenClear"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a27"><param name="Name" value="VME4L_IrqGenerate"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a35"><param name="Name" value="VME4L_LocMonRegRead"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a36"><param name="Name" value="VME4L_LocMonRegWrite"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a7"><param name="Name" value="VME4L_Map"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a28"><param name="Name" value="VME4L_MboxRead"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a29"><param name="Name" value="VME4L_MboxWrite"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a33"><param name="Name" value="VME4L_MboxRead"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a34"><param name="Name" value="VME4L_MboxWrite"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a0"><param name="Name" value="VME4L_Open"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a20"><param name="Name" value="VME4L_PostedWriteModeGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a21"><param name="Name" value="VME4L_PostedWriteModeSet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a25"><param name="Name" value="VME4L_PostedWriteModeGet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a26"><param name="Name" value="VME4L_PostedWriteModeSet"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a5"><param name="Name" value="VME4L_Read"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a24"><param name="Name" value="VME4L_RequesterLevelGet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a23"><param name="Name" value="VME4L_RequesterLevelSet"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a19"><param name="Name" value="VME4L_RequesterModeGet"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a18"><param name="Name" value="VME4L_RequesterModeSet"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a3"><param name="Name" value="VME4L_RevisionInfo"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a25"><param name="Name" value="VME4L_RmwCycle"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a30"><param name="Name" value="VME4L_RmwCycle"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a9"><param name="Name" value="VME4L_SigInstall"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a10"><param name="Name" value="VME4L_SigUnInstall"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a27"><param name="Name" value="VME4L_SlaveWindowCtrl"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a32"><param name="Name" value="VME4L_SlaveWindowCtrl"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a2"><param name="Name" value="VME4L_SpaceName"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a4"><param name="Name" value="VME4L_SwapModeSet"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a13"><param name="Name" value="VME4L_SysCtrlFunctionGet"></OBJECT>
@@ -829,120 +851,153 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_ArbitrationTimeoutGet"><param name="Name" value="VME4L_ArbitrationTimeoutGet"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a18"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a22"><param name="Name" value="vme4l_api.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a16"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structVME4L__BUS__ERROR__INFO.html"><param name="Name" value="VME4L_BUS_ERROR_INFO"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structVME4L__BUS__ERROR__INFO.html#o1"><param name="Name" value="addr"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structVME4L__BUS__ERROR__INFO.html#o0"><param name="Name" value="attr"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structVME4L__BUS__ERROR__INFO.html#o2"><param name="Name" value="clear"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="structVME4L__BUS__ERROR__INFO.html#o0"><param name="Name" value="space"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_BusErrorGet"><param name="Name" value="VME4L_BusErrorGet"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a19"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a23"><param name="Name" value="vme4l_api.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a17"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_Close"><param name="Name" value="VME4L_Close"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a4"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a3"><param name="Name" value="vme4l_api.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a1"><param name="Name" value="vme4l_api.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_GeoAddrGet"><param name="Name" value="VME4L_GeoAddrGet"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a8"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a22"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_HW_SWAP1"><param name="Name" value="VME4L_HW_SWAP1"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__SWAPMODE.html#a1"><param name="Name" value="VME4L_SWAPMODE"></OBJECT>
   </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_ADDR_MOD_GET"><param name="Name" value="VME4L_IO_ADDR_MOD_GET"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a59"><param name="Name" value="vme4l.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_ADDR_MOD_SET"><param name="Name" value="VME4L_IO_ADDR_MOD_SET"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a58"><param name="Name" value="vme4l.h"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_AONLY_CYCLE"><param name="Name" value="VME4L_IO_AONLY_CYCLE"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a47"><param name="Name" value="vme4l.h"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_ARBITRATION_TIMEOUT_GET"><param name="Name" value="VME4L_IO_ARBITRATION_TIMEOUT_GET"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a39"><param name="Name" value="vme4l.h"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_BUS_ERROR_GET"><param name="Name" value="VME4L_IO_BUS_ERROR_GET"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a40"><param name="Name" value="vme4l.h"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_IRQ_ENABLE2"><param name="Name" value="VME4L_IO_IRQ_ENABLE2"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a49"><param name="Name" value="vme4l.h"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_IRQ_GEN_ACKED"><param name="Name" value="VME4L_IO_IRQ_GEN_ACKED"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a44"><param name="Name" value="vme4l.h"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_IRQ_GEN_CLEAR"><param name="Name" value="VME4L_IO_IRQ_GEN_CLEAR"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a45"><param name="Name" value="vme4l.h"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_IRQ_GENERATE2"><param name="Name" value="VME4L_IO_IRQ_GENERATE2"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a43"><param name="Name" value="vme4l.h"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_LOCMON_REG_RW"><param name="Name" value="VME4L_IO_LOCMON_REG_RW"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a52"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_MBOX_RW"><param name="Name" value="VME4L_IO_MBOX_RW"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_ARBITRATION_TIMEOUT_GET"><param name="Name" value="VME4L_IO_ARBITRATION_TIMEOUT_GET"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a51"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a44"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_POSTED_WRITE_MODE_GET"><param name="Name" value="VME4L_IO_POSTED_WRITE_MODE_GET"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_BUS_ERROR_GET"><param name="Name" value="VME4L_IO_BUS_ERROR_GET"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a36"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a45"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_POSTED_WRITE_MODE_SET"><param name="Name" value="VME4L_IO_POSTED_WRITE_MODE_SET"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_CRCSR_BAR_GET"><param name="Name" value="VME4L_IO_CRCSR_BAR_GET"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a37"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a64"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_REQUESTER_MODE_GET"><param name="Name" value="VME4L_IO_REQUESTER_MODE_GET"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_CRCSR_BAR_SET"><param name="Name" value="VME4L_IO_CRCSR_BAR_SET"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a41"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a63"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_REQUESTER_MODE_SET"><param name="Name" value="VME4L_IO_REQUESTER_MODE_SET"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_GEO_ADDR_GET"><param name="Name" value="VME4L_IO_GEO_ADDR_GET"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a42"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a60"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_RMW_CYCLE"><param name="Name" value="VME4L_IO_RMW_CYCLE"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_IRQ_ENABLE2"><param name="Name" value="VME4L_IO_IRQ_ENABLE2"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a46"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a54"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_RW_BLOCK"><param name="Name" value="VME4L_IO_RW_BLOCK"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_IRQ_GEN_ACKED"><param name="Name" value="VME4L_IO_IRQ_GEN_ACKED"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a31"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a49"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_SIG_INSTALL2"><param name="Name" value="VME4L_IO_SIG_INSTALL2"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a32"><param name="Name" value="vme4l.h"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_SIG_UNINSTALL"><param name="Name" value="VME4L_IO_SIG_UNINSTALL"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a33"><param name="Name" value="vme4l.h"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_SLAVE_WINDOW_CTRL"><param name="Name" value="VME4L_IO_SLAVE_WINDOW_CTRL"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_IRQ_GEN_CLEAR"><param name="Name" value="VME4L_IO_IRQ_GEN_CLEAR"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a50"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_SWAP_MODE_SET"><param name="Name" value="VME4L_IO_SWAP_MODE_SET"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_IRQ_GENERATE2"><param name="Name" value="VME4L_IO_IRQ_GENERATE2"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a48"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_SYS_CTRL_FUNCTION_GET"><param name="Name" value="VME4L_IO_SYS_CTRL_FUNCTION_GET"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_LOCMON_REG_RW"><param name="Name" value="VME4L_IO_LOCMON_REG_RW"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a34"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a57"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_SYS_CTRL_FUNCTION_SET"><param name="Name" value="VME4L_IO_SYS_CTRL_FUNCTION_SET"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_MBOX_RW"><param name="Name" value="VME4L_IO_MBOX_RW"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a35"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a56"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_SYS_RESET"><param name="Name" value="VME4L_IO_SYS_RESET"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_POSTED_WRITE_MODE_GET"><param name="Name" value="VME4L_IO_POSTED_WRITE_MODE_GET"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a41"><param name="Name" value="vme4l.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_POSTED_WRITE_MODE_SET"><param name="Name" value="VME4L_IO_POSTED_WRITE_MODE_SET"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a42"><param name="Name" value="vme4l.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_REQUESTER_LVL_GET"><param name="Name" value="VME4L_IO_REQUESTER_LVL_GET"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a62"><param name="Name" value="vme4l.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_REQUESTER_LVL_SET"><param name="Name" value="VME4L_IO_REQUESTER_LVL_SET"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a61"><param name="Name" value="vme4l.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_REQUESTER_MODE_GET"><param name="Name" value="VME4L_IO_REQUESTER_MODE_GET"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a46"><param name="Name" value="vme4l.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_REQUESTER_MODE_SET"><param name="Name" value="VME4L_IO_REQUESTER_MODE_SET"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a47"><param name="Name" value="vme4l.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_RMW_CYCLE"><param name="Name" value="VME4L_IO_RMW_CYCLE"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a51"><param name="Name" value="vme4l.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_RW_BLOCK"><param name="Name" value="VME4L_IO_RW_BLOCK"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a36"><param name="Name" value="vme4l.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_SIG_INSTALL2"><param name="Name" value="VME4L_IO_SIG_INSTALL2"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a37"><param name="Name" value="vme4l.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_SIG_UNINSTALL"><param name="Name" value="VME4L_IO_SIG_UNINSTALL"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a38"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IOC_MAXNR"><param name="Name" value="VME4L_IOC_MAXNR"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_SLAVE_WINDOW_CTRL"><param name="Name" value="VME4L_IO_SLAVE_WINDOW_CTRL"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a55"><param name="Name" value="vme4l.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_SWAP_MODE_SET"><param name="Name" value="VME4L_IO_SWAP_MODE_SET"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a53"><param name="Name" value="vme4l.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_SYS_CTRL_FUNCTION_GET"><param name="Name" value="VME4L_IO_SYS_CTRL_FUNCTION_GET"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a39"><param name="Name" value="vme4l.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_SYS_CTRL_FUNCTION_SET"><param name="Name" value="VME4L_IO_SYS_CTRL_FUNCTION_SET"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a40"><param name="Name" value="vme4l.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IO_SYS_RESET"><param name="Name" value="VME4L_IO_SYS_RESET"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a43"><param name="Name" value="vme4l.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IOC_MAXNR"><param name="Name" value="VME4L_IOC_MAXNR"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a65"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IRQ_ENBL"><param name="Name" value="VME4L_IRQ_ENBL"></OBJECT>
   <UL>
@@ -958,12 +1013,12 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IrqDisable"><param name="Name" value="VME4L_IrqDisable"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a14"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a18"><param name="Name" value="vme4l_api.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a12"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IrqEnable"><param name="Name" value="VME4L_IrqEnable"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a13"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a17"><param name="Name" value="vme4l_api.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a11"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQFLAGS.html"><param name="Name" value="VME4L_IRQFLAGS"></OBJECT>
@@ -974,18 +1029,18 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IrqGenAcked"><param name="Name" value="VME4L_IrqGenAcked"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a25"><param name="Name" value="vme4l_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a23"><param name="Name" value="vme4l_api.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a29"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a28"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IrqGenClear"><param name="Name" value="VME4L_IrqGenClear"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a26"><param name="Name" value="vme4l_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a24"><param name="Name" value="vme4l_api.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a30"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a29"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IrqGenerate"><param name="Name" value="VME4L_IrqGenerate"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a24"><param name="Name" value="vme4l_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a22"><param name="Name" value="vme4l_api.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a28"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a27"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html"><param name="Name" value="VME4L_IRQLEV"></OBJECT>
   <UL>
@@ -996,14 +1051,17 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a5"><param name="Name" value="VME4L_IRQLEV_5"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a6"><param name="Name" value="VME4L_IRQLEV_6"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a7"><param name="Name" value="VME4L_IRQLEV_7"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a9"><param name="Name" value="VME4L_IRQLEV_ACFAIL"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a8"><param name="Name" value="VME4L_IRQLEV_BUSERR"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a13"><param name="Name" value="VME4L_IRQLEV_LOCMON"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a11"><param name="Name" value="VME4L_IRQLEV_MBOXRD"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a12"><param name="Name" value="VME4L_IRQLEV_MBOXWR"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a10"><param name="Name" value="VME4L_IRQLEV_SYSFAIL"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a10"><param name="Name" value="VME4L_IRQLEV_ACFAIL"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a9"><param name="Name" value="VME4L_IRQLEV_BUSERR"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a15"><param name="Name" value="VME4L_IRQLEV_LOCMON"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a16"><param name="Name" value="VME4L_IRQLEV_LOCMON_NUM"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a12"><param name="Name" value="VME4L_IRQLEV_MBOXRD"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a13"><param name="Name" value="VME4L_IRQLEV_MBOXWR"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a14"><param name="Name" value="VME4L_IRQLEV_MBOXWR_NNUM"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a8"><param name="Name" value="VME4L_IRQLEV_NUM"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a11"><param name="Name" value="VME4L_IRQLEV_SYSFAIL"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a0"><param name="Name" value="VME4L_IRQLEV_UNKNOWN"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a14"><param name="Name" value="VME4L_NUM_LEVELS"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a17"><param name="Name" value="VME4L_NUM_LEVELS"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IRQLEV_1"><param name="Name" value="VME4L_IRQLEV_1"></OBJECT>
   <UL>
@@ -1035,27 +1093,39 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IRQLEV_ACFAIL"><param name="Name" value="VME4L_IRQLEV_ACFAIL"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a9"><param name="Name" value="VME4L_IRQLEV"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a10"><param name="Name" value="VME4L_IRQLEV"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IRQLEV_BUSERR"><param name="Name" value="VME4L_IRQLEV_BUSERR"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a8"><param name="Name" value="VME4L_IRQLEV"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a9"><param name="Name" value="VME4L_IRQLEV"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IRQLEV_LOCMON"><param name="Name" value="VME4L_IRQLEV_LOCMON"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a13"><param name="Name" value="VME4L_IRQLEV"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a15"><param name="Name" value="VME4L_IRQLEV"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IRQLEV_LOCMON_NUM"><param name="Name" value="VME4L_IRQLEV_LOCMON_NUM"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a16"><param name="Name" value="VME4L_IRQLEV"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IRQLEV_MBOXRD"><param name="Name" value="VME4L_IRQLEV_MBOXRD"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a11"><param name="Name" value="VME4L_IRQLEV"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a12"><param name="Name" value="VME4L_IRQLEV"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IRQLEV_MBOXWR"><param name="Name" value="VME4L_IRQLEV_MBOXWR"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a12"><param name="Name" value="VME4L_IRQLEV"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a13"><param name="Name" value="VME4L_IRQLEV"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IRQLEV_MBOXWR_NNUM"><param name="Name" value="VME4L_IRQLEV_MBOXWR_NNUM"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a14"><param name="Name" value="VME4L_IRQLEV"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IRQLEV_NUM"><param name="Name" value="VME4L_IRQLEV_NUM"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a8"><param name="Name" value="VME4L_IRQLEV"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IRQLEV_SYSFAIL"><param name="Name" value="VME4L_IRQLEV_SYSFAIL"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a10"><param name="Name" value="VME4L_IRQLEV"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a11"><param name="Name" value="VME4L_IRQLEV"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_IRQLEV_UNKNOWN"><param name="Name" value="VME4L_IRQLEV_UNKNOWN"></OBJECT>
   <UL>
@@ -1102,17 +1172,17 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_LocMonRegRead"><param name="Name" value="VME4L_LocMonRegRead"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a32"><param name="Name" value="vme4l_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a30"><param name="Name" value="vme4l_api.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a36"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a35"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_LocMonRegWrite"><param name="Name" value="VME4L_LocMonRegWrite"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a33"><param name="Name" value="vme4l_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a31"><param name="Name" value="vme4l_api.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a37"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a36"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_Map"><param name="Name" value="VME4L_Map"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a9"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a13"><param name="Name" value="vme4l_api.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a7"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structVME4L__MBOX__RW.html"><param name="Name" value="VME4L_MBOX_RW"></OBJECT>
@@ -1123,13 +1193,13 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_MboxRead"><param name="Name" value="VME4L_MboxRead"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a30"><param name="Name" value="vme4l_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a28"><param name="Name" value="vme4l_api.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a34"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a33"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_MboxWrite"><param name="Name" value="VME4L_MboxWrite"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a31"><param name="Name" value="vme4l_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a29"><param name="Name" value="vme4l_api.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a35"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a34"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_NO_SWAP"><param name="Name" value="VME4L_NO_SWAP"></OBJECT>
   <UL>
@@ -1137,7 +1207,7 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_NUM_LEVELS"><param name="Name" value="VME4L_NUM_LEVELS"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a14"><param name="Name" value="VME4L_IRQLEV"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__IRQLEV.html#a17"><param name="Name" value="VME4L_IRQLEV"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_NUM_VECTORS"><param name="Name" value="VME4L_NUM_VECTORS"></OBJECT>
   <UL>
@@ -1145,32 +1215,42 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_Open"><param name="Name" value="VME4L_Open"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a3"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a2"><param name="Name" value="vme4l_api.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a0"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_PostedWriteModeGet"><param name="Name" value="VME4L_PostedWriteModeGet"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a22"><param name="Name" value="vme4l_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a20"><param name="Name" value="vme4l_api.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a26"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a25"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_PostedWriteModeSet"><param name="Name" value="VME4L_PostedWriteModeSet"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a23"><param name="Name" value="vme4l_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a21"><param name="Name" value="vme4l_api.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a27"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a26"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_Read"><param name="Name" value="VME4L_Read"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a7"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a11"><param name="Name" value="vme4l_api.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a5"><param name="Name" value="vme4l_api.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_RequesterLevelGet"><param name="Name" value="VME4L_RequesterLevelGet"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a10"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a24"><param name="Name" value="vme4l_api.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_RequesterLevelSet"><param name="Name" value="VME4L_RequesterLevelSet"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a9"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a23"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_RequesterModeGet"><param name="Name" value="VME4L_RequesterModeGet"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a20"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a24"><param name="Name" value="vme4l_api.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a19"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_RequesterModeSet"><param name="Name" value="VME4L_RequesterModeSet"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a21"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a25"><param name="Name" value="vme4l_api.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a18"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_RevisionInfo"><param name="Name" value="VME4L_RevisionInfo"></OBJECT>
@@ -1186,8 +1266,8 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_RmwCycle"><param name="Name" value="VME4L_RmwCycle"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a27"><param name="Name" value="vme4l_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a25"><param name="Name" value="vme4l_api.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a31"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a30"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structVME4L__RW__BLOCK.html"><param name="Name" value="VME4L_RW_BLOCK"></OBJECT>
   <UL>
@@ -1198,18 +1278,28 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structVME4L__RW__BLOCK.html#o3"><param name="Name" value="size"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="structVME4L__RW__BLOCK.html#o0"><param name="Name" value="vmeAddr"></OBJECT>
   </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_RW_KERNEL_SPACE_DMA"><param name="Name" value="VME4L_RW_KERNEL_SPACE_DMA"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__RWFLAGS.html#a2"><param name="Name" value="VME4L_RWFLAGS"></OBJECT>
+  </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_RW_NOFLAGS"><param name="Name" value="VME4L_RW_NOFLAGS"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__RWFLAGS.html#a0"><param name="Name" value="VME4L_RWFLAGS"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_RW_USE_DMA"><param name="Name" value="VME4L_RW_USE_DMA"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_RW_NOVMEINC"><param name="Name" value="VME4L_RW_NOVMEINC"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__RWFLAGS.html#a3"><param name="Name" value="VME4L_RWFLAGS"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_RW_USE_SGL_DMA"><param name="Name" value="VME4L_RW_USE_SGL_DMA"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__RWFLAGS.html#a1"><param name="Name" value="VME4L_RWFLAGS"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__RWFLAGS.html"><param name="Name" value="VME4L_RWFLAGS"></OBJECT>
   <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__RWFLAGS.html#a2"><param name="Name" value="VME4L_RW_KERNEL_SPACE_DMA"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__RWFLAGS.html#a0"><param name="Name" value="VME4L_RW_NOFLAGS"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__RWFLAGS.html#a1"><param name="Name" value="VME4L_RW_USE_DMA"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__RWFLAGS.html#a3"><param name="Name" value="VME4L_RW_NOVMEINC"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="group__VME4L__RWFLAGS.html#a1"><param name="Name" value="VME4L_RW_USE_SGL_DMA"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structVME4L__SIG__INSTALL2.html"><param name="Name" value="VME4L_SIG_INSTALL2"></OBJECT>
   <UL>
@@ -1220,12 +1310,12 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SigInstall"><param name="Name" value="VME4L_SigInstall"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a11"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a15"><param name="Name" value="vme4l_api.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a9"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SigUnInstall"><param name="Name" value="VME4L_SigUnInstall"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a12"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a16"><param name="Name" value="vme4l_api.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a10"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structVME4L__SLAVE__WINDOW__CTRL.html"><param name="Name" value="VME4L_SLAVE_WINDOW_CTRL"></OBJECT>
@@ -1235,141 +1325,141 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SlaveWindowCtrl"><param name="Name" value="VME4L_SlaveWindowCtrl"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a29"><param name="Name" value="vme4l_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a27"><param name="Name" value="vme4l_api.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a33"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a32"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPACE"><param name="Name" value="VME4L_SPACE"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SpaceName"><param name="Name" value="VME4L_SpaceName"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a5"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a4"><param name="Name" value="vme4l_api.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a2"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_A16_D16"><param name="Name" value="VME4L_SPC_A16_D16"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a55"><param name="Name" value="vme4l.h"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_A16_D16_BLT"><param name="Name" value="VME4L_SPC_A16_D16_BLT"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a56"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a67"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_A16_D32"><param name="Name" value="VME4L_SPC_A16_D32"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a57"><param name="Name" value="vme4l.h"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_A16_D32_BLT"><param name="Name" value="VME4L_SPC_A16_D32_BLT"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a58"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a69"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_A24_D16"><param name="Name" value="VME4L_SPC_A24_D16"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a59"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a70"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_A24_D16_BLT"><param name="Name" value="VME4L_SPC_A24_D16_BLT"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a60"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a71"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_A24_D32"><param name="Name" value="VME4L_SPC_A24_D32"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a61"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a72"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_A24_D32_BLT"><param name="Name" value="VME4L_SPC_A24_D32_BLT"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a62"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a73"><param name="Name" value="vme4l.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_A24_D64_BLT"><param name="Name" value="VME4L_SPC_A24_D64_BLT"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a68"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_A32_D32"><param name="Name" value="VME4L_SPC_A32_D32"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a63"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a74"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_A32_D32_BLT"><param name="Name" value="VME4L_SPC_A32_D32_BLT"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a64"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a75"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_A32_D64_BLT"><param name="Name" value="VME4L_SPC_A32_D64_BLT"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a65"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a76"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_A64_2ESST"><param name="Name" value="VME4L_SPC_A64_2ESST"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a84"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a95"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_A64_2EVME"><param name="Name" value="VME4L_SPC_A64_2EVME"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a83"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a94"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_A64_D32"><param name="Name" value="VME4L_SPC_A64_D32"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a82"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a93"><param name="Name" value="vme4l.h"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_CR_CSR"><param name="Name" value="VME4L_SPC_CR_CSR"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a96"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_INVALID"><param name="Name" value="VME4L_SPC_INVALID"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a85"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a97"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_MST0"><param name="Name" value="VME4L_SPC_MST0"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a74"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a85"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_MST1"><param name="Name" value="VME4L_SPC_MST1"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a75"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a86"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_MST2"><param name="Name" value="VME4L_SPC_MST2"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a76"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a87"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_MST3"><param name="Name" value="VME4L_SPC_MST3"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a77"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a88"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_MST4"><param name="Name" value="VME4L_SPC_MST4"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a78"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a89"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_MST5"><param name="Name" value="VME4L_SPC_MST5"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a79"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a90"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_MST6"><param name="Name" value="VME4L_SPC_MST6"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a80"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a91"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_MST7"><param name="Name" value="VME4L_SPC_MST7"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a81"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a92"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_SLV0"><param name="Name" value="VME4L_SPC_SLV0"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a66"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a77"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_SLV1"><param name="Name" value="VME4L_SPC_SLV1"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a67"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a78"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_SLV2"><param name="Name" value="VME4L_SPC_SLV2"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a68"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a79"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_SLV3"><param name="Name" value="VME4L_SPC_SLV3"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a69"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a80"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_SLV4"><param name="Name" value="VME4L_SPC_SLV4"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a70"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a81"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_SLV5"><param name="Name" value="VME4L_SPC_SLV5"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a71"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a82"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_SLV6"><param name="Name" value="VME4L_SPC_SLV6"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a72"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a83"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SPC_SLV7"><param name="Name" value="VME4L_SPC_SLV7"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a86a73"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a98a84"><param name="Name" value="vme4l.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SW_ADR_SWAP"><param name="Name" value="VME4L_SW_ADR_SWAP"></OBJECT>
   <UL>
@@ -1383,32 +1473,32 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SwapModeSet"><param name="Name" value="VME4L_SwapModeSet"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a6"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a5"><param name="Name" value="vme4l_api.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a4"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SysCtrlFunctionGet"><param name="Name" value="VME4L_SysCtrlFunctionGet"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a15"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a19"><param name="Name" value="vme4l_api.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a13"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SysCtrlFunctionSet"><param name="Name" value="VME4L_SysCtrlFunctionSet"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a16"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a20"><param name="Name" value="vme4l_api.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a14"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_SysReset"><param name="Name" value="VME4L_SysReset"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a17"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a21"><param name="Name" value="vme4l_api.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a15"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_UnMap"><param name="Name" value="VME4L_UnMap"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a10"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a14"><param name="Name" value="vme4l_api.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a8"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="VME4L_Write"><param name="Name" value="VME4L_Write"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a8"><param name="Name" value="vme4l_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8c.html#a12"><param name="Name" value="vme4l_api.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l__api_8h.html#a6"><param name="Name" value="vme4l_api.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="vmeAddr"><param name="Name" value="vmeAddr"></OBJECT>
@@ -1420,5 +1510,5 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="vmeaddr_t"><param name="Name" value="vmeaddr_t"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a54"><param name="Name" value="vme4l.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="vme4l_8h.html#a66"><param name="Name" value="vme4l.h"></OBJECT>
 </UL>

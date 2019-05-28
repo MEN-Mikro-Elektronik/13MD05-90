@@ -11,8 +11,8 @@
 
 <div class="left_to_right" style="padding-top: 6px; background-color: #F0F0F0; height: 110px; border-bottom: 2px solid #D1D1D2;">
 	<!-- Titel -->
-	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;"></a>
-	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">VME4L API &nbsp; for VME4L fileset Release-2.16</h1>
+	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;">
+	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">VME4L API &nbsp; </h1>
 	<h3>vme4l_api.c File Reference</h3>
 </div>
 
@@ -27,113 +27,126 @@
 <table border=0 cellpadding=0 cellspacing=0>
 <tr><td></td></tr>
 <tr><td colspan=2><br><h2>Defines</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a0">DEVNAME_TBL_SIZE</a>&nbsp;&nbsp;&nbsp;(sizeof(<a class="el" href="vme4l__api_8c.html#a2">G_devNameTbl</a>)/sizeof(char *))</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a0">DEVNAME_TBL_SIZE</a>&nbsp;&nbsp;&nbsp;(sizeof(<a class="el" href="vme4l__api_8c.html#a1">G_devNameTbl</a>)/sizeof(char *))</td></tr>
 
 <tr><td colspan=2><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a3">VME4L_Open</a> (<a class="el" href="vme4l_8h.html#a86">VME4L_SPACE</a> space)</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a2">VME4L_Open</a> (<a class="el" href="vme4l_8h.html#a98">VME4L_SPACE</a> space)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Open path to specified VME space. </em> <a href="#a3"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a4">VME4L_Close</a> (int spaceFd)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Open path to specified VME space. </em> <a href="#a2"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a3">VME4L_Close</a> (int spaceFd)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Close path to VME space. </em> <a href="#a4"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>const char *&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a5">VME4L_SpaceName</a> (<a class="el" href="vme4l_8h.html#a86">VME4L_SPACE</a> space)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Close path to VME space. </em> <a href="#a3"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>const char *&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a4">VME4L_SpaceName</a> (<a class="el" href="vme4l_8h.html#a98">VME4L_SPACE</a> space)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns a symbolic name for numeric space. </em> <a href="#a5"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a6">VME4L_SwapModeSet</a> (int spaceFd, int swapMode)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns a symbolic name for numeric space. </em> <a href="#a4"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a5">VME4L_SwapModeSet</a> (int spaceFd, int swapMode)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Set swapping mode for this file descriptor (space). </em> <a href="#a6"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a7">VME4L_Read</a> (int spaceFd, <a class="el" href="vme4l_8h.html#a54">vmeaddr_t</a> vmeAddr, int accWidth, size_t size, void *dataP, int flags)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Set swapping mode for this file descriptor (space). </em> <a href="#a5"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a6">VME4L_AddrModifierSet</a> (int spaceFd, char addrModifier)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Read data block from VME. </em> <a href="#a7"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a8">VME4L_Write</a> (int spaceFd, <a class="el" href="vme4l_8h.html#a54">vmeaddr_t</a> vmeAddr, int accWidth, size_t size, void *dataP, int flags)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Set VMEbus address modifiers for this file descriptor (space). </em> <a href="#a6"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a7">VME4L_AddrModifierGet</a> (int spaceFd)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Write data block to VME. </em> <a href="#a8"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a9">VME4L_Map</a> (int spaceFd, <a class="el" href="vme4l_8h.html#a54">vmeaddr_t</a> vmeAddr, size_t size, void **mappedAddrP)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get VMEbus address modifiers for this file descriptor (space). </em> <a href="#a7"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a8">VME4L_GeoAddrGet</a> (int spaceFd)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Map VMEbus address space. </em> <a href="#a9"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a10">VME4L_UnMap</a> (int spaceFd, void *mappedAddr, size_t size)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get geographical address (slot nr.) of this board. </em> <a href="#a8"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a9">VME4L_RequesterLevelSet</a> (int spaceFd, char level)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Unmap VMEbus address space. </em> <a href="#a10"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a11">VME4L_SigInstall</a> (int fd, int vector, int level, int signal, int flags)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Set VME bus requester level l address (slot nr.) of this board. </em> <a href="#a9"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a10">VME4L_RequesterLevelGet</a> (int spaceFd)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Install signal for VME interrupt or special interrupts. </em> <a href="#a11"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a12">VME4L_SigUnInstall</a> (int fd, int vector)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get VME bus requester level l address (slot nr.) of this board. </em> <a href="#a10"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a11">VME4L_Read</a> (int spaceFd, <a class="el" href="vme4l_8h.html#a66">vmeaddr_t</a> vmeAddr, int accWidth, size_t size, void *dataP, int flags)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Uninstall signal for VME interrupt or special interrupts. </em> <a href="#a12"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a13">VME4L_IrqEnable</a> (int fd, int level)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Read data block from VME. </em> <a href="#a11"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a12">VME4L_Write</a> (int spaceFd, <a class="el" href="vme4l_8h.html#a66">vmeaddr_t</a> vmeAddr, int accWidth, size_t size, void *dataP, int flags)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Enables the specified VME interrupt level. </em> <a href="#a13"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a14">VME4L_IrqDisable</a> (int fd, int level)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Write data block to VME. </em> <a href="#a12"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a13">VME4L_Map</a> (int spaceFd, <a class="el" href="vme4l_8h.html#a66">vmeaddr_t</a> vmeAddr, size_t size, void **mappedAddrP)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Disables the specified VME interrupt level. </em> <a href="#a14"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a15">VME4L_SysCtrlFunctionGet</a> (int fd)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Map VMEbus address space. </em> <a href="#a13"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a14">VME4L_UnMap</a> (int spaceFd, void *mappedAddr, size_t size)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Check if system controller function has been enabled. </em> <a href="#a15"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a16">VME4L_SysCtrlFunctionSet</a> (int fd, int state)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Unmap VMEbus address space. </em> <a href="#a14"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a15">VME4L_SigInstall</a> (int fd, int vector, int level, int signal, int flags)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Enable/Disable system controller function. </em> <a href="#a16"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a17">VME4L_SysReset</a> (int fd)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Install signal for VME interrupt or special interrupts. </em> <a href="#a15"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a16">VME4L_SigUnInstall</a> (int fd, int vector)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Generate VME system reset. </em> <a href="#a17"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a18">VME4L_ArbitrationTimeoutGet</a> (int fd, int clear)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Uninstall signal for VME interrupt or special interrupts. </em> <a href="#a16"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a17">VME4L_IrqEnable</a> (int fd, int level)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Check if arbiter has detected a timeout. </em> <a href="#a18"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a19">VME4L_BusErrorGet</a> (int fd, <a class="el" href="vme4l_8h.html#a86">VME4L_SPACE</a> *spaceP, <a class="el" href="vme4l_8h.html#a54">vmeaddr_t</a> *addrP, int clear)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Enables the specified VME interrupt level. </em> <a href="#a17"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a18">VME4L_IrqDisable</a> (int fd, int level)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get information about last VME bus error. </em> <a href="#a19"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a20">VME4L_RequesterModeGet</a> (int fd)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Disables the specified VME interrupt level. </em> <a href="#a18"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a19">VME4L_SysCtrlFunctionGet</a> (int fd)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get VMEbus requester mode. </em> <a href="#a20"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a21">VME4L_RequesterModeSet</a> (int fd, int state)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Check if system controller function has been enabled. </em> <a href="#a19"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a20">VME4L_SysCtrlFunctionSet</a> (int fd, int state)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Control VMEbus requester mode. </em> <a href="#a21"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a22">VME4L_PostedWriteModeGet</a> (int fd)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Enable/Disable system controller function. </em> <a href="#a20"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a21">VME4L_SysReset</a> (int fd)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get VMEbus master write mode. </em> <a href="#a22"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a23">VME4L_PostedWriteModeSet</a> (int fd, int state)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Generate VME system reset. </em> <a href="#a21"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a22">VME4L_ArbitrationTimeoutGet</a> (int fd, int clear)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Control VMEbus master write mode. </em> <a href="#a23"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a24">VME4L_IrqGenerate</a> (int fd, int level, int vector)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Check if arbiter has detected a timeout. </em> <a href="#a22"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a23">VME4L_BusErrorGet</a> (int fd, int *attrP, <a class="el" href="vme4l_8h.html#a66">vmeaddr_t</a> *addrP, int clear)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Generate a VMEbus interrupt. </em> <a href="#a24"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a25">VME4L_IrqGenAcked</a> (int fd, int id)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get information about last VME bus error. </em> <a href="#a23"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a24">VME4L_RequesterModeGet</a> (int fd)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Check if generated interrupt has been acknowledged. </em> <a href="#a25"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a26">VME4L_IrqGenClear</a> (int fd, int id)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get VMEbus requester mode. </em> <a href="#a24"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a25">VME4L_RequesterModeSet</a> (int fd, int state)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Clear a pending interrupt. </em> <a href="#a26"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a27">VME4L_RmwCycle</a> (int spaceFd, <a class="el" href="vme4l_8h.html#a54">vmeaddr_t</a> vmeAddr, int accWidth, uint32_t mask, uint32_t *rvP)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Control VMEbus requester mode. </em> <a href="#a25"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a26">VME4L_PostedWriteModeGet</a> (int fd)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Perform VME Read-Modify-Write cycle. </em> <a href="#a27"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a28">VME4L_AOnlyCycle</a> (int spaceFd, <a class="el" href="vme4l_8h.html#a54">vmeaddr_t</a> vmeAddr)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get VMEbus master write mode. </em> <a href="#a26"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a27">VME4L_PostedWriteModeSet</a> (int fd, int state)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Perform VME Address-Only cycle. </em> <a href="#a28"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a29">VME4L_SlaveWindowCtrl</a> (int spaceFd, <a class="el" href="vme4l_8h.html#a54">vmeaddr_t</a> vmeAddr, size_t size)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Control VMEbus master write mode. </em> <a href="#a27"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a28">VME4L_IrqGenerate</a> (int fd, int level, int vector)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Control VME slave window. </em> <a href="#a29"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a30">VME4L_MboxRead</a> (int fd, int mbox, uint32_t *rvP)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Generate a VMEbus interrupt. </em> <a href="#a28"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a29">VME4L_IrqGenAcked</a> (int fd, int id)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Read value from mailbox register. </em> <a href="#a30"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a31">VME4L_MboxWrite</a> (int fd, int mbox, uint32_t val)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Check if generated interrupt has been acknowledged. </em> <a href="#a29"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a30">VME4L_IrqGenClear</a> (int fd, int id)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Write value to mailbox register. </em> <a href="#a31"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a32">VME4L_LocMonRegRead</a> (int fd, int reg, uint32_t *rvP)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Clear a pending interrupt. </em> <a href="#a30"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a31">VME4L_RmwCycle</a> (int spaceFd, <a class="el" href="vme4l_8h.html#a66">vmeaddr_t</a> vmeAddr, int accWidth, uint32_t mask, uint32_t *rvP)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Read value from location monitor register. </em> <a href="#a32"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a33">VME4L_LocMonRegWrite</a> (int fd, int reg, uint32_t val)</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Perform VME Read-Modify-Write cycle. </em> <a href="#a31"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a32">VME4L_AOnlyCycle</a> (int spaceFd, <a class="el" href="vme4l_8h.html#a66">vmeaddr_t</a> vmeAddr)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Write value to location monitor register. </em> <a href="#a33"></a><em><br><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Perform VME Address-Only cycle. </em> <a href="#a32"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a33">VME4L_SlaveWindowCtrl</a> (int spaceFd, <a class="el" href="vme4l_8h.html#a66">vmeaddr_t</a> vmeAddr, size_t size)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Control VME slave window. </em> <a href="#a33"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a34">VME4L_MboxRead</a> (int fd, int mbox, uint32_t *rvP)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Read value from mailbox register. </em> <a href="#a34"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a35">VME4L_MboxWrite</a> (int fd, int mbox, uint32_t val)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Write value to mailbox register. </em> <a href="#a35"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a36">VME4L_LocMonRegRead</a> (int fd, int reg, uint32_t *rvP)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Read value from location monitor register. </em> <a href="#a36"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a37">VME4L_LocMonRegWrite</a> (int fd, int reg, uint32_t val)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Write value to location monitor register. </em> <a href="#a37"></a><em><br><br></td></tr>
 <tr><td colspan=2><br><h2>Variables</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>const char&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a1">_RCSid</a> [] = "$Id: vme4l__api_8c.html,v 1.28 2012/08/08 20:21:15 ts Exp $"</td></tr>
-
-<tr><td class="memItemLeft" nowrap align=right valign=top>const char *&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a2">G_devNameTbl</a> []</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>const char *&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l__api_8c.html#a1">G_devNameTbl</a> []</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 API functions and documentation to access VME for Linux driver. 
 <p>
-<dl compact><dt><b>Author:</b></dt><dd><a href="mailto:klaus.popp@men.de">klaus.popp@men.de</a> <dl compact><dt><b>Date</b></dt><dd>2010/06/28 17:14:10 </dd></dl>
-<dl compact><dt><b>Revision</b></dt><dd>1.8 </dd></dl>
+<dl compact><dt><b>Author:</b></dt><dd><a href="mailto:klaus.popp@men.de">klaus.popp@men.de</a> <dl compact><dt><b>Date</b></dt><dd>2013/09/02 18:31:16 </dd></dl>
+<dl compact><dt><b>Revision</b></dt><dd>1.9 </dd></dl>
 </dd></dl>
 <p>
 Switches: -<hr><h2>Define Documentation</h2>
@@ -143,7 +156,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top"> #define DEVNAME_TBL_SIZE&nbsp;&nbsp;&nbsp;(sizeof(<a class="el" href="vme4l__api_8c.html#a2">G_devNameTbl</a>)/sizeof(char *))
+          <td class="md" nowrap valign="top"> #define DEVNAME_TBL_SIZE&nbsp;&nbsp;&nbsp;(sizeof(<a class="el" href="vme4l__api_8c.html#a1">G_devNameTbl</a>)/sizeof(char *))
       </table>
     </td>
   </tr>
@@ -160,7 +173,108 @@ Switches: -<hr><h2>Define Documentation</h2>
   </tr>
 </table>
 <hr><h2>Function Documentation</h2>
-<a name="a28" doxytag="vme4l_api.c::VME4L_AOnlyCycle"></a><p>
+<a name="a7" doxytag="vme4l_api.c::VME4L_AddrModifierGet"></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> int VME4L_AddrModifierGet </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">int&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>spaceFd</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Get VMEbus address modifiers for this file descriptor (space). 
+<p>
+Counterpart to VME4L_AddrModifierSet<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a></td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd>address modifier on success, or -1 on error<br>
+<ul>
+<li><code>EINVAL</code>: Bad parameter</li></ul>
+</dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a6">VME4L_AddrModifierSet</a>, <a class="el" href="vme4laccvme.html#vme4lapiacc">Use API functions to exchange data with VME</a> </dd></dl>
+    </td>
+  </tr>
+</table>
+<a name="a6" doxytag="vme4l_api.c::VME4L_AddrModifierSet"></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> int VME4L_AddrModifierSet </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">int&nbsp;</td>
+          <td class="mdname" nowrap> <em>spaceFd</em>, </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td class="md" nowrap>char&nbsp;</td>
+          <td class="mdname" nowrap> <em>addrModifier</em></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"></td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Set VMEbus address modifiers for this file descriptor (space). 
+<p>
+Allows to alter the predefined master VME address modifiers of a <em>spaceFd</em>. This function changes only the AMs of the passed file descriptor and has no effect on the AMs of other processes.<p>
+<div class="fragment"><pre>
+    0 (00b) = non-privileged data access (default)
+    1 (01b) = non-privileged program access
+    2 (10b) = supervisory data access
+    3 (11b) = supervisory program access
+</pre></div><p>
+On A16 Space only modes 0 and &gt;0 are used. On BLT spaces only the supervisor bit is considered.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>addrModifier</em>&nbsp;</td><td><b>IN</b> new address modifier for this space to set, 0-3</td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd>0 on success, or -1 on error<br>
+<ul>
+<li><code>EINVAL</code>: Bad parameter</li></ul>
+</dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a2">VME4L_Open</a>, <a class="el" href="vme4l__api_8c.html#a11">VME4L_Read</a>, <a class="el" href="vme4l__api_8c.html#a13">VME4L_Map</a>, <a class="el" href="vme4laccvme.html#vme4lapiacc">Use API functions to exchange data with VME</a> </dd></dl>
+    </td>
+  </tr>
+</table>
+<a name="a32" doxytag="vme4l_api.c::VME4L_AOnlyCycle"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -174,7 +288,7 @@ Switches: -<hr><h2>Define Documentation</h2>
         <tr>
           <td></td>
           <td></td>
-          <td class="md" nowrap><a class="el" href="vme4l_8h.html#a54">vmeaddr_t</a>&nbsp;</td>
+          <td class="md" nowrap><a class="el" href="vme4l_8h.html#a66">vmeaddr_t</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>vmeAddr</em></td>
         </tr>
         <tr>
@@ -201,7 +315,7 @@ This function issues a VME address-only cycle at the specified <em>vmeAddr</em> 
 <dl compact><dt><b>Notes for VME-bridge on A17/A19/A20:</b></dt><dd>Address-only cycles are not supported.</dd></dl>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>vmeAddr</em>&nbsp;</td><td><b>IN</b> Address within VME space </td></tr>
   </table>
 </dl>
@@ -210,11 +324,11 @@ This function issues a VME address-only cycle at the specified <em>vmeAddr</em> 
 <ul>
 <li><code>EBUSY</code>: The requested address range is currently not available</li><li><code>EINVAL</code>: Bad parameter</li></ul>
 </dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a6">VME4L_SwapModeSet</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a5">VME4L_SwapModeSet</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a18" doxytag="vme4l_api.c::VME4L_ArbitrationTimeoutGet"></a><p>
+<a name="a22" doxytag="vme4l_api.c::VME4L_ArbitrationTimeoutGet"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -254,7 +368,7 @@ Check if arbiter has detected a timeout.
 <dl compact><dt><b>Notes for VME-bridge on A17/A19/A20:</b></dt><dd>Not supported by TSI148 VME bridge.</dd></dl>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>clear</em>&nbsp;</td><td><b>IN</b> 1 = If arbitration timeout pending, clear it<br>
  0 = Leave arbitration timeout indication untouched</td></tr>
   </table>
@@ -266,7 +380,7 @@ Check if arbiter has detected a timeout.
     </td>
   </tr>
 </table>
-<a name="a19" doxytag="vme4l_api.c::VME4L_BusErrorGet"></a><p>
+<a name="a23" doxytag="vme4l_api.c::VME4L_BusErrorGet"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -280,13 +394,13 @@ Check if arbiter has detected a timeout.
         <tr>
           <td></td>
           <td></td>
-          <td class="md" nowrap><a class="el" href="vme4l_8h.html#a86">VME4L_SPACE</a> *&nbsp;</td>
-          <td class="mdname" nowrap> <em>spaceP</em>, </td>
+          <td class="md" nowrap>int *&nbsp;</td>
+          <td class="mdname" nowrap> <em>attrP</em>, </td>
         </tr>
         <tr>
           <td></td>
           <td></td>
-          <td class="md" nowrap><a class="el" href="vme4l_8h.html#a54">vmeaddr_t</a> *&nbsp;</td>
+          <td class="md" nowrap><a class="el" href="vme4l_8h.html#a66">vmeaddr_t</a> *&nbsp;</td>
           <td class="mdname" nowrap> <em>addrP</em>, </td>
         </tr>
         <tr>
@@ -316,14 +430,14 @@ Check if arbiter has detected a timeout.
 Get information about last VME bus error. 
 <p>
 The driver stores every indication of bus errors. This function allows you to read this information from the driver.<p>
-If the VME bridge supports it, you will also get the information about the faulted address, otherwise *spaceP will receive <a class="el" href="vme4l_8h.html#a86a85">VME4L_SPC_INVALID</a>.<p>
-<dl compact><dt><b>Notes for VME-bridge on A12/B11:</b></dt><dd>Address/space information is not provided. </dd></dl>
-<dl compact><dt><b>Notes for VME-bridge on A13/A15:</b></dt><dd>Address/space information is currently not provided. </dd></dl>
-<dl compact><dt><b>Notes for VME-bridge on A17/A19/A20:</b></dt><dd>Space information is not provided.</dd></dl>
+If the VME bridge supports it, you will also get the information about the faulted address, otherwise *spaceP will receive <a class="el" href="vme4l_8h.html#a98a97">VME4L_SPC_INVALID</a>.<p>
+<dl compact><dt><b>Notes for VME-bridge on A12/B11:</b></dt><dd>Address/attribute information is not provided. </dd></dl>
+<dl compact><dt><b>Notes for VME-bridge on A13/A15:</b></dt><dd>Address/attribute information is provided. </dd></dl>
+<dl compact><dt><b>Notes for VME-bridge on A17/A19/A20:</b></dt><dd>attribute information is not provided.</dd></dl>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
-    <tr><td valign=top><em>spaceP</em>&nbsp;</td><td><b>IN</b> Pointer to variable that receives the VME space info of the last bus error. If passed as NULL, no space info is returned. </td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>attrP</em>&nbsp;</td><td><b>IN</b> Pointer to variable that receives attribute info like AM, direction and IACK or normal state of the last bus error. </td></tr>
     <tr><td valign=top><em>addrP</em>&nbsp;</td><td><b>IN</b> Pointer to variable that receives the VME address info of the last bus error. If passed as NULL, no address info is returned. </td></tr>
     <tr><td valign=top><em>clear</em>&nbsp;</td><td><b>IN</b> 1 = If bus error info pending, clear it<br>
  0 = Leave bus error info untouched.</td></tr>
@@ -337,7 +451,7 @@ If the VME bridge supports it, you will also get the information about the fault
     </td>
   </tr>
 </table>
-<a name="a4" doxytag="vme4l_api.c::VME4L_Close"></a><p>
+<a name="a3" doxytag="vme4l_api.c::VME4L_Close"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -367,15 +481,56 @@ Close path to VME space.
 <p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a></td></tr>
+    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a></td></tr>
   </table>
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>0 on success, or -1 on error and <em>errno</em> is set</dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a3">VME4L_Open</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a2">VME4L_Open</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a14" doxytag="vme4l_api.c::VME4L_IrqDisable"></a><p>
+<a name="a8" doxytag="vme4l_api.c::VME4L_GeoAddrGet"></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> int VME4L_GeoAddrGet </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">int&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>spaceFd</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Get geographical address (slot nr.) of this board. 
+<p>
+Counterpart to VME4L_AddrModifierSet<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a></td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd>slot number on success, or -1 on error<br>
+<ul>
+<li><code>EINVAL</code>: Bad parameter </li></ul>
+</dd></dl>
+    </td>
+  </tr>
+</table>
+<a name="a18" doxytag="vme4l_api.c::VME4L_IrqDisable"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -415,17 +570,17 @@ Disables the specified VME interrupt level.
 The level is always masked immediately.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>level</em>&nbsp;</td><td><b>IN</b> VME interupt level (see <a class="el" href="group__VME4L__IRQLEV.html">VME interrupt levels.</a>)</td></tr>
   </table>
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>0=success &lt;0=error<br>
  In case of error, <em>errno</em> is set.</dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a13">VME4L_IrqEnable</a>, <a class="el" href="vme4l__api_8c.html#a11">VME4L_SigInstall</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a17">VME4L_IrqEnable</a>, <a class="el" href="vme4l__api_8c.html#a15">VME4L_SigInstall</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a13" doxytag="vme4l_api.c::VME4L_IrqEnable"></a><p>
+<a name="a17" doxytag="vme4l_api.c::VME4L_IrqEnable"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -465,17 +620,17 @@ Enables the specified VME interrupt level.
 Unmask the specified VME interrupt <em>level</em>. Note that the VME4L driver keeps track of the number of mask/unmask calls. The interrupt is unmasked only if the number of unmask calls is equal to the number of previous mask calls.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>level</em>&nbsp;</td><td><b>IN</b> VME interupt level (see <a class="el" href="group__VME4L__IRQLEV.html">VME interrupt levels.</a>)</td></tr>
   </table>
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>0=success &lt;0=error<br>
  In case of error, <em>errno</em> is set.</dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a14">VME4L_IrqDisable</a>, <a class="el" href="vme4l__api_8c.html#a11">VME4L_SigInstall</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a18">VME4L_IrqDisable</a>, <a class="el" href="vme4l__api_8c.html#a15">VME4L_SigInstall</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a25" doxytag="vme4l_api.c::VME4L_IrqGenAcked"></a><p>
+<a name="a29" doxytag="vme4l_api.c::VME4L_IrqGenAcked"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -512,10 +667,10 @@ Unmask the specified VME interrupt <em>level</em>. Note that the VME4L driver ke
 <p>
 Check if generated interrupt has been acknowledged. 
 <p>
-The function checks if the interrupt triggered by <a class="el" href="vme4l__api_8c.html#a24">VME4L_IrqGenerate()</a> has been acknowledged at the VMEbus.<p>
+The function checks if the interrupt triggered by <a class="el" href="vme4l__api_8c.html#a28">VME4L_IrqGenerate()</a> has been acknowledged at the VMEbus.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>id</em>&nbsp;</td><td><b>IN</b> Interrupter ID that has been returned by VME4L_IrqGenerate</td></tr>
   </table>
 </dl>
@@ -525,11 +680,11 @@ The function checks if the interrupt triggered by <a class="el" href="vme4l__api
 <ul>
 <li><code>EINVAL</code>: ID invalid</li></ul>
 </dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a24">VME4L_IrqGenerate</a>, <a class="el" href="vme4l__api_8c.html#a26">VME4L_IrqGenClear</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a28">VME4L_IrqGenerate</a>, <a class="el" href="vme4l__api_8c.html#a30">VME4L_IrqGenClear</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a26" doxytag="vme4l_api.c::VME4L_IrqGenClear"></a><p>
+<a name="a30" doxytag="vme4l_api.c::VME4L_IrqGenClear"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -566,10 +721,10 @@ The function checks if the interrupt triggered by <a class="el" href="vme4l__api
 <p>
 Clear a pending interrupt. 
 <p>
-The function clears (aborts) a pending VME interrupt initiated by <a class="el" href="vme4l__api_8c.html#a24">VME4L_IrqGenerate()</a>.<p>
+The function clears (aborts) a pending VME interrupt initiated by <a class="el" href="vme4l__api_8c.html#a28">VME4L_IrqGenerate()</a>.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>id</em>&nbsp;</td><td><b>IN</b> Interrupter ID that has been returned by VME4L_IrqGenerate</td></tr>
   </table>
 </dl>
@@ -577,11 +732,11 @@ The function clears (aborts) a pending VME interrupt initiated by <a class="el" 
 <ul>
 <li><code>EINVAL</code>: ID invalid</li></ul>
 </dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a24">VME4L_IrqGenerate</a>, <a class="el" href="vme4l__api_8c.html#a25">VME4L_IrqGenAcked</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a28">VME4L_IrqGenerate</a>, <a class="el" href="vme4l__api_8c.html#a29">VME4L_IrqGenAcked</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a24" doxytag="vme4l_api.c::VME4L_IrqGenerate"></a><p>
+<a name="a28" doxytag="vme4l_api.c::VME4L_IrqGenerate"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -629,11 +784,11 @@ Usually, the VMEbus interface hardware includes only one interrupter. Each inter
 <dl compact><dt><b>Notes for VME-bridge on A13/A15:</b></dt><dd>Only one interrupter is available. </dd></dl>
 <dl compact><dt><b>Notes for VME-bridge on A12/B11:</b></dt><dd>Only one interrupter is available. </dd></dl>
 <dl compact><dt><b>Notes for VME-bridge on A17/A19/A20:</b></dt><dd>Only one interrupter is available.</dd></dl>
-The generated interrupt is auto-cleared after an IACK cycle (ROAK). However, a pending interrupt level can be manually removed by <a class="el" href="vme4l__api_8c.html#a26">VME4L_IrqGenClear()</a>.<p>
-You can check if the interrupt was acknowledged by calling <a class="el" href="vme4l__api_8c.html#a25">VME4L_IrqGenAcked()</a>.<p>
+The generated interrupt is auto-cleared after an IACK cycle (ROAK). However, a pending interrupt level can be manually removed by <a class="el" href="vme4l__api_8c.html#a30">VME4L_IrqGenClear()</a>.<p>
+You can check if the interrupt was acknowledged by calling <a class="el" href="vme4l__api_8c.html#a29">VME4L_IrqGenAcked()</a>.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>level</em>&nbsp;</td><td><b>IN</b> VME interupt level (1..7) </td></tr>
     <tr><td valign=top><em>vector</em>&nbsp;</td><td><b>IN</b> VME vector (0..255)</td></tr>
   </table>
@@ -642,11 +797,11 @@ You can check if the interrupt was acknowledged by calling <a class="el" href="v
 <ul>
 <li><code>EBUSY</code>: No interrupter available</li><li><code>EINVAL</code>: Bad parameter (vector/level invalid)</li></ul>
 </dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a26">VME4L_IrqGenClear</a>, <a class="el" href="vme4l__api_8c.html#a25">VME4L_IrqGenAcked</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a30">VME4L_IrqGenClear</a>, <a class="el" href="vme4l__api_8c.html#a29">VME4L_IrqGenAcked</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a32" doxytag="vme4l_api.c::VME4L_LocMonRegRead"></a><p>
+<a name="a36" doxytag="vme4l_api.c::VME4L_LocMonRegRead"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -691,7 +846,7 @@ Read value from location monitor register.
 <p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>reg</em>&nbsp;</td><td><b>IN</b> register index (0..n), VME bridge dependent </td></tr>
     <tr><td valign=top><em>*rvP</em>&nbsp;</td><td><b>OUT</b> Contains value read</td></tr>
   </table>
@@ -705,7 +860,7 @@ Read value from location monitor register.
     </td>
   </tr>
 </table>
-<a name="a33" doxytag="vme4l_api.c::VME4L_LocMonRegWrite"></a><p>
+<a name="a37" doxytag="vme4l_api.c::VME4L_LocMonRegWrite"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -750,7 +905,7 @@ Write value to location monitor register.
 <p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>reg</em>&nbsp;</td><td><b>IN</b> register index (0..n), VME bridge dependent </td></tr>
     <tr><td valign=top><em>val</em>&nbsp;</td><td><b>IN</b> Value to write into register</td></tr>
   </table>
@@ -764,7 +919,7 @@ Write value to location monitor register.
     </td>
   </tr>
 </table>
-<a name="a9" doxytag="vme4l_api.c::VME4L_Map"></a><p>
+<a name="a13" doxytag="vme4l_api.c::VME4L_Map"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -778,7 +933,7 @@ Write value to location monitor register.
         <tr>
           <td></td>
           <td></td>
-          <td class="md" nowrap><a class="el" href="vme4l_8h.html#a54">vmeaddr_t</a>&nbsp;</td>
+          <td class="md" nowrap><a class="el" href="vme4l_8h.html#a66">vmeaddr_t</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>vmeAddr</em>, </td>
         </tr>
         <tr>
@@ -815,11 +970,11 @@ Map VMEbus address space.
 <p>
 The function maps the VMEbus address space starting at address <em>vmeAddr</em> with the size of <em>size</em> bytes into user address space and stores the corresponding user address into <em>mappedAddrP</em>.<p>
 Note that <em>vmeAddr</em> <b>must be aligned to an MMU page</b> (typically 4K) and addresses &gt; 0xFFFFFFFF are not supported, yet.<p>
-The VMEbus address remains mapped until <a class="el" href="vme4l__api_8c.html#a10">VME4L_UnMap()</a> is called or <em>spaceFd</em> is closed.<p>
-The mapped region uses posted write accesses if this has been enabled by <a class="el" href="vme4l__api_8c.html#a23">VME4L_PostedWriteModeSet()</a>.<p>
+The VMEbus address remains mapped until <a class="el" href="vme4l__api_8c.html#a14">VME4L_UnMap()</a> is called or <em>spaceFd</em> is closed.<p>
+The mapped region uses posted write accesses if this has been enabled by <a class="el" href="vme4l__api_8c.html#a27">VME4L_PostedWriteModeSet()</a>.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>vmeAddr</em>&nbsp;</td><td><b>IN</b> Start address within VME space (aligned to MMU page). For VME slave windows, the offset within the shared RAM. </td></tr>
     <tr><td valign=top><em>size</em>&nbsp;</td><td><b>IN</b> Number of bytes to map </td></tr>
     <tr><td valign=top><em>mappedAddrP</em>&nbsp;</td><td><b>IN</b> Pointer to variable that receives the user address </td></tr>
@@ -831,11 +986,11 @@ The mapped region uses posted write accesses if this has been enabled by <a clas
 <ul>
 <li><code>EBUSY</code>: The requested address range is currently not available</li><li><code>EINVAL</code>: Bad parameter</li></ul>
 </dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a8">VME4L_Write</a>, <a class="el" href="vme4l__api_8c.html#a7">VME4L_Read</a>, <a class="el" href="vme4l__api_8c.html#a10">VME4L_UnMap</a>, <a class="el" href="vme4l__api_8c.html#a6">VME4L_SwapModeSet</a>, <a class="el" href="vme4laccvme.html#vme4lmap">Map parts of VME space into user space</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a12">VME4L_Write</a>, <a class="el" href="vme4l__api_8c.html#a11">VME4L_Read</a>, <a class="el" href="vme4l__api_8c.html#a14">VME4L_UnMap</a>, <a class="el" href="vme4l__api_8c.html#a5">VME4L_SwapModeSet</a>, <a class="el" href="vme4laccvme.html#vme4lmap">Map parts of VME space into user space</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a30" doxytag="vme4l_api.c::VME4L_MboxRead"></a><p>
+<a name="a34" doxytag="vme4l_api.c::VME4L_MboxRead"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -880,7 +1035,7 @@ Read value from mailbox register.
 <p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>mbox</em>&nbsp;</td><td><b>IN</b> mailbox number (0..n), VME bridge dependent </td></tr>
     <tr><td valign=top><em>*rvP</em>&nbsp;</td><td><b>OUT</b> Contains value read</td></tr>
   </table>
@@ -894,7 +1049,7 @@ Read value from mailbox register.
     </td>
   </tr>
 </table>
-<a name="a31" doxytag="vme4l_api.c::VME4L_MboxWrite"></a><p>
+<a name="a35" doxytag="vme4l_api.c::VME4L_MboxWrite"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -939,7 +1094,7 @@ Write value to mailbox register.
 <p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>mbox</em>&nbsp;</td><td><b>IN</b> mailbox number (0..n), VME bridge dependent </td></tr>
     <tr><td valign=top><em>val</em>&nbsp;</td><td><b>IN</b> Value to write into mailbox</td></tr>
   </table>
@@ -953,7 +1108,7 @@ Write value to mailbox register.
     </td>
   </tr>
 </table>
-<a name="a3" doxytag="vme4l_api.c::VME4L_Open"></a><p>
+<a name="a2" doxytag="vme4l_api.c::VME4L_Open"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -961,7 +1116,7 @@ Write value to mailbox register.
         <tr>
           <td class="md" nowrap valign="top"> int VME4L_Open </td>
           <td class="md" valign="top">(&nbsp;</td>
-          <td class="md" nowrap valign="top"><a class="el" href="vme4l_8h.html#a86">VME4L_SPACE</a>&nbsp;</td>
+          <td class="md" nowrap valign="top"><a class="el" href="vme4l_8h.html#a98">VME4L_SPACE</a>&nbsp;</td>
           <td class="mdname1" valign="top" nowrap> <em>space</em>          </td>
           <td class="md" valign="top">&nbsp;)&nbsp;</td>
           <td class="md" nowrap></td>
@@ -982,12 +1137,12 @@ Write value to mailbox register.
 Open path to specified VME space. 
 <p>
 A single process can have multiple VME spaces open at the same time.<p>
-<dl compact><dt><b>Notes for VME-bridge on A12/B11:</b></dt><dd>Only the VME spaces <a class="el" href="vme4l_8h.html#a86a55">VME4L_SPC_A16_D16</a>, <a class="el" href="vme4l_8h.html#a86a59">VME4L_SPC_A24_D16</a> and <a class="el" href="vme4l_8h.html#a86a67">VME4L_SPC_SLV1</a> are available</dd></dl>
-<dl compact><dt><b>Notes for VME-bridge on A13/A15:</b></dt><dd>Supports <a class="el" href="vme4l_8h.html#a86a55">VME4L_SPC_A16_D16</a>, <a class="el" href="vme4l_8h.html#a86a57">VME4L_SPC_A16_D32</a>, <a class="el" href="vme4l_8h.html#a86a59">VME4L_SPC_A24_D16</a>, <a class="el" href="vme4l_8h.html#a86a60">VME4L_SPC_A24_D16_BLT</a>, <a class="el" href="vme4l_8h.html#a86a61">VME4L_SPC_A24_D32</a>, <a class="el" href="vme4l_8h.html#a86a62">VME4L_SPC_A24_D32_BLT</a>, <a class="el" href="vme4l_8h.html#a86a63">VME4L_SPC_A32_D32</a>, <a class="el" href="vme4l_8h.html#a86a64">VME4L_SPC_A32_D32_BLT</a>, <a class="el" href="vme4l_8h.html#a86a65">VME4L_SPC_A32_D64_BLT</a> and <a class="el" href="vme4l_8h.html#a86a66">VME4L_SPC_SLV0</a> to <a class="el" href="vme4l_8h.html#a86a70">VME4L_SPC_SLV4</a>.</dd></dl>
-<dl compact><dt><b>Notes for VME-bridge on A17/A19/A20:</b></dt><dd>Supports <a class="el" href="vme4l_8h.html#a86a55">VME4L_SPC_A16_D16</a>, <a class="el" href="vme4l_8h.html#a86a57">VME4L_SPC_A16_D32</a>, <a class="el" href="vme4l_8h.html#a86a59">VME4L_SPC_A24_D16</a>, <a class="el" href="vme4l_8h.html#a86a60">VME4L_SPC_A24_D16_BLT</a>, <a class="el" href="vme4l_8h.html#a86a61">VME4L_SPC_A24_D32</a>, <a class="el" href="vme4l_8h.html#a86a62">VME4L_SPC_A24_D32_BLT</a>, <a class="el" href="vme4l_8h.html#a86a63">VME4L_SPC_A32_D32</a>, <a class="el" href="vme4l_8h.html#a86a64">VME4L_SPC_A32_D32_BLT</a>, <a class="el" href="vme4l_8h.html#a86a65">VME4L_SPC_A32_D64_BLT</a>, <a class="el" href="vme4l_8h.html#a86a82">VME4L_SPC_A64_D32</a>, <a class="el" href="vme4l_8h.html#a86a83">VME4L_SPC_A64_2EVME</a>, <a class="el" href="vme4l_8h.html#a86a84">VME4L_SPC_A64_2ESST</a>, <a class="el" href="vme4l_8h.html#a86a66">VME4L_SPC_SLV0</a> to <a class="el" href="vme4l_8h.html#a86a73">VME4L_SPC_SLV7</a> and <a class="el" href="vme4l_8h.html#a86a74">VME4L_SPC_MST0</a> to <a class="el" href="vme4l_8h.html#a86a81">VME4L_SPC_MST7</a>. VME space settings can be adjusted in <a class="el" href="vme4l-tsi148_8h.html">vme4l-tsi148::h</a>.</dd></dl>
+<dl compact><dt><b>Notes for VME-bridge on A12/B11:</b></dt><dd>Only the VME spaces <a class="el" href="vme4l_8h.html#a98a67">VME4L_SPC_A16_D16</a>, <a class="el" href="vme4l_8h.html#a98a70">VME4L_SPC_A24_D16</a> and <a class="el" href="vme4l_8h.html#a98a78">VME4L_SPC_SLV1</a> are available</dd></dl>
+<dl compact><dt><b>Notes for VME-bridge on A13/A15:</b></dt><dd>Supports <a class="el" href="vme4l_8h.html#a98a67">VME4L_SPC_A16_D16</a>, <a class="el" href="vme4l_8h.html#a98a69">VME4L_SPC_A16_D32</a>, <a class="el" href="vme4l_8h.html#a98a70">VME4L_SPC_A24_D16</a>, <a class="el" href="vme4l_8h.html#a98a71">VME4L_SPC_A24_D16_BLT</a>, <a class="el" href="vme4l_8h.html#a98a72">VME4L_SPC_A24_D32</a>, <a class="el" href="vme4l_8h.html#a98a73">VME4L_SPC_A24_D32_BLT</a>, <a class="el" href="vme4l_8h.html#a98a74">VME4L_SPC_A32_D32</a>, <a class="el" href="vme4l_8h.html#a98a75">VME4L_SPC_A32_D32_BLT</a>, <a class="el" href="vme4l_8h.html#a98a76">VME4L_SPC_A32_D64_BLT</a> and <a class="el" href="vme4l_8h.html#a98a77">VME4L_SPC_SLV0</a> to <a class="el" href="vme4l_8h.html#a98a81">VME4L_SPC_SLV4</a>.</dd></dl>
+<dl compact><dt><b>Notes for VME-bridge on A17/A19/A20:</b></dt><dd>Supports <a class="el" href="vme4l_8h.html#a98a67">VME4L_SPC_A16_D16</a>, <a class="el" href="vme4l_8h.html#a98a69">VME4L_SPC_A16_D32</a>, <a class="el" href="vme4l_8h.html#a98a70">VME4L_SPC_A24_D16</a>, <a class="el" href="vme4l_8h.html#a98a71">VME4L_SPC_A24_D16_BLT</a>, <a class="el" href="vme4l_8h.html#a98a72">VME4L_SPC_A24_D32</a>, <a class="el" href="vme4l_8h.html#a98a73">VME4L_SPC_A24_D32_BLT</a>, <a class="el" href="vme4l_8h.html#a98a74">VME4L_SPC_A32_D32</a>, <a class="el" href="vme4l_8h.html#a98a75">VME4L_SPC_A32_D32_BLT</a>, <a class="el" href="vme4l_8h.html#a98a76">VME4L_SPC_A32_D64_BLT</a>, <a class="el" href="vme4l_8h.html#a98a93">VME4L_SPC_A64_D32</a>, <a class="el" href="vme4l_8h.html#a98a94">VME4L_SPC_A64_2EVME</a>, <a class="el" href="vme4l_8h.html#a98a95">VME4L_SPC_A64_2ESST</a>, <a class="el" href="vme4l_8h.html#a98a77">VME4L_SPC_SLV0</a> to <a class="el" href="vme4l_8h.html#a98a84">VME4L_SPC_SLV7</a> and <a class="el" href="vme4l_8h.html#a98a85">VME4L_SPC_MST0</a> to <a class="el" href="vme4l_8h.html#a98a92">VME4L_SPC_MST7</a>. VME space settings can be adjusted in <a class="el" href="vme4l-tsi148_8h.html">vme4l-tsi148::h</a>.</dd></dl>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>space</em>&nbsp;</td><td><b>IN</b> Requested VME space, one of <a class="el" href="vme4l_8h.html#a86">VME4L_SPACE</a></td></tr>
+    <tr><td valign=top><em>space</em>&nbsp;</td><td><b>IN</b> Requested VME space, one of <a class="el" href="vme4l_8h.html#a98">VME4L_SPACE</a></td></tr>
   </table>
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>File descriptor on success, or -1 on error and <em>errno</em> is set to<br>
@@ -997,7 +1152,7 @@ A single process can have multiple VME spaces open at the same time.<p>
     </td>
   </tr>
 </table>
-<a name="a22" doxytag="vme4l_api.c::VME4L_PostedWriteModeGet"></a><p>
+<a name="a26" doxytag="vme4l_api.c::VME4L_PostedWriteModeGet"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1027,7 +1182,7 @@ Get VMEbus master write mode.
 <p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a></td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a></td></tr>
   </table>
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>0 if write mode is "delayed"<br>
@@ -1038,7 +1193,7 @@ Get VMEbus master write mode.
     </td>
   </tr>
 </table>
-<a name="a23" doxytag="vme4l_api.c::VME4L_PostedWriteModeSet"></a><p>
+<a name="a27" doxytag="vme4l_api.c::VME4L_PostedWriteModeSet"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1078,17 +1233,17 @@ Control VMEbus master write mode.
 <dl compact><dt><b>Notes for VME-bridge on A17/A19/A20:</b></dt><dd>All writes are posted.</dd></dl>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>state</em>&nbsp;</td><td><b>IN</b> 0 = Set write mode to "delayed"<br>
  1 = Set write mode to "posted write"</td></tr>
   </table>
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>0 on success or -1 on error and <em>errno</em> set</dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a20">VME4L_RequesterModeGet</a>, <a class="el" href="vme4laccvme.html#vme4lpostwr">Posted Write Mode</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a24">VME4L_RequesterModeGet</a>, <a class="el" href="vme4laccvme.html#vme4lpostwr">Posted Write Mode</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a7" doxytag="vme4l_api.c::VME4L_Read"></a><p>
+<a name="a11" doxytag="vme4l_api.c::VME4L_Read"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1102,7 +1257,7 @@ Control VMEbus master write mode.
         <tr>
           <td></td>
           <td></td>
-          <td class="md" nowrap><a class="el" href="vme4l_8h.html#a54">vmeaddr_t</a>&nbsp;</td>
+          <td class="md" nowrap><a class="el" href="vme4l_8h.html#a66">vmeaddr_t</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>vmeAddr</em>, </td>
         </tr>
         <tr>
@@ -1150,16 +1305,15 @@ Control VMEbus master write mode.
 Read data block from VME. 
 <p>
 This transfers a data block from VME into the user's buffer.<p>
-Data is automatically transferred by DMA engine if a BLT (incl. 2EVME/2ESST) space has been selected or if the <a class="el" href="group__VME4L__RWFLAGS.html#a1">VME4L_RW_USE_DMA</a> flag was specified.<p>
+Data is automatically transferred by DMA engine if a BLT (incl. 2EVME/2ESST) space has been selected or if the <a class="el" href="group__VME4L__RWFLAGS.html#a1">VME4L_RW_USE_SGL_DMA</a> flag was specified.<p>
 <dl compact><dt><b>Notes for VME-bridge on A12/B11:</b></dt><dd>DMA/BLT mode is not available.</dd></dl>
 <dl compact><dt><b>Notes for VME-bridge on A13/A15:</b></dt><dd>For BLT spaces, <em>dataP</em> must be aligned to 4 bytes and <em>vmeAddr</em> must be aligned to 4 bytes for 16-/32-bit wide space or 8-byte aligned for 64-bit spaces.<br>
- The <a class="el" href="group__VME4L__RWFLAGS.html#a1">VME4L_RW_USE_DMA</a> flag is not supported. Non-BLT spaces must be transferred in PIO mode.<br>
  For A32 spaces, the 3 MSBs of the VME address must be identical to all other A32 spaces currently in use.</dd></dl>
-<dl compact><dt><b>Notes for VME-bridge on A17/A19/A20:</b></dt><dd>The <a class="el" href="group__VME4L__RWFLAGS.html#a1">VME4L_RW_USE_DMA</a> flag is not supported. Non-BLT spaces must be transferred in PIO mode.<br>
+<dl compact><dt><b>Notes for VME-bridge on A17/A19/A20:</b></dt><dd>The <a class="el" href="group__VME4L__RWFLAGS.html#a1">VME4L_RW_USE_SGL_DMA</a> flag is not supported. Non-BLT spaces must be transferred in PIO mode.<br>
 </dd></dl>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>vmeAddr</em>&nbsp;</td><td><b>IN</b> Start address within VME space. Must be aligned to <em>accWidth</em>. </td></tr>
     <tr><td valign=top><em>accWidth</em>&nbsp;</td><td><b>IN</b> 1 = Use 8-bit access, 2 = Use 16-bit access, 4 = use 32-bit access.<br>
  Parameter is ignored when DMA is used. </td></tr>
@@ -1174,11 +1328,103 @@ Data is automatically transferred by DMA engine if a BLT (incl. 2EVME/2ESST) spa
 <ul>
 <li><code>EIO</code>: A VME bus error occurred</li><li><code>EBUSY</code>: The requested address range is currently not available</li><li><code>EINVAL</code>: Bad parameter</li><li><code>ETIME</code>: DMA controller timeout (hardware problem)</li></ul>
 </dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a3">VME4L_Open</a>, <a class="el" href="vme4l__api_8c.html#a8">VME4L_Write</a>, <a class="el" href="vme4l__api_8c.html#a9">VME4L_Map</a>, <a class="el" href="vme4l__api_8c.html#a6">VME4L_SwapModeSet</a>, <a class="el" href="vme4laccvme.html#vme4lapiacc">Use API functions to exchange data with VME</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a2">VME4L_Open</a>, <a class="el" href="vme4l__api_8c.html#a12">VME4L_Write</a>, <a class="el" href="vme4l__api_8c.html#a13">VME4L_Map</a>, <a class="el" href="vme4l__api_8c.html#a5">VME4L_SwapModeSet</a>, <a class="el" href="vme4laccvme.html#vme4lapiacc">Use API functions to exchange data with VME</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a20" doxytag="vme4l_api.c::VME4L_RequesterModeGet"></a><p>
+<a name="a10" doxytag="vme4l_api.c::VME4L_RequesterLevelGet"></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> int VME4L_RequesterLevelGet </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">int&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>spaceFd</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Get VME bus requester level l address (slot nr.) of this board. 
+<p>
+Counterpart to VME4L_AddrModifierSet<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a></td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd>requester level on success, or -1 on error<br>
+<ul>
+<li><code>EINVAL</code>: Bad parameter </li></ul>
+</dd></dl>
+    </td>
+  </tr>
+</table>
+<a name="a9" doxytag="vme4l_api.c::VME4L_RequesterLevelSet"></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> int VME4L_RequesterLevelSet </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">int&nbsp;</td>
+          <td class="mdname" nowrap> <em>spaceFd</em>, </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td class="md" nowrap>char&nbsp;</td>
+          <td class="mdname" nowrap> <em>level</em></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"></td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Set VME bus requester level l address (slot nr.) of this board. 
+<p>
+Counterpart to VME4L_AddrModifierSet<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a></td></tr>
+    <tr><td valign=top><em>level</em>&nbsp;</td><td><b>IN</b> requester level: 0,1,2,3 (default)</td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd>0 on success, or -1 on error<br>
+<ul>
+<li><code>EINVAL</code>: Bad parameter </li></ul>
+</dd></dl>
+    </td>
+  </tr>
+</table>
+<a name="a24" doxytag="vme4l_api.c::VME4L_RequesterModeGet"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1208,7 +1454,7 @@ Get VMEbus requester mode.
 <p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a></td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a></td></tr>
   </table>
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>0 if requester mode is "release on request"<br>
@@ -1216,11 +1462,11 @@ Get VMEbus requester mode.
  256 if requester mode is "user defined"<br>
  -1 on error and <em>errno</em> set<br>
 </dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a21">VME4L_RequesterModeSet</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a25">VME4L_RequesterModeSet</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a21" doxytag="vme4l_api.c::VME4L_RequesterModeSet"></a><p>
+<a name="a25" doxytag="vme4l_api.c::VME4L_RequesterModeSet"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1259,17 +1505,17 @@ Control VMEbus requester mode.
 <p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>state</em>&nbsp;</td><td><b>IN</b> 0 = Set requester mode to "release on request"<br>
  1 = Set requester mode to "release when done"</td></tr>
   </table>
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>0 on success or -1 on error and <em>errno</em> set</dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a20">VME4L_RequesterModeGet</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a24">VME4L_RequesterModeGet</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a27" doxytag="vme4l_api.c::VME4L_RmwCycle"></a><p>
+<a name="a31" doxytag="vme4l_api.c::VME4L_RmwCycle"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1283,7 +1529,7 @@ Control VMEbus requester mode.
         <tr>
           <td></td>
           <td></td>
-          <td class="md" nowrap><a class="el" href="vme4l_8h.html#a54">vmeaddr_t</a>&nbsp;</td>
+          <td class="md" nowrap><a class="el" href="vme4l_8h.html#a66">vmeaddr_t</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>vmeAddr</em>, </td>
         </tr>
         <tr>
@@ -1331,7 +1577,7 @@ The RMW cycle is performed atomically on the VMEbus.<p>
 <dl compact><dt><b>Notes for VME-bridge on A17/A19/A20:</b></dt><dd>[VME4] VMEbus Write During Wrap-around RMW work-around is not implemented per default due to the lower performance. If you really need to use wrap-around RMW cycles you have to set VMEFL[ACKD] to slow (0) in <a class="el" href="vme4l-tsi148_8h.html">vme4l-tsi148::h</a>.</dd></dl>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>vmeAddr</em>&nbsp;</td><td><b>IN</b> Start address within VME space. </td></tr>
     <tr><td valign=top><em>accWidth</em>&nbsp;</td><td><b>IN</b> 1 = Use 8-bit access, 2 = Use 16-bit access, 4 = Use 32-bit access. </td></tr>
     <tr><td valign=top><em>mask</em>&nbsp;</td><td><b>IN</b> Value to OR into original value read </td></tr>
@@ -1344,11 +1590,11 @@ The RMW cycle is performed atomically on the VMEbus.<p>
 <ul>
 <li><code>EIO</code>: A VME bus error occurred</li><li><code>EBUSY</code>: The requested address range is currently not available</li><li><code>EINVAL</code>: Bad parameter</li></ul>
 </dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a6">VME4L_SwapModeSet</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a5">VME4L_SwapModeSet</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a11" doxytag="vme4l_api.c::VME4L_SigInstall"></a><p>
+<a name="a15" doxytag="vme4l_api.c::VME4L_SigInstall"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1418,7 +1664,7 @@ The function's behavior can be altered through the <em>flags</em> parameter.<p>
 <dl compact><dt><b>Notes for VME-bridge on A17/A19/A20:</b></dt><dd>VME4L_IRQVEC_BUSERR/VME4L_IRQLEV_BUSERR: Occurs as well if PCI parity error is detected.</dd></dl>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>vector</em>&nbsp;</td><td><b>IN</b> VMEbus interrupt vector (0..255) or special interrupt vector (see <a class="el" href="group__VME4L__IRQVEC.html">VME interrupt vectors.</a>) </td></tr>
     <tr><td valign=top><em>level</em>&nbsp;</td><td><b>IN</b> VMEbus interrupt level or special interrupt level (see <a class="el" href="group__VME4L__IRQLEV.html">VME interrupt levels.</a>) </td></tr>
     <tr><td valign=top><em>signal</em>&nbsp;</td><td><b>IN</b> Linux signal number </td></tr>
@@ -1430,11 +1676,11 @@ The function's behavior can be altered through the <em>flags</em> parameter.<p>
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>0=success &lt;0=error<br>
  In case of error, <em>errno</em> is set.</dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a3">VME4L_Open</a>, <a class="el" href="vme4l__api_8c.html#a12">VME4L_SigUnInstall</a>, <a class="el" href="vme4lirq.html">VME interrupt handling in user space</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a2">VME4L_Open</a>, <a class="el" href="vme4l__api_8c.html#a16">VME4L_SigUnInstall</a>, <a class="el" href="vme4lirq.html">VME interrupt handling in user space</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a12" doxytag="vme4l_api.c::VME4L_SigUnInstall"></a><p>
+<a name="a16" doxytag="vme4l_api.c::VME4L_SigUnInstall"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1474,17 +1720,17 @@ Uninstall signal for VME interrupt or special interrupts.
 Removes all signals installed by the calling process for that vector.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>vector</em>&nbsp;</td><td><b>IN</b> VMEbus interrupt vector (0..255) or special interrupt vector (see <a class="el" href="group__VME4L__IRQVEC.html">VME interrupt vectors.</a>)</td></tr>
   </table>
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>0=success &lt;0=error<br>
  In case of error, <em>errno</em> is set.</dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a3">VME4L_Open</a>, <a class="el" href="vme4l__api_8c.html#a11">VME4L_SigInstall</a>, <a class="el" href="vme4lirq.html">VME interrupt handling in user space</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a2">VME4L_Open</a>, <a class="el" href="vme4l__api_8c.html#a15">VME4L_SigInstall</a>, <a class="el" href="vme4lirq.html">VME interrupt handling in user space</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a29" doxytag="vme4l_api.c::VME4L_SlaveWindowCtrl"></a><p>
+<a name="a33" doxytag="vme4l_api.c::VME4L_SlaveWindowCtrl"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1498,7 +1744,7 @@ Removes all signals installed by the calling process for that vector.<p>
         <tr>
           <td></td>
           <td></td>
-          <td class="md" nowrap><a class="el" href="vme4l_8h.html#a54">vmeaddr_t</a>&nbsp;</td>
+          <td class="md" nowrap><a class="el" href="vme4l_8h.html#a66">vmeaddr_t</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>vmeAddr</em>, </td>
         </tr>
         <tr>
@@ -1529,10 +1775,10 @@ Control VME slave window.
 <p>
 Enables a VME slave window. If <em>size</em> is 0, the window is disabled.<p>
 <em>vmeAddr</em> and <em>size</em> must match the capabilities of the underlying VME bridge.<p>
-A change of parameters or disabling of the window is only allowed if no process has the window mapped by <a class="el" href="vme4l__api_8c.html#a9">VME4L_Map()</a>.<p>
+A change of parameters or disabling of the window is only allowed if no process has the window mapped by <a class="el" href="vme4l__api_8c.html#a13">VME4L_Map()</a>.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for a slave VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for a slave VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>vmeAddr</em>&nbsp;</td><td><b>IN</b> slave window start address on VME </td></tr>
     <tr><td valign=top><em>size</em>&nbsp;</td><td><b>IN</b> size in bytes of window. If 0, disable window</td></tr>
   </table>
@@ -1546,7 +1792,7 @@ A change of parameters or disabling of the window is only allowed if no process 
     </td>
   </tr>
 </table>
-<a name="a5" doxytag="vme4l_api.c::VME4L_SpaceName"></a><p>
+<a name="a4" doxytag="vme4l_api.c::VME4L_SpaceName"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1554,7 +1800,7 @@ A change of parameters or disabling of the window is only allowed if no process 
         <tr>
           <td class="md" nowrap valign="top"> const char* VME4L_SpaceName </td>
           <td class="md" valign="top">(&nbsp;</td>
-          <td class="md" nowrap valign="top"><a class="el" href="vme4l_8h.html#a86">VME4L_SPACE</a>&nbsp;</td>
+          <td class="md" nowrap valign="top"><a class="el" href="vme4l_8h.html#a98">VME4L_SPACE</a>&nbsp;</td>
           <td class="mdname1" valign="top" nowrap> <em>space</em>          </td>
           <td class="md" valign="top">&nbsp;)&nbsp;</td>
           <td class="md" nowrap></td>
@@ -1577,15 +1823,15 @@ Returns a symbolic name for numeric space.
 e.g. returns <code>a16d16</code> when <em>space</em> is <code>VME4L_SPC_A16_D16</code> <p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>space</em>&nbsp;</td><td><b>IN</b> Requested VME space, one of <a class="el" href="vme4l_8h.html#a86">VME4L_SPACE</a> </td></tr>
+    <tr><td valign=top><em>space</em>&nbsp;</td><td><b>IN</b> Requested VME space, one of <a class="el" href="vme4l_8h.html#a98">VME4L_SPACE</a> </td></tr>
   </table>
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>String or NULL if space invalid</dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a3">VME4L_Open</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a2">VME4L_Open</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a6" doxytag="vme4l_api.c::VME4L_SwapModeSet"></a><p>
+<a name="a5" doxytag="vme4l_api.c::VME4L_SwapModeSet"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1627,7 +1873,7 @@ This function should be used on little-endian systems (X86) only. On PowerPC, an
 <dl compact><dt><b>Notes for VME-bridge on A17/A19/A20:</b></dt><dd>VME bridge does not support hardware swapping! User application has to care for swapping by its own!</dd></dl>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>swapMode</em>&nbsp;</td><td><b>IN</b> Swapping mode to use, see <a class="el" href="group__VME4L__SWAPMODE.html">swap mode for VME4L_SwapModeSet()</a></td></tr>
   </table>
 </dl>
@@ -1635,11 +1881,11 @@ This function should be used on little-endian systems (X86) only. On PowerPC, an
 <ul>
 <li><code>EINVAL</code>: Bad parameter</li></ul>
 </dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a3">VME4L_Open</a>, <a class="el" href="vme4l__api_8c.html#a7">VME4L_Read</a>, <a class="el" href="vme4l__api_8c.html#a9">VME4L_Map</a>, <a class="el" href="vme4laccvme.html#vme4lapiacc">Use API functions to exchange data with VME</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a2">VME4L_Open</a>, <a class="el" href="vme4l__api_8c.html#a11">VME4L_Read</a>, <a class="el" href="vme4l__api_8c.html#a13">VME4L_Map</a>, <a class="el" href="vme4laccvme.html#vme4lapiacc">Use API functions to exchange data with VME</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a15" doxytag="vme4l_api.c::VME4L_SysCtrlFunctionGet"></a><p>
+<a name="a19" doxytag="vme4l_api.c::VME4L_SysCtrlFunctionGet"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1669,18 +1915,18 @@ Check if system controller function has been enabled.
 <p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a></td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a></td></tr>
   </table>
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>0 if VME bridge is not system controller<br>
  1 if VME bridge is system controller<br>
  -1 on error and <em>errno</em> set<br>
 </dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a16">VME4L_SysCtrlFunctionSet</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a20">VME4L_SysCtrlFunctionSet</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a16" doxytag="vme4l_api.c::VME4L_SysCtrlFunctionSet"></a><p>
+<a name="a20" doxytag="vme4l_api.c::VME4L_SysCtrlFunctionSet"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1721,17 +1967,17 @@ Normally, the VME bridge detects automatically whether it is the system controll
 <dl compact><dt><b>Notes for VME-bridge on A17/A19/A20:</b></dt><dd>Not supported by TSI148 VME bridge.</dd></dl>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>state</em>&nbsp;</td><td><b>IN</b> Controls system controller function (0 = disable,1 = enable)</td></tr>
   </table>
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>0 on success or -1 on error and <em>errno</em> set<br>
 </dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a15">VME4L_SysCtrlFunctionGet</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a19">VME4L_SysCtrlFunctionGet</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a17" doxytag="vme4l_api.c::VME4L_SysReset"></a><p>
+<a name="a21" doxytag="vme4l_api.c::VME4L_SysReset"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1762,7 +2008,7 @@ Generate VME system reset.
 This function can be used to perform a VMEbus reset pulse<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a></td></tr>
+    <tr><td valign=top><em>fd</em>&nbsp;</td><td><b>IN</b> File descriptor for any VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a></td></tr>
   </table>
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>0 on success or -1 on error and <em>errno</em> set<br>
@@ -1770,7 +2016,7 @@ This function can be used to perform a VMEbus reset pulse<p>
     </td>
   </tr>
 </table>
-<a name="a10" doxytag="vme4l_api.c::VME4L_UnMap"></a><p>
+<a name="a14" doxytag="vme4l_api.c::VME4L_UnMap"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1813,21 +2059,21 @@ This function can be used to perform a VMEbus reset pulse<p>
 <p>
 Unmap VMEbus address space. 
 <p>
-The function unmaps a mapped VMEbus address space previously mapped by <a class="el" href="vme4l__api_8c.html#a9">VME4L_Map()</a>.<p>
+The function unmaps a mapped VMEbus address space previously mapped by <a class="el" href="vme4l__api_8c.html#a13">VME4L_Map()</a>.<p>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
-    <tr><td valign=top><em>mappedAddr</em>&nbsp;</td><td><b>IN</b> Address returned by <a class="el" href="vme4l__api_8c.html#a9">VME4L_Map()</a> </td></tr>
-    <tr><td valign=top><em>size</em>&nbsp;</td><td><b>IN</b> Number of bytes to unmap. Shall be the same size as passed to <a class="el" href="vme4l__api_8c.html#a9">VME4L_Map()</a> </td></tr>
+    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>mappedAddr</em>&nbsp;</td><td><b>IN</b> Address returned by <a class="el" href="vme4l__api_8c.html#a13">VME4L_Map()</a> </td></tr>
+    <tr><td valign=top><em>size</em>&nbsp;</td><td><b>IN</b> Number of bytes to unmap. Shall be the same size as passed to <a class="el" href="vme4l__api_8c.html#a13">VME4L_Map()</a> </td></tr>
   </table>
 </dl>
 <dl compact><dt><b>Returns:</b></dt><dd>0 on success or -1 on error<br>
  In case of error, <em>errno</em> is set.</dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a9">VME4L_Map</a>, <a class="el" href="vme4laccvme.html#vme4lmap">Map parts of VME space into user space</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a13">VME4L_Map</a>, <a class="el" href="vme4laccvme.html#vme4lmap">Map parts of VME space into user space</a> </dd></dl>
     </td>
   </tr>
 </table>
-<a name="a8" doxytag="vme4l_api.c::VME4L_Write"></a><p>
+<a name="a12" doxytag="vme4l_api.c::VME4L_Write"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1841,7 +2087,7 @@ The function unmaps a mapped VMEbus address space previously mapped by <a class=
         <tr>
           <td></td>
           <td></td>
-          <td class="md" nowrap><a class="el" href="vme4l_8h.html#a54">vmeaddr_t</a>&nbsp;</td>
+          <td class="md" nowrap><a class="el" href="vme4l_8h.html#a66">vmeaddr_t</a>&nbsp;</td>
           <td class="mdname" nowrap> <em>vmeAddr</em>, </td>
         </tr>
         <tr>
@@ -1889,17 +2135,16 @@ The function unmaps a mapped VMEbus address space previously mapped by <a class=
 Write data block to VME. 
 <p>
 This transfers a data block from the user's buffer to VME.<p>
-Data is automatically transferred by DMA engine if a BLT (incl. 2EVME/2ESST) space has been selected or if the <a class="el" href="group__VME4L__RWFLAGS.html#a1">VME4L_RW_USE_DMA</a> flag was specified.<p>
+Data is automatically transferred by DMA engine if a BLT (incl. 2EVME/2ESST) space has been selected or if the <a class="el" href="group__VME4L__RWFLAGS.html#a1">VME4L_RW_USE_SGL_DMA</a> flag was specified.<p>
 <dl compact><dt><b>Notes for VME-bridge on A12/B11:</b></dt><dd>DMA/BLT mode is not available.</dd></dl>
 <dl compact><dt><b>Notes for VME-bridge on A13/A15:</b></dt><dd>For BLT spaces, <em>dataP</em> must be aligned to 4 bytes and <em>vmeAddr</em> must be aligned to 4 bytes for 16-/32-bit wide space or 8-byte aligned for 64-bit spaces.<br>
- The <a class="el" href="group__VME4L__RWFLAGS.html#a1">VME4L_RW_USE_DMA</a> flag is not supported. Non-BLT spaces must be transferred in PIO mode.<br>
  For A32 spaces, the 3 MSBs of the VME address must be identical to all other A32 spaces currently in use.<br>
- Always uses delayed write accesses, even when posted write accesses have been enabled by <a class="el" href="vme4l__api_8c.html#a23">VME4L_PostedWriteModeSet()</a>.</dd></dl>
-<dl compact><dt><b>Notes for VME-bridge on A17/A19/A20:</b></dt><dd>The <a class="el" href="group__VME4L__RWFLAGS.html#a1">VME4L_RW_USE_DMA</a> flag is not supported. Non-BLT spaces must be transferred in PIO mode.<br>
+ Always uses delayed write accesses, even when posted write accesses have been enabled by <a class="el" href="vme4l__api_8c.html#a27">VME4L_PostedWriteModeSet()</a>.</dd></dl>
+<dl compact><dt><b>Notes for VME-bridge on A17/A19/A20:</b></dt><dd>The <a class="el" href="group__VME4L__RWFLAGS.html#a1">VME4L_RW_USE_SGL_DMA</a> flag is not supported. Non-BLT spaces must be transferred in PIO mode.<br>
 </dd></dl>
 <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a3">VME4L_Open()</a> </td></tr>
+    <tr><td valign=top><em>spaceFd</em>&nbsp;</td><td><b>IN</b> File descriptor for VME space, returned by <a class="el" href="vme4l__api_8c.html#a2">VME4L_Open()</a> </td></tr>
     <tr><td valign=top><em>vmeAddr</em>&nbsp;</td><td><b>IN</b> Start address within VME space. Must be aligned to <em>accWidth</em>. </td></tr>
     <tr><td valign=top><em>accWidth</em>&nbsp;</td><td><b>IN</b> 1 = Use 8-bit access, 2 = Use 16-bit access, 4 = Use 32-bit access. <br>
  Parameter is ignored when DMA is used. </td></tr>
@@ -1913,40 +2158,18 @@ Data is automatically transferred by DMA engine if a BLT (incl. 2EVME/2ESST) spa
 <ul>
 <li><code>EIO</code>: A VME bus error occurred</li><li><code>EBUSY</code>: The requested address range is currently not available</li><li><code>EINVAL</code>: Bad parameter</li><li><code>ETIME</code>: DMA controller timeout (HW problem)</li></ul>
 </dd></dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a3">VME4L_Open</a>, <a class="el" href="vme4l__api_8c.html#a7">VME4L_Read</a>, <a class="el" href="vme4l__api_8c.html#a9">VME4L_Map</a>, <a class="el" href="vme4l__api_8c.html#a6">VME4L_SwapModeSet</a>, <a class="el" href="vme4laccvme.html#vme4lapiacc">Use API functions to exchange data with VME</a> </dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="vme4l__api_8c.html#a2">VME4L_Open</a>, <a class="el" href="vme4l__api_8c.html#a11">VME4L_Read</a>, <a class="el" href="vme4l__api_8c.html#a13">VME4L_Map</a>, <a class="el" href="vme4l__api_8c.html#a5">VME4L_SwapModeSet</a>, <a class="el" href="vme4laccvme.html#vme4lapiacc">Use API functions to exchange data with VME</a> </dd></dl>
     </td>
   </tr>
 </table>
 <hr><h2>Variable Documentation</h2>
-<a name="a1" doxytag="vme4l_api.c::_RCSid"></a><p>
+<a name="a1" doxytag="vme4l_api.c::G_devNameTbl"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top"> const char <a class="el" href="vme4l__api_8c.html#a1">_RCSid</a>[] = "$Id: vme4l__api_8c.html,v 1.28 2012/08/08 20:21:15 ts Exp $"<code> [static]</code>
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing=5 cellpadding=0 border=0>
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-    </td>
-  </tr>
-</table>
-<a name="a2" doxytag="vme4l_api.c::G_devNameTbl"></a><p>
-<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
-  <tr>
-    <td class="mdRow">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top"> const char* <a class="el" href="vme4l__api_8c.html#a2">G_devNameTbl</a>[]<code> [static]</code>
+          <td class="md" nowrap valign="top"> const char* <a class="el" href="vme4l__api_8c.html#a1">G_devNameTbl</a>[]<code> [static]</code>
       </table>
     </td>
   </tr>
@@ -1970,7 +2193,7 @@ Data is automatically transferred by DMA engine if a BLT (incl. 2EVME/2ESST) spa
 <!-- Footer -->
 	<p class="footer">
 	Generated for VME4L API using <a href="http://www.doxygen.org">doxygen</a>.<br>
-	Copyright &copy; 2012 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
+	Copyright &copy; 2019 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
 	</p>
 </div>
 

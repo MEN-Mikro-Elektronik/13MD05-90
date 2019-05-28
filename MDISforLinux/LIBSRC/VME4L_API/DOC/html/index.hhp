@@ -38,7 +38,7 @@ vme4lipc.html
 vme4lshram.html
 vme4lmbox.html
 vme4llocmon.html
-dummy.html
+vme4ldummy.html
 group__VME4L__IRQVEC.html
 group__VME4L__IRQLEV.html
 group__VME4L__RWFLAGS.html

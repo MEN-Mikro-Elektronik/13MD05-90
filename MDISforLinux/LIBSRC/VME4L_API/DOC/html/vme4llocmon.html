@@ -11,8 +11,8 @@
 
 <div class="left_to_right" style="padding-top: 6px; background-color: #F0F0F0; height: 110px; border-bottom: 2px solid #D1D1D2;">
 	<!-- Titel -->
-	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;"></a>
-	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">VME4L API &nbsp; for VME4L fileset Release-2.16</h1>
+	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;">
+	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">VME4L API &nbsp; </h1>
 	<h3>Location monitor support</h3>
 </div>
 
@@ -23,15 +23,15 @@
 <div class="qindex"><a class="qindex" href="index.html">Main&nbsp;Page</a> | <a class="qindex" href="modules.html">Modules</a> | <a class="qindex" href="annotated.html">Data&nbsp;Structures</a> | <a class="qindex" href="files.html">File&nbsp;List</a> | <a class="qindex" href="functions.html">Data&nbsp;Fields</a> | <a class="qindex" href="globals.html">Globals</a> | <a class="qindex" href="pages.html">Related&nbsp;Pages</a></div>
 <h1><a name="vme4llocmon">Location monitor support</a>
 </h1>VME4L supports VME location monitor(s).<p>
-It provides direct access to the location monitor registers using <a class="el" href="vme4l__api_8c.html#a32">VME4L_LocMonRegRead()</a> and <a class="el" href="vme4l__api_8c.html#a33">VME4L_LocMonRegWrite()</a>.<p>
+It provides direct access to the location monitor registers using <a class="el" href="vme4l__api_8c.html#a36">VME4L_LocMonRegRead()</a> and <a class="el" href="vme4l__api_8c.html#a37">VME4L_LocMonRegWrite()</a>.<p>
 This allows maximum flexibility, although you must know the register layout of the location monitor.<p>
 To get informed about a location monitor hit, install a signal similar to mailbox signals:<p>
 <div class="fragment"><pre>      <span class="comment">// install signal for second location monitor</span>
-      <a class="code" href="vme4l__api_8c.html#a11">VME4L_SigInstall</a>( G_fd, <a class="code" href="group__VME4L__IRQVEC.html#a6">VME4L_IRQVEC_LOCMON</a>(1),
-                              <a class="code" href="group__VME4L__IRQLEV.html#a13">VME4L_IRQLEV_LOCMON</a>(1), 38, VME4L_IRQ_ENBL );
+      <a class="code" href="vme4l__api_8c.html#a15">VME4L_SigInstall</a>( G_fd, <a class="code" href="group__VME4L__IRQVEC.html#a6">VME4L_IRQVEC_LOCMON</a>(1),
+                              <a class="code" href="group__VME4L__IRQLEV.html#a15">VME4L_IRQLEV_LOCMON</a>(1), 38, VME4L_IRQ_ENBL );
 </pre></div><p>
 <dl compact><dt><b>Notes for VME-bridge on A13/A15:</b></dt><dd>Supports two location monitors.</dd></dl>
-The register numbers to pass to <a class="el" href="vme4l__api_8c.html#a32">VME4L_LocMonRegRead()</a> and <a class="el" href="vme4l__api_8c.html#a33">VME4L_LocMonRegWrite()</a> are:<p>
+The register numbers to pass to <a class="el" href="vme4l__api_8c.html#a36">VME4L_LocMonRegRead()</a> and <a class="el" href="vme4l__api_8c.html#a37">VME4L_LocMonRegWrite()</a> are:<p>
 <div class="fragment"><pre>
   reg    PLD register
   ----   -------------
@@ -43,7 +43,7 @@ The register numbers to pass to <a class="el" href="vme4l__api_8c.html#a32">VME4
 See HW manual for more details<p>
 <dl compact><dt><b>Notes for VME-bridge on A12/B11:</b></dt><dd>Locations monitors are not supported</dd></dl>
 <dl compact><dt><b>Notes for VME-bridge on A17/A19/A20:</b></dt><dd>Supports four locations (each location is 8 bytes). Address bits 3 and 4 are used to define the specific location.</dd></dl>
-The register numbers to pass to <a class="el" href="vme4l__api_8c.html#a32">VME4L_LocMonRegRead()</a> and <a class="el" href="vme4l__api_8c.html#a33">VME4L_LocMonRegWrite()</a> are:<p>
+The register numbers to pass to <a class="el" href="vme4l__api_8c.html#a36">VME4L_LocMonRegRead()</a> and <a class="el" href="vme4l__api_8c.html#a37">VME4L_LocMonRegWrite()</a> are:<p>
 <div class="fragment"><pre>
   reg    TSI148 register
   ----   -------------
@@ -59,7 +59,7 @@ See chapter 2.3.6.1 Location Monitor in TSI148 User Manual for more details
 <!-- Footer -->
 	<p class="footer">
 	Generated for VME4L API using <a href="http://www.doxygen.org">doxygen</a>.<br>
-	Copyright &copy; 2012 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
+	Copyright &copy; 2019 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
 	</p>
 </div>
 

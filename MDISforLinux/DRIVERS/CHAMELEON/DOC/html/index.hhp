@@ -23,10 +23,9 @@ men__chameleon__doc_8c.html
 annotated.html
 functions.html
 functions_vars.html
-structCAMELEON__API__VERSION.html
 structCHAM__FUNCTBL.html
+structCHAM__IPCORE__SYSFS__T.html
 structCHAMELEON__DRIVER__T.html
-structCHAMELEON__EARLY__T.html
 structCHAMELEON__HANDLE__T.html
 structCHAMELEON__UNIT.html
 structCHAMELEON__UNIT__T.html
@@ -40,7 +39,7 @@ structCHAMELEONV2__TABLE.html
 structCHAMELEONV2__UNIT.html
 structCHAMELEONV2__UNIT__T.html
 structFPGA__HEADER__INFO.html
-dummy.html
+menchameleondummy.html
 group____CHAMV2__ERRCODES.html
 group____CHAMV2__SUCCCODES.html
 group____CHAM__MAGICWORD.html

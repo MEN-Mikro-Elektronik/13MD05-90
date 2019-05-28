@@ -11,8 +11,8 @@
 
 <div class="left_to_right" style="padding-top: 6px; background-color: #F0F0F0; height: 110px; border-bottom: 2px solid #D1D1D2;">
 	<!-- Titel -->
-	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;"></a>
-	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">OSS module for Linux/RTAI &nbsp; 2.15</h1>
+	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;">
+	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">OSS module for Linux/RTAI &nbsp; </h1>
 	<h3>oss_bustoaddr.c File Reference</h3>
 </div>
 
@@ -43,9 +43,9 @@
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Bus Address translation routines and PCI access routines. 
 <p>
-<dl compact><dt><b>Author:</b></dt><dd><a href="mailto:klaus.popp@men.de">klaus.popp@men.de</a> <dl compact><dt><b>Date</b></dt><dd>2011/04/14 17:45:34 </dd></dl>
-<dl compact><dt><b>Revision</b></dt><dd>1.10 </dd></dl>
-ø* </dd></dl>
+<dl compact><dt><b>Author:</b></dt><dd><a href="mailto:klaus.popp@men.de">klaus.popp@men.de</a> <dl compact><dt><b>Date</b></dt><dd>2012/08/07 19:04:11 </dd></dl>
+<dl compact><dt><b>Revision</b></dt><dd>1.11 </dd></dl>
+</dd></dl>
 <dl compact><dt><b>Project:</b></dt><dd>MDISforLinux </dd></dl>
 <dl compact><dt><b>Preprocessor Switches:</b></dt><dd><ul>
 <li></li></ul>
@@ -100,38 +100,11 @@ Bus Address translation routines and PCI access routines.
 <p>
 Convert bus address to CPU physical address. 
 <p>
-This routine converts the specified parameters to a CPU local address. It generally does not map the bus address into callers address space or reserves the bus address for caller's use. See <a class="el" href="oss__map_8c.html#a0">OSS_MapPhysToVirtAddr()</a> and <a class="el" href="oss__resource_8c.html#a0">OSS_AssignResources()</a> for this purpose.<p>
-<a class="el" href="oss__bustoaddr_8c.html#a0">OSS_BusToPhysAddr()</a> takes a variable number of arguments, depending on <em>busType</em>:<p>
-<ul>
-<li><code>OSS_BUSTYPE_NONE</code>:<ul>
-<li><em>arg3</em> = void *localAddr (it's usually returned unchanged)</li></ul>
-</li></ul>
 <p>
-<ul>
-<li><code>OSS_BUSTYPE_VME</code> <ul>
-<li><em>arg3</em> = void *vmeBusAddr: VME bus address relative to VME space</li><li><em>arg4</em> = u_int32 vmeSpace: VMEbus space and data width, specified as <code>OSS_VME_A16</code>, <code>OSS_VME_A24</code>, <code>OSS_VME_A32</code> ORed with <code>OSS_VME_D16</code>, <code>OSS_VME_D32</code>.</li><li><em>arg5</em> = u_int32 size: requested size (sometimes ignored) </li></ul>
-</li></ul>
-<p>
-<dl compact><dt><b><a class="el" href="deprecated.html#_deprecated000004">Deprecated:</a></b></dt><dd><a class="el" href="oss__specification_8c.html#a44">OSS_MapVmeAddr()</a> (and subsequent <a class="el" href="oss__specification_8c.html#a45">OSS_UnMapVmeAddr()</a>) should be used instead of OSS_BusToPhysAddr(..,OSS_BUSTYPE_VME,..). </dd></dl>
-<p>
-<ul>
-<li><code>OSS_BUSTYPE_PCI</code> <ul>
-<li><em>arg3</em> = int32 busNbr (0..255)</li><li><em>arg4</em> = int32 pciDevNbr (0..31)</li><li><em>arg5</em> = int32 pciFunction (0..7)</li><li><em>arg6</em> = int32 addrNbr (0..5) PCI BAR to read</li></ul>
-</li></ul>
-<p>
-<ul>
-<li><code>OSS_BUSTYPE_ISA</code> <ul>
-<li>???</li></ul>
-</li></ul>
-<p>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>busType</em>&nbsp;</td><td><b>IN</b> bus type (see above) </td></tr>
-    <tr><td valign=top><em>physicalAddrP</em>&nbsp;</td><td><b>OUT</b> CPU physical address </td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>0 on success or <code>ERR_OSS_xxx</code> error code on error</dd></dl>
+<dl compact><dt><b>Linux notes:</b></dt><dd>The functionality of this routine depends on the linux kernel configuration:<ul>
+<li><code>CONFIG_PCI</code>: Must be enabled to support PCI.</li><li><code>CONFIG_MEN_VME_KERNELIF</code>: Must be enabled to support VME. This requires a VME kernel mode interface compatible to MEN's specification.</li></ul>
+</dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss__map_8c.html#a0">OSS_MapPhysToVirtAddr()</a>, <a class="el" href="oss__resource_8c.html#a0">OSS_AssignResources()</a></dd></dl>
 <p>
 <dl compact><dt><b>Linux notes:</b></dt><dd>The functionality of this routine depends on the linux kernel configuration:<ul>
 <li><code>CONFIG_PCI</code>: Must be enabled to support PCI.</li><li><code>CONFIG_MEN_VME_KERNELIF</code>: Must be enabled to support VME. This requires a VME kernel mode interface compatible to MEN's specification.</li></ul>
@@ -201,33 +174,9 @@ This routine converts the specified parameters to a CPU local address. It genera
 <p>
 Read a register from PCI configuration space. 
 <p>
-This function can be used in two forms:<ul>
-<li>Read one of the standard configuration registers. In this case <em>which</em> must be one of<ul>
-<li><code>OSS_PCI_VENDOR_ID</code> </li><li><code>OSS_PCI_DEVICE_ID</code> </li><li><code>OSS_PCI_COMMAND</code> </li><li><code>OSS_PCI_STATUS</code> </li><li><code>OSS_PCI_REVISION_ID</code> </li><li><code>OSS_PCI_CLASS</code> </li><li><code>OSS_PCI_SUB_CLASS</code> </li><li><code>OSS_PCI_PROG_IF</code> </li><li><code>OSS_PCI_CACHE_LINE_SIZE</code> </li><li><code>OSS_PCI_PCI_LATENCY_TIMER</code> </li><li><code>OSS_PCI_HEADER_TYPE</code> </li><li><code>OSS_PCI_BIST</code> </li><li><code>OSS_PCI_ADDR_0</code> </li><li><code>OSS_PCI_ADDR_1</code> </li><li><code>OSS_PCI_ADDR_2</code> </li><li><code>OSS_PCI_ADDR_3</code> </li><li><code>OSS_PCI_ADDR_4</code> </li><li><code>OSS_PCI_ADDR_5</code> </li><li><code>OSS_PCI_CIS</code> </li><li><code>OSS_PCI_SUBSYS_VENDOR_ID</code> </li><li><code>OSS_PCI_SUBSYS_ID</code> </li><li><code>OSS_PCI_EXPROM_ADDR</code> </li><li><code>OSS_PCI_INTERRUPT_PIN</code> </li><li><code>OSS_PCI_INTERRUPT_LINE</code> </li></ul>
-</li></ul>
 <p>
-Example: <div class="fragment"><pre>     error = <a class="code" href="oss__bustoaddr_8c.html#a1">OSS_PciGetConfig</a>( oss, bus, dev, func, OSS_PCI_CLASS, &amp;value );
-</pre></div><p>
-<ul>
-<li>Read an arbitrary configuration register. In this case, <em>which</em> is composed of an access width specifier ORed with the register offset. Possible access widths:<ul>
-<li><code>OSS_PCI_ACCESS_8</code> </li><li><code>OSS_PCI_ACCESS_16</code> </li><li><code>OSS_PCI_ACCESS_32</code> </li></ul>
-</li></ul>
-<p>
-Example: <div class="fragment"><pre>     error = <a class="code" href="oss__bustoaddr_8c.html#a1">OSS_PciGetConfig</a>( oss, bus, dev, func, 
-                                 OSS_PCI_ACCESS_32 | 0x40, &amp;value );
-</pre></div><p>
-<dl compact><dt><b>Remarks:</b></dt><dd>If an attempt is made to access a non existant PCI device, no error is returned, but <em>*valueP</em> will contain <code>0xFFFFFFFF</code>.</dd></dl>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>busNbr</em>&nbsp;</td><td><b>IN</b> PCI bus number (0..255) </td></tr>
-    <tr><td valign=top><em>pciDevNbr</em>&nbsp;</td><td><b>IN</b> PCI device number (0..31) </td></tr>
-    <tr><td valign=top><em>pciFunction</em>&nbsp;</td><td><b>IN</b> PCI function number (0..7) </td></tr>
-    <tr><td valign=top><em>which</em>&nbsp;</td><td><b>IN</b> see text above </td></tr>
-    <tr><td valign=top><em>valueP</em>&nbsp;</td><td><b>OUT</b> value read from config space. Must be a pointer a 32 bit value in any case. </td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>0 on success or <code>ERR_OSS_PCI_xxx</code> error code on error</dd></dl>
+<dl compact><dt><b>Linux notes:</b></dt><dd>interrupt line and BAR[0..5] is not read from config space. Instead, the linux internal copy is returned</dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss_8h.html#a161">OSS_PciSetConfig</a>, <a class="el" href="oss_8h.html#a159">OSS_BusToPhysAddr</a></dd></dl>
 <p>
 <dl compact><dt><b>Linux notes:</b></dt><dd>interrupt line and BAR[0..5] is not read from config space. Instead, the linux internal copy is returned</dd></dl>
 <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss__bustoaddr_8c.html#a2">OSS_PciSetConfig</a>, <a class="el" href="oss__bustoaddr_8c.html#a0">OSS_BusToPhysAddr</a> </dd></dl>
@@ -295,33 +244,8 @@ Example: <div class="fragment"><pre>     error = <a class="code" href="oss__bust
 <p>
 Write to a register in PCI configuration space. 
 <p>
-This function can be used in two forms:<ul>
-<li>Write one of the standard configuration registers. In this case <em>which</em> must be one of<ul>
-<li><code>OSS_PCI_VENDOR_ID</code> </li><li><code>OSS_PCI_DEVICE_ID</code> </li><li><code>OSS_PCI_COMMAND</code> </li><li><code>OSS_PCI_STATUS</code> </li><li><code>OSS_PCI_REVISION_ID</code> </li><li><code>OSS_PCI_CLASS</code> </li><li><code>OSS_PCI_SUB_CLASS</code> </li><li><code>OSS_PCI_PROG_IF</code> </li><li><code>OSS_PCI_CACHE_LINE_SIZE</code> </li><li><code>OSS_PCI_PCI_LATENCY_TIMER</code> </li><li><code>OSS_PCI_HEADER_TYPE</code> </li><li><code>OSS_PCI_BIST</code> </li><li><code>OSS_PCI_ADDR_0</code> </li><li><code>OSS_PCI_ADDR_1</code> </li><li><code>OSS_PCI_ADDR_2</code> </li><li><code>OSS_PCI_ADDR_3</code> </li><li><code>OSS_PCI_ADDR_4</code> </li><li><code>OSS_PCI_ADDR_5</code> </li><li><code>OSS_PCI_CIS</code> </li><li><code>OSS_PCI_SUBSYS_VENDOR_ID</code> </li><li><code>OSS_PCI_SUBSYS_ID</code> </li><li><code>OSS_PCI_EXPROM_ADDR</code> </li><li><code>OSS_PCI_INTERRUPT_PIN</code> </li><li><code>OSS_PCI_INTERRUPT_LINE</code> </li></ul>
-</li></ul>
 <p>
-Example: <div class="fragment"><pre>     error = <a class="code" href="oss__bustoaddr_8c.html#a2">OSS_PciSetConfig</a>( oss, bus, dev, func, OSS_PCI_CLASS, value );
-</pre></div><p>
-<ul>
-<li>Write an arbitrary configuration register. In this case, <em>which</em> is composed of an access width specifier ORed with the register offset. Possible access widths:<ul>
-<li><code>OSS_PCI_ACCESS_8</code> </li><li><code>OSS_PCI_ACCESS_16</code> </li><li><code>OSS_PCI_ACCESS_32</code> </li></ul>
-</li></ul>
-<p>
-Example: <div class="fragment"><pre>     error = <a class="code" href="oss__bustoaddr_8c.html#a2">OSS_PciSetConfig</a>( oss, bus, dev, func, 
-                                 OSS_PCI_ACCESS_32 | 0x40, value );
-</pre></div><p>
-<dl compact><dt><b>Remarks:</b></dt><dd>If an attempt is made to access a non existant PCI device, no error is returned, the value is written into nirwanha.</dd></dl>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>busNbr</em>&nbsp;</td><td><b>IN</b> PCI bus number (0..255) </td></tr>
-    <tr><td valign=top><em>pciDevNbr</em>&nbsp;</td><td><b>IN</b> PCI device number (0..31) </td></tr>
-    <tr><td valign=top><em>pciFunction</em>&nbsp;</td><td><b>IN</b> PCI function number (0..7) </td></tr>
-    <tr><td valign=top><em>which</em>&nbsp;</td><td><b>IN</b> see text above </td></tr>
-    <tr><td valign=top><em>value</em>&nbsp;</td><td><b>IN</b> value to write to config space.</td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>0 on success or <code>ERR_OSS_PCI_xxx</code> error code on error</dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss_8h.html#a160">OSS_PciGetConfig</a></dd></dl>
 <p>
 <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss__bustoaddr_8c.html#a1">OSS_PciGetConfig</a> </dd></dl>
     </td>
@@ -376,18 +300,9 @@ Example: <div class="fragment"><pre>     error = <a class="code" href="oss__bust
 <p>
 Convert mechanical slot number to PCI device number. 
 <p>
-The main purpose of this function is to determine the PCI device number of a PCI card in slot <em>mechSlot</em>.<p>
-Typically used by BBIS drivers, such as the driver for D201 board family.<p>
-Mechanical slots are numbered from 1..17. On CompactPCI, 1 is the CPU itsself, 2 the slot next to the CPU.<p>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>busNbr</em>&nbsp;</td><td><b>IN</b> the PCI bus number in question </td></tr>
-    <tr><td valign=top><em>mechSlot</em>&nbsp;</td><td><b>IN</b> mechanical slot to convert (1..17) </td></tr>
-    <tr><td valign=top><em>pciDevNbrP</em>&nbsp;</td><td><b>OUT</b> PCI device number (0..31)</td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>0 on success or <code>ERR_OSS_xxx</code> error code on error</dd></dl>
+<p>
+<dl compact><dt><b>Linux notes:</b></dt><dd>The conversion is done by using the global array #oss_pci_slot_devnbrs that can be modified by the user at load time of the OSS module.</dd></dl>
+<dl compact><dt><b>Linux notes:</b></dt><dd>The PCI bus number is currently ignored</dd></dl>
 <p>
 <dl compact><dt><b>Linux notes:</b></dt><dd>The conversion is done by using the global array #oss_pci_slot_devnbrs that can be modified by the user at load time of the OSS module.</dd></dl>
 <dl compact><dt><b>Linux notes:</b></dt><dd>The PCI bus number is currently ignored </dd></dl>
@@ -402,7 +317,7 @@ Mechanical slots are numbered from 1..17. On CompactPCI, 1 is the CPU itsself, 2
 <!-- Footer -->
 	<p class="footer">
 	Generated for OSS module for Linux/RTAI using <a href="http://www.doxygen.org">doxygen</a>.<br>
-	Copyright &copy; 2012 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
+	Copyright &copy; 2019 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
 	</p>
 </div>
 

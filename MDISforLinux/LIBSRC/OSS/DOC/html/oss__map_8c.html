@@ -11,8 +11,8 @@
 
 <div class="left_to_right" style="padding-top: 6px; background-color: #F0F0F0; height: 110px; border-bottom: 2px solid #D1D1D2;">
 	<!-- Titel -->
-	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;"></a>
-	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">OSS module for Linux/RTAI &nbsp; 2.15</h1>
+	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;">
+	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">OSS module for Linux/RTAI &nbsp; </h1>
 	<h3>oss_map.c File Reference</h3>
 </div>
 
@@ -29,10 +29,12 @@
 <tr><td colspan=2><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align=right valign=top>int32&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="oss__map_8c.html#a0">OSS_MapPhysToVirtAddr</a> (OSS_HANDLE *oss, void *physAddr, u_int32 size, int32 addrSpace, int32 busType, int32 busNbr, void **virtAddrP)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Map physical address space to virtual address space. </em> <a href="#a0"></a><em><br><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Map physical address space to virtual address space <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss__map_8c.html#a1">OSS_UnMapVirtAddr()</a></dd></dl>
+. </em> <a href="#a0"></a><em><br><br></td></tr>
 <tr><td class="memItemLeft" nowrap align=right valign=top>int32&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="oss__map_8c.html#a1">OSS_UnMapVirtAddr</a> (OSS_HANDLE *oss, void **virtAddrP, u_int32 size, int32 addrSpace)</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Unmap virtual address space. </em> <a href="#a1"></a><em><br><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Unmap virtual address space <dl compact><dt><b>See also:</b></dt><dd>OSS_MapVirtAddr()</dd></dl>
+. </em> <a href="#a1"></a><em><br><br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Memory mapping related routines of the OSS module. 
@@ -110,7 +112,8 @@ Memory mapping related routines of the OSS module.
     <td>
 
 <p>
-Map physical address space to virtual address space. 
+Map physical address space to virtual address space <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss__map_8c.html#a1">OSS_UnMapVirtAddr()</a></dd></dl>
+. 
 <p>
 <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss__map_8c.html#a1">OSS_UnMapVirtAddr()</a> </dd></dl>
     </td>
@@ -163,7 +166,8 @@ Map physical address space to virtual address space.
     <td>
 
 <p>
-Unmap virtual address space. 
+Unmap virtual address space <dl compact><dt><b>See also:</b></dt><dd>OSS_MapVirtAddr()</dd></dl>
+. 
 <p>
 <dl compact><dt><b>See also:</b></dt><dd>OSS_MapVirtAddr() </dd></dl>
     </td>
@@ -177,7 +181,7 @@ Unmap virtual address space.
 <!-- Footer -->
 	<p class="footer">
 	Generated for OSS module for Linux/RTAI using <a href="http://www.doxygen.org">doxygen</a>.<br>
-	Copyright &copy; 2012 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
+	Copyright &copy; 2019 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
 	</p>
 </div>
 

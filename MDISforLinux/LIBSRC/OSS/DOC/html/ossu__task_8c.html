@@ -11,8 +11,8 @@
 
 <div class="left_to_right" style="padding-top: 6px; background-color: #F0F0F0; height: 110px; border-bottom: 2px solid #D1D1D2;">
 	<!-- Titel -->
-	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;"></a>
-	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">OSS module for Linux/RTAI &nbsp; 2.15</h1>
+	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;">
+	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">OSS module for Linux/RTAI &nbsp; </h1>
 	<h3>ossu_task.c File Reference</h3>
 </div>
 
@@ -68,15 +68,8 @@ Task routines for user_space.
 <p>
 Get current task id. 
 <p>
-<dl compact><dt><b>Remarks:</b></dt><dd>Task ID is invalid if called at interrupt level.</dd></dl>
 <p>
-<dl compact><dt><b><a class="el" href="deprecated.html#_deprecated000005">Deprecated:</a></b></dt><dd>Don't use it. Not all OSes have a task id. </dd></dl>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>task ID of calling process</dd></dl>
+<dl compact><dt><b>Linux notes:</b></dt><dd>The behaviour of this function depends on the <em>rtMode</em> flag passed to the <a class="el" href="oss_8c.html#a66">OSS_Init()</a> function. Either the standard Linux kernel or RTAI implementation is called. For RTAI implementation, see OSS_RtaiGetPid().</dd></dl>
      </td>
   </tr>
 </table>
@@ -88,7 +81,7 @@ Get current task id.
 <!-- Footer -->
 	<p class="footer">
 	Generated for OSS module for Linux/RTAI using <a href="http://www.doxygen.org">doxygen</a>.<br>
-	Copyright &copy; 2012 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
+	Copyright &copy; 2019 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
 	</p>
 </div>
 

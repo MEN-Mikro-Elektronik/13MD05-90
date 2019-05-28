@@ -11,8 +11,8 @@
 
 <div class="left_to_right" style="padding-top: 6px; background-color: #F0F0F0; height: 110px; border-bottom: 2px solid #D1D1D2;">
 	<!-- Titel -->
-	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;"></a>
-	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">VME4L API &nbsp; for VME4L fileset Release-2.16</h1>
+	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;">
+	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">VME4L API &nbsp; </h1>
 	<h3>Shared RAM support</h3>
 </div>
 
@@ -24,7 +24,7 @@
 <h1><a name="vme4lshram">Shared RAM support</a>
 </h1>VME4L supports shared RAM of the VME bridge. Shared RAM is accessible both from VME and from the local user space application.<p>
 It depends on the underlying bridge wether the shared RAM is a dedicated memory or a part of the system RAM. Each slave window corresponds to an VME4L space (see list below).<p>
-By default, none of these windows are enabled. User has to call <a class="el" href="vme4l__api_8c.html#a29">VME4L_SlaveWindowCtrl()</a> to set the VMEbus address and occupied size of the window.<p>
+By default, none of these windows are enabled. User has to call <a class="el" href="vme4l__api_8c.html#a33">VME4L_SlaveWindowCtrl()</a> to set the VMEbus address and occupied size of the window.<p>
 After the window has been enabled, user can map the shared RAM into its application space:<p>
 <div class="fragment"><pre>  <span class="comment">// Error checking omitted in this example</span>
 <span class="preprocessor">  #include &lt;stdio.h&gt;</span>
@@ -40,15 +40,15 @@ After the window has been enabled, user can map the shared RAM into its applicat
   <span class="keywordtype">int</span> main( <span class="keywordtype">int</span> argc, <span class="keywordtype">char</span> *argv[] )
   {
       uint8_t *map;
-      <span class="keywordtype">int</span> fd = <a class="code" href="vme4l__api_8c.html#a3">VME4L_Open</a>( VME4L_SPC_SLV3 );
+      <span class="keywordtype">int</span> fd = <a class="code" href="vme4l__api_8c.html#a2">VME4L_Open</a>( VME4L_SPC_SLV3 );
 
       <span class="comment">// enable slave window, set vmeAddress to 0x400000 and size to 1MB</span>
-      <a class="code" href="vme4l__api_8c.html#a29">VME4L_SlaveWindowCtrl</a>( fd, 0x400000, 0x100000 )
+      <a class="code" href="vme4l__api_8c.html#a33">VME4L_SlaveWindowCtrl</a>( fd, 0x400000, 0x100000 )
 
       <span class="comment">// map slave window into application space</span>
       <span class="comment">// note: the vmeAddr argument of VME4L_Map() is the offset within</span>
       <span class="comment">// the shared RAM here!</span>
-      <a class="code" href="vme4l__api_8c.html#a9">VME4L_Map</a>( fd,
+      <a class="code" href="vme4l__api_8c.html#a13">VME4L_Map</a>( fd,
                   0,            <span class="comment">// offset</span>
                   0x100000,     <span class="comment">// size</span>
                   &amp;map)
@@ -56,7 +56,7 @@ After the window has been enabled, user can map the shared RAM into its applicat
 
   }
 </pre></div><p>
-A slave window can be disabled by calling <a class="el" href="vme4l__api_8c.html#a29">VME4L_SlaveWindowCtrl()</a> with a size of zero.<p>
+A slave window can be disabled by calling <a class="el" href="vme4l__api_8c.html#a33">VME4L_SlaveWindowCtrl()</a> with a size of zero.<p>
 Further notes to slave windows:<ul>
 <li>More than one process can map the same window at the same time</li><li>The shared RAM area is marked non cacheable, so there is no extra flushing required by application</li></ul>
 <p>
@@ -101,7 +101,7 @@ Further notes to slave windows:<ul>
 <!-- Footer -->
 	<p class="footer">
 	Generated for VME4L API using <a href="http://www.doxygen.org">doxygen</a>.<br>
-	Copyright &copy; 2012 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
+	Copyright &copy; 2019 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
 	</p>
 </div>
 

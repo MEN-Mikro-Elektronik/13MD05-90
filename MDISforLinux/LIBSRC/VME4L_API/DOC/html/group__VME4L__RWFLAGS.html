@@ -11,8 +11,8 @@
 
 <div class="left_to_right" style="padding-top: 6px; background-color: #F0F0F0; height: 110px; border-bottom: 2px solid #D1D1D2;">
 	<!-- Titel -->
-	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;"></a>
-	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">VME4L API &nbsp; for VME4L fileset Release-2.16</h1>
+	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;">
+	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">VME4L API &nbsp; </h1>
 	<h3>flags for VME_Read() and VME_Write()</h3>
 </div>
 
@@ -28,14 +28,40 @@
 <tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__RWFLAGS.html#a0">VME4L_RW_NOFLAGS</a>&nbsp;&nbsp;&nbsp;0</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">no flags </em> <a href="#a0"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__RWFLAGS.html#a1">VME4L_RW_USE_DMA</a>&nbsp;&nbsp;&nbsp;0x02</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__RWFLAGS.html#a1">VME4L_RW_USE_SGL_DMA</a>&nbsp;&nbsp;&nbsp;0x02</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">use DMA engine for non-BLT spaces </em> <a href="#a1"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__RWFLAGS.html#a2">VME4L_RW_KERNEL_SPACE_DMA</a>&nbsp;&nbsp;&nbsp;0x04</td></tr>
+
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__RWFLAGS.html#a3">VME4L_RW_NOVMEINC</a>&nbsp;&nbsp;&nbsp;0x08</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 The following flags can be combined (binary ORed):. 
 <p>
 <hr><h2>Define Documentation</h2>
+<a name="a2" doxytag="vme4l.h::VME4L_RW_KERNEL_SPACE_DMA"></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> #define VME4L_RW_KERNEL_SPACE_DMA&nbsp;&nbsp;&nbsp;0x04
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
 <a name="a0" doxytag="vme4l.h::VME4L_RW_NOFLAGS"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
@@ -60,13 +86,35 @@ no flags
     </td>
   </tr>
 </table>
-<a name="a1" doxytag="vme4l.h::VME4L_RW_USE_DMA"></a><p>
+<a name="a3" doxytag="vme4l.h::VME4L_RW_NOVMEINC"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top"> #define VME4L_RW_USE_DMA&nbsp;&nbsp;&nbsp;0x02
+          <td class="md" nowrap valign="top"> #define VME4L_RW_NOVMEINC&nbsp;&nbsp;&nbsp;0x08
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a name="a1" doxytag="vme4l.h::VME4L_RW_USE_SGL_DMA"></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> #define VME4L_RW_USE_SGL_DMA&nbsp;&nbsp;&nbsp;0x02
       </table>
     </td>
   </tr>
@@ -92,7 +140,7 @@ use DMA engine for non-BLT spaces
 <!-- Footer -->
 	<p class="footer">
 	Generated for VME4L API using <a href="http://www.doxygen.org">doxygen</a>.<br>
-	Copyright &copy; 2012 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
+	Copyright &copy; 2019 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
 	</p>
 </div>
 

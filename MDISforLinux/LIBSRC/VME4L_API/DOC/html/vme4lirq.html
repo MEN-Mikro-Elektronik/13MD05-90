@@ -11,8 +11,8 @@
 
 <div class="left_to_right" style="padding-top: 6px; background-color: #F0F0F0; height: 110px; border-bottom: 2px solid #D1D1D2;">
 	<!-- Titel -->
-	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;"></a>
-	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">VME4L API &nbsp; for VME4L fileset Release-2.16</h1>
+	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;">
+	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">VME4L API &nbsp; </h1>
 	<h3>VME interrupt handling in user space</h3>
 </div>
 
@@ -28,9 +28,9 @@ The handling depends on the interrupt release mode used for that interrupt:<ul>
  In this mode, which is the default, the VME4L driver masks the corresponding interrupt level and sends the signal to the userland process. The userland process' signal handler must clear the interrupt by writing to a device-specific register and must then re-enable the interrupt level.</li><li><b>Release on acknowledge (ROAK)</b><br>
  In this mode, the interrupt is implicitly cleared by the VMEbus IACK cycle. Therefore the VME4L driver will not mask this level before it sends the signal to the process.</li></ul>
 <p>
-To install a signal for a VME interrupt, you call <a class="el" href="vme4l__api_8c.html#a11">VME4L_SigInstall()</a>.<p>
-You have to pass information on the interrupt release mode to the VME4L driver by setting or clearing the <a class="el" href="group__VME4L__IRQFLAGS.html#a1">VME4L_IRQ_ROAK</a> flag in the <em>flags</em> parameter of <a class="el" href="vme4l__api_8c.html#a11">VME4L_SigInstall()</a>.<p>
-The VMEbus interrupt level is automatically enabled by <a class="el" href="vme4l__api_8c.html#a11">VME4L_SigInstall()</a>, when <a class="el" href="group__VME4L__IRQFLAGS.html#a2">VME4L_IRQ_ENBL</a> is passed to the <em>flags</em> parameter, otherwise the level must be explicitly enabled by calling <a class="el" href="vme4l__api_8c.html#a13">VME4L_IrqEnable()</a>.<p>
+To install a signal for a VME interrupt, you call <a class="el" href="vme4l__api_8c.html#a15">VME4L_SigInstall()</a>.<p>
+You have to pass information on the interrupt release mode to the VME4L driver by setting or clearing the <a class="el" href="group__VME4L__IRQFLAGS.html#a1">VME4L_IRQ_ROAK</a> flag in the <em>flags</em> parameter of <a class="el" href="vme4l__api_8c.html#a15">VME4L_SigInstall()</a>.<p>
+The VMEbus interrupt level is automatically enabled by <a class="el" href="vme4l__api_8c.html#a15">VME4L_SigInstall()</a>, when <a class="el" href="group__VME4L__IRQFLAGS.html#a2">VME4L_IRQ_ENBL</a> is passed to the <em>flags</em> parameter, otherwise the level must be explicitly enabled by calling <a class="el" href="vme4l__api_8c.html#a17">VME4L_IrqEnable()</a>.<p>
 Example to install and handle VME interrupts: <div class="fragment"><pre>  <span class="comment">// Error checking omitted in this example</span>
 <span class="preprocessor">  #include &lt;stdio.h&gt;</span>
 <span class="preprocessor">  #include &lt;stdlib.h&gt;</span>
@@ -48,26 +48,26 @@ Example to install and handle VME interrupts: <div class="fragment"><pre>  <span
   <span class="keyword">static</span> <span class="keywordtype">void</span> IrqSigHandler( <span class="keywordtype">int</span> sigNum ) {
       G_map[0x80] = 0x20; <span class="comment">// Service interrupt (device specific)</span>
 
-      <a class="code" href="vme4l__api_8c.html#a13">VME4L_IrqEnable</a>( G_fd, 3 ); <span class="comment">// Re-enable interrupt level</span>
+      <a class="code" href="vme4l__api_8c.html#a17">VME4L_IrqEnable</a>( G_fd, 3 ); <span class="comment">// Re-enable interrupt level</span>
   }
 
   <span class="keywordtype">int</span> main( <span class="keywordtype">int</span> argc, <span class="keywordtype">char</span> *argv[] )
   {
-      G_fd = <a class="code" href="vme4l__api_8c.html#a3">VME4L_Open</a>( VME4L_SPC_A24_D16 );
+      G_fd = <a class="code" href="vme4l__api_8c.html#a2">VME4L_Open</a>( VME4L_SPC_A24_D16 );
 
 
-      <a class="code" href="vme4l__api_8c.html#a9">VME4L_Map</a>( G_fd, 0x10000, vmeOff + 0x800, (<span class="keywordtype">void</span> **)&amp;G_map );
+      <a class="code" href="vme4l__api_8c.html#a13">VME4L_Map</a>( G_fd, 0x10000, vmeOff + 0x800, (<span class="keywordtype">void</span> **)&amp;G_map );
 
       <span class="comment">// Instruct VME4L to send signal 33 on interrupt</span>
       signal( 33, IrqSigHandler );
 
       <span class="comment">// Install vector 121, level 3</span>
-      <a class="code" href="vme4l__api_8c.html#a11">VME4L_SigInstall</a>( G_fd, 121, 3, 33, VME4L_IRQ_NOFLAGS );
+      <a class="code" href="vme4l__api_8c.html#a15">VME4L_SigInstall</a>( G_fd, 121, 3, 33, VME4L_IRQ_NOFLAGS );
 
       <span class="comment">// Prepare your device for interrupts...</span>
       ...
 
-      <a class="code" href="vme4l__api_8c.html#a13">VME4L_IrqEnable</a>( G_fd, 3 );       <span class="comment">// enable interrupt level</span>
+      <a class="code" href="vme4l__api_8c.html#a17">VME4L_IrqEnable</a>( G_fd, 3 );       <span class="comment">// enable interrupt level</span>
 
       <span class="comment">// Let signals come in</span>
       <span class="keywordflow">while</span>(1)
@@ -85,7 +85,7 @@ Notes and Restrictions:<ul>
 <!-- Footer -->
 	<p class="footer">
 	Generated for VME4L API using <a href="http://www.doxygen.org">doxygen</a>.<br>
-	Copyright &copy; 2012 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
+	Copyright &copy; 2019 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
 	</p>
 </div>
 

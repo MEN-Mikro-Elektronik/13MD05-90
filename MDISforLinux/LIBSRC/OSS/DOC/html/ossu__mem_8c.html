@@ -11,8 +11,8 @@
 
 <div class="left_to_right" style="padding-top: 6px; background-color: #F0F0F0; height: 110px; border-bottom: 2px solid #D1D1D2;">
 	<!-- Titel -->
-	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;"></a>
-	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">OSS module for Linux/RTAI &nbsp; 2.15</h1>
+	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;">
+	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">OSS module for Linux/RTAI &nbsp; </h1>
 	<h3>ossu_mem.c File Reference</h3>
 </div>
 
@@ -95,17 +95,8 @@ Memory handling functions of the OSS module for user space.
 <p>
 Check if memory block accessible by caller. 
 <p>
-This function checks if the memory block starting at <em>addr</em> can be accessed by calling routine/process with the attributes specified with <em>mode</em>.<p>
-This function is typically used to verify that an address in user land is really owned by the calling process to avoid that the kernel mode driver crashes the system due to incorrectly passed addresses.<p>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>addr</em>&nbsp;</td><td><b>IN</b> address of memory block to check </td></tr>
-    <tr><td valign=top><em>size</em>&nbsp;</td><td><b>IN</b> number of bytes to check starting at <em>addr</em> </td></tr>
-    <tr><td valign=top><em>mode</em>&nbsp;</td><td><b>IN</b> combination of <code>OSS_READ</code> ORed with <code>OSS_WRITE</code> </td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>0 on success or <code>ERR_OSS_NO_PERM</code> if no permission</dd></dl>
+<p>
+<dl compact><dt><b>Linux notes:</b></dt><dd>This function is a no-op. When used in MDIS context, all user buffers are copied first from user space and are therefore always valid kernel addresses.</dd></dl>
 <p>
 <dl compact><dt><b>Linux notes:</b></dt><dd>This function is a no-op. </dd></dl>
     </td>
@@ -154,17 +145,8 @@ This function is typically used to verify that an address in user land is really
 <p>
 Return memory block. 
 <p>
-Returns a memory block previously allocated by <a class="el" href="oss__mem_8c.html#a6">OSS_MemGet()</a>.<p>
-<dl compact><dt><b>Remarks:</b></dt><dd>The result is undefined if an attempt is made to free a block not previously allocated or with a different size.<p>
-<a class="el" href="oss__mem_8c.html#a7">OSS_MemFree()</a> should not be used in IRQ or Alarm routines.</dd></dl>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>addr</em>&nbsp;</td><td><b>IN</b> address of memory block </td></tr>
-    <tr><td valign=top><em>size</em>&nbsp;</td><td><b>IN</b> number of bytes to free </td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>0 on success or <code>ERR_OSS_xxx</code> error code on error</dd></dl>
+<p>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss_8h.html#a126">OSS_MemGet</a></dd></dl>
 <p>
 <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="ossu__mem_8c.html#a0">OSS_MemGet</a> </dd></dl>
     </td>
@@ -213,31 +195,9 @@ Returns a memory block previously allocated by <a class="el" href="oss__mem_8c.h
 <p>
 Allocates general memory block. 
 <p>
-<a class="el" href="oss__mem_8c.html#a6">OSS_MemGet()</a> will allocate a memory block with at least the requested <em>size</em>. Depending on the operating system the actual block may be larger; this size is returned in <em>gotsizeP</em>. When the block is returned to free system memory you must return the actual size, not the requested size. The return value of <a class="el" href="oss__mem_8c.html#a6">OSS_MemGet()</a> is a pointer to the first byte of the memory block or <code>NULL</code> if failed.<p>
-The memory block allocated has no special attributes, especially it is not guaranteed to be physically contignous (if the system uses virtual addresses) and it is also not safe to use it for DMA. However each OSS implementation guarantees that the allocated memory block is 4 byte aligned.<p>
-Typical usage of the routines:<p>
-<div class="fragment"><pre>   <span class="keywordtype">void</span> *block;
-  u_int32 gotsize;
-
-  <span class="comment">// Allocate 256 bytes of memory</span>
-  block = <a class="code" href="oss__mem_8c.html#a6">OSS_MemGet</a>( llHdl-&gt;osHdl, 256, &amp;gotsize );
-
-  <span class="keywordflow">if</span>( block == NULL ) 
-      <span class="keywordflow">return</span> ERR_OSS_MEM_ALLOC;
-  <span class="comment">// Here the memory can be used</span>
-   ....
-  <span class="comment">// free the memory</span>
-  <a class="code" href="oss__mem_8c.html#a7">OSS_MemFree</a>( llHdl-&gt;osHdl, block, gotsize );
-</pre></div><p>
-<dl compact><dt><b>Remarks:</b></dt><dd><a class="el" href="oss__mem_8c.html#a6">OSS_MemGet()</a> should not be used in IRQ or Alarm routines.</dd></dl>
-<dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign=top><em>oss</em>&nbsp;</td><td><b>IN</b> OSS handle, returned by <a class="el" href="oss_8c.html#a66">OSS_Init()</a> </td></tr>
-    <tr><td valign=top><em>size</em>&nbsp;</td><td><b>IN</b> number of bytes to allocate </td></tr>
-    <tr><td valign=top><em>gotsizeP</em>&nbsp;</td><td><b>OUT</b> actual number of bytes allocated </td></tr>
-  </table>
-</dl>
-<dl compact><dt><b>Returns:</b></dt><dd>pointer to memory block or <code>NULL</code> if memory could not be allocated</dd></dl>
+<p>
+<dl compact><dt><b>Linux notes:</b></dt><dd>Puts calling process to sleep if no free pages available (i.e. should never return NULL).</dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="oss_8h.html#a127">OSS_MemFree</a></dd></dl>
 <p>
 <dl compact><dt><b>Linux notes:</b></dt><dd>Puts calling process to sleep if no free pages available (i.e. should never return NULL).</dd></dl>
 <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="ossu__mem_8c.html#a1">OSS_MemFree</a> </dd></dl>
@@ -252,7 +212,7 @@ Typical usage of the routines:<p>
 <!-- Footer -->
 	<p class="footer">
 	Generated for OSS module for Linux/RTAI using <a href="http://www.doxygen.org">doxygen</a>.<br>
-	Copyright &copy; 2012 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
+	Copyright &copy; 2019 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
 	</p>
 </div>
 

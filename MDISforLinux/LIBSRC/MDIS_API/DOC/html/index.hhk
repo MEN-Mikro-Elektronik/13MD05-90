@@ -6,93 +6,77 @@
 <UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="M_close"><param name="Name" value="M_close"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a10"><param name="Name" value="mdis_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a1"><param name="Name" value="mdis_api_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a9"><param name="Name" value="mdis_api.c"></OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="m__errstr_8c.html"><param name="Name" value="m_errstr.c"></OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="m__errstr_8c.html#a0"><param name="Name" value="M_errstring"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="m__errstr_8c.html#a1"><param name="Name" value="M_errstringTs"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="M_errstring"><param name="Name" value="M_errstring"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a8"><param name="Name" value="mdis_api_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="m__errstr_8c.html#a0"><param name="Name" value="m_errstr.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="M_errstringTs"><param name="Name" value="M_errstringTs"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a9"><param name="Name" value="mdis_api_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="m__errstr_8c.html#a1"><param name="Name" value="m_errstr.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="M_getblock"><param name="Name" value="M_getblock"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a15"><param name="Name" value="mdis_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a4"><param name="Name" value="mdis_api_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a14"><param name="Name" value="mdis_api.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="M_getstat"><param name="Name" value="M_getstat"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a13"><param name="Name" value="mdis_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a6"><param name="Name" value="mdis_api_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a12"><param name="Name" value="mdis_api.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="M_open"><param name="Name" value="M_open"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a5"><param name="Name" value="mdis_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a0"><param name="Name" value="mdis_api_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a4"><param name="Name" value="mdis_api.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="M_read"><param name="Name" value="M_read"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a11"><param name="Name" value="mdis_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a2"><param name="Name" value="mdis_api_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a10"><param name="Name" value="mdis_api.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="M_setblock"><param name="Name" value="M_setblock"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a16"><param name="Name" value="mdis_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a5"><param name="Name" value="mdis_api_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a15"><param name="Name" value="mdis_api.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="M_setstat"><param name="Name" value="M_setstat"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a14"><param name="Name" value="mdis_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a7"><param name="Name" value="mdis_api_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a13"><param name="Name" value="mdis_api.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="M_write"><param name="Name" value="M_write"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a12"><param name="Name" value="mdis_api.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a3"><param name="Name" value="mdis_api_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a11"><param name="Name" value="mdis_api.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html"><param name="Name" value="mdis_api.c"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a10"><param name="Name" value="M_close"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a15"><param name="Name" value="M_getblock"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a13"><param name="Name" value="M_getstat"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a5"><param name="Name" value="M_open"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a11"><param name="Name" value="M_read"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a16"><param name="Name" value="M_setblock"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a14"><param name="Name" value="M_setstat"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a12"><param name="Name" value="M_write"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a6"><param name="Name" value="MDIS_CreateDevice"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a8"><param name="Name" value="MDIS_OpenBoard"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a9"><param name="Name" value="MDIS_RemoveBoard"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a7"><param name="Name" value="MDIS_RemoveDevice"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html"><param name="Name" value="mdis_api_specification.c"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a1"><param name="Name" value="M_close"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a8"><param name="Name" value="M_errstring"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a9"><param name="Name" value="M_errstringTs"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a4"><param name="Name" value="M_getblock"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a6"><param name="Name" value="M_getstat"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a0"><param name="Name" value="M_open"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a2"><param name="Name" value="M_read"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a5"><param name="Name" value="M_setblock"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a7"><param name="Name" value="M_setstat"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api__specification_8c.html#a3"><param name="Name" value="M_write"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a9"><param name="Name" value="M_close"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a14"><param name="Name" value="M_getblock"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a12"><param name="Name" value="M_getstat"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a4"><param name="Name" value="M_open"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a10"><param name="Name" value="M_read"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a15"><param name="Name" value="M_setblock"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a13"><param name="Name" value="M_setstat"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a11"><param name="Name" value="M_write"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a5"><param name="Name" value="MDIS_CreateDevice"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a7"><param name="Name" value="MDIS_OpenBoard"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a8"><param name="Name" value="MDIS_RemoveBoard"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a6"><param name="Name" value="MDIS_RemoveDevice"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="MDIS_CreateDevice"><param name="Name" value="MDIS_CreateDevice"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a6"><param name="Name" value="mdis_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a5"><param name="Name" value="mdis_api.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="MDIS_OpenBoard"><param name="Name" value="MDIS_OpenBoard"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a8"><param name="Name" value="mdis_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a7"><param name="Name" value="mdis_api.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="MDIS_RemoveBoard"><param name="Name" value="MDIS_RemoveBoard"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a9"><param name="Name" value="mdis_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a8"><param name="Name" value="mdis_api.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="MDIS_RemoveDevice"><param name="Name" value="MDIS_RemoveDevice"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a7"><param name="Name" value="mdis_api.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="mdis__api_8c.html#a6"><param name="Name" value="mdis_api.c"></OBJECT>
 </UL>

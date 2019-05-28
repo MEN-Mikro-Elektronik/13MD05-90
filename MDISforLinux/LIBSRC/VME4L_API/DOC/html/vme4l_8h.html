@@ -11,8 +11,8 @@
 
 <div class="left_to_right" style="padding-top: 6px; background-color: #F0F0F0; height: 110px; border-bottom: 2px solid #D1D1D2;">
 	<!-- Titel -->
-	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;"></a>
-	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">VME4L API &nbsp; for VME4L fileset Release-2.16</h1>
+	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;">
+	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">VME4L API &nbsp; </h1>
 	<h3>vme4l.h File Reference</h3>
 </div>
 
@@ -91,32 +91,42 @@
 <tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__IRQLEV.html#a7">VME4L_IRQLEV_7</a>&nbsp;&nbsp;&nbsp;7</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">VME IRQ level 7. </em> <a href="group__VME4L__IRQLEV.html#a7"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__IRQLEV.html#a8">VME4L_IRQLEV_BUSERR</a>&nbsp;&nbsp;&nbsp;8</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__IRQLEV.html#a8">VME4L_IRQLEV_NUM</a>&nbsp;&nbsp;&nbsp;7</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">fake level for bus error interrupt </em> <a href="group__VME4L__IRQLEV.html#a8"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__IRQLEV.html#a9">VME4L_IRQLEV_ACFAIL</a>&nbsp;&nbsp;&nbsp;9</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__IRQLEV.html#a9">VME4L_IRQLEV_BUSERR</a>&nbsp;&nbsp;&nbsp;8</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">fake level for ACFAIL interrupt </em> <a href="group__VME4L__IRQLEV.html#a9"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__IRQLEV.html#a10">VME4L_IRQLEV_SYSFAIL</a>&nbsp;&nbsp;&nbsp;10</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">fake level for bus error interrupt </em> <a href="group__VME4L__IRQLEV.html#a9"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__IRQLEV.html#a10">VME4L_IRQLEV_ACFAIL</a>&nbsp;&nbsp;&nbsp;9</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">fake level for SYSFAIL interrupt </em> <a href="group__VME4L__IRQLEV.html#a10"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__IRQLEV.html#a11">VME4L_IRQLEV_MBOXRD</a>(_n)&nbsp;&nbsp;&nbsp;(0x10+((_n)*2))</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">fake level for ACFAIL interrupt </em> <a href="group__VME4L__IRQLEV.html#a10"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__IRQLEV.html#a11">VME4L_IRQLEV_SYSFAIL</a>&nbsp;&nbsp;&nbsp;10</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">fake level for mailbox _n interrupt caused by VME read access </em> <a href="group__VME4L__IRQLEV.html#a11"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__IRQLEV.html#a12">VME4L_IRQLEV_MBOXWR</a>(_n)&nbsp;&nbsp;&nbsp;(0x11+((_n)*2))</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">fake level for SYSFAIL interrupt </em> <a href="group__VME4L__IRQLEV.html#a11"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__IRQLEV.html#a12">VME4L_IRQLEV_MBOXRD</a>(_n)&nbsp;&nbsp;&nbsp;(0x10+((_n)*2))</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">fake level for mailbox _n interrupt caused by VME write access </em> <a href="group__VME4L__IRQLEV.html#a12"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__IRQLEV.html#a13">VME4L_IRQLEV_LOCMON</a>(_n)&nbsp;&nbsp;&nbsp;(0x20+(_n))</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">fake level for mailbox _n interrupt caused by VME read access </em> <a href="group__VME4L__IRQLEV.html#a12"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__IRQLEV.html#a13">VME4L_IRQLEV_MBOXWR</a>(_n)&nbsp;&nbsp;&nbsp;(0x11+((_n)*2))</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">fake level for location monitor n interrupt </em> <a href="group__VME4L__IRQLEV.html#a13"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__IRQLEV.html#a14">VME4L_NUM_LEVELS</a>&nbsp;&nbsp;&nbsp;0x30</td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">fake level for mailbox _n interrupt caused by VME write access </em> <a href="group__VME4L__IRQLEV.html#a13"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__IRQLEV.html#a14">VME4L_IRQLEV_MBOXWR_NNUM</a>&nbsp;&nbsp;&nbsp;5</td></tr>
+
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__IRQLEV.html#a15">VME4L_IRQLEV_LOCMON</a>(_n)&nbsp;&nbsp;&nbsp;(0x20+(_n))</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">fake level for location monitor n interrupt </em> <a href="group__VME4L__IRQLEV.html#a15"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__IRQLEV.html#a16">VME4L_IRQLEV_LOCMON_NUM</a>&nbsp;&nbsp;&nbsp;0x10</td></tr>
+
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__IRQLEV.html#a17">VME4L_NUM_LEVELS</a>&nbsp;&nbsp;&nbsp;0x30</td></tr>
 
 <tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__RWFLAGS.html#a0">VME4L_RW_NOFLAGS</a>&nbsp;&nbsp;&nbsp;0</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">no flags </em> <a href="group__VME4L__RWFLAGS.html#a0"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__RWFLAGS.html#a1">VME4L_RW_USE_DMA</a>&nbsp;&nbsp;&nbsp;0x02</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__RWFLAGS.html#a1">VME4L_RW_USE_SGL_DMA</a>&nbsp;&nbsp;&nbsp;0x02</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">use DMA engine for non-BLT spaces </em> <a href="group__VME4L__RWFLAGS.html#a1"></a><em><br><br></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__RWFLAGS.html#a2">VME4L_RW_KERNEL_SPACE_DMA</a>&nbsp;&nbsp;&nbsp;0x04</td></tr>
+
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__RWFLAGS.html#a3">VME4L_RW_NOVMEINC</a>&nbsp;&nbsp;&nbsp;0x08</td></tr>
+
 <tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__IRQFLAGS.html#a0">VME4L_IRQ_NOFLAGS</a>&nbsp;&nbsp;&nbsp;0x00</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">no flags </em> <a href="group__VME4L__IRQFLAGS.html#a0"></a><em><br><br></td></tr>
@@ -135,109 +145,168 @@
 <tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="group__VME4L__SWAPMODE.html#a2">VME4L_SW_ADR_SWAP</a>&nbsp;&nbsp;&nbsp;0x02</td></tr>
 
 <tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">X86 systems only: perform address swapping in software. </em> <a href="group__VME4L__SWAPMODE.html#a2"></a><em><br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a31">VME4L_IO_RW_BLOCK</a>&nbsp;&nbsp;&nbsp;_IOW( VME4L_IOC_MAGIC, 10, <a class="el" href="structVME4L__RW__BLOCK.html">VME4L_RW_BLOCK</a> )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a36">VME4L_IO_RW_BLOCK</a>&nbsp;&nbsp;&nbsp;_IOW( VME4L_IOC_MAGIC, 10, <a class="el" href="structVME4L__RW__BLOCK.html">VME4L_RW_BLOCK</a> )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a32">VME4L_IO_SIG_INSTALL2</a>&nbsp;&nbsp;&nbsp;_IOW( VME4L_IOC_MAGIC, 11, <a class="el" href="structVME4L__SIG__INSTALL2.html">VME4L_SIG_INSTALL2</a> )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a37">VME4L_IO_SIG_INSTALL2</a>&nbsp;&nbsp;&nbsp;_IOW( VME4L_IOC_MAGIC, 11, <a class="el" href="structVME4L__SIG__INSTALL2.html">VME4L_SIG_INSTALL2</a> )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a33">VME4L_IO_SIG_UNINSTALL</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 12 )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a38">VME4L_IO_SIG_UNINSTALL</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 12 )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a34">VME4L_IO_SYS_CTRL_FUNCTION_GET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 13 )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a39">VME4L_IO_SYS_CTRL_FUNCTION_GET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 13 )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a35">VME4L_IO_SYS_CTRL_FUNCTION_SET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 14 )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a40">VME4L_IO_SYS_CTRL_FUNCTION_SET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 14 )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a36">VME4L_IO_POSTED_WRITE_MODE_GET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 15 )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a41">VME4L_IO_POSTED_WRITE_MODE_GET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 15 )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a37">VME4L_IO_POSTED_WRITE_MODE_SET</a>&nbsp;&nbsp;&nbsp;VME4L_IO_SET_POSTED_WRITE</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a42">VME4L_IO_POSTED_WRITE_MODE_SET</a>&nbsp;&nbsp;&nbsp;VME4L_IO_SET_POSTED_WRITE</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a38">VME4L_IO_SYS_RESET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 16 )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a43">VME4L_IO_SYS_RESET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 16 )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a39">VME4L_IO_ARBITRATION_TIMEOUT_GET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 17 )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a44">VME4L_IO_ARBITRATION_TIMEOUT_GET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 17 )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a40">VME4L_IO_BUS_ERROR_GET</a>&nbsp;&nbsp;&nbsp;_IOWR( VME4L_IOC_MAGIC, 18, <a class="el" href="structVME4L__BUS__ERROR__INFO.html">VME4L_BUS_ERROR_INFO</a> )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a45">VME4L_IO_BUS_ERROR_GET</a>&nbsp;&nbsp;&nbsp;_IOWR( VME4L_IOC_MAGIC, 18, <a class="el" href="structVME4L__BUS__ERROR__INFO.html">VME4L_BUS_ERROR_INFO</a> )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a41">VME4L_IO_REQUESTER_MODE_GET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 19 )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a46">VME4L_IO_REQUESTER_MODE_GET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 19 )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a42">VME4L_IO_REQUESTER_MODE_SET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 20 )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a47">VME4L_IO_REQUESTER_MODE_SET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 20 )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a43">VME4L_IO_IRQ_GENERATE2</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 21 )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a48">VME4L_IO_IRQ_GENERATE2</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 21 )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a44">VME4L_IO_IRQ_GEN_ACKED</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 22 )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a49">VME4L_IO_IRQ_GEN_ACKED</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 22 )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a45">VME4L_IO_IRQ_GEN_CLEAR</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 23 )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a50">VME4L_IO_IRQ_GEN_CLEAR</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 23 )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a46">VME4L_IO_RMW_CYCLE</a>&nbsp;&nbsp;&nbsp;_IOWR( VME4L_IOC_MAGIC, 24, <a class="el" href="structVME4L__RMW__CYCLE.html">VME4L_RMW_CYCLE</a> )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a51">VME4L_IO_RMW_CYCLE</a>&nbsp;&nbsp;&nbsp;_IOWR( VME4L_IOC_MAGIC, 24, <a class="el" href="structVME4L__RMW__CYCLE.html">VME4L_RMW_CYCLE</a> )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a47">VME4L_IO_AONLY_CYCLE</a>&nbsp;&nbsp;&nbsp;_IOW( VME4L_IOC_MAGIC, 25, <a class="el" href="structVME4L__AONLY__CYCLE.html">VME4L_AONLY_CYCLE</a> )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a52">VME4L_IO_AONLY_CYCLE</a>&nbsp;&nbsp;&nbsp;_IOW( VME4L_IOC_MAGIC, 25, <a class="el" href="structVME4L__AONLY__CYCLE.html">VME4L_AONLY_CYCLE</a> )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a48">VME4L_IO_SWAP_MODE_SET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 26 )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a53">VME4L_IO_SWAP_MODE_SET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 26 )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a49">VME4L_IO_IRQ_ENABLE2</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 27 )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a54">VME4L_IO_IRQ_ENABLE2</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 27 )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a50">VME4L_IO_SLAVE_WINDOW_CTRL</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 28 )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a55">VME4L_IO_SLAVE_WINDOW_CTRL</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 28 )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a51">VME4L_IO_MBOX_RW</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 29 )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a56">VME4L_IO_MBOX_RW</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 29 )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a52">VME4L_IO_LOCMON_REG_RW</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 30 )</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a57">VME4L_IO_LOCMON_REG_RW</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 30 )</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a53">VME4L_IOC_MAXNR</a>&nbsp;&nbsp;&nbsp;30</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a58">VME4L_IO_ADDR_MOD_SET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 31 )</td></tr>
+
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a59">VME4L_IO_ADDR_MOD_GET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 32 )</td></tr>
+
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a60">VME4L_IO_GEO_ADDR_GET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 33 )</td></tr>
+
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a61">VME4L_IO_REQUESTER_LVL_SET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 34 )</td></tr>
+
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a62">VME4L_IO_REQUESTER_LVL_GET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 35 )</td></tr>
+
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a63">VME4L_IO_CRCSR_BAR_SET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 36 )</td></tr>
+
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a64">VME4L_IO_CRCSR_BAR_GET</a>&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 37 )</td></tr>
+
+<tr><td class="memItemLeft" nowrap align=right valign=top>#define&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a65">VME4L_IOC_MAXNR</a>&nbsp;&nbsp;&nbsp;37</td></tr>
 
 <tr><td colspan=2><br><h2>Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>typedef uint64_t&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a54">vmeaddr_t</a></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>typedef uint64_t&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a66">vmeaddr_t</a></td></tr>
 
 <tr><td colspan=2><br><h2>Enumerations</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align=right valign=top>enum &nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a86">VME4L_SPACE</a> { <br>
-&nbsp;&nbsp;<a class="el" href="vme4l_8h.html#a86a55">VME4L_SPC_A16_D16</a> = 0, 
-<a class="el" href="vme4l_8h.html#a86a56">VME4L_SPC_A16_D16_BLT</a> = 1, 
-<a class="el" href="vme4l_8h.html#a86a57">VME4L_SPC_A16_D32</a> = 2, 
-<a class="el" href="vme4l_8h.html#a86a58">VME4L_SPC_A16_D32_BLT</a> = 3, 
+<tr><td class="memItemLeft" nowrap align=right valign=top>enum &nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="vme4l_8h.html#a98">VME4L_SPACE</a> { <br>
+&nbsp;&nbsp;<a class="el" href="vme4l_8h.html#a98a67">VME4L_SPC_A16_D16</a> = 0, 
+<a class="el" href="vme4l_8h.html#a98a68">VME4L_SPC_A24_D64_BLT</a> = 1, 
+<a class="el" href="vme4l_8h.html#a98a69">VME4L_SPC_A16_D32</a> = 2, 
+<a class="el" href="vme4l_8h.html#a98a70">VME4L_SPC_A24_D16</a> = 4, 
 <br>
-&nbsp;&nbsp;<a class="el" href="vme4l_8h.html#a86a59">VME4L_SPC_A24_D16</a> = 4, 
-<a class="el" href="vme4l_8h.html#a86a60">VME4L_SPC_A24_D16_BLT</a> = 5, 
-<a class="el" href="vme4l_8h.html#a86a61">VME4L_SPC_A24_D32</a> = 6, 
-<a class="el" href="vme4l_8h.html#a86a62">VME4L_SPC_A24_D32_BLT</a> = 7, 
+&nbsp;&nbsp;<a class="el" href="vme4l_8h.html#a98a71">VME4L_SPC_A24_D16_BLT</a> = 5, 
+<a class="el" href="vme4l_8h.html#a98a72">VME4L_SPC_A24_D32</a> = 6, 
+<a class="el" href="vme4l_8h.html#a98a73">VME4L_SPC_A24_D32_BLT</a> = 7, 
+<a class="el" href="vme4l_8h.html#a98a74">VME4L_SPC_A32_D32</a> = 8, 
 <br>
-&nbsp;&nbsp;<a class="el" href="vme4l_8h.html#a86a63">VME4L_SPC_A32_D32</a> = 8, 
-<a class="el" href="vme4l_8h.html#a86a64">VME4L_SPC_A32_D32_BLT</a> = 9, 
-<a class="el" href="vme4l_8h.html#a86a65">VME4L_SPC_A32_D64_BLT</a> = 10, 
-<a class="el" href="vme4l_8h.html#a86a66">VME4L_SPC_SLV0</a> = 11, 
+&nbsp;&nbsp;<a class="el" href="vme4l_8h.html#a98a75">VME4L_SPC_A32_D32_BLT</a> = 9, 
+<a class="el" href="vme4l_8h.html#a98a76">VME4L_SPC_A32_D64_BLT</a> = 10, 
+<a class="el" href="vme4l_8h.html#a98a77">VME4L_SPC_SLV0</a> = 11, 
+<a class="el" href="vme4l_8h.html#a98a78">VME4L_SPC_SLV1</a> = 12, 
 <br>
-&nbsp;&nbsp;<a class="el" href="vme4l_8h.html#a86a67">VME4L_SPC_SLV1</a> = 12, 
-<a class="el" href="vme4l_8h.html#a86a68">VME4L_SPC_SLV2</a> = 13, 
-<a class="el" href="vme4l_8h.html#a86a69">VME4L_SPC_SLV3</a> = 14, 
-<a class="el" href="vme4l_8h.html#a86a70">VME4L_SPC_SLV4</a> = 15, 
+&nbsp;&nbsp;<a class="el" href="vme4l_8h.html#a98a79">VME4L_SPC_SLV2</a> = 13, 
+<a class="el" href="vme4l_8h.html#a98a80">VME4L_SPC_SLV3</a> = 14, 
+<a class="el" href="vme4l_8h.html#a98a81">VME4L_SPC_SLV4</a> = 15, 
+<a class="el" href="vme4l_8h.html#a98a82">VME4L_SPC_SLV5</a> = 16, 
 <br>
-&nbsp;&nbsp;<a class="el" href="vme4l_8h.html#a86a71">VME4L_SPC_SLV5</a> = 16, 
-<a class="el" href="vme4l_8h.html#a86a72">VME4L_SPC_SLV6</a> = 17, 
-<a class="el" href="vme4l_8h.html#a86a73">VME4L_SPC_SLV7</a> = 18, 
-<a class="el" href="vme4l_8h.html#a86a74">VME4L_SPC_MST0</a> = 19, 
+&nbsp;&nbsp;<a class="el" href="vme4l_8h.html#a98a83">VME4L_SPC_SLV6</a> = 17, 
+<a class="el" href="vme4l_8h.html#a98a84">VME4L_SPC_SLV7</a> = 18, 
+<a class="el" href="vme4l_8h.html#a98a85">VME4L_SPC_MST0</a> = 19, 
+<a class="el" href="vme4l_8h.html#a98a86">VME4L_SPC_MST1</a> = 20, 
 <br>
-&nbsp;&nbsp;<a class="el" href="vme4l_8h.html#a86a75">VME4L_SPC_MST1</a> = 20, 
-<a class="el" href="vme4l_8h.html#a86a76">VME4L_SPC_MST2</a> = 21, 
-<a class="el" href="vme4l_8h.html#a86a77">VME4L_SPC_MST3</a> = 22, 
-<a class="el" href="vme4l_8h.html#a86a78">VME4L_SPC_MST4</a> = 23, 
+&nbsp;&nbsp;<a class="el" href="vme4l_8h.html#a98a87">VME4L_SPC_MST2</a> = 21, 
+<a class="el" href="vme4l_8h.html#a98a88">VME4L_SPC_MST3</a> = 22, 
+<a class="el" href="vme4l_8h.html#a98a89">VME4L_SPC_MST4</a> = 23, 
+<a class="el" href="vme4l_8h.html#a98a90">VME4L_SPC_MST5</a> = 24, 
 <br>
-&nbsp;&nbsp;<a class="el" href="vme4l_8h.html#a86a79">VME4L_SPC_MST5</a> = 24, 
-<a class="el" href="vme4l_8h.html#a86a80">VME4L_SPC_MST6</a> = 25, 
-<a class="el" href="vme4l_8h.html#a86a81">VME4L_SPC_MST7</a> = 26, 
-<a class="el" href="vme4l_8h.html#a86a82">VME4L_SPC_A64_D32</a> = 27, 
+&nbsp;&nbsp;<a class="el" href="vme4l_8h.html#a98a91">VME4L_SPC_MST6</a> = 25, 
+<a class="el" href="vme4l_8h.html#a98a92">VME4L_SPC_MST7</a> = 26, 
+<a class="el" href="vme4l_8h.html#a98a93">VME4L_SPC_A64_D32</a> = 27, 
+<a class="el" href="vme4l_8h.html#a98a94">VME4L_SPC_A64_2EVME</a> = 28, 
 <br>
-&nbsp;&nbsp;<a class="el" href="vme4l_8h.html#a86a83">VME4L_SPC_A64_2EVME</a> = 28, 
-<a class="el" href="vme4l_8h.html#a86a84">VME4L_SPC_A64_2ESST</a> = 29, 
-<a class="el" href="vme4l_8h.html#a86a85">VME4L_SPC_INVALID</a> = 255
+&nbsp;&nbsp;<a class="el" href="vme4l_8h.html#a98a95">VME4L_SPC_A64_2ESST</a> = 29, 
+<a class="el" href="vme4l_8h.html#a98a96">VME4L_SPC_CR_CSR</a> = 30, 
+<a class="el" href="vme4l_8h.html#a98a97">VME4L_SPC_INVALID</a> = 255
 <br>
  }</td></tr>
 
-<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">VME space definitions. </em> <a href="#a86">More...</a><em><br><br></td></tr>
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">VME space definitions. </em> <a href="#a98">More...</a><em><br><br></td></tr>
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 VME4L definitions/structure shared between user/kernel-mode. 
 <p>
-<dl compact><dt><b>Author:</b></dt><dd><a href="mailto:klaus.popp@men.de">klaus.popp@men.de</a> <dl compact><dt><b>Date</b></dt><dd>2009/06/03 19:37:12 </dd></dl>
-<dl compact><dt><b>Revision</b></dt><dd>2.5 </dd></dl>
+<dl compact><dt><b>Author:</b></dt><dd><a href="mailto:klaus.popp@men.de">klaus.popp@men.de</a> <dl compact><dt><b>Date</b></dt><dd>2014/09/30 16:50:22 </dd></dl>
+<dl compact><dt><b>Revision</b></dt><dd>2.6 </dd></dl>
 </dd></dl>
 <p>
-Switches: -<hr><h2>Define Documentation</h2>
-<a name="a47" doxytag="vme4l.h::VME4L_IO_AONLY_CYCLE"></a><p>
+Switches: -<p>
+----------------------------------------------------------------------------- Copyright (c) 2003-2019, MEN Mikro Elektronik GmbH<hr><h2>Define Documentation</h2>
+<a name="a59" doxytag="vme4l.h::VME4L_IO_ADDR_MOD_GET"></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> #define VME4L_IO_ADDR_MOD_GET&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 32 )
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a name="a58" doxytag="vme4l.h::VME4L_IO_ADDR_MOD_SET"></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> #define VME4L_IO_ADDR_MOD_SET&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 31 )
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a name="a52" doxytag="vme4l.h::VME4L_IO_AONLY_CYCLE"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -259,7 +328,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a39" doxytag="vme4l.h::VME4L_IO_ARBITRATION_TIMEOUT_GET"></a><p>
+<a name="a44" doxytag="vme4l.h::VME4L_IO_ARBITRATION_TIMEOUT_GET"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -281,7 +350,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a40" doxytag="vme4l.h::VME4L_IO_BUS_ERROR_GET"></a><p>
+<a name="a45" doxytag="vme4l.h::VME4L_IO_BUS_ERROR_GET"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -303,7 +372,73 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a49" doxytag="vme4l.h::VME4L_IO_IRQ_ENABLE2"></a><p>
+<a name="a64" doxytag="vme4l.h::VME4L_IO_CRCSR_BAR_GET"></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> #define VME4L_IO_CRCSR_BAR_GET&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 37 )
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a name="a63" doxytag="vme4l.h::VME4L_IO_CRCSR_BAR_SET"></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> #define VME4L_IO_CRCSR_BAR_SET&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 36 )
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a name="a60" doxytag="vme4l.h::VME4L_IO_GEO_ADDR_GET"></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> #define VME4L_IO_GEO_ADDR_GET&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 33 )
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a name="a54" doxytag="vme4l.h::VME4L_IO_IRQ_ENABLE2"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -325,7 +460,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a44" doxytag="vme4l.h::VME4L_IO_IRQ_GEN_ACKED"></a><p>
+<a name="a49" doxytag="vme4l.h::VME4L_IO_IRQ_GEN_ACKED"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -347,7 +482,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a45" doxytag="vme4l.h::VME4L_IO_IRQ_GEN_CLEAR"></a><p>
+<a name="a50" doxytag="vme4l.h::VME4L_IO_IRQ_GEN_CLEAR"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -369,7 +504,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a43" doxytag="vme4l.h::VME4L_IO_IRQ_GENERATE2"></a><p>
+<a name="a48" doxytag="vme4l.h::VME4L_IO_IRQ_GENERATE2"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -391,7 +526,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a52" doxytag="vme4l.h::VME4L_IO_LOCMON_REG_RW"></a><p>
+<a name="a57" doxytag="vme4l.h::VME4L_IO_LOCMON_REG_RW"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -413,7 +548,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a51" doxytag="vme4l.h::VME4L_IO_MBOX_RW"></a><p>
+<a name="a56" doxytag="vme4l.h::VME4L_IO_MBOX_RW"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -435,7 +570,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a36" doxytag="vme4l.h::VME4L_IO_POSTED_WRITE_MODE_GET"></a><p>
+<a name="a41" doxytag="vme4l.h::VME4L_IO_POSTED_WRITE_MODE_GET"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -457,7 +592,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a37" doxytag="vme4l.h::VME4L_IO_POSTED_WRITE_MODE_SET"></a><p>
+<a name="a42" doxytag="vme4l.h::VME4L_IO_POSTED_WRITE_MODE_SET"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -479,7 +614,51 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a41" doxytag="vme4l.h::VME4L_IO_REQUESTER_MODE_GET"></a><p>
+<a name="a62" doxytag="vme4l.h::VME4L_IO_REQUESTER_LVL_GET"></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> #define VME4L_IO_REQUESTER_LVL_GET&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 35 )
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a name="a61" doxytag="vme4l.h::VME4L_IO_REQUESTER_LVL_SET"></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> #define VME4L_IO_REQUESTER_LVL_SET&nbsp;&nbsp;&nbsp;_IO( VME4L_IOC_MAGIC, 34 )
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a name="a46" doxytag="vme4l.h::VME4L_IO_REQUESTER_MODE_GET"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -501,7 +680,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a42" doxytag="vme4l.h::VME4L_IO_REQUESTER_MODE_SET"></a><p>
+<a name="a47" doxytag="vme4l.h::VME4L_IO_REQUESTER_MODE_SET"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -523,7 +702,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a46" doxytag="vme4l.h::VME4L_IO_RMW_CYCLE"></a><p>
+<a name="a51" doxytag="vme4l.h::VME4L_IO_RMW_CYCLE"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -545,7 +724,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a31" doxytag="vme4l.h::VME4L_IO_RW_BLOCK"></a><p>
+<a name="a36" doxytag="vme4l.h::VME4L_IO_RW_BLOCK"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -567,7 +746,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a32" doxytag="vme4l.h::VME4L_IO_SIG_INSTALL2"></a><p>
+<a name="a37" doxytag="vme4l.h::VME4L_IO_SIG_INSTALL2"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -589,7 +768,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a33" doxytag="vme4l.h::VME4L_IO_SIG_UNINSTALL"></a><p>
+<a name="a38" doxytag="vme4l.h::VME4L_IO_SIG_UNINSTALL"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -611,7 +790,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a50" doxytag="vme4l.h::VME4L_IO_SLAVE_WINDOW_CTRL"></a><p>
+<a name="a55" doxytag="vme4l.h::VME4L_IO_SLAVE_WINDOW_CTRL"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -633,7 +812,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a48" doxytag="vme4l.h::VME4L_IO_SWAP_MODE_SET"></a><p>
+<a name="a53" doxytag="vme4l.h::VME4L_IO_SWAP_MODE_SET"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -655,7 +834,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a34" doxytag="vme4l.h::VME4L_IO_SYS_CTRL_FUNCTION_GET"></a><p>
+<a name="a39" doxytag="vme4l.h::VME4L_IO_SYS_CTRL_FUNCTION_GET"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -677,7 +856,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a35" doxytag="vme4l.h::VME4L_IO_SYS_CTRL_FUNCTION_SET"></a><p>
+<a name="a40" doxytag="vme4l.h::VME4L_IO_SYS_CTRL_FUNCTION_SET"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -699,7 +878,7 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a38" doxytag="vme4l.h::VME4L_IO_SYS_RESET"></a><p>
+<a name="a43" doxytag="vme4l.h::VME4L_IO_SYS_RESET"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -721,13 +900,13 @@ Switches: -<hr><h2>Define Documentation</h2>
     </td>
   </tr>
 </table>
-<a name="a53" doxytag="vme4l.h::VME4L_IOC_MAXNR"></a><p>
+<a name="a65" doxytag="vme4l.h::VME4L_IOC_MAXNR"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top"> #define VME4L_IOC_MAXNR&nbsp;&nbsp;&nbsp;30
+          <td class="md" nowrap valign="top"> #define VME4L_IOC_MAXNR&nbsp;&nbsp;&nbsp;37
       </table>
     </td>
   </tr>
@@ -744,13 +923,13 @@ Switches: -<hr><h2>Define Documentation</h2>
   </tr>
 </table>
 <hr><h2>Typedef Documentation</h2>
-<a name="a54" doxytag="vme4l.h::vmeaddr_t"></a><p>
+<a name="a66" doxytag="vme4l.h::vmeaddr_t"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top"> typedef uint64_t <a class="el" href="vme4l_8h.html#a54">vmeaddr_t</a>
+          <td class="md" nowrap valign="top"> typedef uint64_t <a class="el" href="vme4l_8h.html#a66">vmeaddr_t</a>
       </table>
     </td>
   </tr>
@@ -767,13 +946,13 @@ Switches: -<hr><h2>Define Documentation</h2>
   </tr>
 </table>
 <hr><h2>Enumeration Type Documentation</h2>
-<a name="a86" doxytag="vme4l.h::VME4L_SPACE"></a><p>
+<a name="a98" doxytag="vme4l.h::VME4L_SPACE"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
       <table cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td class="md" nowrap valign="top"> enum <a class="el" href="vme4l_8h.html#a86">VME4L_SPACE</a>
+          <td class="md" nowrap valign="top"> enum <a class="el" href="vme4l_8h.html#a98">VME4L_SPACE</a>
       </table>
     </td>
   </tr>
@@ -790,67 +969,67 @@ VME space definitions.
 <p>
 <dl compact><dt><b>Enumeration values: </b></dt><dd>
 <table border=0 cellspacing=2 cellpadding=0>
-<tr><td valign=top><em><a name="a86a55" doxytag="VME4L_SPC_A16_D16"></a><em>VME4L_SPC_A16_D16</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a67" doxytag="VME4L_SPC_A16_D16"></a><em>VME4L_SPC_A16_D16</em></em>&nbsp;</td><td>
 Short non priviledged (D16). </td></tr>
-<tr><td valign=top><em><a name="a86a56" doxytag="VME4L_SPC_A16_D16_BLT"></a><em>VME4L_SPC_A16_D16_BLT</em></em>&nbsp;</td><td>
-Short non priviledged (D16-BLT), n/a. </td></tr>
-<tr><td valign=top><em><a name="a86a57" doxytag="VME4L_SPC_A16_D32"></a><em>VME4L_SPC_A16_D32</em></em>&nbsp;</td><td>
-Short non priviledged (D32). </td></tr>
-<tr><td valign=top><em><a name="a86a58" doxytag="VME4L_SPC_A16_D32_BLT"></a><em>VME4L_SPC_A16_D32_BLT</em></em>&nbsp;</td><td>
-Short non priviledged (D32-BLT), n/a. </td></tr>
-<tr><td valign=top><em><a name="a86a59" doxytag="VME4L_SPC_A24_D16"></a><em>VME4L_SPC_A24_D16</em></em>&nbsp;</td><td>
-Standard non priviledged (D16). </td></tr>
-<tr><td valign=top><em><a name="a86a60" doxytag="VME4L_SPC_A24_D16_BLT"></a><em>VME4L_SPC_A24_D16_BLT</em></em>&nbsp;</td><td>
-Standard non priviledged (D16-BLT). </td></tr>
-<tr><td valign=top><em><a name="a86a61" doxytag="VME4L_SPC_A24_D32"></a><em>VME4L_SPC_A24_D32</em></em>&nbsp;</td><td>
-Standard non priviledged (D32). </td></tr>
-<tr><td valign=top><em><a name="a86a62" doxytag="VME4L_SPC_A24_D32_BLT"></a><em>VME4L_SPC_A24_D32_BLT</em></em>&nbsp;</td><td>
-Standard non priviledged (D32-BLT). </td></tr>
-<tr><td valign=top><em><a name="a86a63" doxytag="VME4L_SPC_A32_D32"></a><em>VME4L_SPC_A32_D32</em></em>&nbsp;</td><td>
-Extended non priviledged (D32). </td></tr>
-<tr><td valign=top><em><a name="a86a64" doxytag="VME4L_SPC_A32_D32_BLT"></a><em>VME4L_SPC_A32_D32_BLT</em></em>&nbsp;</td><td>
-Extended non priviledged (D32-BLT). </td></tr>
-<tr><td valign=top><em><a name="a86a65" doxytag="VME4L_SPC_A32_D64_BLT"></a><em>VME4L_SPC_A32_D64_BLT</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a68" doxytag="VME4L_SPC_A24_D64_BLT"></a><em>VME4L_SPC_A24_D64_BLT</em></em>&nbsp;</td><td>
 Extended non priviledged (D64-BLT). </td></tr>
-<tr><td valign=top><em><a name="a86a66" doxytag="VME4L_SPC_SLV0"></a><em>VME4L_SPC_SLV0</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a69" doxytag="VME4L_SPC_A16_D32"></a><em>VME4L_SPC_A16_D32</em></em>&nbsp;</td><td>
+Short non priviledged (D32). </td></tr>
+<tr><td valign=top><em><a name="a98a70" doxytag="VME4L_SPC_A24_D16"></a><em>VME4L_SPC_A24_D16</em></em>&nbsp;</td><td>
+Standard non priviledged (D16). </td></tr>
+<tr><td valign=top><em><a name="a98a71" doxytag="VME4L_SPC_A24_D16_BLT"></a><em>VME4L_SPC_A24_D16_BLT</em></em>&nbsp;</td><td>
+Standard non priviledged (D16-BLT). </td></tr>
+<tr><td valign=top><em><a name="a98a72" doxytag="VME4L_SPC_A24_D32"></a><em>VME4L_SPC_A24_D32</em></em>&nbsp;</td><td>
+Standard non priviledged (D32). </td></tr>
+<tr><td valign=top><em><a name="a98a73" doxytag="VME4L_SPC_A24_D32_BLT"></a><em>VME4L_SPC_A24_D32_BLT</em></em>&nbsp;</td><td>
+Standard non priviledged (D32-BLT). </td></tr>
+<tr><td valign=top><em><a name="a98a74" doxytag="VME4L_SPC_A32_D32"></a><em>VME4L_SPC_A32_D32</em></em>&nbsp;</td><td>
+Extended non priviledged (D32). </td></tr>
+<tr><td valign=top><em><a name="a98a75" doxytag="VME4L_SPC_A32_D32_BLT"></a><em>VME4L_SPC_A32_D32_BLT</em></em>&nbsp;</td><td>
+Extended non priviledged (D32-BLT). </td></tr>
+<tr><td valign=top><em><a name="a98a76" doxytag="VME4L_SPC_A32_D64_BLT"></a><em>VME4L_SPC_A32_D64_BLT</em></em>&nbsp;</td><td>
+Extended non priviledged (D64-BLT). </td></tr>
+<tr><td valign=top><em><a name="a98a77" doxytag="VME4L_SPC_SLV0"></a><em>VME4L_SPC_SLV0</em></em>&nbsp;</td><td>
 slave (inbound) window #0 </td></tr>
-<tr><td valign=top><em><a name="a86a67" doxytag="VME4L_SPC_SLV1"></a><em>VME4L_SPC_SLV1</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a78" doxytag="VME4L_SPC_SLV1"></a><em>VME4L_SPC_SLV1</em></em>&nbsp;</td><td>
 slave (inbound) window #1 </td></tr>
-<tr><td valign=top><em><a name="a86a68" doxytag="VME4L_SPC_SLV2"></a><em>VME4L_SPC_SLV2</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a79" doxytag="VME4L_SPC_SLV2"></a><em>VME4L_SPC_SLV2</em></em>&nbsp;</td><td>
 slave (inbound) window #2 </td></tr>
-<tr><td valign=top><em><a name="a86a69" doxytag="VME4L_SPC_SLV3"></a><em>VME4L_SPC_SLV3</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a80" doxytag="VME4L_SPC_SLV3"></a><em>VME4L_SPC_SLV3</em></em>&nbsp;</td><td>
 slave (inbound) window #3 </td></tr>
-<tr><td valign=top><em><a name="a86a70" doxytag="VME4L_SPC_SLV4"></a><em>VME4L_SPC_SLV4</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a81" doxytag="VME4L_SPC_SLV4"></a><em>VME4L_SPC_SLV4</em></em>&nbsp;</td><td>
 slave (inbound) window #4 </td></tr>
-<tr><td valign=top><em><a name="a86a71" doxytag="VME4L_SPC_SLV5"></a><em>VME4L_SPC_SLV5</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a82" doxytag="VME4L_SPC_SLV5"></a><em>VME4L_SPC_SLV5</em></em>&nbsp;</td><td>
 slave (inbound) window #5 </td></tr>
-<tr><td valign=top><em><a name="a86a72" doxytag="VME4L_SPC_SLV6"></a><em>VME4L_SPC_SLV6</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a83" doxytag="VME4L_SPC_SLV6"></a><em>VME4L_SPC_SLV6</em></em>&nbsp;</td><td>
 slave (inbound) window #6 </td></tr>
-<tr><td valign=top><em><a name="a86a73" doxytag="VME4L_SPC_SLV7"></a><em>VME4L_SPC_SLV7</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a84" doxytag="VME4L_SPC_SLV7"></a><em>VME4L_SPC_SLV7</em></em>&nbsp;</td><td>
 slave (inbound) window #7 </td></tr>
-<tr><td valign=top><em><a name="a86a74" doxytag="VME4L_SPC_MST0"></a><em>VME4L_SPC_MST0</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a85" doxytag="VME4L_SPC_MST0"></a><em>VME4L_SPC_MST0</em></em>&nbsp;</td><td>
 master (outbound) window #0 </td></tr>
-<tr><td valign=top><em><a name="a86a75" doxytag="VME4L_SPC_MST1"></a><em>VME4L_SPC_MST1</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a86" doxytag="VME4L_SPC_MST1"></a><em>VME4L_SPC_MST1</em></em>&nbsp;</td><td>
 master (outbound) window #1 </td></tr>
-<tr><td valign=top><em><a name="a86a76" doxytag="VME4L_SPC_MST2"></a><em>VME4L_SPC_MST2</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a87" doxytag="VME4L_SPC_MST2"></a><em>VME4L_SPC_MST2</em></em>&nbsp;</td><td>
 master (outbound) window #2 </td></tr>
-<tr><td valign=top><em><a name="a86a77" doxytag="VME4L_SPC_MST3"></a><em>VME4L_SPC_MST3</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a88" doxytag="VME4L_SPC_MST3"></a><em>VME4L_SPC_MST3</em></em>&nbsp;</td><td>
 master (outbound) window #3 </td></tr>
-<tr><td valign=top><em><a name="a86a78" doxytag="VME4L_SPC_MST4"></a><em>VME4L_SPC_MST4</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a89" doxytag="VME4L_SPC_MST4"></a><em>VME4L_SPC_MST4</em></em>&nbsp;</td><td>
 master (outbound) window #4 </td></tr>
-<tr><td valign=top><em><a name="a86a79" doxytag="VME4L_SPC_MST5"></a><em>VME4L_SPC_MST5</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a90" doxytag="VME4L_SPC_MST5"></a><em>VME4L_SPC_MST5</em></em>&nbsp;</td><td>
 master (outbound) window #5 </td></tr>
-<tr><td valign=top><em><a name="a86a80" doxytag="VME4L_SPC_MST6"></a><em>VME4L_SPC_MST6</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a91" doxytag="VME4L_SPC_MST6"></a><em>VME4L_SPC_MST6</em></em>&nbsp;</td><td>
 master (outbound) window #6 </td></tr>
-<tr><td valign=top><em><a name="a86a81" doxytag="VME4L_SPC_MST7"></a><em>VME4L_SPC_MST7</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a92" doxytag="VME4L_SPC_MST7"></a><em>VME4L_SPC_MST7</em></em>&nbsp;</td><td>
 master (outbound) window #7 </td></tr>
-<tr><td valign=top><em><a name="a86a82" doxytag="VME4L_SPC_A64_D32"></a><em>VME4L_SPC_A64_D32</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a93" doxytag="VME4L_SPC_A64_D32"></a><em>VME4L_SPC_A64_D32</em></em>&nbsp;</td><td>
 Long non priviledged (D32). </td></tr>
-<tr><td valign=top><em><a name="a86a83" doxytag="VME4L_SPC_A64_2EVME"></a><em>VME4L_SPC_A64_2EVME</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a94" doxytag="VME4L_SPC_A64_2EVME"></a><em>VME4L_SPC_A64_2EVME</em></em>&nbsp;</td><td>
 Long non priviledged (2eVME). </td></tr>
-<tr><td valign=top><em><a name="a86a84" doxytag="VME4L_SPC_A64_2ESST"></a><em>VME4L_SPC_A64_2ESST</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a95" doxytag="VME4L_SPC_A64_2ESST"></a><em>VME4L_SPC_A64_2ESST</em></em>&nbsp;</td><td>
 Long non priviledged (2eSST). </td></tr>
-<tr><td valign=top><em><a name="a86a85" doxytag="VME4L_SPC_INVALID"></a><em>VME4L_SPC_INVALID</em></em>&nbsp;</td><td>
+<tr><td valign=top><em><a name="a98a96" doxytag="VME4L_SPC_CR_CSR"></a><em>VME4L_SPC_CR_CSR</em></em>&nbsp;</td><td>
+Special CR/CSR config space (r/o). </td></tr>
+<tr><td valign=top><em><a name="a98a97" doxytag="VME4L_SPC_INVALID"></a><em>VME4L_SPC_INVALID</em></em>&nbsp;</td><td>
 </td></tr>
 </table>
 </dl>
@@ -865,7 +1044,7 @@ Long non priviledged (2eSST). </td></tr>
 <!-- Footer -->
 	<p class="footer">
 	Generated for VME4L API using <a href="http://www.doxygen.org">doxygen</a>.<br>
-	Copyright &copy; 2012 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
+	Copyright &copy; 2019 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
 	</p>
 </div>
 

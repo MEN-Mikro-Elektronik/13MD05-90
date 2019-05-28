@@ -11,7 +11,7 @@
 
 <div class="left_to_right" style="padding-top: 6px; background-color: #F0F0F0; height: 110px; border-bottom: 2px solid #D1D1D2;">
 	<!-- Titel -->
-	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;"></a>
+	<img src="menlogo.gif" alt="MEN" style="float: left; height: 103px; width: 155px; margin: 0px;">
 	<h1 style="margin: 0px; padding-top: 35px; padding-bottom: 0px;">Chameleon System Unit Driver &nbsp; </h1>
 	<h3>CHAMELEONV2_TABLE struct Reference</h3>
 </div>
@@ -39,14 +39,14 @@
 
 <tr><td class="memItemLeft" nowrap align=right valign=top>u_int16&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="structCHAMELEONV2__TABLE.html#o5">magicWord</a></td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>u_int16&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="structCHAMELEONV2__TABLE.html#o6">reserved</a></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>u_int16&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="structCHAMELEONV2__TABLE.html#o6">minRevision</a></td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 This structure provides information about a chameleon-V2 table. 
 <p>
 For Chameleon-V0/V1 devices, the following parameters are fix:<ul>
-<li>busType = CHAMELEONV2_BUSTYPE_WB</li><li>busId = 0</li><li>file = ""</li><li>magicWord = 0xABCD</li><li>reserved = 0 </li></ul>
+<li>busType = CHAMELEONV2_BUSTYPE_WB</li><li>busId = 0</li><li>file = ""</li><li>magicWord = 0xABCD</li><li>reserved = 0</li><li>minRevision = 0 </li></ul>
 
 <p>
 <hr><h2>Field Documentation</h2>
@@ -138,6 +138,28 @@ FPGA filename (ASCII code 'A'-'Z', e.g. EM04N02IC002) including terminating null
 magic-word of the chameleon table (<a class="el" href="group____CHAM__MAGICWORD.html">Chameleon Magic Words</a>)     </td>
   </tr>
 </table>
+<a name="o6" doxytag="CHAMELEONV2_TABLE::minRevision"></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> u_int16 <a class="el" href="structCHAMELEONV2__TABLE.html#o6">CHAMELEONV2_TABLE::minRevision</a>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+minor Revision of FPGA code     </td>
+  </tr>
+</table>
 <a name="o2" doxytag="CHAMELEONV2_TABLE::model"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
@@ -158,28 +180,6 @@ magic-word of the chameleon table (<a class="el" href="group____CHAM__MAGICWORD.
 
 <p>
 model of FPGA code (ASCII character)     </td>
-  </tr>
-</table>
-<a name="o6" doxytag="CHAMELEONV2_TABLE::reserved"></a><p>
-<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
-  <tr>
-    <td class="mdRow">
-      <table cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td class="md" nowrap valign="top"> u_int16 <a class="el" href="structCHAMELEONV2__TABLE.html#o6">CHAMELEONV2_TABLE::reserved</a>
-      </table>
-    </td>
-  </tr>
-</table>
-<table cellspacing=5 cellpadding=0 border=0>
-  <tr>
-    <td>
-      &nbsp;
-    </td>
-    <td>
-
-<p>
-reserved     </td>
   </tr>
 </table>
 <a name="o3" doxytag="CHAMELEONV2_TABLE::revision"></a><p>
@@ -214,7 +214,7 @@ revision of FPGA code (0x00..0x3F)     </td>
 <!-- Footer -->
 	<p class="footer">
 	Generated for Chameleon System Unit Driver using <a href="http://www.doxygen.org">doxygen</a>.<br>
-	Copyright &copy; 2010 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
+	Copyright &copy; 2019 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
 	</p>
 </div>
 

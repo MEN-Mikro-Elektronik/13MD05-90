@@ -135,6 +135,6 @@
   <LI><OBJECT type="text/sitemap"><param name="Name" value="Shared RAM support"><param name="Local" value="vme4lshram.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="Mailbox support"><param name="Local" value="vme4lmbox.html"><param name="ImageNumber" value="11"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Name" value="Location monitor support"><param name="Local" value="vme4llocmon.html"><param name="ImageNumber" value="11"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Name" value="dummy"><param name="Local" value="dummy.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="MEN logo"><param name="Local" value="vme4ldummy.html"><param name="ImageNumber" value="11"></OBJECT>
   </UL>
 </UL>

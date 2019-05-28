@@ -18,122 +18,97 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html"><param name="Name" value="oss.h"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a152"><param name="Name" value="OSS_AlarmClear"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a149"><param name="Name" value="OSS_AlarmCreate"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a150"><param name="Name" value="OSS_AlarmRemove"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a151"><param name="Name" value="OSS_AlarmSet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a144"><param name="Name" value="OSS_AssignResources"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a139"><param name="Name" value="OSS_BusToPhysAddr"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a132"><param name="Name" value="OSS_DbgLevelGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a131"><param name="Name" value="OSS_DbgLevelSet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a133"><param name="Name" value="OSS_Delay"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a176"><param name="Name" value="OSS_DL_AddTail"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a173"><param name="Name" value="OSS_DL_NewList"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a175"><param name="Name" value="OSS_DL_RemHead"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a174"><param name="Name" value="OSS_DL_Remove"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a136"><param name="Name" value="OSS_GetPid"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a168"><param name="Name" value="OSS_GetSmbHdl"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a118"><param name="Name" value="OSS_IrqLevelToVector"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a116"><param name="Name" value="OSS_IrqMask"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a117"><param name="Name" value="OSS_IrqUnMask"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a143"><param name="Name" value="OSS_IsaGetConfig"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a145"><param name="Name" value="OSS_MapPhysToVirtAddr"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a108"><param name="Name" value="OSS_MemChk"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a109"><param name="Name" value="OSS_MemCopy"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a110"><param name="Name" value="OSS_MemFill"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a107"><param name="Name" value="OSS_MemFree"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a106"><param name="Name" value="OSS_MemGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a138"><param name="Name" value="OSS_MikroDelay"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a137"><param name="Name" value="OSS_MikroDelayInit"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a140"><param name="Name" value="OSS_PciGetConfig"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a141"><param name="Name" value="OSS_PciSetConfig"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a142"><param name="Name" value="OSS_PciSlotToPciDevice"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a127"><param name="Name" value="OSS_SemCreate"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a128"><param name="Name" value="OSS_SemRemove"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a130"><param name="Name" value="OSS_SemSignal"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a129"><param name="Name" value="OSS_SemWait"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a169"><param name="Name" value="OSS_SetSmbHdl"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a123"><param name="Name" value="OSS_SigCreate"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a126"><param name="Name" value="OSS_SigInfo"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a125"><param name="Name" value="OSS_SigRemove"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a124"><param name="Name" value="OSS_SigSend"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a121"><param name="Name" value="OSS_SpinLockAcquire"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a119"><param name="Name" value="OSS_SpinLockCreate"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a122"><param name="Name" value="OSS_SpinLockRelease"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a120"><param name="Name" value="OSS_SpinLockRemove"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a147"><param name="Name" value="OSS_Sprintf"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a113"><param name="Name" value="OSS_StrCmp"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a111"><param name="Name" value="OSS_StrCpy"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a112"><param name="Name" value="OSS_StrLen"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a114"><param name="Name" value="OSS_StrNcmp"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a115"><param name="Name" value="OSS_StrTok"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a170"><param name="Name" value="OSS_Swap16"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a171"><param name="Name" value="OSS_Swap32"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a172"><param name="Name" value="OSS_Swap64"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a135"><param name="Name" value="OSS_TickGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a134"><param name="Name" value="OSS_TickRateGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a146"><param name="Name" value="OSS_UnMapVirtAddr"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a148"><param name="Name" value="OSS_Vsprintf"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a172"><param name="Name" value="OSS_AlarmClear"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a169"><param name="Name" value="OSS_AlarmCreate"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a170"><param name="Name" value="OSS_AlarmRemove"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a171"><param name="Name" value="OSS_AlarmSet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a164"><param name="Name" value="OSS_AssignResources"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a159"><param name="Name" value="OSS_BusToPhysAddr"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a152"><param name="Name" value="OSS_DbgLevelGet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a151"><param name="Name" value="OSS_DbgLevelSet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a153"><param name="Name" value="OSS_Delay"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a156"><param name="Name" value="OSS_GetPid"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a138"><param name="Name" value="OSS_IrqLevelToVector"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a136"><param name="Name" value="OSS_IrqMask"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a137"><param name="Name" value="OSS_IrqUnMask"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a163"><param name="Name" value="OSS_IsaGetConfig"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a165"><param name="Name" value="OSS_MapPhysToVirtAddr"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a128"><param name="Name" value="OSS_MemChk"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a129"><param name="Name" value="OSS_MemCopy"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a130"><param name="Name" value="OSS_MemFill"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a127"><param name="Name" value="OSS_MemFree"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a126"><param name="Name" value="OSS_MemGet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a158"><param name="Name" value="OSS_MikroDelay"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a157"><param name="Name" value="OSS_MikroDelayInit"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a160"><param name="Name" value="OSS_PciGetConfig"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a161"><param name="Name" value="OSS_PciSetConfig"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a162"><param name="Name" value="OSS_PciSlotToPciDevice"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a147"><param name="Name" value="OSS_SemCreate"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a148"><param name="Name" value="OSS_SemRemove"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a150"><param name="Name" value="OSS_SemSignal"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a149"><param name="Name" value="OSS_SemWait"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a143"><param name="Name" value="OSS_SigCreate"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a146"><param name="Name" value="OSS_SigInfo"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a145"><param name="Name" value="OSS_SigRemove"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a144"><param name="Name" value="OSS_SigSend"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a141"><param name="Name" value="OSS_SpinLockAcquire"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a139"><param name="Name" value="OSS_SpinLockCreate"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a142"><param name="Name" value="OSS_SpinLockRelease"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a140"><param name="Name" value="OSS_SpinLockRemove"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a167"><param name="Name" value="OSS_Sprintf"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a133"><param name="Name" value="OSS_StrCmp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a131"><param name="Name" value="OSS_StrCpy"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a132"><param name="Name" value="OSS_StrLen"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a134"><param name="Name" value="OSS_StrNcmp"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a135"><param name="Name" value="OSS_StrTok"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a190"><param name="Name" value="OSS_Swap16"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a191"><param name="Name" value="OSS_Swap32"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a155"><param name="Name" value="OSS_TickGet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a154"><param name="Name" value="OSS_TickRateGet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a166"><param name="Name" value="OSS_UnMapVirtAddr"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a168"><param name="Name" value="OSS_Vsprintf"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html"><param name="Name" value="oss_alarm.c"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a23"><param name="Name" value="OSS_AlarmClear"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a20"><param name="Name" value="OSS_AlarmCreate"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a24"><param name="Name" value="OSS_AlarmMask"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a21"><param name="Name" value="OSS_AlarmRemove"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a25"><param name="Name" value="OSS_AlarmRestore"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a22"><param name="Name" value="OSS_AlarmSet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a18"><param name="Name" value="OSS_RtaiAlarmMask"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a19"><param name="Name" value="OSS_RtaiAlarmRestore"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm__rtai_8c.html"><param name="Name" value="oss_alarm_rtai.c"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm__rtai_8c.html#a7"><param name="Name" value="OSS_RtaiAlarmClear"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm__rtai_8c.html#a8"><param name="Name" value="OSS_RtaiAlarmCreate"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm__rtai_8c.html#a11"><param name="Name" value="OSS_RtaiAlarmMask"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm__rtai_8c.html#a9"><param name="Name" value="OSS_RtaiAlarmRemove"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm__rtai_8c.html#a12"><param name="Name" value="OSS_RtaiAlarmRestore"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm__rtai_8c.html#a10"><param name="Name" value="OSS_RtaiAlarmSet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a5"><param name="Name" value="OSS_AlarmClear"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a2"><param name="Name" value="OSS_AlarmCreate"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a6"><param name="Name" value="OSS_AlarmMask"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a3"><param name="Name" value="OSS_AlarmRemove"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a7"><param name="Name" value="OSS_AlarmRestore"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a4"><param name="Name" value="OSS_AlarmSet"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_AlarmClear"><param name="Name" value="OSS_AlarmClear"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a152"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a23"><param name="Name" value="oss_alarm.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a12"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a172"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a5"><param name="Name" value="oss_alarm.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_AlarmCreate"><param name="Name" value="OSS_AlarmCreate"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a149"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a20"><param name="Name" value="oss_alarm.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a9"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a169"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a2"><param name="Name" value="oss_alarm.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_AlarmMask"><param name="Name" value="OSS_AlarmMask"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a24"><param name="Name" value="oss_alarm.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a13"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a6"><param name="Name" value="oss_alarm.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_AlarmRemove"><param name="Name" value="OSS_AlarmRemove"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a150"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a21"><param name="Name" value="oss_alarm.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a10"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a170"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a3"><param name="Name" value="oss_alarm.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_AlarmRestore"><param name="Name" value="OSS_AlarmRestore"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a25"><param name="Name" value="oss_alarm.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a14"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a7"><param name="Name" value="oss_alarm.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_AlarmSet"><param name="Name" value="OSS_AlarmSet"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a151"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a22"><param name="Name" value="oss_alarm.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a11"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a171"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a4"><param name="Name" value="oss_alarm.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_AssignResources"><param name="Name" value="OSS_AssignResources"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a144"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a164"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__resource_8c.html#a0"><param name="Name" value="oss_resource.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a50"><param name="Name" value="oss_specification.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__resource_8c.html#a0"><param name="Name" value="ossu_resource.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__bustoaddr_8c.html"><param name="Name" value="oss_bustoaddr.c"></OBJECT>
@@ -145,9 +120,8 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_BusToPhysAddr"><param name="Name" value="OSS_BusToPhysAddr"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a139"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a159"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__bustoaddr_8c.html#a0"><param name="Name" value="oss_bustoaddr.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a43"><param name="Name" value="oss_specification.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__bustoaddr_8c.html#a1"><param name="Name" value="ossu_bustoaddr.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__clib_8c.html"><param name="Name" value="oss_clib.c"></OBJECT>
@@ -165,52 +139,18 @@
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_DbgLevelGet"><param name="Name" value="OSS_DbgLevelGet"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8c.html#a69"><param name="Name" value="oss.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a132"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a5"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a152"><param name="Name" value="oss.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_DbgLevelSet"><param name="Name" value="OSS_DbgLevelSet"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8c.html#a68"><param name="Name" value="oss.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a131"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a4"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a151"><param name="Name" value="oss.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_Delay"><param name="Name" value="OSS_Delay"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a133"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a36"><param name="Name" value="oss_specification.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a12"><param name="Name" value="oss_time.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a153"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a1"><param name="Name" value="oss_time.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__time_8c.html#a6"><param name="Name" value="ossu_time.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_DL_AddTail"><param name="Name" value="OSS_DL_AddTail"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a176"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__dl__list_8c.html#a3"><param name="Name" value="oss_dl_list.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a18"><param name="Name" value="oss_specification.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__dl__list_8c.html"><param name="Name" value="oss_dl_list.c"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__dl__list_8c.html#a3"><param name="Name" value="OSS_DL_AddTail"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__dl__list_8c.html#a0"><param name="Name" value="OSS_DL_NewList"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__dl__list_8c.html#a2"><param name="Name" value="OSS_DL_RemHead"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__dl__list_8c.html#a1"><param name="Name" value="OSS_DL_Remove"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_DL_NewList"><param name="Name" value="OSS_DL_NewList"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a173"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__dl__list_8c.html#a0"><param name="Name" value="oss_dl_list.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a15"><param name="Name" value="oss_specification.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_DL_RemHead"><param name="Name" value="OSS_DL_RemHead"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a175"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__dl__list_8c.html#a2"><param name="Name" value="oss_dl_list.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a17"><param name="Name" value="oss_specification.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_DL_Remove"><param name="Name" value="OSS_DL_Remove"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a174"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__dl__list_8c.html#a1"><param name="Name" value="oss_dl_list.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a16"><param name="Name" value="oss_specification.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_Exit"><param name="Name" value="OSS_Exit"></OBJECT>
   <UL>
@@ -218,72 +158,44 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_GetPid"><param name="Name" value="OSS_GetPid"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a136"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a55"><param name="Name" value="oss_specification.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__task_8c.html#a3"><param name="Name" value="oss_task.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a156"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__task_8c.html#a0"><param name="Name" value="oss_task.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__task_8c.html#a0"><param name="Name" value="ossu_task.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_GetSmbHdl"><param name="Name" value="OSS_GetSmbHdl"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a168"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__smb_8c.html#a28"><param name="Name" value="oss_smb.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a65"><param name="Name" value="oss_specification.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_Init"><param name="Name" value="OSS_Init"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8c.html#a66"><param name="Name" value="oss.c"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__intern_8h.html"><param name="Name" value="oss_intern.h"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__intern_8h.html#a12"><param name="Name" value="OSS_RtaiSigFinalExit"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__intern_8h.html#a11"><param name="Name" value="OSS_RtaiSigInitialInit"></OBJECT>
-  </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html"><param name="Name" value="oss_irq.c"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a19"><param name="Name" value="OSS_IrqLevelToVector"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a17"><param name="Name" value="OSS_IrqMask"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a15"><param name="Name" value="OSS_IrqMaskR"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a16"><param name="Name" value="OSS_IrqRestore"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a18"><param name="Name" value="OSS_IrqUnMask"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a9"><param name="Name" value="OSS_RtaiIrqMask"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a13"><param name="Name" value="OSS_RtaiIrqMaskR"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a14"><param name="Name" value="OSS_RtaiIrqRestore"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a10"><param name="Name" value="OSS_RtaiIrqUnMask"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq__rtai_8c.html"><param name="Name" value="oss_irq_rtai.c"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq__rtai_8c.html#a4"><param name="Name" value="OSS_RtaiIrqMask"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq__rtai_8c.html#a2"><param name="Name" value="OSS_RtaiIrqMaskR"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq__rtai_8c.html#a3"><param name="Name" value="OSS_RtaiIrqRestore"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq__rtai_8c.html#a5"><param name="Name" value="OSS_RtaiIrqUnMask"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a7"><param name="Name" value="OSS_IrqLevelToVector"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a5"><param name="Name" value="OSS_IrqMask"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a3"><param name="Name" value="OSS_IrqMaskR"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a4"><param name="Name" value="OSS_IrqRestore"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a6"><param name="Name" value="OSS_IrqUnMask"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_IrqLevelToVector"><param name="Name" value="OSS_IrqLevelToVector"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a118"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a19"><param name="Name" value="oss_irq.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a23"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a138"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a7"><param name="Name" value="oss_irq.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_IrqMask"><param name="Name" value="OSS_IrqMask"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a116"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a17"><param name="Name" value="oss_irq.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a21"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a136"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a5"><param name="Name" value="oss_irq.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_IrqMaskR"><param name="Name" value="OSS_IrqMaskR"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a15"><param name="Name" value="oss_irq.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a19"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a3"><param name="Name" value="oss_irq.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_IrqRestore"><param name="Name" value="OSS_IrqRestore"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a16"><param name="Name" value="oss_irq.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a20"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a4"><param name="Name" value="oss_irq.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_IrqUnMask"><param name="Name" value="OSS_IrqUnMask"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a117"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a18"><param name="Name" value="oss_irq.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a22"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a137"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a6"><param name="Name" value="oss_irq.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__isa__pnp_8c.html"><param name="Name" value="oss_isa_pnp.c"></OBJECT>
   <UL>
@@ -291,9 +203,8 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_IsaGetConfig"><param name="Name" value="OSS_IsaGetConfig"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a143"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a163"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__isa__pnp_8c.html#a0"><param name="Name" value="oss_isa_pnp.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a49"><param name="Name" value="oss_specification.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__map_8c.html"><param name="Name" value="oss_map.c"></OBJECT>
   <UL>
@@ -302,402 +213,135 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_MapPhysToVirtAddr"><param name="Name" value="OSS_MapPhysToVirtAddr"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a145"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a165"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__map_8c.html#a0"><param name="Name" value="oss_map.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a41"><param name="Name" value="oss_specification.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__map_8c.html#a0"><param name="Name" value="ossu_map.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_MapVmeAddr"><param name="Name" value="OSS_MapVmeAddr"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a44"><param name="Name" value="oss_specification.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem_8c.html"><param name="Name" value="oss_mem.c"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem_8c.html#a8"><param name="Name" value="OSS_MemChk"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem_8c.html#a7"><param name="Name" value="OSS_MemFree"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem_8c.html#a6"><param name="Name" value="OSS_MemGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem_8c.html#a5"><param name="Name" value="OSS_RtaiMemFree"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem_8c.html#a4"><param name="Name" value="OSS_RtaiMemGet"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem__rtai_8c.html"><param name="Name" value="oss_mem_rtai.c"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem__rtai_8c.html#a1"><param name="Name" value="OSS_RtaiMemFree"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem__rtai_8c.html#a0"><param name="Name" value="OSS_RtaiMemGet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem_8c.html#a2"><param name="Name" value="OSS_MemChk"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem_8c.html#a1"><param name="Name" value="OSS_MemFree"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem_8c.html#a0"><param name="Name" value="OSS_MemGet"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_MemChk"><param name="Name" value="OSS_MemChk"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a108"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem_8c.html#a8"><param name="Name" value="oss_mem.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a8"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a128"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem_8c.html#a2"><param name="Name" value="oss_mem.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__mem_8c.html#a2"><param name="Name" value="ossu_mem.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_MemCopy"><param name="Name" value="OSS_MemCopy"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a109"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a129"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__clib_8c.html#a0"><param name="Name" value="oss_clib.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a56"><param name="Name" value="oss_specification.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_MemFill"><param name="Name" value="OSS_MemFill"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a110"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a130"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__clib_8c.html#a1"><param name="Name" value="oss_clib.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a57"><param name="Name" value="oss_specification.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_MemFree"><param name="Name" value="OSS_MemFree"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a107"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem_8c.html#a7"><param name="Name" value="oss_mem.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a7"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a127"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem_8c.html#a1"><param name="Name" value="oss_mem.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__mem_8c.html#a1"><param name="Name" value="ossu_mem.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_MemGet"><param name="Name" value="OSS_MemGet"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a106"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem_8c.html#a6"><param name="Name" value="oss_mem.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a6"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a126"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem_8c.html#a0"><param name="Name" value="oss_mem.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__mem_8c.html#a0"><param name="Name" value="ossu_mem.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_MikroDelay"><param name="Name" value="OSS_MikroDelay"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a138"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a38"><param name="Name" value="oss_specification.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a13"><param name="Name" value="oss_time.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a158"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a3"><param name="Name" value="oss_time.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__time_8c.html#a8"><param name="Name" value="ossu_time.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_MikroDelayInit"><param name="Name" value="OSS_MikroDelayInit"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a137"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a37"><param name="Name" value="oss_specification.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a17"><param name="Name" value="oss_time.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a157"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a2"><param name="Name" value="oss_time.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__time_8c.html#a7"><param name="Name" value="ossu_time.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_PciGetConfig"><param name="Name" value="OSS_PciGetConfig"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a140"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a160"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__bustoaddr_8c.html#a1"><param name="Name" value="oss_bustoaddr.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a46"><param name="Name" value="oss_specification.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__bustoaddr_8c.html#a2"><param name="Name" value="ossu_bustoaddr.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_PciSetConfig"><param name="Name" value="OSS_PciSetConfig"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a141"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a161"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__bustoaddr_8c.html#a2"><param name="Name" value="oss_bustoaddr.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a47"><param name="Name" value="oss_specification.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__bustoaddr_8c.html#a3"><param name="Name" value="ossu_bustoaddr.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_PciSlotToPciDevice"><param name="Name" value="OSS_PciSlotToPciDevice"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a142"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a162"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__bustoaddr_8c.html#a3"><param name="Name" value="oss_bustoaddr.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a48"><param name="Name" value="oss_specification.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__bustoaddr_8c.html#a4"><param name="Name" value="ossu_bustoaddr.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__resource_8c.html"><param name="Name" value="oss_resource.c"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__resource_8c.html#a0"><param name="Name" value="OSS_AssignResources"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__resource_8c.html#a1"><param name="Name" value="OSS_UnAssignResources"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiAlarmClear"><param name="Name" value="OSS_RtaiAlarmClear"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm__rtai_8c.html#a7"><param name="Name" value="oss_alarm_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiAlarmCreate"><param name="Name" value="OSS_RtaiAlarmCreate"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm__rtai_8c.html#a8"><param name="Name" value="oss_alarm_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiAlarmMask"><param name="Name" value="OSS_RtaiAlarmMask"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a18"><param name="Name" value="oss_alarm.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm__rtai_8c.html#a11"><param name="Name" value="oss_alarm_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiAlarmRemove"><param name="Name" value="OSS_RtaiAlarmRemove"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm__rtai_8c.html#a9"><param name="Name" value="oss_alarm_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiAlarmRestore"><param name="Name" value="OSS_RtaiAlarmRestore"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm_8c.html#a19"><param name="Name" value="oss_alarm.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm__rtai_8c.html#a12"><param name="Name" value="oss_alarm_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiAlarmSet"><param name="Name" value="OSS_RtaiAlarmSet"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__alarm__rtai_8c.html#a10"><param name="Name" value="oss_alarm_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiDelay"><param name="Name" value="OSS_RtaiDelay"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a8"><param name="Name" value="oss_time.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time__rtai_8c.html#a5"><param name="Name" value="oss_time_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiGetPid"><param name="Name" value="OSS_RtaiGetPid"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__task_8c.html#a2"><param name="Name" value="oss_task.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__task__rtai_8c.html#a0"><param name="Name" value="oss_task_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiIrqMask"><param name="Name" value="OSS_RtaiIrqMask"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a9"><param name="Name" value="oss_irq.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq__rtai_8c.html#a4"><param name="Name" value="oss_irq_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiIrqMaskR"><param name="Name" value="OSS_RtaiIrqMaskR"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a13"><param name="Name" value="oss_irq.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq__rtai_8c.html#a2"><param name="Name" value="oss_irq_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiIrqRestore"><param name="Name" value="OSS_RtaiIrqRestore"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a14"><param name="Name" value="oss_irq.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq__rtai_8c.html#a3"><param name="Name" value="oss_irq_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiIrqUnMask"><param name="Name" value="OSS_RtaiIrqUnMask"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq_8c.html#a10"><param name="Name" value="oss_irq.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__irq__rtai_8c.html#a5"><param name="Name" value="oss_irq_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiMemFree"><param name="Name" value="OSS_RtaiMemFree"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem_8c.html#a5"><param name="Name" value="oss_mem.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem__rtai_8c.html#a1"><param name="Name" value="oss_mem_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiMemGet"><param name="Name" value="OSS_RtaiMemGet"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem_8c.html#a4"><param name="Name" value="oss_mem.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__mem__rtai_8c.html#a0"><param name="Name" value="oss_mem_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiMikroDelay"><param name="Name" value="OSS_RtaiMikroDelay"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a9"><param name="Name" value="oss_time.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time__rtai_8c.html#a6"><param name="Name" value="oss_time_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiMsToCount"><param name="Name" value="OSS_RtaiMsToCount"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time__rtai_8c.html#a4"><param name="Name" value="oss_time_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiSemCreate"><param name="Name" value="OSS_RtaiSemCreate"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem__rtai_8c.html#a4"><param name="Name" value="oss_sem_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiSemRemove"><param name="Name" value="OSS_RtaiSemRemove"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem__rtai_8c.html#a5"><param name="Name" value="oss_sem_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiSemSignal"><param name="Name" value="OSS_RtaiSemSignal"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem__rtai_8c.html#a7"><param name="Name" value="oss_sem_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiSemWait"><param name="Name" value="OSS_RtaiSemWait"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem__rtai_8c.html#a6"><param name="Name" value="oss_sem_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiSigCreate"><param name="Name" value="OSS_RtaiSigCreate"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig__rtai_8c.html#a13"><param name="Name" value="oss_sig_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiSigFinalExit"><param name="Name" value="OSS_RtaiSigFinalExit"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__intern_8h.html#a12"><param name="Name" value="oss_intern.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig__rtai_8c.html#a8"><param name="Name" value="oss_sig_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiSigInfo"><param name="Name" value="OSS_RtaiSigInfo"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig__rtai_8c.html#a16"><param name="Name" value="oss_sig_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiSigInitialInit"><param name="Name" value="OSS_RtaiSigInitialInit"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__intern_8h.html#a11"><param name="Name" value="oss_intern.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig__rtai_8c.html#a7"><param name="Name" value="oss_sig_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiSigRemove"><param name="Name" value="OSS_RtaiSigRemove"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig__rtai_8c.html#a14"><param name="Name" value="oss_sig_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiSigSend"><param name="Name" value="OSS_RtaiSigSend"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig__rtai_8c.html#a15"><param name="Name" value="oss_sig_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiSigTaskRegister"><param name="Name" value="OSS_RtaiSigTaskRegister"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig__rtai_8c.html#a11"><param name="Name" value="oss_sig_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiSigTaskUnregister"><param name="Name" value="OSS_RtaiSigTaskUnregister"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig__rtai_8c.html#a12"><param name="Name" value="oss_sig_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiTickGet"><param name="Name" value="OSS_RtaiTickGet"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a11"><param name="Name" value="oss_time.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time__rtai_8c.html#a8"><param name="Name" value="oss_time_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiTickRateGet"><param name="Name" value="OSS_RtaiTickRateGet"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a10"><param name="Name" value="oss_time.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time__rtai_8c.html#a7"><param name="Name" value="oss_time_rtai.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_RtaiTimingInit"><param name="Name" value="OSS_RtaiTimingInit"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time__rtai_8c.html#a3"><param name="Name" value="oss_time_rtai.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem_8c.html"><param name="Name" value="oss_sem.c"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem_8c.html#a14"><param name="Name" value="OSS_SemCreate"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem_8c.html#a15"><param name="Name" value="OSS_SemRemove"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem_8c.html#a17"><param name="Name" value="OSS_SemSignal"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem_8c.html#a16"><param name="Name" value="OSS_SemWait"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem__rtai_8c.html"><param name="Name" value="oss_sem_rtai.c"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem__rtai_8c.html#a4"><param name="Name" value="OSS_RtaiSemCreate"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem__rtai_8c.html#a5"><param name="Name" value="OSS_RtaiSemRemove"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem__rtai_8c.html#a7"><param name="Name" value="OSS_RtaiSemSignal"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem__rtai_8c.html#a6"><param name="Name" value="OSS_RtaiSemWait"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem_8c.html#a1"><param name="Name" value="OSS_SemCreate"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem_8c.html#a2"><param name="Name" value="OSS_SemRemove"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem_8c.html#a5"><param name="Name" value="OSS_SemSignal"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem_8c.html#a4"><param name="Name" value="OSS_SemWait"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_SemCreate"><param name="Name" value="OSS_SemCreate"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a127"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem_8c.html#a14"><param name="Name" value="oss_sem.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a28"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a147"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem_8c.html#a1"><param name="Name" value="oss_sem.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__sem_8c.html#a1"><param name="Name" value="ossu_sem.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_SemRemove"><param name="Name" value="OSS_SemRemove"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a128"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem_8c.html#a15"><param name="Name" value="oss_sem.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a29"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a148"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem_8c.html#a2"><param name="Name" value="oss_sem.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__sem_8c.html#a2"><param name="Name" value="ossu_sem.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_SemSignal"><param name="Name" value="OSS_SemSignal"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a130"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem_8c.html#a17"><param name="Name" value="oss_sem.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a31"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a150"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem_8c.html#a5"><param name="Name" value="oss_sem.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__sem_8c.html#a4"><param name="Name" value="ossu_sem.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_SemWait"><param name="Name" value="OSS_SemWait"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a129"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem_8c.html#a16"><param name="Name" value="oss_sem.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a30"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a149"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sem_8c.html#a4"><param name="Name" value="oss_sem.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__sem_8c.html#a3"><param name="Name" value="ossu_sem.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_SetSmbHdl"><param name="Name" value="OSS_SetSmbHdl"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a169"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a66"><param name="Name" value="oss_specification.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig_8c.html"><param name="Name" value="oss_sig.c"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig_8c.html#a14"><param name="Name" value="OSS_SigCreate"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig_8c.html#a17"><param name="Name" value="OSS_SigInfo"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig_8c.html#a15"><param name="Name" value="OSS_SigRemove"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig_8c.html#a16"><param name="Name" value="OSS_SigSend"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig__rtai_8c.html"><param name="Name" value="oss_sig_rtai.c"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig__rtai_8c.html#a13"><param name="Name" value="OSS_RtaiSigCreate"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig__rtai_8c.html#a8"><param name="Name" value="OSS_RtaiSigFinalExit"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig__rtai_8c.html#a16"><param name="Name" value="OSS_RtaiSigInfo"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig__rtai_8c.html#a7"><param name="Name" value="OSS_RtaiSigInitialInit"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig__rtai_8c.html#a14"><param name="Name" value="OSS_RtaiSigRemove"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig__rtai_8c.html#a15"><param name="Name" value="OSS_RtaiSigSend"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig__rtai_8c.html#a11"><param name="Name" value="OSS_RtaiSigTaskRegister"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig__rtai_8c.html#a12"><param name="Name" value="OSS_RtaiSigTaskUnregister"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig__rtai_8c.html#a10"><param name="Name" value="OSS_TaskToSigEntry"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig_8c.html#a1"><param name="Name" value="OSS_SigCreate"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig_8c.html#a4"><param name="Name" value="OSS_SigInfo"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig_8c.html#a2"><param name="Name" value="OSS_SigRemove"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig_8c.html#a3"><param name="Name" value="OSS_SigSend"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_SigCreate"><param name="Name" value="OSS_SigCreate"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a123"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig_8c.html#a14"><param name="Name" value="oss_sig.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a32"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a143"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig_8c.html#a1"><param name="Name" value="oss_sig.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_SigInfo"><param name="Name" value="OSS_SigInfo"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a126"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig_8c.html#a17"><param name="Name" value="oss_sig.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a35"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a146"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig_8c.html#a4"><param name="Name" value="oss_sig.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_SigRemove"><param name="Name" value="OSS_SigRemove"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a125"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig_8c.html#a15"><param name="Name" value="oss_sig.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a33"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a145"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig_8c.html#a2"><param name="Name" value="oss_sig.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_SigSend"><param name="Name" value="OSS_SigSend"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a124"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig_8c.html#a16"><param name="Name" value="oss_sig.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a34"><param name="Name" value="oss_specification.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__smb_8c.html"><param name="Name" value="oss_smb.c"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__smb_8c.html#a28"><param name="Name" value="OSS_GetSmbHdl"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html"><param name="Name" value="oss_specification.c"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a12"><param name="Name" value="OSS_AlarmClear"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a9"><param name="Name" value="OSS_AlarmCreate"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a13"><param name="Name" value="OSS_AlarmMask"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a10"><param name="Name" value="OSS_AlarmRemove"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a14"><param name="Name" value="OSS_AlarmRestore"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a11"><param name="Name" value="OSS_AlarmSet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a50"><param name="Name" value="OSS_AssignResources"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a43"><param name="Name" value="OSS_BusToPhysAddr"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a5"><param name="Name" value="OSS_DbgLevelGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a4"><param name="Name" value="OSS_DbgLevelSet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a36"><param name="Name" value="OSS_Delay"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a18"><param name="Name" value="OSS_DL_AddTail"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a15"><param name="Name" value="OSS_DL_NewList"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a17"><param name="Name" value="OSS_DL_RemHead"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a16"><param name="Name" value="OSS_DL_Remove"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a55"><param name="Name" value="OSS_GetPid"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a65"><param name="Name" value="OSS_GetSmbHdl"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a23"><param name="Name" value="OSS_IrqLevelToVector"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a21"><param name="Name" value="OSS_IrqMask"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a19"><param name="Name" value="OSS_IrqMaskR"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a20"><param name="Name" value="OSS_IrqRestore"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a22"><param name="Name" value="OSS_IrqUnMask"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a49"><param name="Name" value="OSS_IsaGetConfig"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a41"><param name="Name" value="OSS_MapPhysToVirtAddr"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a44"><param name="Name" value="OSS_MapVmeAddr"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a8"><param name="Name" value="OSS_MemChk"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a56"><param name="Name" value="OSS_MemCopy"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a57"><param name="Name" value="OSS_MemFill"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a7"><param name="Name" value="OSS_MemFree"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a6"><param name="Name" value="OSS_MemGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a38"><param name="Name" value="OSS_MikroDelay"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a37"><param name="Name" value="OSS_MikroDelayInit"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a46"><param name="Name" value="OSS_PciGetConfig"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a47"><param name="Name" value="OSS_PciSetConfig"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a48"><param name="Name" value="OSS_PciSlotToPciDevice"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a28"><param name="Name" value="OSS_SemCreate"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a29"><param name="Name" value="OSS_SemRemove"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a31"><param name="Name" value="OSS_SemSignal"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a30"><param name="Name" value="OSS_SemWait"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a66"><param name="Name" value="OSS_SetSmbHdl"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a32"><param name="Name" value="OSS_SigCreate"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a35"><param name="Name" value="OSS_SigInfo"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a33"><param name="Name" value="OSS_SigRemove"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a34"><param name="Name" value="OSS_SigSend"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a26"><param name="Name" value="OSS_SpinLockAcquire"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a24"><param name="Name" value="OSS_SpinLockCreate"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a27"><param name="Name" value="OSS_SpinLockRelease"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a25"><param name="Name" value="OSS_SpinLockRemove"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a63"><param name="Name" value="OSS_Sprintf"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a60"><param name="Name" value="OSS_StrCmp"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a58"><param name="Name" value="OSS_StrCpy"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a59"><param name="Name" value="OSS_StrLen"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a61"><param name="Name" value="OSS_StrNcmp"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a62"><param name="Name" value="OSS_StrTok"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a52"><param name="Name" value="OSS_Swap16"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a0"><param name="Name" value="OSS_SWAP16"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a53"><param name="Name" value="OSS_Swap32"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a1"><param name="Name" value="OSS_SWAP32"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a54"><param name="Name" value="OSS_Swap64"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a2"><param name="Name" value="OSS_SWAP64"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a39"><param name="Name" value="OSS_TickGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a40"><param name="Name" value="OSS_TickRateGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a51"><param name="Name" value="OSS_UnAssignResources"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a42"><param name="Name" value="OSS_UnMapVirtAddr"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a45"><param name="Name" value="OSS_UnMapVmeAddr"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a64"><param name="Name" value="OSS_Vsprintf"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a144"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig_8c.html#a3"><param name="Name" value="oss_sig.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__spinlock_8c.html"><param name="Name" value="oss_spinlock.c"></OBJECT>
   <UL>
@@ -708,63 +352,53 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_SpinLockAcquire"><param name="Name" value="OSS_SpinLockAcquire"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a121"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a26"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a141"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__spinlock_8c.html#a2"><param name="Name" value="oss_spinlock.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_SpinLockCreate"><param name="Name" value="OSS_SpinLockCreate"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a119"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a24"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a139"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__spinlock_8c.html#a0"><param name="Name" value="oss_spinlock.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_SpinLockRelease"><param name="Name" value="OSS_SpinLockRelease"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a122"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a27"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a142"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__spinlock_8c.html#a3"><param name="Name" value="oss_spinlock.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_SpinLockRemove"><param name="Name" value="OSS_SpinLockRemove"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a120"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a25"><param name="Name" value="oss_specification.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a140"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__spinlock_8c.html#a1"><param name="Name" value="oss_spinlock.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_Sprintf"><param name="Name" value="OSS_Sprintf"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a147"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a167"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__clib_8c.html#a6"><param name="Name" value="oss_clib.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a63"><param name="Name" value="oss_specification.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_StrCmp"><param name="Name" value="OSS_StrCmp"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a113"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a133"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__clib_8c.html#a3"><param name="Name" value="oss_clib.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a60"><param name="Name" value="oss_specification.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_StrCpy"><param name="Name" value="OSS_StrCpy"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a111"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a131"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__clib_8c.html#a8"><param name="Name" value="oss_clib.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a58"><param name="Name" value="oss_specification.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_StrLen"><param name="Name" value="OSS_StrLen"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a112"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a132"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__clib_8c.html#a2"><param name="Name" value="oss_clib.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a59"><param name="Name" value="oss_specification.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_StrNcmp"><param name="Name" value="OSS_StrNcmp"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a114"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a134"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__clib_8c.html#a4"><param name="Name" value="oss_clib.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a61"><param name="Name" value="oss_specification.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_StrTok"><param name="Name" value="OSS_StrTok"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a115"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a135"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__clib_8c.html#a5"><param name="Name" value="oss_clib.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a62"><param name="Name" value="oss_specification.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__swap_8c.html"><param name="Name" value="oss_swap.c"></OBJECT>
   <UL>
@@ -773,109 +407,48 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_Swap16"><param name="Name" value="OSS_Swap16"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a170"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a52"><param name="Name" value="oss_specification.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_SWAP16"><param name="Name" value="OSS_SWAP16"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a0"><param name="Name" value="oss_specification.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_Swap16"><param name="Name" value="OSS_Swap16"></OBJECT>
-  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a190"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__swap_8c.html#a0"><param name="Name" value="oss_swap.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_Swap32"><param name="Name" value="OSS_Swap32"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a171"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a53"><param name="Name" value="oss_specification.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_SWAP32"><param name="Name" value="OSS_SWAP32"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a1"><param name="Name" value="oss_specification.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_Swap32"><param name="Name" value="OSS_Swap32"></OBJECT>
-  <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a191"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__swap_8c.html#a1"><param name="Name" value="oss_swap.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_Swap64"><param name="Name" value="OSS_Swap64"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a172"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a54"><param name="Name" value="oss_specification.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_SWAP64"><param name="Name" value="OSS_SWAP64"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a2"><param name="Name" value="oss_specification.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__task_8c.html"><param name="Name" value="oss_task.c"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__task_8c.html#a3"><param name="Name" value="OSS_GetPid"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__task_8c.html#a2"><param name="Name" value="OSS_RtaiGetPid"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__task__rtai_8c.html"><param name="Name" value="oss_task_rtai.c"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__task__rtai_8c.html#a0"><param name="Name" value="OSS_RtaiGetPid"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_TaskToSigEntry"><param name="Name" value="OSS_TaskToSigEntry"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__sig__rtai_8c.html#a10"><param name="Name" value="oss_sig_rtai.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__task_8c.html#a0"><param name="Name" value="OSS_GetPid"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_TickGet"><param name="Name" value="OSS_TickGet"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a135"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a39"><param name="Name" value="oss_specification.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a15"><param name="Name" value="oss_time.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a155"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a5"><param name="Name" value="oss_time.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__time_8c.html#a10"><param name="Name" value="ossu_time.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_TickRateGet"><param name="Name" value="OSS_TickRateGet"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a134"><param name="Name" value="oss.h"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a40"><param name="Name" value="oss_specification.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a14"><param name="Name" value="oss_time.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a154"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a4"><param name="Name" value="oss_time.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__time_8c.html#a9"><param name="Name" value="ossu_time.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html"><param name="Name" value="oss_time.c"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a12"><param name="Name" value="OSS_Delay"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a13"><param name="Name" value="OSS_MikroDelay"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a17"><param name="Name" value="OSS_MikroDelayInit"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a8"><param name="Name" value="OSS_RtaiDelay"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a9"><param name="Name" value="OSS_RtaiMikroDelay"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a11"><param name="Name" value="OSS_RtaiTickGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a10"><param name="Name" value="OSS_RtaiTickRateGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a15"><param name="Name" value="OSS_TickGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a14"><param name="Name" value="OSS_TickRateGet"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time__rtai_8c.html"><param name="Name" value="oss_time_rtai.c"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time__rtai_8c.html#a5"><param name="Name" value="OSS_RtaiDelay"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time__rtai_8c.html#a6"><param name="Name" value="OSS_RtaiMikroDelay"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time__rtai_8c.html#a4"><param name="Name" value="OSS_RtaiMsToCount"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time__rtai_8c.html#a8"><param name="Name" value="OSS_RtaiTickGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time__rtai_8c.html#a7"><param name="Name" value="OSS_RtaiTickRateGet"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time__rtai_8c.html#a3"><param name="Name" value="OSS_RtaiTimingInit"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_UnAssignResources"><param name="Name" value="OSS_UnAssignResources"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__resource_8c.html#a1"><param name="Name" value="oss_resource.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a51"><param name="Name" value="oss_specification.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__resource_8c.html#a1"><param name="Name" value="ossu_resource.c"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a1"><param name="Name" value="OSS_Delay"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a3"><param name="Name" value="OSS_MikroDelay"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a2"><param name="Name" value="OSS_MikroDelayInit"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a5"><param name="Name" value="OSS_TickGet"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__time_8c.html#a4"><param name="Name" value="OSS_TickRateGet"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_UnMapVirtAddr"><param name="Name" value="OSS_UnMapVirtAddr"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a146"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a166"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__map_8c.html#a1"><param name="Name" value="oss_map.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a42"><param name="Name" value="oss_specification.c"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__map_8c.html#a1"><param name="Name" value="ossu_map.c"></OBJECT>
-  </UL>
-  <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_UnMapVmeAddr"><param name="Name" value="OSS_UnMapVmeAddr"></OBJECT>
-  <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a45"><param name="Name" value="oss_specification.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="See Also" value="OSS_Vsprintf"><param name="Name" value="OSS_Vsprintf"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a148"><param name="Name" value="oss.h"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss_8h.html#a168"><param name="Name" value="oss.h"></OBJECT>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__clib_8c.html#a7"><param name="Name" value="oss_clib.c"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="oss__specification_8c.html#a64"><param name="Name" value="oss_specification.c"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__bustoaddr_8c.html"><param name="Name" value="ossu_bustoaddr.c"></OBJECT>
   <UL>
@@ -898,7 +471,6 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__resource_8c.html"><param name="Name" value="ossu_resource.c"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__resource_8c.html#a0"><param name="Name" value="OSS_AssignResources"></OBJECT>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__resource_8c.html#a1"><param name="Name" value="OSS_UnAssignResources"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="ossu__sem_8c.html"><param name="Name" value="ossu_sem.c"></OBJECT>
   <UL>
