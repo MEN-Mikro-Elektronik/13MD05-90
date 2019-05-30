@@ -325,9 +325,9 @@ copy_sources_into_installation_directory(){
                     local stampedRevision=$(cat "${MDIS_HISTORY_PATH}/${var2}_version.txt")
                     local menlinuxMakPath=$(echo "${makfile}" | awk -F / '{for (i=3; i<NF; i++) printf $i "/"; print $NF}')
                     sed -i 's/'"STAMPED_REVISION=.*"'/'"STAMPED_REVISION=${stampedRevision}"'/g' ${MENLINUX_ROOT}/${menlinuxMakPath}
-                    echo "${MENLINUX_ROOT}/${menlinuxMakPath}" | tr " " "\n"
+                    echo "${MENLINUX_ROOT}/${menlinuxMakPath}"
                     makFilesModified="true"
-                done <<< ${makFilesInSubmodule}
+                done <<< "${makFilesInSubmodule}"
             fi
         done < <(cat "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt")
 
