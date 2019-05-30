@@ -1609,7 +1609,7 @@ must be blacklisted to avoid inconveniences which could led to a kernel panic.
 Please refer to the MDIS User Manual 21md05-90.pdf for details."
 
     # if user choose 'n' or 'q' option, then Makefile is not generated
-    readonly blacklist_warning_question="Would you like to proceed? (y/n):"
+    readonly blacklist_warning_question="Would you like to proceed?"
     echo ""
     echo "${blacklist_warning}"
     get_ynq_answer "${blacklist_warning_question}"
