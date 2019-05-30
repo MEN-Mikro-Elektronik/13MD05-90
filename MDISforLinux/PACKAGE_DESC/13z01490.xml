@@ -11,23 +11,23 @@
 			<description>Just a dummy entry...</description>
 			<devtype>NATIVE</devtype>
 			<bbslot>
-			  <bbismodel>ImpossibleModel</bbismodel>
-			</bbslot>  
+				<bbismodel>ImpossibleModel</bbismodel>
+			</bbslot>
 			<swmodulelist>
-			  <swmodule>
-			    <name>PLDZ002CHAM</name>
-				<description>LL VME driver for PLDZ002, chameleon variant</description>
-				<type>Native Driver</type>
-				<makefilepath>DRIVERS/VME_16Z002/driver_pldz002_cham.mak</makefilepath>
-				<os>Linux</os>
-			  </swmodule>
-			  <swmodule>
-			    <name>PLDZ002</name>
-				<description>LL VME driver for PLDZ002</description>
-				<type>Native Driver</type>
-				<makefilepath>DRIVERS/VME_16Z002/driver_pldz002.mak</makefilepath>
-				<os>Linux</os>
-			  </swmodule>
+				<swmodule>
+					<name>PLDZ002CHAM</name>
+					<description>LL VME driver for PLDZ002, chameleon variant</description>
+					<type>Native Driver</type>
+					<makefilepath>DRIVERS/VME_16Z002/driver_pldz002_cham.mak</makefilepath>
+					<os>Linux</os>
+				</swmodule>
+				<swmodule>
+					<name>PLDZ002</name>
+					<description>LL VME driver for PLDZ002</description>
+					<type>Native Driver</type>
+					<makefilepath>DRIVERS/VME_16Z002/driver_pldz002.mak</makefilepath>
+					<os>Linux</os>
+				</swmodule>
 			</swmodulelist>
 		</model>
 		<model>
@@ -36,16 +36,16 @@
 			<description>Just a dummy entry...</description>
 			<devtype>NATIVE</devtype>
 			<bbslot>
-			  <bbismodel>ImpossibleModel</bbismodel>
-			</bbslot>  
+				<bbismodel>ImpossibleModel</bbismodel>
+			</bbslot>
 			<swmodulelist>
-			  <swmodule>
-			    <name>TSI148</name>
-				<description>LL VME driver for TSI148</description>
-				<type>Native Driver</type>
-				<makefilepath>DRIVERS/VME_16Z002/driver_tsi148.mak</makefilepath>
-				<os>Linux</os>
-			  </swmodule>
+				<swmodule>
+					<name>TSI148</name>
+					<description>LL VME driver for TSI148</description>
+					<type>Native Driver</type>
+					<makefilepath>DRIVERS/VME_16Z002/driver_tsi148.mak</makefilepath>
+					<os>Linux</os>
+				</swmodule>
 			</swmodulelist>
 		</model>
 	</modellist>
@@ -156,5 +156,4 @@
 			<os>Linux</os>
 		</swmodule>
 	</swmodulelist>
-		
 </package>

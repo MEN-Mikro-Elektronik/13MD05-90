@@ -4,24 +4,24 @@
 	<description>Linux driver package for MEN Chameleon FPGA</description>
 	<date>2012-08-08</date>
 	<revision>1.13</revision>
-    <docroot>DRIVERS/CHAMELEON/DOC/html/index.html</docroot>
+	<docroot>DRIVERS/CHAMELEON/DOC/html/index.html</docroot>
 	<modellist>
 		<model>
 			<hwname>CHAMELEON_LINUX</hwname>
 			<modelname>CHAMELEON_LINUX</modelname>
 			<description>MEN Chameleon FPGA Linux native driver</description>
 			<devtype>NATIVE</devtype>
-            <bbslot>
-                <bbismodel>Impossible Model</bbismodel>
-            </bbslot>
+			<bbslot>
+				<bbismodel>Impossible Model</bbismodel>
+			</bbslot>
 			<swmodulelist>
-			  <swmodule>
-			    <name>men_lx_chameleon</name>
-				<description>Linux kernel module for MEN Chameleon FPGA</description>
-				<type>Native Driver</type>
-				<makefilepath>DRIVERS/CHAMELEON/driver.mak</makefilepath>
-				<os>Linux</os>
-			  </swmodule>
+				<swmodule>
+					<name>men_lx_chameleon</name>
+					<description>Linux kernel module for MEN Chameleon FPGA</description>
+					<type>Native Driver</type>
+					<makefilepath>DRIVERS/CHAMELEON/driver.mak</makefilepath>
+					<os>Linux</os>
+				</swmodule>
 			</swmodulelist>
 		</model>
 	</modellist>
