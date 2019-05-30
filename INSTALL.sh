@@ -327,7 +327,7 @@ copy_sources_into_installation_directory(){
                     sed -i 's/'"STAMPED_REVISION=.*"'/'"STAMPED_REVISION=${stampedRevision}"'/g' ${MENLINUX_ROOT}/${menlinuxMakPath}
                     echo "${MENLINUX_ROOT}/${menlinuxMakPath}"
                     makFilesModified="true"
-                done <<< ${makFilesInSubmodule}
+                done <<< "${makFilesInSubmodule}"
             fi
         done < <(cat "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt")
 
