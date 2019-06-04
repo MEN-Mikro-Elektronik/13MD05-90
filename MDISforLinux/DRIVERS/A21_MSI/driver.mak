@@ -4,7 +4,6 @@
 #  
 #    Description: makefile descriptor for A21 MSI enabler helper
 #                      
-#---------------------------------[ History ]---------------------------------
 #
 #*****************************************************************************
 # This program is free software: you can redistribute it and/or modify

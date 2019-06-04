@@ -314,25 +314,54 @@ copy_sources_into_installation_directory(){
         cd ${CWD}
         makFilesToUpdate=$(find . -type f -name "*.mak" -exec grep -Hl "STAMPED_REVISION=" {} \;)
         # update *.mak files
-        echo "Modified STAMPED_REVISION in below .mak files: "
-        local makFilesModified=""
+        local makFilesModified=0
         while read -r var1 var2; do
             local makFilesInSubmodule
             makFilesInSubmodule=$(echo "${makFilesToUpdate}" | grep "${var1}")
-
             if [ ! -z "${makFilesInSubmodule}" ]; then
                 while read -r makfile; do
                     local stampedRevision=$(cat "${MDIS_HISTORY_PATH}/${var2}_version.txt")
                     local menlinuxMakPath=$(echo "${makfile}" | awk -F / '{for (i=3; i<NF; i++) printf $i "/"; print $NF}')
                     sed -i 's/'"STAMPED_REVISION=.*"'/'"STAMPED_REVISION=${stampedRevision}"'/g' ${MENLINUX_ROOT}/${menlinuxMakPath}
-                    echo "${MENLINUX_ROOT}/${menlinuxMakPath}"
-                    makFilesModified="true"
+                    makFilesModified=$((${makFilesModified}+1))
                 done <<< "${makFilesInSubmodule}"
             fi
         done < <(cat "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt")
 
         if [ -z "${makFilesModified}" ]; then
             echo "... no files ..."
+        else
+            echo "STAMPED_REVISION has been updated in ${makFilesModified} mak files"
+        fi
+
+        # create list of all *.xml files that need to be updated during INSTALL
+        xmlFilesToUpdate=$(find . -type f -name "*.xml" -exec grep -Hl "<revision>.*<\/revision>" {} \;)
+        local xmlFilesModified=0
+        while read -r var1 var2; do
+            local xmlFilesInSubmodule
+            xmlFilesInSubmodule=$(echo "${xmlFilesToUpdate}" | grep "${var1}")
+            if [ ! -z "${xmlFilesInSubmodule}" ]; then
+                while read -r xmlfile; do
+                    local revisiondate=""
+                    local revisionEndIdx=0
+                    local revision=$(cat "${MDIS_HISTORY_PATH}/${var2}_version.txt")
+                    local menlinuxXmlPath=$(echo "${xmlfile}" | awk -F"/" '{print $NF}')
+                    revisionEndIdx=$(echo ${revision} | awk -F"_" '{print length($0)-length($NF)}')
+                    revisionEndIdx=$((${revisionEndIdx}-1))
+                    revisiondate=$(echo ${revision} | awk -F"_" '{print $NF}')
+                    revision=$(echo ${revision} | cut -c1-${revisionEndIdx})
+                    menlinuxXmlPath=$(echo "${MENLINUX_ROOT}/PACKAGE_DESC/${menlinuxXmlPath}")
+                    sed -i 's|'"<date>.*</date>"'|'"<date>${revisiondate}</date>"'|g' ${menlinuxXmlPath}
+                    sed -i 's|'"<revision>.*</revision>"'|'"<revision>${revision}</revision>"'|g' ${menlinuxXmlPath}
+                    xmlFilesModified=$((${xmlFilesModified}+1))
+                done <<< "${xmlFilesInSubmodule}"
+            fi
+        done < <(cat "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt")
+
+        if [ -z "${xmlFilesModified}" ]; then
+            echo "... no files ..."
+        else
+            echo "DATE and REVISION has been updated in ${xmlFilesModified} xml files"
         fi
 
         # set permissions in "BUILD" and "BIN" directory for all users
