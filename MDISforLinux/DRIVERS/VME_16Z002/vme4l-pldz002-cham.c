@@ -3,8 +3,6 @@
  *        \file  vme4l-menpldz002.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2009/07/09 10:52:05 $
- *    $Revision: 1.12 $
  *
  *  	 \brief  MEN VME bridge driver for PLDZ002 (A13/A15...)
  *				 Also supports the A12/B11 VME bridge (which is a subset
@@ -47,6 +45,8 @@
 #include <MEN/men_typs.h>
 #include <MEN/men_chameleon.h>
 #include <MEN/pldz002-cham.h>
+
+static const char IdentString[]=MENT_XSTR(MAK_REVISION);
 
 /*--------------------------------------+
 |   DEFINES                             |
@@ -320,8 +320,8 @@ unsigned int GetSysIrq( VME4L_BRIDGE_HANDLE *h )
 void RevisionInfo( VME4L_BRIDGE_HANDLE *h, char *buf )
 {
 	sprintf(buf,
-			"VME bridge (rev %d ), vme4l-pldz002 $Revision: 1.12 $",
-			h->chu->unitFpga.revision );
+			"VME bridge (rev %d ), vme4l-pldz002\n%s",
+			h->chu->unitFpga.revision, IdentString );
 }
 
 /***********************************************************************/

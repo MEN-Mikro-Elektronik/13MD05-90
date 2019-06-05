@@ -3,8 +3,6 @@
  *        \file  vme4l-menpldz002.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2013/10/24 10:17:02 $
- *    $Revision: 1.13 $
  *
  *  	 \brief  MEN VME bridge driver for PLDZ002 (A13/A15...)
  *				 Also supports the A12/B11 VME bridge (which is a subset
@@ -210,7 +208,7 @@ unsigned int GetSysIrq( VME4L_BRIDGE_HANDLE *h )
 void RevisionInfo( VME4L_BRIDGE_HANDLE *h, char *buf )
 {
 	sprintf(buf,
-			"%s VME bridge (rev %d ), vme4l-pldz002 $Revision: 1.13 $",
+			"%s VME bridge (rev %d ), vme4l-pldz002",
 			h->isPldZ002 ? "PLDZ002" : "A12/B11",
 			h->pciRevision );
 }

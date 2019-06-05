@@ -3,8 +3,6 @@
  *        \file  vme4l-core.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2013/10/24 10:08:03 $
- *    $Revision: 1.18 $
  *
  *  	 \brief  MENs VME core
  *
@@ -2860,7 +2858,7 @@ static char *vme4l_rev_info( char *buf )
 {
 	char *p = buf;
 
-	p += sprintf( p, "vme4l-core $Revision: 1.18 $,  ");
+	p += sprintf( p, "vme4l-core,  ");
 
 	if( G_bDrv && G_bDrv->revisionInfo){
 		G_bDrv->revisionInfo( G_bHandle, p );

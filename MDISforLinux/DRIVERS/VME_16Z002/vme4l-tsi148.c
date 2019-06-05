@@ -7,11 +7,7 @@
  *        \brief MEN VME bridge driver for Tundra TSI148 (A17/A19/A20...).
  *
  *     Switches: -
- */
-/*-------------------------------[ Licence ]---------------------------------
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; version 2 of the License.
+ *
  *---------------------------------------------------------------------------
  * Copyright (c) 2008-2019, MEN Mikro Elektronik GmbH
  ******************************************************************************/
@@ -117,6 +113,7 @@ typedef	struct {
 #define COMPILE_VME_BRIDGE_DRIVER
 #include "vme4l-core.h"
 
+static const char IdentString[]=MENT_XSTR(MAK_REVISION);
 
 static int debug = DEBUG_DEFAULT;  /**< enable debug printouts */
 
@@ -2325,8 +2322,8 @@ static void Tsi148_RevisionInfo(
 	char *buf )
 {
 
-	sprintf( buf, "TSI148 VME bridge (rev %d), vme4l-tsi148 $Revision: 1.7 $",
-			 vme4l_bh->pciRevision );
+	sprintf( buf, "TSI148 VME bridge (rev %d), vme4l-tsi148\n%s",
+			 vme4l_bh->pciRevision, IdentString);
 }/* Tsi148_RevisionInfo */
 
 

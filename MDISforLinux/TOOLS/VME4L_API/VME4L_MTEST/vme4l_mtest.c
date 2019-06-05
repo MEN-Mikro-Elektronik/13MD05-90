@@ -3,8 +3,6 @@
  *        \file  vme4l_mtest.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2013/10/24 09:56:13 $
- *    $Revision: 1.5 $
  *
  *  	 \brief  Memory test for VME4L master spaces
  *
@@ -44,7 +42,7 @@
 #include <MEN/usr_utl.h>
 #include <MEN/usr_oss.h>
 
-
+static const char IdentString[]=MENT_XSTR(MAK_REVISION);
 /*--------------------------------------+
 |   DEFINES                             |
 +--------------------------------------*/
@@ -155,12 +153,9 @@ int usage( int no )
 
 void version(void)
 {
-	char *rev = "$Revision: 1.5 $";
-	char *p = rev+strlen("$Revision: ");
-
 	fprintf(stderr, "\nV ");
-	while( *p != '$' ) fprintf(stderr, "%c", *p++);
-	fprintf(stderr, " (c) Copyright 1995-2013 by MEN GmbH\n");
+    fprintf(stderr, "%s\n", IdentString);
+	fprintf(stderr, "Copyright (c) 2003-2019, MEN Mikro Elektronik GmbH\n");
 }
 
 void show_test_result(void)
