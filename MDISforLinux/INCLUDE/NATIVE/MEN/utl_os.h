@@ -3,8 +3,6 @@
  *         Name: utl_os.h
  *
  *       Author: kp
- *        $Date: 2003/04/11 16:26:14 $
- *    $Revision: 1.3 $
  *
  *  Description: LINUX and RTAI specific include file for the UTL library.
  *

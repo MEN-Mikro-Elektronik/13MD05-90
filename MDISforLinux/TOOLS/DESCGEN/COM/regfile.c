@@ -4,8 +4,6 @@
  *      Project: descgen
  *
  *       Author: ds
- *        $Date: 2000/07/04 09:21:24 $
- *    $Revision: 1.1 $
  *
  *  Description: Output descriptor as .reg-file for Windows NT
  *

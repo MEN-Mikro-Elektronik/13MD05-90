@@ -3,8 +3,6 @@
  *        \file  vme4l_crcsr.c
  *
  *      \author  adam.wujek@cern.ch
- *        $Date: 2018/02/08 19:19:53 $
- *    $Revision: 1.0 $
  *
  *  	 \brief  Example program for Set/Get address and AM in/from CR/CSR on
  *               which VME slave will respond

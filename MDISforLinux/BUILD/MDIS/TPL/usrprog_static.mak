@@ -1,8 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #  
 #         Author: kp
-#          $Date: 2010/02/25 16:10:46 $
-#      $Revision: 1.10 $
 #  
 #    Description: Make a Linux MDIS user state program 
 #                 Compile to use static libraries     

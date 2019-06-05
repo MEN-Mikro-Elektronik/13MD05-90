@@ -3,8 +3,6 @@
  *        \file  oss_sig.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2010/04/14 10:06:41 $
- *    $Revision: 1.11 $
  *
  *	   \project  MDISforLinux
  *  	 \brief  Signal routines

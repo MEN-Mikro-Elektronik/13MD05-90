@@ -1,8 +1,6 @@
 #**************************  M a k e f i l e ********************************
 #
 #         Author: christian.schuster@men.de
-#          $Date: 2005/07/08 11:40:36 $
-#      $Revision: 1.1 $
 #
 #    Description: makefile descriptor for user space DBG library
 #

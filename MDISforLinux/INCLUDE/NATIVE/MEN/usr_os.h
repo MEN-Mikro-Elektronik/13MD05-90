@@ -3,8 +3,6 @@
  *         Name: usr_os.h
  *
  *       Author: ts
- *        $Date: 2007/05/11 13:57:47 $
- *    $Revision: 1.2 $
  *
  *  Description: NiosII specific data types and defines for using the UOS lib
  *

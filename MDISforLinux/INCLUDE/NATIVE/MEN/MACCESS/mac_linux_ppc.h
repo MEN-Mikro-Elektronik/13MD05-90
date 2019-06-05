@@ -3,8 +3,6 @@
  *         Name: mac_linux_ppc.h
  *
  *       Author: kp
- *        $Date: 2009/09/08 18:43:02 $
- *    $Revision: 1.2 $
  *
  *  Description: access macros for linux for PowerPC platforms
  *				 Since asm-ppc/io.h (kernel 2.4.0) offers both swapped and

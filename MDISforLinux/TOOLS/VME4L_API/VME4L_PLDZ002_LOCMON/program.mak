@@ -1,8 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #
 #         Author: kp
-#          $Date: 2004/07/26 16:31:36 $
-#      $Revision: 1.1 $
 #
 #    Description: Makefile definitions for VME4L_PLDZ002_LOCMON
 #

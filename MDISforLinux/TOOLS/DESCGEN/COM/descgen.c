@@ -5,8 +5,6 @@
  ****************************************************************************
  *
  *       Author: kp
- *        $Date: 2007/04/03 11:20:03 $
- *    $Revision: 1.17 $
  *
  *  Description: Descriptor Generator for MDIS4
  *

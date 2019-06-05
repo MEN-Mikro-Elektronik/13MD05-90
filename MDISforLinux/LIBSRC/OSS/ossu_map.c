@@ -3,8 +3,6 @@
  *        \file  ossu_map.c
  *
  *      \author  christian.schuster@men.de
- *        $Date: 2014/01/20 17:43:26 $
- *    $Revision: 2.3 $
  *
  *	   \project  MDISforLinux
  *  	 \brief  Memory mapping related routines of the OSS module, user space

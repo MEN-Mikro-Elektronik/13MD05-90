@@ -1,8 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #
 #         Author: kp
-#          $Date: 2003/02/21 13:34:35 $
-#      $Revision: 1.2 $
 #
 #    Description: makefile for Linux MDIS kernel
 #

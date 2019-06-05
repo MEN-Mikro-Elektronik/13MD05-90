@@ -1,8 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #  
 #         Author: ts
-#          $Date: 2006/11/14 18:38:41 $
-#      $Revision: 1.3 $
 #  
 #    Description: Makefile definitions for the SMB2 pseudo BBIS driver
 #                      

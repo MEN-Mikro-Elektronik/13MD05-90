@@ -3,8 +3,6 @@
  *        \file  vme4l_m99irq.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2009/09/24 11:10:10 $
- *    $Revision: 1.4 $
  *
  *  	 \brief  Example program for VME4L_Read/Write
  *

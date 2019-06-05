@@ -1,8 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #  
 #         Author: kp
-#          $Date: 2009/07/29 09:47:53 $
-#      $Revision: 2.2 $
 #  
 #    Description: Make a Linux MDIS component (Kernel 2.6)
 #                      

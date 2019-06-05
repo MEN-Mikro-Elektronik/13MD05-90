@@ -3,8 +3,6 @@
  *        \file  vme4l_slvwin.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2009/06/03 19:30:40 $
- *    $Revision: 1.3 $
  *
  *  	 \brief  Example program to control slave windows
  *

@@ -3,8 +3,6 @@
  *        \file  oss_dl_list.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2005/07/07 17:17:12 $
- *    $Revision: 1.4 $
  *
  *	   \project  MDISforLinux
  *  	 \brief  double linked list routines

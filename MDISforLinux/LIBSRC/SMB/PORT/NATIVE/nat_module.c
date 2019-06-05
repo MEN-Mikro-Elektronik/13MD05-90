@@ -4,8 +4,6 @@
  *      Project: MDIS4LINUX
  *
  *       Author: kp
- *        $Date: 2004/06/09 11:12:17 $
- *    $Revision: 1.1 $
  *
  *  Description: Module stuff for SMB PORT MDIS module
  *

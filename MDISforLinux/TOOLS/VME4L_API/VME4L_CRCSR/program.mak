@@ -1,8 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #
 #         Author: Adam Wujek
-#          $Date: 2018/02/08 15:02:27 $
-#      $Revision: 1.0 $
 #
 #    Description: Makefile definitions for VME4L_CRCSR
 #

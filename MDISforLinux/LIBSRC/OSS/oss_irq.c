@@ -3,8 +3,6 @@
  *        \file  oss_irq.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2012/04/23 13:51:16 $
- *    $Revision: 1.9 $
  *
  *	   \project  MDISforLinux
  *  	 \brief  Interrupt related routines

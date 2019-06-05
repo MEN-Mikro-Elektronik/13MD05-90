@@ -3,8 +3,6 @@
  *		  \file	 vme4l-tsi148.h
  *
  *		\author	 Ralf Trübenbach
- *		  $Date: 2009/07/09 10:43:33 $
- *	  $Revision: 1.4 $
  *
  *		  \brief Header File for Tundra TSI148 VME bridge driver (A17/A19/
  *               A20...). Can be used to adjust timing and in-/outbound

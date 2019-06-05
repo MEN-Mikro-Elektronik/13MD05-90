@@ -3,8 +3,6 @@
  *         Name: bk_intern.h
  *
  *       Author: kp
- *        $Date: 2013/10/24 10:02:18 $
- *    $Revision: 1.7 $
  *
  *  Description: MDIS4LINUX BBIS kernel internal header file
  *

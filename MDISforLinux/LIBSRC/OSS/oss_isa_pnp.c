@@ -3,8 +3,6 @@
  *        \file  oss_isa_pnp.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2005/07/07 17:17:20 $
- *    $Revision: 1.3 $
  *
  *	   \project  MDISforLinux
  *  	 \brief  ISA PNP support

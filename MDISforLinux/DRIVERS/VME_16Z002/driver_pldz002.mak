@@ -1,8 +1,6 @@
 #**************************  M a k e f i l e ********************************
 #  
 #         Author: kp
-#          $Date: 2003/12/15 15:02:07 $
-#      $Revision: 1.1 $
 #  
 #    Description: makefile descriptor for VME4L PLDZ002
 #                      

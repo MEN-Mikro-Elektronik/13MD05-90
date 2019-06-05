@@ -1,8 +1,6 @@
 #**************************  M a k e f i l e ********************************
 #  
 #         Author: sv
-#          $Date: 2009/04/30 21:25:22 $
-#      $Revision: 1.2 $
 #  
 #    Description: makefile descriptor for VME4L TSI148
 #                      

@@ -3,8 +3,6 @@
  *        \file  vme4l_pldz002_locmon.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2009/06/03 19:19:33 $
- *    $Revision: 1.2 $
  *
  *  	 \brief  Example program for location monitor handling
  *

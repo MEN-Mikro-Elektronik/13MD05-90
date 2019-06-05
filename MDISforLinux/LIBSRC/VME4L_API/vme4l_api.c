@@ -3,8 +3,6 @@
  *        \file  vme4l_api.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2013/09/02 18:31:16 $
- *    $Revision: 1.9 $
  *
  *  	 \brief  API functions and documentation to access VME for Linux driver
  *

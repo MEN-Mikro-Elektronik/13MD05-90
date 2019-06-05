@@ -3,8 +3,6 @@
  *        \file  ossu.c
  *
  *      \author  christian.schuster@men.de
- *        $Date: 2007/03/28 16:11:37 $
- *    $Revision: 2.3 $
  *
  *	   \project  MDISforLinux
  *  	 \brief  Core functions of the OSS module for user space

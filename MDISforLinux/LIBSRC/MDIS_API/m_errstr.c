@@ -3,8 +3,6 @@
  *        \file  m_errstr.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2003/06/06 09:09:41 $
- *    $Revision: 1.1 $
  *
  *  	 \brief  MDIS error string functions for MDIS_API
  */

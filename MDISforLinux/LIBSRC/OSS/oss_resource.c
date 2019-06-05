@@ -3,8 +3,6 @@
  *        \file  oss_resource.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2005/07/07 17:17:28 $
- *    $Revision: 1.4 $
  *
  *	   \project  MDISforLinux
  *  	 \brief  Resource related routines of the OSS module

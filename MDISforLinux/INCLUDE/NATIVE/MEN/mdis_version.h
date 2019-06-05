@@ -3,8 +3,6 @@
  *         Name: mdis_version.h
  *
  *       Author: cr
- *        $Date: 2011/03/31 16:20:24 $
- *    $Revision: 2.1 $
  *
  *  Description: MDIS feature definitions
  *

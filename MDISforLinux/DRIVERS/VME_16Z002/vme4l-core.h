@@ -3,8 +3,6 @@
  *        \file  vme4l-core.h
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2014/07/22 14:15:27 $
- *    $Revision: 1.13 $
  *
  *  	 \brief  VME4L header for shared info between vme4l-core and bridge
  *				 drivers.

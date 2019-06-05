@@ -3,8 +3,6 @@
  *         Name: mk_intern.h
  *
  *       Author: kp
- *        $Date: 2013/10/24 09:57:27 $
- *    $Revision: 1.20 $
  *
  *  Description: MDIS4LINUX kernel internal header file
  *

@@ -4,8 +4,6 @@
  *      Project: Pseudo BBIS for SMB2
  *
  *       Author: ts
- *        $Date: 2014/07/22 13:15:39 $
- *    $Revision: 1.21 $
  *
  *  Description: Pseudo BBIS handler _for Linux_ to use SMB2 type LL Drivers
  *

@@ -3,8 +3,6 @@
  *        \file  ossu_ident.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2014/01/20 17:44:44 $
- *    $Revision: 2.3 $
  *
  *	   \project  MDISforLinux
  *  	 \brief  OSS user space library version info

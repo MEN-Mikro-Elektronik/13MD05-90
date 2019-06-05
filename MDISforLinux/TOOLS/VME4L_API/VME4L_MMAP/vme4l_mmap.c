@@ -3,8 +3,6 @@
  *        \file  vme4l_mmap.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2009/06/03 19:18:59 $
- *    $Revision: 1.2 $
  *
  *  	 \brief  Example program for VME4L_Map
  *

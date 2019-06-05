@@ -3,8 +3,6 @@
  *        \file  vme4l_old.h
  *
  *      \author  uf
- *        $Date: 2003/12/15 15:02:18 $
- *    $Revision: 1.3 $
  *
  *  	 \brief  Header file for users of original VME4L drivers.
  *

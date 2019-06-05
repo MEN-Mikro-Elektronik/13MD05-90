@@ -3,8 +3,6 @@
  *        \file  oss_task.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2005/07/07 17:17:41 $
- *    $Revision: 1.4 $
  *
  *	   \project  MDISforLinux
  *  	 \brief  Task routines

@@ -3,8 +3,6 @@
  *        \file  oss_alarm.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2005/07/07 17:16:58 $
- *    $Revision: 1.6 $
  *
  *	   \project  MDISforLinux
  *  	 \brief  Alarm routines

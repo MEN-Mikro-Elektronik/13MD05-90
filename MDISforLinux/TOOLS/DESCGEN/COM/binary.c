@@ -4,8 +4,6 @@
  *      Project: descgen
  *
  *       Author: see
- *        $Date: 2012/05/14 21:26:28 $
- *    $Revision: 1.9 $
  *
  *  Description: Output descriptor as binary
  *

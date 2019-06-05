@@ -1,8 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #
 #         Author: kp
-#          $Date: 2003/02/21 13:34:54 $
-#      $Revision: 2.1 $
 #
 #    Description: Determine compiler/linker and flags used for kernel
 #                 Invoke this within the kernel's root dir

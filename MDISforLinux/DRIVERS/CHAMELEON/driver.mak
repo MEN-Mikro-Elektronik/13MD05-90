@@ -1,8 +1,6 @@
 #**************************  M a k e f i l e ********************************
 #  
 #         Author: ub
-#          $Date: 2004/11/23 09:33:54 $
-#      $Revision: 1.1 $
 #  
 #    Description: makefile descriptor for chameleon Linux kernel module
 #                      

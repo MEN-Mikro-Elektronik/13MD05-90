@@ -1,8 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #
 #         Author: kp
-#          $Date: 1999/04/28 16:27:03 $
-#      $Revision: 1.1 $
 #
 #    Description: Makefile definitions for DESCGEN program
 #

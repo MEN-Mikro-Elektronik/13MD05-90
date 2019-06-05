@@ -3,8 +3,6 @@
  *         Name: os9k.h
  *
  *       Author: kp
- *        $Date: 1999/06/09 16:02:56 $
- *    $Revision: 1.2 $
  *
  *  Description: module definitions for OS-9000 descriptors
  *

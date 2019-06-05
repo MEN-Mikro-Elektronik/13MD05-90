@@ -4,8 +4,6 @@
  *      Project: MDIS4LINUX
  *
  *       Author: kp
- *        $Date: 2010/07/14 11:48:28 $
- *    $Revision: 1.2 $
  *
  *  Description: Module stuff for ID MDIS module
  *

@@ -3,8 +3,6 @@
  *         Name: bbis_bk.h
  *
  *       Author: kp
- *        $Date: 2004/06/09 09:07:39 $
- *    $Revision: 1.2 $
  *
  *  Description: BBIS module definitions
  *

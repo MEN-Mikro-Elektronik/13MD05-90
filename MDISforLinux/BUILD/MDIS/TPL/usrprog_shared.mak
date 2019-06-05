@@ -1,8 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #  
 #         Author: kp
-#          $Date: 2009/09/23 11:29:59 $
-#      $Revision: 1.11 $
 #  
 #    Description: Make a Linux MDIS user state program
 #                 Compile to use shared libraries

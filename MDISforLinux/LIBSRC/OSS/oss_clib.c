@@ -3,8 +3,6 @@
  *        \file  oss_clib.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2007/02/06 17:04:41 $
- *    $Revision: 1.5 $
  *
  *	   \project  MDISforLinux
  *  	 \brief  Substitutes for C library calls

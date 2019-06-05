@@ -3,8 +3,6 @@
 #        \file  rules.mak
 #
 #      \author  kp/ts
-#        $Date: 2012/11/02 14:41:39 $
-#    $Revision: 2.27 $
 #
 #        \brief Defines top level rules for MDIS components
 #                This file should be included at the bottom of the

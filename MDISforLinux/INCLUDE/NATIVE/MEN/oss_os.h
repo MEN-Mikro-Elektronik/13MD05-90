@@ -3,8 +3,6 @@
  *         Name: oss_os.h
  *
  *       Author: kp
- *        $Date: 2014/07/17 17:49:54 $
- *    $Revision: 1.7 $
  *
  *  Description: Linux specific data types and defines
  *

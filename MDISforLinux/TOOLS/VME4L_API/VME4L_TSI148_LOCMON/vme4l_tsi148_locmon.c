@@ -3,8 +3,6 @@
  *        \file  vme4l_tsi148_locmon.c
  *
  *      \author  ralf.truebenbach@men.de
- *        $Date: 2009/06/03 19:43:12 $
- *    $Revision: 1.1 $
  *
  *  	 \brief  Example program for location monitor handling
  *

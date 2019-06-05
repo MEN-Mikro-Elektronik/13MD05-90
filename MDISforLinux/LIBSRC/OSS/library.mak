@@ -1,8 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #
 #         Author: kp
-#          $Date: 2011/04/07 16:41:16 $
-#      $Revision: 1.7 $
 #
 #    Description: makefile for Linux OSS lib
 #

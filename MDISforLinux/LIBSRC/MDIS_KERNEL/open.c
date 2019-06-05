@@ -4,8 +4,6 @@
  *      Project: MDIS4LINUX
  *
  *       Author: kp
- *        $Date: 2013/10/24 10:00:18 $
- *    $Revision: 1.21 $
  *
  *  Description: Open routine for MDIS kernel module
  *

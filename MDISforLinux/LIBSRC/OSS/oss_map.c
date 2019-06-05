@@ -3,8 +3,6 @@
  *        \file  oss_map.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2005/07/07 17:17:22 $
- *    $Revision: 1.4 $
  *
  *	   \project  MDISforLinux
  *  	 \brief  Memory mapping related routines of the OSS module

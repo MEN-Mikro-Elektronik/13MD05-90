@@ -4,8 +4,6 @@
  *      Project: descgen
  *
  *       Author: see
- *        $Date: 2009/09/23 13:02:43 $
- *    $Revision: 1.9 $
  *
  *  Description: Output descriptor as OS-9 descriptor module
  *

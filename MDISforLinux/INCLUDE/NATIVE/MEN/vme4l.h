@@ -3,8 +3,6 @@
  *        \file  vme4l.h
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2014/09/30 16:50:22 $
- *    $Revision: 2.6 $
  *
  *  	 \brief  VME4L definitions/structure shared between user/kernel-mode
  *

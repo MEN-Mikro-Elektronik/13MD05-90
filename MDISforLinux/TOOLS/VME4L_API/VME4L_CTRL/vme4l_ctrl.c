@@ -3,8 +3,6 @@
  *        \file  vme4l_ctrl.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2003/12/15 15:02:39 $
- *    $Revision: 1.1 $
  *
  *  	 \brief  Example program for VME4L_ controller funcs
  *

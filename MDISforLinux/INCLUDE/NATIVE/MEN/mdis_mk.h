@@ -3,8 +3,6 @@
  *         Name: mdis_mk.h
  *
  *       Author: kp
- *        $Date: 2010/02/18 15:37:16 $
- *    $Revision: 1.6 $
  *
  *  Description: MDIS driver definitions
  *

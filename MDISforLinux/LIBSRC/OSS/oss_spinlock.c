@@ -3,8 +3,6 @@
  *        \file  oss_spinlock.c
  *
  *      \author  christine.ruff@men.de
- *        $Date: 2012/10/11 13:58:05 $
- *    $Revision: 2.4 $
  *
  *	   \project  MDISforLinux (OSS lib)
  *  	 \brief  Spinlock functions

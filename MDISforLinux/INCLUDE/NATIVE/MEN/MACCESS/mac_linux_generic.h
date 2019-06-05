@@ -3,8 +3,6 @@
  *         Name: mac_linux_generic.h
  *
  *       Author: kp
- *        $Date: 2009/09/08 18:43:00 $
- *    $Revision: 1.4 $
  *
  *  Description: access macros for linux for non PowerPC platforms
  *

@@ -1,8 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #
 #         Author: kp
-#          $Date: 2009/04/30 21:06:36 $
-#      $Revision: 1.1 $
 #
 #    Description: Makefile definitions for VME4L_M99IRQ_TSI148
 #                 (TSI148 doesn't support hardware swapping, therefore user

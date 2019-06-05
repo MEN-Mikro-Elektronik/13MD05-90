@@ -3,8 +3,6 @@
  *         Name: maccess_linux.h
  *
  *       Author: kp
- *        $Date: 2012/04/16 13:09:15 $
- *    $Revision: 1.5 $
  *
  *  Description: access macros for linux
  *

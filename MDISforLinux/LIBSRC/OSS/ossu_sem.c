@@ -3,8 +3,6 @@
  *        \file  ossu_sem.c
  *
  *      \author  christian.schuster@men.de
- *        $Date: 2005/07/08 11:32:59 $
- *    $Revision: 2.1 $
  *
  *	   \project  MDISforLinux
  *  	 \brief  Semaphore routines for user space

@@ -4,8 +4,6 @@
  *      Project: MDIS4LINUX
  *
  *       Author: kp
- *        $Date: 2009/08/04 16:49:20 $
- *    $Revision: 1.4 $
  *
  *  Description: Handle the MK Get/Setstats
  *

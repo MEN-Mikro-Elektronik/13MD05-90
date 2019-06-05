@@ -3,8 +3,6 @@
  *         Name: mac_linux_usr.h
  *
  *       Author: christian.schuster@men.de
- *        $Date: 2007/07/13 17:56:29 $
- *    $Revision: 1.1 $
  *
  *  Description: access macros for linux for user space
  *

@@ -3,8 +3,6 @@
  *        \file  mk_nonmdis.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2003/04/11 16:26:26 $
- *    $Revision: 2.2 $
  *
  *  	 \brief  MDIS kernel interface for non-MDIS drivers
  *

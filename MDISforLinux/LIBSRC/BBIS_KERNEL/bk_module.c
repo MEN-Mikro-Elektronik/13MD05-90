@@ -4,8 +4,6 @@
  *      Project: MDIS4LINUX
  *
  *       Author: kp
- *        $Date: 2014/07/29 14:35:51 $
- *    $Revision: 1.9 $
  *
  *  Description: Main file for BBIS kernel module
  *				 Contains the Linux filesystem's entry points

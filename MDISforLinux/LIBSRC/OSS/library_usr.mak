@@ -1,8 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #
 #         Author: christian.schuster@men.de
-#          $Date: 2007/07/16 09:55:10 $
-#      $Revision: 2.4 $
 #
 #    Description: makefile for Linux OSS lib for user space
 #

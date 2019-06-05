@@ -4,8 +4,6 @@
  *      Project: descgen
  *
  *       Author:
- *        $Date: 2001/01/19 14:37:13 $
- *    $Revision: 1.5 $
  *
  *  Description: Output descriptor as C-source
  *

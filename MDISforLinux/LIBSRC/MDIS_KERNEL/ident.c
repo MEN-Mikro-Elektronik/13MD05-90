@@ -4,8 +4,6 @@
  *      Project: MDIS4LINUX
  *
  *       Author: kp
- *        $Date: 2003/02/21 13:34:33 $
- *    $Revision: 2.0 $
  *
  *  Description: Return MK ident string
  *

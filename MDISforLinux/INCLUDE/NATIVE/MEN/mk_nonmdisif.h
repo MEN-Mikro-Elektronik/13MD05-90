@@ -3,8 +3,6 @@
  *        \file  mk_nonmdisif.h
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2003/02/21 13:34:29 $
- *    $Revision: 2.1 $
  *
  *  	 \brief  Export declaration to be included by non-MDIS drivers
  *				 using the MDIS configuration & BBIS support

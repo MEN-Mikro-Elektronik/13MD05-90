@@ -3,8 +3,6 @@
  *        \file  oss_swap.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2005/07/07 17:17:39 $
- *    $Revision: 1.3 $
  *
  *	   \project  MDISforLinux
  *  	 \brief  Byte swapping routines

@@ -4,8 +4,6 @@
  *      Project: descgen
  *
  *       Author:
- *        $Date: 2007/04/03 11:20:05 $
- *    $Revision: 1.7 $
  *
  *  Description: Input file parser. Builds internal database
  *

@@ -3,8 +3,6 @@
  *         Name: descgen.h
  *
  *       Author:
- *        $Date: 2009/09/23 18:34:22 $
- *    $Revision: 1.9 $
  *
  *  Description: Main include file for descriptor generator
  *

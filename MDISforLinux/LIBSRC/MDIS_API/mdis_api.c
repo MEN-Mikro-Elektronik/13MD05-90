@@ -3,8 +3,6 @@
  *        \file  mdis_api.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2014/07/17 12:29:39 $
- *    $Revision: 1.8 $
  *
  *  	 \brief  MDIS user interface for Linux
  */

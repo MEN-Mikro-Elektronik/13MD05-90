@@ -4,8 +4,6 @@
  *      Project: descgen
  *
  *       Author: kp
- *        $Date: 2001/01/19 14:37:19 $
- *    $Revision: 1.3 $
  *
  *  Description: Output descriptor as OS-9000 descriptor module
  *

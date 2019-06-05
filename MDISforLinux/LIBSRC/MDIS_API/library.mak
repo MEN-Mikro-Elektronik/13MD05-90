@@ -1,8 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #  
 #         Author: kp
-#          $Date: 2003/06/06 09:09:42 $
-#      $Revision: 1.2 $
 #                      
 #    Description: Makefile descriptor file for MDIS_API lib
 #                      

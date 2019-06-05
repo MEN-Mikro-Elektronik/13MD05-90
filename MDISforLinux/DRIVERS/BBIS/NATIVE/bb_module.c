@@ -4,8 +4,6 @@
  *      Project: MDIS4LINUX
  *
  *       Author: kp
- *        $Date: 2004/06/09 11:12:47 $
- *    $Revision: 1.3 $
  *
  *  Description: Glue code for all Linux MDIS board drivers
  *

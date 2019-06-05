@@ -4,8 +4,6 @@
  *      Project: MDIS4LINUX
  *
  *       Author: kp
- *        $Date: 2011/04/14 17:58:05 $
- *    $Revision: 2.6 $
  *
  *  Description: Close routine for MDIS kernel module
  *

@@ -3,8 +3,6 @@
  *        \file  men_chameleon.c
  *
  *      \author  kp/ub/ts
- *        $Date: 2013/08/29 16:49:09 $
- *    $Revision: 1.34 $
  *
  *        \brief MEN Chameleon FPGA driver/device registration
  *

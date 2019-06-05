@@ -4,8 +4,6 @@
  *      Project: MDIS4LINUX
  *
  *       Author: kp
- *        $Date: 2014/07/21 17:38:25 $
- *    $Revision: 1.26 $
  *
  *  Description: Main file for MDIS kernel module
  *				 Contains the Linux filesystem's entry points

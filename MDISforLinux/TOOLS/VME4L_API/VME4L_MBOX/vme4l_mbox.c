@@ -3,8 +3,6 @@
  *        \file  vme4l_mbox.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2009/06/03 19:18:11 $
- *    $Revision: 1.3 $
  *
  *  	 \brief  Example program for mailbox handling
  *

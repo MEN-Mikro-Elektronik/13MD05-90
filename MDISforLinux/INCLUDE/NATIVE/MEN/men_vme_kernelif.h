@@ -3,8 +3,6 @@
  *         Name: men_vme_kernelif.h
  *
  *       Author: kp
- *        $Date: 2005/08/11 16:18:15 $
- *    $Revision: 1.5 $
  *
  *  Description: header file to use MEN VME kernel interface
  *

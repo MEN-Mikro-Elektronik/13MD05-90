@@ -3,8 +3,6 @@
  *        \file  oss_ident.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2012/08/07 19:01:19 $
- *    $Revision: 2.21 $
  *
  *	   \project  MDISforLinux
  *  	 \brief  OSS library version info

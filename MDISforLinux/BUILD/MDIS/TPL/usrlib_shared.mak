@@ -1,8 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #  
 #         Author: kp
-#          $Date: 2009/09/23 11:29:55 $
-#      $Revision: 1.8 $
 #  
 #    Description: Make a Linux MDIS user state library (shared library)
 #                      

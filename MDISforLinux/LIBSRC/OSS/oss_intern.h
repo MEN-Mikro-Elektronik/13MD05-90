@@ -3,8 +3,6 @@
  *        \file  oss_intern.h
  *
  *      \author  kp
- *        $Date: 2012/08/07 19:06:28 $
- *    $Revision: 1.15 $
  *
  *	   \project  MDISforLinux
  *       \brief  oss internal defines

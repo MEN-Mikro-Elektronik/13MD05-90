@@ -3,8 +3,6 @@
  *        \file  oss.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2012/05/14 20:29:47 $
- *    $Revision: 2.16 $
  *
  *	   \project  MDISforLinux
  *  	 \brief  Core functions of the OSS module

@@ -1,8 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #
 #         Author: kp
-#          $Date: 2001/01/19 14:37:57 $
-#      $Revision: 1.1 $
 #
 #    Description: makefile for Linux BBIS kernel
 #

@@ -3,8 +3,6 @@
  *        \file  vme4l_rwex.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2009/06/03 19:19:53 $
- *    $Revision: 1.3 $
  *
  *  	 \brief  Example program for VME4L_Read/Write
  *

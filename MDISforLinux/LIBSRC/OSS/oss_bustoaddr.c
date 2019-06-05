@@ -3,8 +3,6 @@
  *        \file  oss_bustoaddr.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2012/08/07 19:04:11 $
- *    $Revision: 1.11 $
  *
  *	   \project  MDISforLinux
  *  	 \brief  Bus Address translation routines and PCI access routines

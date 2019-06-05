@@ -1,8 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #
 #         Author: rt
-#          $Date: 2009/06/03 19:43:09 $
-#      $Revision: 1.1 $
 #
 #    Description: Makefile definitions for VME4L_TSI148_LOCMON
 #

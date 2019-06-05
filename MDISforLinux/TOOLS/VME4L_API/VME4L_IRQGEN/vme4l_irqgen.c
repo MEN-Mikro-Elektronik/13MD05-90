@@ -3,8 +3,6 @@
  *        \file  vme4l_irqgen.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2003/12/15 15:02:43 $
- *    $Revision: 1.1 $
  *
  *  	 \brief  Example program for VME4L_IrqGenerate() and friends
  *

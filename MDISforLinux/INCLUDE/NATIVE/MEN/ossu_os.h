@@ -3,8 +3,6 @@
  *         Name: ossu_os.h
  *
  *       Author: christian.schuster@men.de
- *        $Date: 2010/12/06 10:20:57 $
- *    $Revision: 2.4 $
  *
  *  Description: Linux user space specific data types and defines
  *

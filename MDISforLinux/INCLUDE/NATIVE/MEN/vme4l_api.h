@@ -3,8 +3,6 @@
  *        \file  vme4l_api.h
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2004/07/26 16:31:32 $
- *    $Revision: 2.2 $
  *
  *  	 \brief  VME4L_API user interface definitions
  *

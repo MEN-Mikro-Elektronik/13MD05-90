@@ -4,8 +4,6 @@
  *      Project: MDIS4LINUX
  *
  *       Author: kp
- *        $Date: 2007/12/10 12:56:29 $
- *    $Revision: 1.5 $
  *
  *  Description: Module stuff for CHAMELEON MDIS module
  *

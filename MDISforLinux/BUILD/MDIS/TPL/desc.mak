@@ -1,8 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #  
 #         Author: kp
-#          $Date: 2004/06/09 11:12:57 $
-#      $Revision: 1.5 $
 #  
 #    Description: Make LINUX MDIS descriptors
 #                      

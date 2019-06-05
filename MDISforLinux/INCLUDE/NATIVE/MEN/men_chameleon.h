@@ -3,8 +3,6 @@
  *        \file  men_chameleon.h
  *
  *      \author  ub/kp
- *        $Date: 2007/10/24 14:12:42 $
- *    $Revision: 1.9 $
  *
  *       \brief  Linux header file for MEN Chameleon FPGA support
  *

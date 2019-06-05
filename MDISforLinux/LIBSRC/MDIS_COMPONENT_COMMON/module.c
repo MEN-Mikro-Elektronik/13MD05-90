@@ -4,8 +4,6 @@
  *      Project: MDIS4LINUX
  *
  *       Author: kp
- *        $Date: 2004/06/09 11:12:43 $
- *    $Revision: 1.3 $
  *
  *  Description: Common functions for all MDIS module components
  *

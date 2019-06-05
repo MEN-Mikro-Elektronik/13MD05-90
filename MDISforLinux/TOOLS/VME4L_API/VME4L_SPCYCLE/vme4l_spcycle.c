@@ -3,8 +3,6 @@
  *        \file  vme4l_spcycle.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2009/07/09 11:04:50 $
- *    $Revision: 1.3 $
  *
  *  	 \brief  Example program for special cycles (RMW, AONLY)
  *

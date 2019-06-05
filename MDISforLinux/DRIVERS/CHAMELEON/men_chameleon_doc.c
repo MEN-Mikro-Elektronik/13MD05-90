@@ -3,8 +3,6 @@
  *        \file  men_chameleon_doc.c
  *
  *      \author  Christian.Schuster@men.de
- *        $Date: 2007/03/28 15:53:58 $
- *    $Revision: 1.5 $
  *
  *      \brief   User documentation for MEN Chameleon FPGA driver/device
  *               registration

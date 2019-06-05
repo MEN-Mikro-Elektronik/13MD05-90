@@ -3,8 +3,6 @@
  *        \file  rtagent.h
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2003/04/11 16:26:16 $
- *    $Revision: 2.1 $
  *
  *  	 \brief  definitions for the "MDIS example execution environment"
  *				 (mexe) for RTAI.
