@@ -3,9 +3,7 @@
  *         Name: dl_list.c
  *      Project: utility library
  *
- *      $Author: popp $
- *        $Date: 1998/01/08 08:51:36 $
- *    $Revision: 1.2 $
+ *      Author: popp 
  *
  *  Description: functions for double linked lists
  *               

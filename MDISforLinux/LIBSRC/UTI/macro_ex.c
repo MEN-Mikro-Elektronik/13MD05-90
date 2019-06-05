@@ -4,8 +4,6 @@
  *      Project: 
  *
  *       Author: 
- *        $Date: 2008/09/15 12:49:11 $
- *    $Revision: 1.4 $
  *
  *  Description: macro definition and expansion
  *                      

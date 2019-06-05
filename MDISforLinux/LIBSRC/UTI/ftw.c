@@ -4,8 +4,6 @@
  *      Project: UTI library
  *
  *       Author: 
- *        $Date: 1999/03/24 14:18:00 $
- *    $Revision: 1.8 $
  *
  *  Description: walk down a file tree
  *                      
@@ -13,8 +11,6 @@
  *     Required: -
  *     Switches: -
  *
- *---------------------------[ Public Functions ]----------------------------
- *  
  *  
  *---------------------------------------------------------------------------
  * Copyright (c) 1997-2019, MEN Mikro Elektronik GmbH
@@ -33,8 +29,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-static const char RCSid[]="$Id: ftw.c,v 1.8 1999/03/24 14:18:00 see Exp $";
 
 #include <stdio.h>
 #include <errno.h>

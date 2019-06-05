@@ -4,8 +4,6 @@
  *      Project: DBG library for user space
  *
  *       Author: christian.schuster@men.de
- *        $Date: 2005/07/08 11:40:37 $
- *    $Revision: 1.1 $
  *
  *  Description: Debug functions for Linux
  *
@@ -29,8 +27,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-const char DBG_RCSid[]="$Id: dbgu.c,v 1.1 2005/07/08 11:40:37 cs Exp $";
 
 #include <MEN/men_typs.h>
 #include <MEN/usr_oss.h>

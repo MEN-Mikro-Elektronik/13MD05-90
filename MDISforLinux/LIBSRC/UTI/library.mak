@@ -1,8 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #  
 #         Author: gl
-#          $Date: 2008/09/15 12:57:33 $
-#      $Revision: 1.1 $
 #                      
 #    Description: Makefile descriptor file for switch confgiration lib
 #                  (Marvell 88E6095)
@@ -24,8 +22,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 MAK_NAME=uti
+# the next line is updated during the MDIS installation
+STAMPED_REVISION="13MD05-90_02_00-173-gaf125b9-dirty_2019-06-05"
 
-MAK_SWITCH=
+DEF_REVISION=MAK_REVISION=$(STAMPED_REVISION)
+
+MAK_SWITCH= \
+		$(SW_PREFIX)$(DEF_REVISION)
 
 
 MAK_INCL= 

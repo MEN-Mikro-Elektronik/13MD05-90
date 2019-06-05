@@ -3,9 +3,7 @@
  *         Name: dirname
  *      Project: uti
  *
- *      $Author: GLeonhardt $
- *        $Date: 2008/09/15 12:56:56 $
- *    $Revision: 1.4 $
+ *      Author: GLeonhardt 
  *
  *  Description: gets the directory from a whole path
  *                      
@@ -15,8 +13,6 @@
  *     Required:  
  *     Switches:  
  *
- *---------------------------[ Public Functions ]----------------------------
- *  
  *  
  *---------------------------------------------------------------------------
  * Copyright (c) 1996-2019, MEN Mikro Elektronik GmbH
@@ -35,8 +31,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-static char *RCSid="$Header: /dd2/CVSR/COM/LIBSRC/UTI/dirname.c,v 1.4 2008/09/15 12:56:56 GLeonhardt Exp $";
 
 #include <string.h>
 
@@ -44,8 +38,6 @@ char *dirname(path,buf)
 char *path, *buf;
 {
 	char *p;
-    /* include ident string, suppress warning */
-    char a = a = RCSid[0];
 
 	strcpy( buf, path );
 	if( (p = strrchr(buf,'\\')) != NULL ){

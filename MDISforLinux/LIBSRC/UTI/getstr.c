@@ -4,8 +4,6 @@
  *      Project: UTI library
  *
  *       Author: kp
- *        $Date: 2008/09/15 12:49:04 $
- *    $Revision: 1.3 $
  *
  *  Description: ask for a string from terminal 
  *                      

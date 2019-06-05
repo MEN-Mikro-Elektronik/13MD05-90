@@ -3,9 +3,7 @@
  *         Name: smatch.c
  *      Project: uti.l
  *
- *      $Author: GLeonhardt $
- *        $Date: 2008/09/15 12:49:18 $
- *    $Revision: 1.2 $
+ *      Author: GLeonhardt 
  *
  *  Description: compare strings including wildcards
  *				 s = string to compare

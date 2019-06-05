@@ -4,8 +4,6 @@
  *      Project: UTI library
  *
  *       Author: 
- *        $Date: 2008/09/15 12:48:39 $
- *    $Revision: 1.6 $
  *
  *  Description: print a string to console and ask for user input
  *					(does not wait for <CR> under OS-9).

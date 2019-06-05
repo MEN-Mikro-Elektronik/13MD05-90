@@ -4,8 +4,6 @@
  *      Project: UTI library
  *
  *       Author: kp
- *        $Date: 2009/10/28 18:36:40 $
- *    $Revision: 1.6 $
  *
  *  Description: printout error message and leave the program
  *                      

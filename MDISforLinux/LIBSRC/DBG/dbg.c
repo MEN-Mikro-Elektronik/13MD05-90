@@ -4,8 +4,6 @@
  *      Project: DBG library
  *
  *       Author: kp
- *        $Date: 2006/09/27 18:51:21 $
- *    $Revision: 1.6 $
  *
  *  Description: Debug functions for Linux
  *				 Main task is done by the macros in dbg_os.h. This
@@ -34,7 +32,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-const char DBG_RCSid[]="$Id: dbg.c,v 1.6 2006/09/27 18:51:21 ts Exp $";
 
 
 #define __NO_VERSION__

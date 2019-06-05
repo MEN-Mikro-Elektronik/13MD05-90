@@ -4,8 +4,6 @@
  *      Project: 
  *
  *       Author: 
- *        $Date: 2009/10/28 18:38:44 $
- *    $Revision: 1.5 $
  *
  *  Description: fill buffer with error message
  *                      

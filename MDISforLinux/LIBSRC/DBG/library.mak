@@ -1,7 +1,6 @@
 #***************************  M a k e f i l e  *******************************
 #
 #         Author: kp
-#      $Revision: 1.2 $
 #
 #    Description: makefile for Linux DBG module
 #
@@ -23,8 +22,13 @@
 
 
 MAK_NAME=dbg
+# the next line is updated during the MDIS installation
+STAMPED_REVISION="13MD05-90_02_00-173-gaf125b9-dirty_2019-06-05"
 
-MAK_SWITCH=-DDBG_MODULE
+DEF_REVISION=MAK_REVISION=$(STAMPED_REVISION)
+
+MAK_SWITCH=-DDBG_MODULE \
+		$(SW_PREFIX)$(DEF_REVISION)
 
 MAK_INCL=$(MEN_INC_DIR)/men_typs.h    \
          $(MEN_INC_DIR)/dbg.h         \

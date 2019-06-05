@@ -3,9 +3,7 @@
  *         Name: echo.c
  *      Project: uti lib
  *
- *      $Author: aw $
- *        $Date: 2008/03/07 09:50:39 $
- *    $Revision: 1.5 $
+ *      Author: aw 
  *
  *  Description: switch on/off echo
  *                      
@@ -26,8 +24,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-static char *RCSid="$Header: /dd2/CVSR/COM/LIBSRC/UTI/echo.c,v 1.5 2008/03/07 09:50:39 aw Exp $";
 
 #include <stdio.h>
 
