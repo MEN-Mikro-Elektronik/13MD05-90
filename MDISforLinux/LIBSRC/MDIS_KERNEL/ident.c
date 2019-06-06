@@ -30,6 +30,8 @@
 
 #include "mk_intern.h"
 
+static const char IdentString[]=MENT_XSTR(MAK_REVISION);
+
 /*********************************** MDIS_Ident *******************************
  *
  *  Description:  Return ident string
@@ -41,7 +43,7 @@
  ****************************************************************************/
 char* MDIS_Ident( void )
 {
-	return("MK - MDIS Kernel: $Id: ident.c,v 2.0 2003/02/21 13:34:33 kp Exp $");
+	return( (char*) IdentString );
 }
 
 

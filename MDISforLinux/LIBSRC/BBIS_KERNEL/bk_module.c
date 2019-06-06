@@ -36,6 +36,8 @@
 
 #include "bk_intern.h"
 
+static const char IdentString[]=MENT_XSTR(MAK_REVISION);
+
 /*--------------------------------------+
 |   DEFINES                             |
 +--------------------------------------*/
@@ -88,7 +90,7 @@ EXPORT_SYMBOL(bbis_ident);
  ****************************************************************************/
 char* bbis_ident( void )
 {
-	return("BK - BDIS Kernel: $Id: bk_module.c,v 1.9 2014/07/29 14:35:51 ts Exp $");
+	return( (char*) IdentString );
 }
 
 /****************************** bbis_open ***********************************

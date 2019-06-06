@@ -132,7 +132,6 @@
   \code
   # insmod vme-menpci2vme.o major=230
 
-	menpci2vme $Id: vme4l_old.h,v 1.3 2003/12/15 15:02:18 kp Exp $ Created Jul 14 2002 15:31:57
 	    found bridge (Device number 0x19)
  		physBase=0xbc000000
 	menpci2vme: using major 230

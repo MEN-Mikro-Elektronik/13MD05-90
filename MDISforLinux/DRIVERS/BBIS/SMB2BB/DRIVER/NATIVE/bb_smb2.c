@@ -126,6 +126,8 @@ typedef struct {
 /* include files which need BBIS_HANDLE */
 #include <MEN/bb_entry.h>			/* bbis jumptable				*/
 
+static const char IdentString[]=MENT_XSTR(MAK_REVISION);
+
 /* dynamic list of found clients per Adapter */
 typedef struct i2ctest_data {
     struct list_head 	node;
@@ -989,7 +991,7 @@ static int32 SMB2BB_UnusedIrqHandle(BBIS_HANDLE * bbhP, OSS_IRQ_HANDLE * ossH)
  */
 static char* Ident( void )		/* nodoc */
 {
-    return ( "SMB2- Pseudo BB Handler: $Id: bb_smb2.c,v 1.21 2014/07/22 13:15:39 ts Exp $" );
+    return( (char*) IdentString );
 }
 
 
