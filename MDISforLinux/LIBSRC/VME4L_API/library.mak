@@ -22,6 +22,11 @@
 
 
 MAK_NAME=vme4l_api
+# the next line is updated during the MDIS installation
+STAMPED_REVISION="13MD05-90_02_00-191-g6b8334b-dirty_2019-06-10"
+
+DEF_REVISION=MAK_REVISION=$(STAMPED_REVISION)
+MAK_SWITCH=$(SW_PREFIX)$(DEF_REVISION)
 
 MAK_INCL=$(MEN_INC_DIR)/../../NATIVE/MEN/vme4l.h \
 		 $(MEN_INC_DIR)/../../NATIVE/MEN/vme4l_old.h\

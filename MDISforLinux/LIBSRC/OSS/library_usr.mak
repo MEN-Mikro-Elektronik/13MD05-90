@@ -21,8 +21,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 MAK_NAME=oss_usr
+# the next line is updated during the MDIS installation
+STAMPED_REVISION="13MD05-90_02_00-191-g6b8334b-dirty_2019-06-10"
+
+DEF_REVISION=MAK_REVISION=$(STAMPED_REVISION)
 
 MAK_SWITCH= $(SW_PREFIX)MAC_USERSPACE \
+		$(SW_PREFIX)$(DEF_REVISION) \
 			$(SW_PREFIX)OSS_CONFIG_PCI \
 			$(SW_PREFIX)OSS_CONFIG_VME \
 			$(SW_PREFIX)DBG \
