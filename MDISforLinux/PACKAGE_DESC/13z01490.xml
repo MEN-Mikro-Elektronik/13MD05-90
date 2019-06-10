@@ -2,8 +2,8 @@
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="packagedesc.xsd">
 	<name>13z01490</name>
 	<description>Linux driver package for MEN PCI to VME bridge on A12, A13, A15, A17, A19, A20, B11</description>
-	<date>2012-08-08</date>
-	<revision>Release-2.16</revision>
+	<date>2019-06-10</date>
+	<revision>13MD05-90_02_00-195-gb675bca-dirty</revision>
 	<modellist>
 		<model>
 			<hwname>PLDZ002</hwname>

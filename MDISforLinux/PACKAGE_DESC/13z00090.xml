@@ -2,8 +2,8 @@
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="packagedesc.xsd">
 	<name>13z00090</name>
 	<description>Linux driver package for MEN Chameleon FPGA</description>
-	<date>2012-08-08</date>
-	<revision>1.13</revision>
+	<date>2019-06-10</date>
+	<revision>13MD05-90_02_00-195-gb675bca-dirty</revision>
 	<docroot>DRIVERS/CHAMELEON/DOC/html/index.html</docroot>
 	<modellist>
 		<model>
