@@ -22,6 +22,11 @@
 
 
 MAK_NAME=descgen
+# the next line is updated during the MDIS installation
+STAMPED_REVISION="13MD05-90_02_00-192-gccbbd88_2019-06-10"
+
+DEF_REVISION=MAK_REVISION=$(STAMPED_REVISION)
+MAK_SWITCH=$(SW_PREFIX)$(DEF_REVISION)
 
 MAK_LIBS=
 
