@@ -5,7 +5,7 @@ SCAN_MMODULE_NAMELCASE_SCAN_MMODULE_INSTANCE {
     # ------------------------------------------------------------------------
     DESC_TYPE = U_INT32 0x1
     HW_TYPE = STRING SCAN_MMODULE_NAME
-    _WIZ_MODEL = STRING SCAN_MMODULE_NAME
+    _WIZ_MODEL = STRING SCAN_WIZMODEL_NAME
 
     # ------------------------------------------------------------------------
     #        reference to base board
