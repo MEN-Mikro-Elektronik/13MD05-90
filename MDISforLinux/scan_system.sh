@@ -116,54 +116,12 @@ G_deviceIdV2=""
 # SMB device list 
 G_smbDeviceList=""
 
+### @brief M-Module ID to XML file map
+declare -A mmodFileList
+### @brief M-Module specification map
+declare -A mmodSpecList
 ### @brief M-Moudle instance counters
 declare -A mModuleInstances=()
-
-### @brief Filenames for M-Module XMLs
-declare -A mModuleXmls=( \
-	["M11"]="13m01106.xml" \
-	["M22"]="13m02206.xml" \
-	["M24"]="13m02206.xml" \
-	["M27"]="13m02706.xml" \
-	["M28"]="13m02706.xml" \
-	["M81"]="13m02706.xml" \
-	["M31"]="13m03106.xml" \
-	["M32"]="13m03106.xml" \
-	["M82"]="13m03106.xml" \
-	["M33"]="13m03306.xml" \
-	["M34"]="13m03406.xml" \
-	["M35"]="13m03406.xml" \
-	["M36"]="13m03606.xml" \
-	["M36N"]="13m03606.xml" \
-	["M37"]="13m03706.xml" \
-	["M43"]="13m04306.xml" \
-	["M54"]="13m05406.xml" \
-	["M58"]="13m05806.xml" \
-	["M62"]="13m06206.xml" \
-	["M62N"]="13m06206.xml" \
-	["M65"]="13m06506.xml" \
-	["P5"]="13m06506.xml" \
-	["M66"]="13m06606.xml" \
-	["M66_D302"]="13m06606.xml" \
-	["M72"]="13m07206.xml" \
-	["M75"]="13m07506.xml" \
-	["M77"]="13m07790.xml" \
-	["M69"]="13m07790.xml" \
-	["M45"]="13m07790.xml" \
-	["M99"]="13m09906.xml" \
-	)
-
-### @brief Filenames for M-Module templates
-declare -A mModuleTemplates=( \
-	["M31"]="mX.tpl" \
-	["M35"]="m35.tpl" \
-	["M36N"]="m36n.tpl" \
-	["M66"]="mX.tpl" \
-	["M72"]="mX.tpl" \
-	["M77"]="m77.tpl" \
-	["M82"]="m82.tpl" \
-	)
-
 
 ############################################################################
 # verbose debug outputs if VERBOSE_PRINT is 1 or 2
@@ -958,62 +916,67 @@ function scan_for_pci_devs {
 ### @param $5 DSC output file
 function create_entry_dsc_mmodule {
 	local tplDir
-	local mModule
 	local boardNum
 	local boardName
-	local xmlFile
-	local tplFile
 	local outFile
+	local mModule
 	local xData
 	local mkFiles
+	local xMakefile
 
 	tplDir="${1}"
-	mModule="${2}"
-	boardNum="${3}"
-	boardName="${4}"
-	outFile="${5}"
+	boardNum="${2}"
+	boardName="${3}"
+	outFile="${4}"
 
-	if [ "${mModule}" == "" ]; then
+	mModule="${mmodSpecList["hwname"]}"
+
+	if [ "${mModule}" == "" ] || \
+		[ "${mmodSpecList["hwname"]}" == "" ] || \
+		[ "${mmodSpecList["name"]}" == "" ]; then
 		return 22
 	fi
 
-	xmlFile="${mModuleXmls["${mModule}"]}"
-	tplFile="${mModuleTemplates["${mModule}"]}"
-	if [ "${xmlFile}" == "" ] || \
-		[ "${tplFile}" == "" ]; then
-		echo "Found unknown M-Module ${mModule}"
-		return 2
-	fi
 	if [ "${mModuleInstances["${mModule}"]}" == "" ]; then
 		mModuleInstances["${mModule}"]="1"
 	else
 		mModuleInstances["${mModule}"]="$((mModuleInstances["${mModule}"]+=1))"
 	fi
 
-	echo "Found ${mModule} on ${boardName}_${boardNum}"
+	echo "Found ${mModule^^} (${mmodSpecList["mmoduleid"]}) on ${boardName}_${boardNum}"
 
 	echo "Writing ${mModule,,}_${mModuleInstances["${mModule}"]} section to system.dsc"
-	cat "${tplDir}/${tplFile}" | sed "s/SCAN_MMODULE_INSTANCE/${mModuleInstances["${mModule}"]}/g;s/SCAN_BBIS_NAME/${boardName}/g;s/USCORESCAN_BBIS_INSTANCE/_${boardNum}/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" ${mm_device_slot}`/g;s/SCAN_MMODULE_NAMELCASE/${mModule,,}/g;s/SCAN_MMODULE_NAME/${mModule}/g" >> "${outFile}"
+	cat "${tplDir}/mX.tpl" | sed "s/SCAN_MMODULE_INSTANCE/${mModuleInstances["${mModule}"]}/g;s/SCAN_BBIS_NAME/${boardName}/g;s/USCORESCAN_BBIS_INSTANCE/_${boardNum}/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" ${mm_device_slot}`/g;s/SCAN_MMODULE_NAMELCASE/${mmodSpecList["hwname"],,}/g;s/SCAN_MMODULE_NAME/${mmodSpecList["name"]^^}/g;s/SCAN_WIZMODEL_NAME/${mmodSpecList["hwname"]^^}/g" >> "${outFile}"
+
 	if [ "${mModuleInstances["${mModule}"]}" == "1" ]; then
-		readarray -t xData <<< "$(xmlParseXml "${MEN_LIN_DIR}/PACKAGE_DESC/${xmlFile}")"
-		if [ "${xData[0]}" != "" ]; then
-			readarray -t mkFiles <<< "$(xGetMakefiles "${xData[@]}" "${mModule}" "Low Level Driver")"
-			if [ "${mkFiles[0]}" != "" ]; then
-				G_makefileLlDriver+=" ${mkFiles[@]}"
-			fi
-			readarray -t mkFiles <<< "$(xGetMakefiles "${xData[@]}" "${mModule}" "Native Driver")"
-			if [ "${mkFiles[0]}" != "" ]; then
-				G_makefileNatDriver+=" ${mkFiles[@]}"
-			fi
-			readarray -t mkFiles <<< "$(xGetMakefiles "${xData[@]}" "${mModule}" "Driver Specific Tool")"
-			if [ "${mkFiles[0]}" != "" ]; then
-				G_makefileLlTool+=" ${mkFiles[@]}"
-			fi
-			readarray -t mkFiles <<< "$(xGetMakefiles "${xData[@]}" "${mModule}" "User Library")"
-			if [ "${mkFiles[0]}" != "" ]; then
-				G_makefileUsrLibs+=" ${mkFiles[@]}"
-			fi
+		if [ "${mmodSpecList["Low Level Driver"]}" != "" ]; then
+			for xMakefile in ${mmodSpecList["Low Level Driver"]}; do
+				if [ "${xMakefile}" != *"${G_makefileLlDriver}"* ]; then
+					G_makefileLlDriver+=" ${xMakefile}"
+				fi
+			done
 		fi
+		if [ "${mmodSpecList["Native Driver"]}" != "" ]; then
+                        for xMakefile in ${mmodSpecList["Native Driver"]}; do
+                                if [ "${xMakefile}" != *"${G_makefileNatDriver}"* ]; then
+                                        G_makefileNatDriver+=" ${xMakefile}"
+                                fi
+                        done
+                fi
+		if [ "${mmodSpecList["Driver Specific Tool"]}" != "" ]; then
+                        for xMakefile in ${mmodSpecList["Driver Specific Tool"]}; do
+                                if [ "${xMakefile}" != *"${G_makefileLlTool}"* ]; then
+                                        G_makefileLlTool+=" ${xMakefile}"
+                                fi
+                        done
+                fi
+		if [ "${mmodSpecList["User Library"]}" != "" ]; then
+                        for xMakefile in ${mmodSpecList["User Library"]}; do
+                                if [ "${xMakefile}" != *"${G_makefileUsrLibs}"* ]; then
+                                        G_makefileUsrLibs+=" ${xMakefile}"
+                                fi
+                        done
+                fi
 	fi
 }
 
@@ -1044,8 +1007,12 @@ function scan_for_mmodules {
 	if [ "$7" == "A08/D16" ]; then
 		for mm_offset in $mm_a08d16xx; do
 			mm_address=`printf "0x%x" $((0x$bar_address + $mm_offset))`
-			mm_name=`$MEN_LIN_DIR/BIN/$MM_IDENT $mm_address | grep Name | awk '{print $8}'`
-			create_entry_dsc_mmodule $1 "$mm_name" $2 $3 $8
+			mm_id="$(getMmodId "${mm_address}")"
+			if [ "${mm_id}" != "" ]; then
+				makeMmodFileMap
+				makeMmodOutputData "${mm_id}"
+				create_entry_dsc_mmodule $1 $2 $3 $8
+			fi
 			mm_device_slot=$(($mm_device_slot + 1))
 		done
 	elif [ "$7" == "A24/D32" ]; then
@@ -1053,10 +1020,14 @@ function scan_for_mmodules {
 		for mm_a24d32 in $mm_a24d32xx; do
 			for mm_offset in ${!mm_a24d32}; do
 				mm_address=`printf "0x%x" $((0x$bar_address + $mm_offset))`
-				mm_name=`$MEN_LIN_DIR/BIN/$MM_IDENT $mm_address | grep Name | awk '{print $8}'`
-				create_entry_dsc_mmodule $1 "$mm_name" $2 $3 $8
-				if [ $? == 0 ]; then
-					break
+				mm_id="$(getMmodId "${mm_address}")"
+				if [ "${mm_id}" != "" ]; then
+					makeMmodFileMap
+					makeMmodOutputData "${mm_id}"
+					create_entry_dsc_mmodule $1 $2 $3 $8
+					if [ $? == 0 ]; then
+						break
+					fi
 				fi
 			done
 			mm_device_slot=$(($mm_device_slot + 1))
@@ -1224,226 +1195,241 @@ function create_makefile {
 
 }
 
-### @brief Read XML file
-###
-### @param[out] xmlEntity Parsed entity
-### @param[out] xmlContent Parsed content
-xmlReadDom() {
-	local IFS
-
-	IFS=">"
-
-	read -rd "<" "xmlEntity" "xmlContent"
-}
-
-### @brief Get the tag pushed to path
-xmlPathPush() {
-	local xmlTag
-
-	xmlTag=""
-
-	if [[ "${xmlEntity}" =~ ${xmlRegex} ]]; then
-		if [[ "${BASH_REMATCH[1]}" == "" && \
-			"${BASH_REMATCH[5]}" == "" ]] || \
-			[[ "${BASH_REMATCH[1]}" == "" && \
-			"${BASH_REMATCH[5]}" != "" ]]; then
-			xmlTag="${BASH_REMATCH[2]}"
-		fi
-	fi
-
-	echo "${xmlTag}"
-}
-
-### @brief Get the tag popped from path
-xmlPathPop() {
-	local xmlTag
-
-	xmlTag=""
-
-	if [[ "${xmlEntity}" =~ ${xmlRegex} ]]; then
-		if [ "${BASH_REMATCH[1]}" != "" ] || \
-			[ "${BASH_REMATCH[5]}" != "" ]; then
-			xmlTag="${BASH_REMATCH[2]}"
-		fi
-	fi
-
-	echo "${xmlTag}"
-}
-
-### @brief Get current tag path
-xmlPathGet() {
-	local xPart
-
-	for xPart in "${xPath[@]}"; do
-		echo -n "/${xPart}"
-	done
-}
-
 ### @brief Parse XML file
-###
-### All data is echoed as: /root/tag1/tagN=value
-###
+### @details SAX parser.
+### Callback function is called on events like tag start (startElement), tag end
+### (endElement) and tag content (characters).
+### On tag start event callback function is called with following arguments:
+### "callbackArgument" "startElement" "/current/path" "tagName" "[attr]="value""
+### On tag end event callback function is called with following arguments:
+### "callbackArgument" "endElement" "/current/path" "tagName"
+### On tag content event callback function is called with following arguments:
+### "callbackArgument" "characters" "/current/path" "tag content"
+### Known limitations: only valid XML syntax allowed; no tag embedded in comment
+### allowed; no CDATA recognized
 ### @param $1 Input XML file
+### @param $2 Name of callback function
+### @param $3 Callback function argument
 xmlParseXml() {
+	local -r EV_START="startElement"
+	local -r EV_END="endElement"
+	local -r EV_CHARS="characters"
+	local -r RE_XML="^(/?)([[:alpha:]]+)(([[:space:]]+[:[:alpha:]]+=\"[^\"]+\")*)(/?)$"
+	local -r RE_ATTR="s/([:[:alpha:]]+)=\"([^\"]+)\"/[\1]=\"\2\"/g"
 	local inFile
-	local xmlRegex
-	local xPath
-	local xPart
-	local arrLen
+	local cbFunc
+	local cbArg
+	local IFS
+	local xmlPath
+	local strLen
+	local escArg
+	local escPath
+	local escTag
+	local escAttr
+	local escChars
 
 	inFile="${1}"
-	xmlRegex='^(/?)([[:alnum:]]+)[[:space:]]*(([[:alnum:]:]+="[[:alnum:]!#$%&()*+,-./:;<=>?@[\^_`{|}~]*"[[:space:]]*)*)(/?)'
-	xPath=()
+	cbFunc="${2}"
+	cbArg="${3}"
+	xmlPath=""
 
-	while xmlReadDom; do
-		if [[ "${xmlEntity}" =~ ${xmlRegex} ]]; then
-			xPart="$(xmlPathPush)"
-			if [ "${xPart}" != "" ]; then
-				xPath+=("${xPart}")
+	if [ ! -f "${inFile}" ]; then
+		return "1"
+	fi
+
+	IFS=">"
+	while read -rd "<" "xmlEntity" "xmlContent"; do
+		IFS=$' \t\n'
+		if [ "${cbFunc}" != "" ] && \
+			[ "${xmlEntity}" != "" ] && \
+			[[ "${xmlEntity}" =~ ${RE_XML} ]]; then
+			if [ "${BASH_REMATCH[1]}" == "" ]; then
+				escArg="$(printf '%q' "${cbArg}")"
+				escPath="$(printf '%q' "${xmlPath}")"
+				escTag="$(printf '%q' "${BASH_REMATCH[2]}")"
+				escAttr="$(sed -E "${RE_ATTR}" <<< "${BASH_REMATCH[3]}")"
+				escAttr="$(printf '%q' "${escAttr}")"
+				eval "${cbFunc}" "${escArg}" "${EV_START}" "${escPath}" "${escTag}" "${escAttr}"
+				xmlPath+="/${BASH_REMATCH[2]}"
+				if [ "${xmlContent}" != "" ]; then
+					escArg="$(printf '%q' "${cbArg}")"
+					escPath="$(printf '%q' "${xmlPath}")"
+					escChars="$(printf '%q' "${xmlContent}")"
+					eval "${cbFunc}" "${escArg}" "${EV_CHARS}" "${escPath}" "${escChars}"
+				fi
 			fi
-			if [[ "${xmlContent}" =~ [^[:space:]]+ ]]; then
-				currPath="$(xmlPathGet)"
-				echo "${currPath}=${xmlContent}"
-			fi
-			xPart="$(xmlPathPop "${xmlEntity}")"
-			if [ "${xPart}" != "" ]; then
-				arrLen="${#xPath[@]}"
-				xPath=("${xPath[@]:0:$((arrLen-=1))}")
+			if [ "${BASH_REMATCH[1]}" == "/" ] || \
+				[ "${BASH_REMATCH[5]}" == "/" ]; then
+				escArg="$(printf '%q' "${cbArg}")"
+				escPath="$(printf '%q' "${xmlPath}")"
+				escTag="$(printf '%q' "${BASH_REMATCH[2]}")"
+				eval "${cbFunc}" "${escArg}" "${EV_END}" "${escPath}" "${escTag}"
+				strLen="${#xmlPath}"
+				strLen="$((strLen-${#BASH_REMATCH[2]}))"
+				strLen="$((strLen-1))"
+				xmlPath="${xmlPath:0:${strLen}}"
 			fi
 		fi
+		IFS=">"
 	done < "${inFile}"
 }
 
-### @brief Clear xGetMakefiles variables
-xClearMk() {
-	xName=""
-	xType=""
-	xMakefile=""
-	xOs=""
-}
+### @brief Create M-Module to XML file mapping associative array
+makeMmodFileMap() {
+	local xFiles
+	local xFile
 
-### @brief Get makefile if ready
-xProcessMk1() {
-	if [ "${xName}" == "${mmName}" ] && \
-		[ "${xType}" == "${mkType}" ] && \
-		[ "${xMakefile}" != "" ] && \
-		[[ "${xOs}" == "" || "${xOs}" == "Linux" ]]; then
-		echo "${xMakefile}"
+	if [ "${#mmodFileList[@]}" != "0" ]; then
+		return "0"
 	fi
 
-	xClearMk
+	echo -n "Building M-Module database..."
+	xFiles=($(ls "${MEN_LIN_DIR}/PACKAGE_DESC/"13m0*.xml 2> "/dev/null"))
+	for xFile in "${xFiles[@]}"; do
+		echo -n "."
+		xmlParseXml "${xFile}" "makeMmodFileMapCallback" "${xFile##*/}"
+	done
+	echo "done!"
 }
 
-### @brief Get makefile if ready
-xProcessMk2() {
-	if [ "${xType}" == "${mkType}" ] && \
-		[ "${xMakefile}" != "" ] && \
-		[[ "${xOs}" == "" || "${xOs}" == "Linux" ]]; then
-		echo "${xMakefile}"
+### @brief xmlParseXml() callback for makeMmodFileMap()
+### @param $1 Callback argument
+### @param $2 Event reason
+### @param $3 Current xPath
+### @param $4 Event specific data#1
+### @param $5 Event specific data#2
+makeMmodFileMapCallback() {
+	if [ "${2}" == "characters" ] && \
+		[ "${3}" == "/package/modellist/model/autoid/mmoduleid" ] && \
+		[ "${mmodFileList["${4}"]}" == "" ]; then
+		mmodFileList+=(["${4}"]="${1}")
+	fi
+}
+
+### @brief Create M-Module output data
+### @param $1 M-Module ID
+makeMmodOutputData() {
+	local xId
+	local xFile
+	local -A xModel
+	local -A xModule
+
+	xId="${1}"
+
+	mmodSpecList=()
+
+	xFile="${mmodFileList["${xId}"]}"
+	if [ "${xFile}" == "" ]; then
+		return "1"
 	fi
 
-	xClearMk
+	xmlParseXml "${MEN_LIN_DIR}/PACKAGE_DESC/${xFile}" "makeMmodOutputDataCallback" "${xId}"
 }
 
+### @brief xmlParseXml() callback for makeMmodOutputData()
+### @param $1 Callback argument
+### @param $2 Event reason
+### @param $3 Current xPath
+### @param $4 Event specific data#1
+### @param $5 Event specific data#2
+makeMmodOutputDataCallback() {
+	local xKey
 
-### @brief Get makefiles
-###
-### @param $@0:-2 Data
-### @param $@-2:1 M-Module name
-### @param $@-1:1 Makefile type
-xGetMakefiles() {
-	local arrLen
-	local xData
-	local mmName
-	local mkType
-	local xEntry
-	local curPath
-	local curTag
-	local curValue
-	local xName
-	local xType
-	local xMakefile
-	local xOs
-
-	xData=("${@}")
-	arrLen="${#xData[@]}"
-	mkType="${xData[*]:$((arrLen-=1)):1}"
-	mmName="${xData[*]:$((arrLen-=1)):1}"
-	xData=("${xData[@]:0:${arrLen}}")
-
-	for xEntry in "${xData[@]}"; do
-		arrLen="$((arrLen-=1))"
-		if [[ "${xEntry}" =~ ^(/([[:alnum:]]+/)+)([[:alnum:]]+)=(.*) ]]; then
-			curPath="${BASH_REMATCH[1]}"
-			curTag="${BASH_REMATCH[3]}"
-			curValue="${BASH_REMATCH[4]}"
-			if [ "${curPath}" == "/package/modellist/model/" ] && \
-				[ "${curTag}" == "hwname" ]; then
-				if [ "${xName}" != "" ]; then
-					xProcessMk1
-				fi
-				xName="${curValue}"
-			elif [ "${curPath}" == "/package/modellist/model/swmodulelist/swmodule/" ]; then
-				if [ "${curTag}" == "type" ]; then
-					if [ "${xType}" != "" ]; then
-						xProcessMk1
-					fi
-					xType="${curValue}"
-				elif [ "${curTag}" == "makefilepath" ]; then
-					if [ "${xMakefile}" != "" ]; then
-						xProcessMk1
-					fi
-					xMakefile="${curValue}"
-				elif [ "${curTag}" == "os" ]; then
-					if [ "${xOs}" != "" ]; then
-						xProcessMk1
-					fi
-					xOs="${curValue}"
-				fi
+	if [ "${2}" == "startElement" ]; then
+		if [ "${3}" == "/package/modellist" ] && \
+			[ "${4}" == "model" ]; then
+			xModel=()
+		elif [[ ("${3}" == "/package/modellist/model/swmodulelist" || \
+			"${3}" == "/package/swmodulelist") && \
+			"${4}" == "swmodule" ]]; then
+			xModule=()
+			if [ "${5}" != "" ]; then
+				eval "xModule+=(${5})"
 			fi
 		fi
-
-		if [ "${arrLen}" == "0" ]; then
-			xProcessMk1
+	elif [ "${2}" == "characters" ]; then
+		if [ "${3}" == "/package/modellist/model/hwname" ]; then
+			xModel+=(["hwname"]="${4}")
+		elif [ "${3}" == "/package/modellist/model/autoid/mmoduleid" ]; then
+			xModel+=(["mmoduleid"]="${4}")
+		elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule/name" ] || \
+			[ "${3}" == "/package/swmodulelist/swmodule/name" ]; then
+			xModule+=(["name"]="${4}")
+		elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule/type" ] || \
+			[ "${3}" == "/package/swmodulelist/swmodule/type" ]; then
+			xModule+=(["type"]="${4}")
+		elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule/makefilepath" ] || \
+			[ "${3}" == "/package/swmodulelist/swmodule/makefilepath" ]; then
+			xModule+=(["makefilepath"]="${4}")
 		fi
-	done
-
-	arrLen="${#xData[@]}"
-	for xEntry in "${xData[@]}"; do
-		arrLen="$((arrLen-=1))"
-		if [[ "${xEntry}" =~ ^(/([[:alnum:]]+/)+)([[:alnum:]]+)=(.*) ]]; then
-			curPath="${BASH_REMATCH[1]}"
-			curTag="${BASH_REMATCH[3]}"
-			curValue="${BASH_REMATCH[4]}"
-			if [ "${curPath}" == "/package/swmodulelist/swmodule/" ]; then
-				if [ "${curTag}" == "name" ]; then
-					if [ "${xName}" != "" ]; then
-						xProcessMk2
+	elif [ "${2}" == "endElement" ]; then
+		if [ "${3}" == "/package/modellist/model" ] && \
+			[ "${4}" == "model" ]; then
+			if [ "${1}" == "${xModel["mmoduleid"]}" ] && \
+				[ "${mmodSpecList["mmoduleid"]}" == "" ]; then
+				for xKey in "${!xModel[@]}"; do
+					mmodSpecList+=(["${xKey}"]="${xModel["${xKey}"]}")
+				done
+			fi
+			xModel=()
+		elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule" ] && \
+			[ "${4}" == "swmodule" ]; then
+			if [ "${1}" == "${xModel["mmoduleid"]}" ] && \
+				[ "${xModel["internal"]}" != "true" ]; then
+				if [ "${xModel["name"]}" == "" ]; then
+					xModel+=(["name"]="${xModule["name"]}")
+				fi
+				if [ "${xModule["type"]}" != "" ] && \
+					[ "${xModule["makefilepath"]}" != "" ]; then
+					if [ "${xModel["${xModule["type"]}"]}" != "" ]; then
+						xModel["${xModule["type"]}"]+=" "
 					fi
-					xName="${curValue}"
-				elif [ "${curTag}" == "type" ]; then
-					if [ "${xType}" != "" ]; then
-						xProcessMk2
-					fi
-					xType="${curValue}"
-				elif [ "${curTag}" == "makefilepath" ]; then
-					if [ "${xMakefile}" != "" ]; then
-						xProcessMk2
-					fi
-					xMakefile="${curValue}"
-				elif [ "${curTag}" == "os" ]; then
-					if [ "${xOs}" != "" ]; then
-						xProcessMk2
-					fi
-					xOs="${curValue}"
+					xModel["${xModule["type"]}"]+="${xModule["makefilepath"]}"
 				fi
 			fi
+			xModule=()
+		elif [ "${3}" == "/package/swmodulelist/swmodule" ] && \
+			[ "${4}" == "swmodule" ]; then
+			if [ "${xModel["internal"]}" != "true" ]; then
+				if [ "${mmodSpecList["name"]}" == "" ]; then
+					mmodSpecList+=(["name"]="${xModule["name"]}")
+				fi
+				if [ "${xModule["type"]}" != "" ] && \
+					[ "${xModule["makefilepath"]}" != "" ]; then
+					if [ "${mmodSpecList["${xModule["type"]}"]}" != "" ]; then
+						mmodSpecList["${xModule["type"]}"]+=" "
+					fi
+					mmodSpecList["${xModule["type"]}"]+="${xModule["makefilepath"]}"
+				fi
+			fi
+			xModule=()
 		fi
+	fi
+}
 
-		if [ "${arrLen}" == "0" ]; then
-			xProcessMk2
+### @brief Get M-Module ID
+### @param $1 M-Module address
+### @return M-Module ID is echoed
+### @return Empty string is echoed on error
+getMmodId() {
+	local mmAddress
+	local mmId
+	local mmMagic
+	local mmIdent
+
+	mmAddress="${1}"
+
+	mmMagic="$("${MEN_LIN_DIR}"/BIN/"${MM_IDENT}" "${mmAddress}" | grep "MAGIC:" | head -n 1)"
+	if [[ "${mmMagic}" =~ ^MAGIC:[[:space:]]0x([[:xdigit:]]{4})$ ]]; then
+		mmMagic="${BASH_REMATCH[1]}"
+		mmIdent="$("${MEN_LIN_DIR}"/BIN/"${MM_IDENT}" "${mmAddress}" | grep "ID:" | head -n 1)"
+		if [[ "${mmIdent}" =~ [[:space:]]ID:[[:space:]]0x([[:xdigit:]]{4}), ]]; then
+			mmIdent="${BASH_REMATCH[1]}"
+			mmId="0x${mmMagic}${mmIdent}"
 		fi
-	done
+	fi
+
+	echo "${mmId}"
 }
 
 ### @brief Compile mm_ident tool
