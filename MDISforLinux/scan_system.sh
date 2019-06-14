@@ -1775,7 +1775,7 @@ bCreateXm01bcDrv=0
 bCreateF14bcDrv=0
 bCreateSmb2GenericDrv=0
 
-COMMIT_ID=$(cat ${MEN_LIN_DIR}/HISTORY/MDISforLinux_version.txt)
+COMMIT_ID=$(cat ${MEN_LIN_DIR}/HISTORY/13MD05-90_version.txt)
 DATE=$(LANG=en_us_88591; date)
 # Add cretion note into system.dsc file
 echo "# ${CREATION_NOTE}\n# ${COMMIT_ID}\n# ${DATE}\n" > $DSC_FILE
