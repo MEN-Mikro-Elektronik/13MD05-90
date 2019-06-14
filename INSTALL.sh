@@ -353,7 +353,7 @@ update_makefiles(){
                 local menlinuxMakPath=$(echo "${makfile}" | awk -F / '{for (i=3; i<NF; i++) printf $i "/"; print $NF}')
                 sed -i 's/'"STAMPED_REVISION=.*"'/'"STAMPED_REVISION=${stampedRevision}"'/g' ${MENLINUX_ROOT}/${menlinuxMakPath}
                 makFilesModified=$((${makFilesModified}+1))
-                makFilesToUpdateMainRepo=$(egrep -v "${menlinuxMakPath}" <<< ${makFilesToUpdateMainRepo})
+                makFilesToUpdateMainRepo=$(grep -v "${menlinuxMakPath}" <<< "${makFilesToUpdateMainRepo}")
             done <<< "${makFilesInSubmodule}"
         fi
     done < <(cat "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt")
@@ -399,7 +399,7 @@ update_xmlfiles(){
                 revisionEndIdx=$((${revisionEndIdx}-1))
                 revisiondate=$(echo ${revision} | awk -F"_" '{print $NF}')
                 revision=$(echo ${revision} | cut -c1-${revisionEndIdx})
-                xmlFilesToUpdateMainRepo=$(egrep -v "${menlinuxXmlPath}" <<< ${xmlFilesToUpdateMainRepo})
+                xmlFilesToUpdateMainRepo=$(grep -v "${menlinuxXmlPath}" <<< "${xmlFilesToUpdateMainRepo}")
                 menlinuxXmlPath=$(echo "${MENLINUX_ROOT}/PACKAGE_DESC/${menlinuxXmlPath}")
                 sed -i 's|'"<date>.*</date>"'|'"<date>${revisiondate}</date>"'|g' ${menlinuxXmlPath}
                 sed -i 's|'"<revision>.*</revision>"'|'"<revision>${revision}</revision>"'|g' ${menlinuxXmlPath}
