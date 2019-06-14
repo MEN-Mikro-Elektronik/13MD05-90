@@ -4,7 +4,6 @@
 #MDIS_COMMIT=b5b11c63014b9e397a494996165adbf1d51e5f15
 
 PROJECT_NAME           = "VME4L API"
-PROJECT_NUMBER         = 
 INPUT                  = ../vme4l_api.c \
                          ../../../INCLUDE/NATIVE/MEN/vme4l_api.h \
                          ../../../INCLUDE/NATIVE/MEN/vme4l.h \
