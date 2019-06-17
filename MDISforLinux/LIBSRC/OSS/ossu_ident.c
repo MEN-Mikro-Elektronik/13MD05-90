@@ -30,7 +30,7 @@
 
 #include "oss_intern.h"
 
-static const char *IdentString="OSS - MEN Linux Operating System Services for user space: %FSREV LINUX/LIBSRC/oss_usr 1.3 2014-01-20%";
+static const char IdentString[]=MENT_XSTR(MAK_REVISION);
 
 char* OSS_Ident( void )
 {
