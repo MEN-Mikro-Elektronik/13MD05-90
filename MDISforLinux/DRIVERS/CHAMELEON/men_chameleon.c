@@ -937,3 +937,6 @@ EXPORT_SYMBOL(CHAM_DevIdToModCode);
 MODULE_LICENSE( "GPL" );
 module_init( men_chameleon_init);
 module_exit( men_chameleon_cleanup);
+#ifdef MAK_REVISION
+MODULE_VERSION(MENT_XSTR(MAK_REVISION));
+#endif
