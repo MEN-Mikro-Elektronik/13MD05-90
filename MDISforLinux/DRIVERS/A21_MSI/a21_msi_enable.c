@@ -125,3 +125,6 @@ module_exit( mod_exit );
 MODULE_DESCRIPTION( COMP_NAME " MDIS module");
 MODULE_AUTHOR("Thomas Schnuerer <thomas.schnuerer@men.de>");
 MODULE_LICENSE("GPL");
+#ifdef MAK_REVISION
+MODULE_VERSION(MENT_XSTR(MAK_REVISION));
+#endif
