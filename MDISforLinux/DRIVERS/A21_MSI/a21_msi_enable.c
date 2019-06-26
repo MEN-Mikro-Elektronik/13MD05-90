@@ -31,6 +31,8 @@
 #include <linux/msi.h>
 #include <linux/version.h>
 
+#include <MEN/men_typs.h>
+
 #define A21_MSI_BLOCK_SIZE    32 
 
 /* not present in pci_ids.h of kernel 3.4.18 yet... */
