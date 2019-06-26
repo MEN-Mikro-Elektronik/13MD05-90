@@ -32,6 +32,9 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/init.h>
+
+#include <MEN/men_typs.h>
+
 /*****************************  init_module  *********************************
  *
  *  Description:  Called when module is loaded by insmod
@@ -65,4 +68,7 @@ MODULE_DESCRIPTION( COMP_NAME " MDIS module");
 MODULE_AUTHOR("Klaus Popp <klaus.popp@men.de>");
 #ifdef MODULE_LICENSE
 MODULE_LICENSE("GPL");
+#endif
+#ifdef MAK_REVISION
+MODULE_VERSION(MENT_XSTR(MAK_REVISION));
 #endif
