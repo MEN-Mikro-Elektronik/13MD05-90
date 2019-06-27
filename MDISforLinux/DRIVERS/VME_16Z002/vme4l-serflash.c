@@ -240,3 +240,6 @@ module_exit(vme4l_serflash_cleanup_module);
 MODULE_AUTHOR("Adam Wujek <adam.wujek@cern.ch>");
 MODULE_DESCRIPTION("16Z126_SERFLASH driver");
 MODULE_LICENSE("GPL");
+#ifdef MAK_REVISION
+MODULE_VERSION(MENT_XSTR(MAK_REVISION));
+#endif

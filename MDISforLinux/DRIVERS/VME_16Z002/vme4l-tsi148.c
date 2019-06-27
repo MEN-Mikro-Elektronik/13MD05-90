@@ -2658,3 +2658,6 @@ module_exit(tsi148_cleanup_module);
 MODULE_AUTHOR("Ralf T./Thomas S.");
 MODULE_DESCRIPTION("VME4L - MEN VME TSI148 bridge driver");
 MODULE_LICENSE("GPL");
+#ifdef MAK_REVISION
+MODULE_VERSION(MENT_XSTR(MAK_REVISION));
+#endif

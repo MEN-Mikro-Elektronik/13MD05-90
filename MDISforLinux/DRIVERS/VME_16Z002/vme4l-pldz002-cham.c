@@ -2451,4 +2451,6 @@ module_exit(vme4l_pldz002_cleanup_module);
 MODULE_AUTHOR("Klaus Popp <klaus.popp@men.de>");
 MODULE_DESCRIPTION("VME4L - MEN VME PLDZ002 bridge driver");
 MODULE_LICENSE("GPL");
-
+#ifdef MAK_REVISION
+MODULE_VERSION(MENT_XSTR(MAK_REVISION));
+#endif

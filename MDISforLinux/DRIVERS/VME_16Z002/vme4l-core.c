@@ -35,6 +35,8 @@
 #include "vme4l-core.h"
 #include <linux/seq_file.h>
 
+#include <MEN/men_typs.h>
+
 /*--------------------------------------+
 |   DEFINES                             |
 +--------------------------------------*/
@@ -3333,6 +3335,9 @@ module_exit(vme4l_cleanup_module);
 MODULE_AUTHOR("Klaus Popp <klaus.popp@men.de>");
 MODULE_DESCRIPTION("VME4L - MEN VME core");
 MODULE_LICENSE("GPL");
+#ifdef MAK_REVISION
+MODULE_VERSION(MENT_XSTR(MAK_REVISION));
+#endif
 
 EXPORT_SYMBOL(vme4l_get_space_ent);
 EXPORT_SYMBOL(vme4l_rw);
