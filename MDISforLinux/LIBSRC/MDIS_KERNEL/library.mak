@@ -22,6 +22,12 @@
 
 
 MAK_NAME=mdis_kernel
+# the next line is updated during the MDIS installation
+STAMPED_REVISION="13MD05-90_02_00-226-ge75b54b-dirty_2019-06-27"
+
+DEF_REVISION=MAK_REVISION=$(STAMPED_REVISION)
+
+MAK_SWITCH=$(SW_PREFIX)$(DEF_REVISION)
 
 MAK_INCL=$(MEN_INC_DIR)/men_typs.h    \
          $(MEN_INC_DIR)/oss.h         \
