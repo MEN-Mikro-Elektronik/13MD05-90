@@ -1800,3 +1800,6 @@ int mdis_find_ll_handle( char *devName, LL_HANDLE **hP, LL_ENTRY *entry )
 MODULE_DESCRIPTION("MEN MDIS kernel");
 MODULE_AUTHOR("Klaus Popp <klaus.popp@men.de>");
 MODULE_LICENSE("GPL");
+#ifdef MAK_REVISION
+MODULE_VERSION(MENT_XSTR(MAK_REVISION));
+#endif
