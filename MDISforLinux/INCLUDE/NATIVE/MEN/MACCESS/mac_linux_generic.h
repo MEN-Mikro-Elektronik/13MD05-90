@@ -41,6 +41,7 @@
 # include <asm/io.h>
 #else
 # include <stdint.h>
+# include <sys/io.h>
 #endif
 
 /*---- MEMORY MAPPED I/O ---*/
