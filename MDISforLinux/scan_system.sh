@@ -1495,6 +1495,10 @@ function scan_system_usage {
     echo "parameters:"
     echo "     'MEN_LIN_DIR'     path to MDIS installation dir - default"
     echo "                       /opt/menlinux/"
+    echo "     -y, --yes"
+    echo "     --assume-yes      scan without user interaction."
+    echo "                       answer 'yes' for all questions"
+    echo "     --mdiswiz         used by mdiswiz only!"
     echo "     --verbose         if 1 or 2 then additional debug info is dumped"
     echo "                       ex: --verbose 1"
     echo "     --buildtools      build mm_ident and fpga_load from source"
@@ -1505,7 +1509,7 @@ function scan_system_usage {
     echo "                       generation with predefined test data."   
     echo "                       ex: --drytest sth"
     echo "     --prerequisites   check if all prerequisites are met"
-    echo "     --help            print help"
+    echo "     -h, --help        print help"
     echo ""
 }
 
@@ -1564,6 +1568,8 @@ function check_scan_system_prerequisites {
         echo "           e.g.   ln -s /usr/src/linux-headers.x.y.z /usr/src/linux"
         prerequisites_result=3
     fi
+    echo "In case of warning: \"Cannot use CONFIG_STACK_VALIDATION=y\""
+    echo "please install libelf-dev, libelf-devel or elfutils-libelf-devel"
 
     return ${prerequisites_result}
 }
@@ -1598,13 +1604,15 @@ Please refer to the MDIS User Manual 21md05-90.pdf for details."
     readonly blacklist_warning_question="Would you like to proceed?"
     echo ""
     echo "${blacklist_warning}"
-    get_ynq_answer "${blacklist_warning_question}"
-    case $? in
-    1 | 2)
-        echo "*** Aborted by user."
-        exit 1;
-        ;;
-    esac
+    if [ ${ASSUME_YES} -eq 0 ]; then
+        get_ynq_answer "${blacklist_warning_question}"
+        case $? in
+        1 | 2)
+            echo "*** Aborted by user."
+            exit 1;
+            ;;
+        esac
+    fi
 
 }
 
@@ -1622,8 +1630,9 @@ echo
 PCI_DRYTEST=""
 BUILD_TOOLS=""
 MEN_LIN_DIR=""
+ASSUME_YES=0
 
-if [ $# -lt 1 ]; then
+if [ $# -lt 1 ] || [ "${1}" = "--help" ] || [ "${1}" = "-h" ]; then
     scan_system_usage
     exit 1
 fi
@@ -1654,6 +1663,12 @@ while test $# -gt 0 ; do
                 shift
                 export BUILD_TOOLS="1"
                 echo "Build mm_ident and fpga_load tool"
+                ;;
+        --mdiswiz|-y|--yes|--assume-yes)
+                shift
+                ASSUME_YES=1
+                echo "Automatic yes to prompts; assume \"yes\" as answer"
+                echo "to all prompts and run non-interactively"
                 ;;
         --verbose)
                 shift

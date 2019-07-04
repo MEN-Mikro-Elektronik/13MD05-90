@@ -30,16 +30,28 @@ MDIS_HISTORY_PATH="${CWD}/${MENHISTORY}"
 MDIS_PACKAGE=MDISforLinux
 
 # default install parameter
-force_install="0"
+install_only="0"
+assume_yes="0"
+
+### @brief script usage --help
+function install_usage {
+    echo "INSTALL.sh   script to install MDIS sources into system"
+    echo ""
+    echo "parameters:"
+    echo "     -y, --yes"
+    echo "     --assume-yes      install and scan without user interaction."
+    echo "                       answer 'yes' for all questions"
+    echo "     --install-only    install sources and exit without user interaction"
+    echo "     -p, --path=PATH   specify a installation path"
+    echo "     -h, --help        print help"
+    echo ""
+}
 
 # read parameters
 while test $# -gt 0 ; do
    case "$1" in 
         -h|--help)
-                echo "options:"
-                echo "-h, --help        show brief help"
-                echo "-p, --path=PATH   specify a installation path"
-                echo "-f, --forceyes    install without asking, do not scan the hardware"
+                install_usage
                 exit 0
                 ;;
         -p)
@@ -56,12 +68,18 @@ while test $# -gt 0 ; do
                 export MENLINUX_ROOT=$(echo $1 | sed -e 's/^[^=]*=//g')
                 shift
                 ;;
-        -f|--forceyes)
+        --install-only)
                 shift
-                export force_install="1"
+                install_only="1"
                 echo "Install without asking:"
                 echo "- install sources into /opt/menlinux"
                 echo "- do not scan the hardware"
+                ;;
+        -y|--yes|--assume-yes)
+                shift
+                assume_yes="1"
+                echo "Automatic yes to prompts; assume \"yes\" as answer"
+                echo "to all prompts and run non-interactively"
                 ;;
         *)
                 break
@@ -122,8 +140,13 @@ get_ynq_answer() {
 # input: directory of installed MDIS sources
 # returns scan system result
 run_scan_system() {
-	echo "scanning system. Calling $1/scan_system.sh $1"
-	/$1/scan_system.sh $1
+    if [ ${assume_yes} -eq "1" ]; then
+        echo "scanning system. Calling $1/scan_system.sh $1 --assume-yes"
+        /$1/scan_system.sh $1 --assume-yes
+    else
+        echo "scanning system. Calling $1/scan_system.sh $1"
+        /$1/scan_system.sh $1
+    fi
 }
 
 #
@@ -253,7 +276,7 @@ overwrite_installation_directory(){
         if [ -d "${MENLINUX_ROOT}" ]; then
                 echo
                 echo "Directory ${MENLINUX_ROOT} already exists."
-                if [ ${force_install} -ne "1" ]; then
+                if [ ${install_only} -eq "0" ] && [ ${assume_yes} -eq "0" ]; then
                         get_ynq_answer "Overwrite existing files?"
                         case $? in
                         1 | 2) echo "*** Aborted by user."; return 1;;
@@ -515,9 +538,11 @@ if [ "$EUID" -ne 0 ]; then
         exit
 fi
 
-# If force_install is set, install is done without asking user for action,
+# If install_only is set, install is done without asking user for action,
 # scan, make, make install is not performed
-if [ ${force_install} -ne "1" ]; then
+# If assume_yes is set, install is done without asking user for action,
+# scan, make, make install is performed
+if [ ${install_only} -eq "0" ] && [ ${assume_yes} -eq "0" ]; then
     get_ynq_answer "${ASK_INSTALL_MDIS_SOURCES}"
     case $? in
         1 | 2) echo "*** Aborted by user."; run=false;;
@@ -559,17 +584,20 @@ while ${run}; do
                 show_status_message "Installation success"
                 state="CheckTargetSystem";;
         CheckTargetSystem)
-                if [ ${force_install} -eq "1" ]; then
+                if [ ${install_only} -eq "1" ]; then
                         state="Break_Failed"
                         break
                 fi
                 state="Scan"
-                get_ynq_answer "${ASK_SCAN_TARGET_SYSTEM}"
-                case $? in
-                        1 | 2)  show_manual_steps
-                                state="Break_Failed"
-                                break
-                esac;;
+                if [ ${assume_yes} -ne "1" ]; then
+                    get_ynq_answer "${ASK_SCAN_TARGET_SYSTEM}"
+                    case $? in
+                            1 | 2)  show_manual_steps
+                                    state="Break_Failed"
+                                    break
+                    esac
+                fi
+                ;;
         Scan)
                 curr_dir=$(pwd)
                 cd ${CWD}
@@ -586,35 +614,54 @@ while ${run}; do
                 curr_dir=$(pwd)
                 cd ${CWD}
                 state="MakeInstall"
-                get_ynq_answer "${ASK_BUILD_MDIS_MODULES}"
-                case $? in
-                        0 )     make
-                                result=$?
-                                if [ ${result} -ne 0 ]; then
-                                        state="Break_Failed"
-                                        break
-                                fi
-                                show_status_message "Build success";;
-                        1 | 2)  echo "*** Aborted by user. "
-                                state="Break_Failed";;
-                esac
+                if [ ${assume_yes} -ne "1" ]; then
+                    get_ynq_answer "${ASK_BUILD_MDIS_MODULES}"
+                    case $? in
+                            0 )     make
+                                    result=$?
+                                    if [ ${result} -ne 0 ]; then
+                                            state="Break_Failed"
+                                            break
+                                    fi
+                                    show_status_message "Build success";;
+                            1 | 2)  echo "*** Aborted by user. "
+                                    state="Break_Failed";;
+                    esac
+                else
+                    make
+                    result=$?
+                    if [ ${result} -ne 0 ]; then
+                            state="Break_Failed"
+                            break
+                    fi
+                fi
                 cd ${curr_dir};;
         MakeInstall)
                 curr_dir=$(pwd)
                 cd ${CWD}
                 state="Break_Success"
-                get_ynq_answer "${ASK_INSTALL_MDIS_MODULES}"
-                case $? in
-                        0 )     make install
-                                result=$?
-                                if [ ${result} -ne 0 ]; then
-                                        state="Break_Failed"
-                                        break
-                                fi
-                                show_status_message "${CALL_MAKE_INSTALL}";;
-                     1 | 2)     echo "*** Aborted by user. "
-                                state="Break_Failed";;
-                esac
+                if [ ${assume_yes} -ne "1" ]; then
+                    get_ynq_answer "${ASK_INSTALL_MDIS_MODULES}"
+                    case $? in
+                            0 )     make install
+                                    result=$?
+                                    if [ ${result} -ne 0 ]; then
+                                            state="Break_Failed"
+                                            break
+                                    fi
+                                    show_status_message "${CALL_MAKE_INSTALL}";;
+                         1 | 2)     echo "*** Aborted by user. "
+                                    state="Break_Failed";;
+                    esac
+                else
+                    make install
+                    result=$?
+                    if [ ${result} -ne 0 ]; then
+                            state="Break_Failed"
+                            break
+                    fi
+                    show_status_message "${CALL_MAKE_INSTALL}"
+                fi
                 cd ${curr_dir};;
         Break_Failed)
                 run=false;;
