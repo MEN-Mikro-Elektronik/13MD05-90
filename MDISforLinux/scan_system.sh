@@ -115,6 +115,8 @@ G_makefileUsrLibs=""
 G_deviceIdV2=""
 # SMB device list 
 G_smbDeviceList=""
+# list of all used makefiles so far
+G_makefileUniqList=""
 
 ### @brief M-Module ID to XML file map
 declare -A mmodFileList
@@ -1087,6 +1089,21 @@ function get_board_outermost_position {
 }
 
 ############################################################################
+# check if .mak should be added into main Makefile
+#
+function check_makefile {
+    local singleMak=${1}
+    local duplicateCnt=$(echo "${G_makefileUniqList}" | grep "${singleMak}" | wc -l) 
+
+    if [ ${duplicateCnt} -ne 0 ]; then
+        return 1
+    else
+        G_makefileUniqList+=${singleMak}
+        G_makefileUniqList+="\n"
+        return 0
+    fi
+}
+############################################################################
 # create MDIS Makefile from collected driver data
 #
 #   Makefile.tpl is completed by replacing following tags
@@ -1128,71 +1145,108 @@ function create_makefile {
 	debug_print "checking bbis driver: $i"
         if [ -f $MEN_LIN_DIR/DRIVERS/BBIS/$i ]; then
             debug_print "bbis driver: $i"
-            subs=`echo "     $i" | sed "s/\//@/g"`
-            sed -i.bak "s/#SCAN_NEXT_BB_DRIVER/$subs\n#SCAN_NEXT_BB_DRIVER/g" $TMP_MAKE_FILE
+            check_makefile ${i}
+            CmdResult=$?
+            if [ ${CmdResult} -eq 0 ]; then
+                subs=`echo "	$i" | sed "s/\//@/g"`
+                sed -i.bak "s/#SCAN_NEXT_BB_DRIVER/$subs\n#SCAN_NEXT_BB_DRIVER/g" $TMP_MAKE_FILE
+            fi
         else
 	    debug_print "BB driver '$i' not found in MDIS tree, skipping."
         fi
     done
+    sed -i.bak "s/$subs/#LAST_BBIS_DRIVER/g" $TMP_MAKE_FILE
+    subs=$(echo "$subs" | sed "s/\.mak/\.lastmak/g")
+    sed -i.bak "s/#LAST_BBIS_DRIVER/$subs\n/g" $TMP_MAKE_FILE
+    sed -i.bak "s/#SCAN_NEXT_BB_DRIVER//g" $TMP_MAKE_FILE
+
 
     # insert all collected LL drivers into Makefile
     for i in $G_makefileLlDriver; do
 	debug_print "checking LL driver: $i"
         if [ -f $MEN_LIN_DIR/DRIVERS/MDIS_LL/$i ]; then
             debug_print "ll driver: $i "
-            subs=`echo "     $i" | sed "s/\//@/g"`
-            sed -i.bak "s/#SCAN_NEXT_LL_DRIVER/$subs\n#SCAN_NEXT_LL_DRIVER/g" $TMP_MAKE_FILE
+            check_makefile ${i}
+            CmdResult=$?
+            if [ ${CmdResult} -eq 0 ]; then
+                subs=`echo "	$i" | sed "s/\//@/g"`
+                sed -i.bak "s/#SCAN_NEXT_LL_DRIVER/$subs\n#SCAN_NEXT_LL_DRIVER/g" $TMP_MAKE_FILE
+            fi
         else
             debug_print "skipping LL driver '$i'"
         fi
     done
+    sed -i.bak "s/$subs/#LAST_LL_DRIVER/g" $TMP_MAKE_FILE
+    subs=$(echo "$subs" | sed "s/\.mak/\.lastmak/g")
+    sed -i.bak "s/#LAST_LL_DRIVER/$subs\n/g" $TMP_MAKE_FILE
+    sed -i.bak "s/#SCAN_NEXT_LL_DRIVER//g" $TMP_MAKE_FILE
 
     # insert all collected LL Tools into Makefile
     for i in $G_makefileLlTool; do
         if [ -f $MEN_LIN_DIR/DRIVERS/MDIS_LL/$i ]; then
             debug_print "ll tool: $i"
-            subs=`echo "     $i" | sed "s/\//@/g"`
-            sed -i.bak "s/#SCAN_NEXT_LL_TOOL/$subs\n#SCAN_NEXT_LL_TOOL/g" $TMP_MAKE_FILE
+            check_makefile ${i}
+            CmdResult=$?
+            if [ ${CmdResult} -eq 0 ]; then
+                subs=`echo "	$i" | sed "s/\//@/g"`
+                sed -i.bak "s/#SCAN_NEXT_LL_TOOL/$subs\n#SCAN_NEXT_LL_TOOL/g" $TMP_MAKE_FILE
+            fi
         else
             debug_print "skipping LL tool '$i'"
         fi
     done
+    sed -i.bak "s/$subs/#LAST_LL_TOOL/g" $TMP_MAKE_FILE
+    subs=$(echo "$subs" | sed "s/\.mak/\.lastmak/g")
+    sed -i.bak "s/#LAST_LL_TOOL/$subs\n/g" $TMP_MAKE_FILE
+    sed -i.bak "s/#SCAN_NEXT_LL_TOOL//g" $TMP_MAKE_FILE
 
     # insert all collected native drivers into Makefile
     for i in $G_makefileNatDriver; do
         if [ -f $MEN_LIN_DIR/$i ]; then
             debug_print "native driver: $i"
-            subs=`echo "     $i" | sed "s/\//@/g"`
-            sed -i.bak "s/#SCAN_NEXT_NAT_DRIVER/$subs\n#SCAN_NEXT_NAT_DRIVER/g" $TMP_MAKE_FILE
+            check_makefile ${i}
+            CmdResult=$?
+            if [ ${CmdResult} -eq 0 ]; then
+                subs=`echo "	$i" | sed "s/\//@/g"`
+                sed -i.bak "s/#SCAN_NEXT_NAT_DRIVER/$subs\n#SCAN_NEXT_NAT_DRIVER/g" $TMP_MAKE_FILE
+            fi
         else
             echo "native driver '$i' not found in MDIS tree, skipping."
         fi
-
     done
+    sed -i.bak "s/$subs/#LAST_NAT_DRIVER/g" $TMP_MAKE_FILE
+    subs=$(echo "$subs" | sed "s/\.mak/\.lastmak/g")
+    sed -i.bak "s/#LAST_NAT_DRIVER/$subs\n/g" $TMP_MAKE_FILE
+    sed -i.bak "s/#SCAN_NEXT_NAT_DRIVER//g" $TMP_MAKE_FILE
 
     for i in $G_makefileUsrLibs; do
         if [ -f $MEN_LIN_DIR/LIBSRC/$i ]; then
             debug_print "usr lib: $i"
-            subs=`echo "     $i" | sed "s/\//@/g"`
-            sed -i.bak "s/#SCAN_NEXT_USR_LIB/$subs\n#SCAN_NEXT_USR_LIB/g" $TMP_MAKE_FILE
+            check_makefile ${i}
+            CmdResult=$?
+            if [ ${CmdResult} -eq 0 ]; then
+                subs=`echo "	$i" | sed "s/\//@/g"`
+                sed -i.bak "s/#SCAN_NEXT_USR_LIB/$subs\n#SCAN_NEXT_USR_LIB/g" $TMP_MAKE_FILE
+            fi
         else
             echo "user lib '$usrlib' not found in MDIS tree, skipping."
         fi
     done
+    sed -i.bak "s/$subs/#LAST_USR_LIB/g" $TMP_MAKE_FILE
+    subs=$(echo "$subs" | sed "s/\.mak/\.lastmak/g")
+    sed -i.bak "s/#LAST_USR_LIB/$subs\n/g" $TMP_MAKE_FILE
+    sed -i.bak "s/#SCAN_NEXT_USR_LIB//g" $TMP_MAKE_FILE
 
 
-    # add '\' behind every .mak and replace @ with '/'
-    sed -i.bak "s/@/\//g;s/\.mak/\.mak\\\/g" $TMP_MAKE_FILE
-
-    # remove all doublette mak files added above
-    awk '!seen[$0]++' $TMP_MAKE_FILE > $MAKE_FILE
+    # add '\' behind every .mak that is not last and replace @ with '/'
+    sed -i.bak "s/@/\//g;s/\.mak/\.mak \\\/g" $TMP_MAKE_FILE
+    sed -i.bak "s/\.lastmak/\.mak/g" $TMP_MAKE_FILE
 
     # finally replace ##REPLNEWLINExxx tags with LF (after
     # removing all doublette line no linefeeds would be left
     # making the Makefile looking ugly...)
-
-    sed -i.bak "s/##REPLNEWLINE.../\n/g" $MAKE_FILE
-
+    sed -i.bak "s/##REPLNEWLINE...//g" $TMP_MAKE_FILE
+    cat -s "$TMP_MAKE_FILE" > $MAKE_FILE
 }
 
 ### @brief Parse XML file

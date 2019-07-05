@@ -99,41 +99,40 @@ ALL_LL_DRIVERS = \
 ##REPLNEWLINE033
 ##REPLNEWLINE034
 ALL_BB_DRIVERS = \
-     PCI/DRIVER/COM/driver.mak
-     SMB2BB/DRIVER/NATIVE/driver.mak
+	PCI/DRIVER/COM/driver.mak
+	SMB2BB/DRIVER/NATIVE/driver.mak
 #SCAN_NEXT_BB_DRIVER
 ##REPLNEWLINE035
 ##REPLNEWLINE036
 ALL_USR_LIBS = \
-     USR_OSS/library.mak
-     USR_UTL/COM/library.mak
+	USR_OSS/library.mak
+	USR_UTL/COM/library.mak
 #SCAN_NEXT_USR_LIB
 ##REPLNEWLINE037
 ##REPLNEWLINE038
 ALL_CORE_LIBS = \
-     DBG/library.mak
-     OSS/library.mak
-     CHAMELEON/COM/library.mak
+	DBG/library.mak
+	OSS/library.mak
+	CHAMELEON/COM/library.lastmak
 ##REPLNEWLINE039
 ALL_LL_TOOLS = \
 #SCAN_NEXT_LL_TOOL
 ##REPLNEWLINE040
 ALL_COM_TOOLS = \
-     MDIS_API/M_ERRSTR/COM/program.mak
-     MDIS_API/M_GETBLOCK/COM/program.mak
-     MDIS_API/M_GETSTAT/COM/program.mak
-     MDIS_API/M_GETSTAT_BLK/COM/program.mak
-     MDIS_API/M_MOD_ID/COM/program.mak
-     MDIS_API/M_OPEN/COM/program.mak
-     MDIS_API/M_READ/COM/program.mak
-     MDIS_API/M_REV_ID/COM/program.mak
-     MDIS_API/M_SETBLOCK/COM/program.mak
-     MDIS_API/M_SETSTAT/COM/program.mak
-     MDIS_API/M_SETSTAT_BLK/COM/program.mak
-     MDIS_API/M_WRITE/COM/program.mak
-     WDOG/WDOG_TEST/COM/program.mak
-     WDOG/WDOG_SIMP/COM/program.mak
-#SCAN_NEXT_COM_TOOL
+	MDIS_API/M_ERRSTR/COM/program.mak
+	MDIS_API/M_GETBLOCK/COM/program.mak
+	MDIS_API/M_GETSTAT/COM/program.mak
+	MDIS_API/M_GETSTAT_BLK/COM/program.mak
+	MDIS_API/M_MOD_ID/COM/program.mak
+	MDIS_API/M_OPEN/COM/program.mak
+	MDIS_API/M_READ/COM/program.mak
+	MDIS_API/M_REV_ID/COM/program.mak
+	MDIS_API/M_SETBLOCK/COM/program.mak
+	MDIS_API/M_SETSTAT/COM/program.mak
+	MDIS_API/M_SETSTAT_BLK/COM/program.mak
+	MDIS_API/M_WRITE/COM/program.mak
+	WDOG/WDOG_TEST/COM/program.mak
+	WDOG/WDOG_SIMP/COM/program.lastmak
 ##REPLNEWLINE041
 ALL_NATIVE_DRIVERS = \
 #SCAN_NEXT_NAT_DRIVER
@@ -145,4 +144,4 @@ ALL_NATIVE_TOOLS =
 ##REPLNEWLINE045
 ALL_DESC = system
 ##REPLNEWLINE046
-include $(MEN_LIN_DIR)/BUILD/MDIS/TPL/rules.mak
+include $(MEN_LIN_DIR)/BUILD/MDIS/TPL/rules.lastmak
