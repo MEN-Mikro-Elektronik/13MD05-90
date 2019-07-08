@@ -115,6 +115,7 @@ int32 OSS_SemRemove(
 static int32 HandleSig( OSS_HANDLE *oss, sigset_t *oldBlocked )
 {
 	unsigned long flags;
+	u_int32 sigMask;
 	/*
 	 * check if there is a signal <= 31 pending.
 	 * If so, the signal is assumed to be deadly and OSS_SemWait
@@ -129,7 +130,10 @@ static int32 HandleSig( OSS_HANDLE *oss, sigset_t *oldBlocked )
 	/* ok. the following uses internas of sigsets, but fastest way to do it */
 	TASK_LOCK_SIGNALS( current, flags );
 
-	if( (current->TASK_SIGPENDING[0] & 0x7fffffff) &
+	/* SIGUSR1/2 are no deadly signals and must not abort OSS_SemWait! */
+	sigMask = 0x7fffffff & ~( (1<<(SIGUSR1-1)) | (1<<(SIGUSR2-1)) );
+
+	if( (current->TASK_SIGPENDING[0] & sigMask) &
 		~(current->blocked.sig[0])){
 
 		DBGWRT_ERR((DBH,"*** OSS_SemWait killed by deadly signal mask=0x%x\n",
