@@ -386,13 +386,14 @@ function create_entry_dsc_cpu_type {
 #
 function create_entry_dsc_bbis_cham {
     echo "create chameleon BBIS device - based on lspci data"
-    debug_args " \$1 = ${1}  \$2 = ${2}  \$3 = ${3}  \$4 = ${4}  \$5 = ${5}"
+    debug_args " \$1 = ${1}  \$2 = ${2}  \$3 = ${3}  \$4 = ${4}  \$5 = ${5}  \$6 = ${6}"
     
     local pci_vd=$(echo ${1} | sed "s:"0x":"":g")
     local pci_dev=$(echo ${2} | sed "s:"0x":"":g")
     local pci_devnr=${3}
     local pci_subv=$(echo ${4} | sed "s:"0x":"":g")
     local tpl_dir=${5}
+	local pci_busnr=${6}
 
     local wiz_mod="MEZZ_CHAM"
     
@@ -571,7 +572,7 @@ function scan_cham_table {
 # $8  pci bus nr.
 #
 function check_for_cham_devs {
-    debug_args "PCIvd.$2 PCIdev. $3 PCIdevnr $4  PCIsubv $5 instance $6  PCIprimPath $7"
+    debug_args "MEN_LIN_DIR:$1 pcivend:$2 pcidevid:$3 pcidevnr:$4  pcisubvend:$5 count_instance_f2xx:$6 pcibus:$7"
     cham_file=""
     device_id_count=0
 
@@ -597,7 +598,7 @@ function check_for_cham_devs {
 	scan_cham_table $DSC_TPL_DIR $cham_file $inst_count 0
 
         # Now add the found device IDs to temporary BBIS desc file
-        create_entry_dsc_bbis_cham $2 $3 $4 $5 $DSC_TPL_DIR
+        create_entry_dsc_bbis_cham $2 $3 $4 $5 $DSC_TPL_DIR $7
 	for id in $G_deviceIdV2; do
             # format data into a DEVICE_IDV2 entry and add same scan tag in next line
             idv2line="    DEVICE_IDV2_$device_id_count = U_INT32 $id\n#SCAN_NEXT_DEVID"
