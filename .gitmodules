@@ -290,3 +290,15 @@
 	path = MDISforLinux/TOOLS/HWBUG
 	url = ../hwbug
 	branch = jpe-dev
+[submodule "13Z050-06"]
+	path = 13Z050-06
+	url = ../13Z050-06
+	branch = jpe-dev
+[submodule "13Z073-06"]
+	path = 13Z073-06
+	url = ../13Z073-06
+	branch = jpe-dev
+[submodule "13Z075-06"]
+	path = 13Z075-06
+	url = ../13Z075-06
+	branch = jpe-dev
