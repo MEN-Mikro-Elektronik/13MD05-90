@@ -1648,6 +1648,66 @@ get_ynq_answer() {
         done
 }
 
+### @brief Obtain numeric answer from user. Supports Yy, and Qq
+###   Yy - default value, Qq - exit
+### @input: max numeric value that can be obtained
+### @returns: 0=Yy
+###           255=Qq
+###           1=1 ...
+getAnswer() {
+    local argLimit=${1}
+    while true
+    do
+        read answer
+        case ${answer} in
+        [Yy]) return 0;;
+        [Qq]) return 255;;
+        *)  if ! [[ "${answer}" =~ ^[0-9]+$ ]]; then
+                echo "invalid arg"
+            else
+                if ((0<=answer && answer<argLimit)); then
+                    return ${answer}
+                else
+                    echo "out of range"
+                fi
+            fi;;
+        esac
+    done
+}
+
+### @brief Display question and obtain answer,
+### @input: {1} - Question
+###         {2} - Array of possible answers
+### @returns: choosen index of array (starting from 0)
+###
+### Example use:
+### readonly questionMsg="Would you like to select the default driver for this device? (y)
+### Otherwise please choose the proper driver number"
+###
+### array=("one" "two" "three" "four" "five" "six" "seven" "eight" "nine" "ten")
+### displayQuestion "${questionMsg}" "${array[@]}"
+### value=$?
+### echo "Use driver idx: ${value}"
+displayQuestion() {
+    readonly local question=${1}
+    local arrIterator=0
+    shift
+    local arr=("$@")
+    echo "${question}"
+    echo ""
+    for i in "${arr[@]}";
+    do
+        if [ ${arrIterator} -eq "0" ]; then
+            echo "[y/0] ${i} - default"
+        else
+            echo "[${arrIterator}] ${i}"
+        fi
+        arrIterator=$((arrIterator+1))
+    done
+    getAnswer "${#arr[@]}"
+    return $?
+}
+
 ### @brief display mcb mcb_pci blacklist warning
 blacklist_warning_message() {
     # display warning if any F2xx/G2xx carrier is present in system
