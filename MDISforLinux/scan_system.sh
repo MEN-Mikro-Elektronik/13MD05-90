@@ -446,7 +446,7 @@ function scan_cham_table {
     do_parse=0
     write_mdis_dsc=$4
 
-    while read devline; do
+    while read devline <&3; do
 	if [ "$do_parse" == "1" ]; then
 	    ipcore=`echo $devline | awk '{print $3}' | awk '{print substr($1,1,6)}'`
 	    devid=`echo $devline | awk '{print $2}' | awk '{print substr($1,5,2)}'`
@@ -540,7 +540,7 @@ function scan_cham_table {
             do_parse=0
 	fi
 
-    done < $TMP_CHAM_TBL
+    done 3< $TMP_CHAM_TBL
 }
 
 
@@ -775,7 +775,7 @@ function scan_for_pci_devs {
     dev_num_f223=0
     reverse_enum_f205=0
 
-    while read line; do
+    while read line <&4; do
 	# Nr.| dom|bus|dev|fun| Ven ID | Dev ID | SubVen ID |
 	#  25   0   5  15   0   0x12d8   0xe110    0x0000
         listnr=`echo $line | awk '{print $1}'`
@@ -907,7 +907,7 @@ function scan_for_pci_devs {
 		create_entry_dsc_d203_a24 $DSC_TPL_DIR $count_instance_d203_a24 $busif $pcibus "F205_A24" $pcidevnr $DSC_FILE
 	fi
 
-    done <  $TMP_PCIDEVS
+    done 4<  $TMP_PCIDEVS
 }
 
 ### @brief Create M-Module section
@@ -1656,6 +1656,7 @@ get_ynq_answer() {
 ###           1=1 ...
 getAnswer() {
     local argLimit=${1}
+    local answer
     while true
     do
         read answer
@@ -1689,12 +1690,15 @@ getAnswer() {
 ### value=$?
 ### echo "Use driver idx: ${value}"
 displayQuestion() {
-    readonly local question=${1}
-    local arrIterator=0
+    local question=${1}
     shift
     local arr=("$@")
+
     echo "${question}"
     echo ""
+
+    local i=0
+    local arrIterator=0
     for i in "${arr[@]}";
     do
         if [ ${arrIterator} -eq "0" ]; then
