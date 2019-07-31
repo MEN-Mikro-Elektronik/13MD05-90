@@ -37,11 +37,7 @@
 
 #include <linux/version.h>
 #include <linux/module.h>
-
 #include <linux/kernel.h> /* printk() */
-
-typedef uint32_t u_int32;
-
 #include <MEN/men_typs.h>
 #include <MEN/pldz002.h>
 
