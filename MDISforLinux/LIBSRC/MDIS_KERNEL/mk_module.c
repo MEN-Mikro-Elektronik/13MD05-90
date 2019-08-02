@@ -231,10 +231,14 @@ int mk_ioctl (
 	* access_ok is kernel-oriented, so the concept of "read" and
 	* "write" is reversed
 	*/
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,0,0)
+	err = !access_ok((void *)arg, size);
+#else
 	if (_IOC_DIR(cmd) & _IOC_READ)
 		err = !access_ok(VERIFY_WRITE, (void *)arg, size);
 	else if (_IOC_DIR(cmd) & _IOC_WRITE)
 		err =  !access_ok(VERIFY_READ, (void *)arg, size);
+#endif
 
 	if (err)
 		return -EFAULT;	
