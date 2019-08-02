@@ -887,8 +887,7 @@ function scan_for_pci_devs {
 			fi
 			mv "$TMP_F205_DSC.tmp" "$TMP_F205_DSC"
 		fi
-                boardPosition=$(get_board_outermost_position "0x1172" "0xd203" "0xff00" $pcibus)
-		echo "boardPosition: ${boardPosition}"
+			boardPosition=$(get_board_outermost_position "0x1172" "0xd203" "0xff00" $pcibus)
 		if [ "$pcidevnr" == "$boardPosition" ]; then
 			if [ -e "$TMP_F205_DSC" ]; then
 				cat "$TMP_F205_DSC" >> "$DSC_FILE"
@@ -1648,34 +1647,6 @@ get_ynq_answer() {
         done
 }
 
-### @brief Obtain numeric answer from user. Supports Yy, and Qq
-###   Yy - default value, Qq - exit
-### @input: max numeric value that can be obtained
-### @returns: 0=Yy
-###           255=Qq
-###           1=1 ...
-getAnswer() {
-    local argLimit=${1}
-    local answer
-    while true
-    do
-        read answer
-        case ${answer} in
-        [Yy]) return 0;;
-        [Qq]) return 255;;
-        *)  if ! [[ "${answer}" =~ ^[0-9]+$ ]]; then
-                echo "invalid arg"
-            else
-                if ((0<=answer && answer<argLimit)); then
-                    return ${answer}
-                else
-                    echo "out of range"
-                fi
-            fi;;
-        esac
-    done
-}
-
 ### @brief Display question and obtain answer,
 ### @input: {1} - Question
 ###         {2} - Array of possible answers
@@ -1693,23 +1664,45 @@ displayQuestion() {
     local question=${1}
     shift
     local arr=("$@")
-
-    echo "${question}"
-    echo ""
-
+    local argLimit=${#arr[@]}
     local i=0
     local arrIterator=0
+    local answer
+    question+="\n"
+
     for i in "${arr[@]}";
     do
-        if [ ${arrIterator} -eq "0" ]; then
-            echo "[y/0] ${i} - default"
+        if [ ${arrIterator} -eq 0 ]; then
+            question+="[y/0] ${i} - default\n"
         else
-            echo "[${arrIterator}] ${i}"
+            question+="[${arrIterator}] ${i}\n"
         fi
         arrIterator=$((arrIterator+1))
     done
-    getAnswer "${#arr[@]}"
-    return $?
+
+    if [ ${ASSUME_YES} -eq 0 ]; then
+        echo -e "${question}"
+        while true
+        do
+            read answer
+            case ${answer} in
+            [Yy]) return 0;;
+            [Qq]) echo "*** Aborted by user."
+                  exit 1;;
+            *)    if ! [[ "${answer}" =~ ^[0-9]+$ ]]; then
+                      echo -e "${question}"
+                  else
+                      if ((0<=answer && answer<argLimit)); then
+                          return ${answer}
+                      else
+                          echo -e "${question}"
+                      fi
+                  fi;;
+            esac
+        done
+    else
+        return 0
+    fi
 }
 
 ### @brief display mcb mcb_pci blacklist warning
