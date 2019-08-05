@@ -1689,7 +1689,7 @@ displayQuestion() {
             [Yy]) return 0;;
             [Qq]) echo "*** Aborted by user."
                   exit 1;;
-            *)    if ! [[ "${answer}" =~ ^[0-9]+$ ]]; then
+            *)    if [[ "${answer}" =~ ^[0][0-9]+$ ]] || ! [[ "${answer}" =~ ^[0-9]+$ ]]; then
                       echo -e "${question}"
                   else
                       if ((0<=answer && answer<argLimit)); then
