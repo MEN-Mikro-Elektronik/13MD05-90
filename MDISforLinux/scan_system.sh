@@ -455,6 +455,7 @@ function scan_cham_table {
 	local ipcoreType
 	local ipcoreName
 	local ipcoreHwName
+	local ipcoreSettings
 	local -i listSize
 	local -i listItem
 	local -a listChoice
@@ -529,10 +530,14 @@ function scan_cham_table {
 				if [ "${ipcoreName}" == "" ]; then
 					ipcoreName="$(mapGet "${listName}" "swname")"
 				fi
+				ipcoreSettings="$(mapGet "${listName}" "settings")"
+				if [ "${ipcoreSettings}" != "" ]; then
+					ipcoreSettings="${ipcoreSettings//$'\n'/\\n}"
+				fi
 
 				echo "Writing ${ipcoreType,,}_${G_mdisInstanceCount} section to system.dsc"
 
-				cat $1/16zX.tpl | sed "s/SCAN_MDIS_INSTANCE/$G_mdisInstanceCount/g;s/SCAN_BBIS_NAME/$bbis_name/g;s/USCORESCAN_BBIS_INSTANCE/_$bbis_instance/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $G_bus_slot_count`/g;s/SCAN_IPCORE_TYPE/${ipcoreType,,}/g;s/SCAN_IPCORE_NAME/${ipcoreName^^}/g;s/SCAN_WIZMODEL_NAME/${ipcoreHwName}/g;" >> $DSC_FILE
+				cat $1/16zX.tpl | sed "s/SCAN_MDIS_INSTANCE/$G_mdisInstanceCount/g;s/SCAN_BBIS_NAME/$bbis_name/g;s/USCORESCAN_BBIS_INSTANCE/_$bbis_instance/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $G_bus_slot_count`/g;s/SCAN_IPCORE_TYPE/${ipcoreType,,}/g;s/SCAN_IPCORE_NAME/${ipcoreName^^}/g;s/SCAN_WIZMODEL_NAME/${ipcoreHwName}/g;s/SCAN_DEVICE_SETTINGS/${ipcoreSettings}/g;" >> $DSC_FILE
 
 				G_bus_slot_count=`expr $G_bus_slot_count + 1`
 				G_mdisInstanceCount=`expr $G_mdisInstanceCount + 1`
@@ -1311,7 +1316,7 @@ mapGet() {
 	for (( i=0 ; i<size ; i++ )); do
 		key="$(eval "echo \${${keys}[${i}]}")"
 		if [ "${key}" == "${2}" ]; then
-			eval "echo \${${values}[${i}]}"
+			eval "echo \"\${${values}[${i}]}\""
 			break
 		fi
 	done
@@ -1719,6 +1724,7 @@ makeIpCoreOutputData() {
 	local xFile
 	local -A xModel
 	local -A xModule
+	local -A xSetting
 	local xName
 
 	xId="${1}"
@@ -1753,13 +1759,16 @@ makeIpCoreOutputDataCallback() {
 			xSize="${#ipcoreSpecList[@]}"
 			xName="ipcoreSwModule${xSize}"
 			mapNew "${xName}"
-		elif [[ ("${3}" == "/package/modellist/model/swmodulelist" || \
-			"${3}" == "/package/swmodulelist") && \
+		elif [[ ( "${3}" == "/package/modellist/model/swmodulelist" || \
+			"${3}" == "/package/swmodulelist" ) && \
 			"${4}" == "swmodule" ]]; then
 			xModule=()
 			if [ "${5}" != "" ]; then
 				eval "xModule+=(${5})"
 			fi
+		elif [ "${3}" == "/package/modellist/model/settinglist" ] && \
+			[ "${4}" == "setting" ]; then
+			xSetting=()
 		fi
 	elif [ "${2}" == "characters" ]; then
 		if [ "${3}" == "/package/modellist/model/hwname" ]; then
@@ -1792,6 +1801,12 @@ makeIpCoreOutputDataCallback() {
 			if [ "${xModule["swname"]}" == "" ]; then
 				xModule+=(["swname"]="${4}")
 			fi
+		elif [ "${3}" == "/package/modellist/model/settinglist/setting/name" ]; then
+			xSetting+=(["name"]="${4}")
+		elif [ "${3}" == "/package/modellist/model/settinglist/setting/type" ]; then
+			xSetting+=(["type"]="${4}")
+		elif [ "${3}" == "/package/modellist/model/settinglist/setting/value" ]; then
+			xSetting+=(["value"]="${4}")
 		fi
 	elif [ "${2}" == "endElement" ]; then
 		if [ "${3}" == "/package/modellist/model" ] && \
@@ -1809,7 +1824,7 @@ makeIpCoreOutputDataCallback() {
 		elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule" ] && \
 			[ "${4}" == "swmodule" ]; then
 			if [[ "${1}" == "${xModel["chamv2id"]}" && \
-				( "${xModel["internal"]}" != "true" ||
+				( "${xModel["internal"]}" != "true" || \
 				"${INTERNAL_SWMODULES}" != "0" ) ]]; then
 				if [ "${xModel["name"]}" == "" ]; then
 					xModel+=(["name"]="${xModule["name"]}")
@@ -1825,7 +1840,7 @@ makeIpCoreOutputDataCallback() {
 			xModule=()
 		elif [ "${3}" == "/package/swmodulelist/swmodule" ] && \
 			[ "${4}" == "swmodule" ]; then
-			if [[ "${xModule["internal"]}" != "true" ||
+			if [[ "${xModule["internal"]}" != "true" || \
 				"${INTERNAL_SWMODULES}" != "0" ]]; then
 				if [[ "${xModule["type"]}" != "" && \
 					"${xModule["makefilepath"]}" != "" && \
@@ -1855,6 +1870,18 @@ makeIpCoreOutputDataCallback() {
 				fi
 			fi
 			xModule=()
+		elif [ "${3}" == "/package/modellist/model/settinglist/setting" ] && \
+			[ "${4}" == "setting" ]; then
+			if [ "${xSetting["value"]}" != "" ]; then
+				xSet="${xSetting["name"]} = ${xSetting["type"]} ${xSetting["value"]}"
+				if [ "${xModel["settings"]}" == "" ]; then
+					xModel+=(["settings"]="${xSet}")
+				else
+					xModel["settings"]+=$'\n'
+					xModel["settings"]+="    ${xSet}"
+				fi
+			fi
+			xSetting=()
 		fi
 	fi
 }
