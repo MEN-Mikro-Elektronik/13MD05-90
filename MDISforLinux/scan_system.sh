@@ -124,6 +124,10 @@ declare -A mmodFileList
 declare -A mmodSpecList
 ### @brief M-Moudle instance counters
 declare -A mModuleInstances=()
+### @brief IP Core ID to XML file map
+declare -A ipcoreFileList
+### @brief IP Core specification map list
+declare -a ipcoreSpecList=()
 
 ############################################################################
 # verbose debug outputs if VERBOSE_PRINT is 1 or 2
@@ -438,109 +442,127 @@ function create_entry_dsc_bbis_cham {
 # $3  BBIS board instance number ( x as in f210_x)
 # $4  0: just get DEVICE_IDV2 data (to complete BBIS dsc entry)
 #     1: also write MDIS dsc data  (to add device sections below BBIS entry)
+# $5  PCI device
 #
 function scan_cham_table {
-    debug_args "\$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 "
-    fpga_file=$2
-    bbis_instance=$3
-    do_parse=0
-    write_mdis_dsc=$4
+	debug_args "\$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 "
+	fpga_file=$2
+	bbis_instance=$3
+	do_parse=0
+	write_mdis_dsc=$4
+	local ipcoreId
+	local ipcoreXml
+	local ipcoreType
+	local ipcoreName
+	local ipcoreHwName
+	local ipcoreSettings
+	local -i listSize
+	local -i listItem
+	local -a listChoice
+	local -i i
+	local listName
+	local listEntry
+	local listPrompt
+	local itemMatch
+	local hwName
 
-    while read devline <&3; do
+	while read devline <&3; do
 	if [ "$do_parse" == "1" ]; then
-	    ipcore=`echo $devline | awk '{print $3}' | awk '{print substr($1,1,6)}'`
-	    devid=`echo $devline | awk '{print $2}' | awk '{print substr($1,5,2)}'`
-	    inst_raw=`echo $devline | awk '{print $5}'`
-	    instance=`printf "%02x" $inst_raw`
-	    is_cham_dev=1
-	    isNativeDriver=0
-	    case $ipcore in
-		16Z025) # native drivers: add also men_lx_chameleon driver!
-		    G_makefileNatDriver+=" DRIVERS/13Z025/driver.mak DRIVERS/CHAMELEON/driver.mak"
-		    isNativeDriver=1
-		    ;;
-		16Z057)
-		    G_makefileNatDriver+=" DRIVERS/13Z025/driver.mak DRIVERS/CHAMELEON/driver.mak"
-		    isNativeDriver=1
-		    ;;
-		16Z125)
-		    G_makefileNatDriver+=" DRIVERS/13Z025/driver.mak DRIVERS/CHAMELEON/driver.mak"
-		    isNativeDriver=1
-		    ;;
-		16Z001)
-		    G_makefileNatDriver+=" DRIVERS/Z001_SMB/driver.mak DRIVERS/CHAMELEON/driver.mak"
-		    isNativeDriver=1
-		    ;;
-		16Z087)
-		    G_makefileNatDriver+=" DRIVERS/ETH_16Z077/DRIVER/driver.mak DRIVERS/CHAMELEON/driver.mak"
-		    isNativeDriver=1
-		    ;;
-		16Z077)
-		    G_makefileNatDriver+=" DRIVERS/ETH_16Z077/DRIVER/driver.mak DRIVERS/CHAMELEON/driver.mak"
-		    isNativeDriver=1
-		    ;;
-		16Z034) # GPIO
-		    ;;
-		16Z037) # GPIO serial
-		    ;;
-		16Z029) # CAN
-		    ;;
-		16Z076) # QSPIM
-		    ;;
-		*)  # skip other IP cores not handled above
-		    debug_print "omitting IP core $ipcore"
-		    is_cham_dev=0
-		    ;;
-	    esac
+		ipcore=`echo $devline | awk '{print $3}'`
+		devid=`echo $devline | awk '{print $2}' | awk '{print substr($1,5,2)}'`
+		inst_raw=`echo $devline | awk '{print $5}'`
+		instance=`printf "%02x" $inst_raw`
 
-	    if [ "$is_cham_dev" == "1" ] ; then
-		G_deviceIdV2+=" 0x$devid$instance"
-		if [ $write_mdis_dsc == "1" ]; then
-		    bbis_name=`echo $fpga_file | awk '{print tolower($1)}'`
-	            # special case MM1: MM1 FPGA BBIS model is not 'mm01_x', just 'fpga'. So
-		    # naming the BBIS section 'mm01_x' would cause mdiswiz to refuse loading devices.
-
-		    # TODO generate the long sed filter commands dynamically..
-		    if [ "$bbis_name" == "mm01" ]; then
-			cat $1/$ipcore.tpl | sed "s/SCAN_MDIS_INSTANCE/$G_mdisInstanceCount/g;s/SCAN_BBIS_NAME/fpga/g;s/USCORESCAN_BBIS_INSTANCE//g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $G_bus_slot_count`/g;" >> $DSC_FILE
-		    else
-			cat $1/$ipcore.tpl | sed "s/SCAN_MDIS_INSTANCE/$G_mdisInstanceCount/g;s/SCAN_BBIS_NAME/$bbis_name/g;s/USCORESCAN_BBIS_INSTANCE/_$bbis_instance/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $G_bus_slot_count`/g;" >> $DSC_FILE
-		    fi
-
-		    G_bus_slot_count=`expr $G_bus_slot_count + 1`
-		    G_mdisInstanceCount=`expr $G_mdisInstanceCount + 1`
-
-                    # collect non native drivers .mak macro definitions from xml files
-		    if [ "$isNativeDriver" == "0"  ]; then
-			xmlfile=`fgrep $ipcore $MEN_LIN_DIR/PACKAGE_DESC/* | head -n 1 | awk '{print $1}' | sed "s/://"`
-                        # the name is not always "driver.mak" e.g. CAN: driver_boromir.mak.
-
-			lldrv=`fgrep ".mak" $xmlfile | grep DRIVER | sed "s/<makefilepath>//;s/<\/makefilepath>//"`
-			G_makefileLlDriver+=" "$lldrv
-
-			lltool=`fgrep "program.mak" $xmlfile | sed "s/<makefilepath>//;s/<\/makefilepath>//"`
-			for llt in ${lltool}; do
-				# QSPIM_CB example is for OS-9, so do not add it
-				if [ "${llt}" != "QSPIM/EXAMPLE/QSPIM_CB/COM/program.mak" ]; then
-					G_makefileLlTool+=" ${llt}"
-				fi
-			done
-			usrlib=`fgrep "library.mak" $xmlfile | sed "s/<makefilepath>//;s/<\/makefilepath>//"`
-			G_makefileUsrLibs+=" "$usrlib
-		    fi
+		makeIpCoreFileMap
+		ipcoreId="$((16#${devid}))"
+		ipcoreXml="${ipcoreFileList["${ipcoreId}"]}"
+		if [ "${ipcoreXml}" == "" ]; then
+			is_cham_dev=0
 		fi
-	    fi
+
+		if [ "${ipcoreXml}" != "" ] ; then
+			G_deviceIdV2+=" 0x$devid$instance"
+			if [ $write_mdis_dsc == "1" ]; then
+				makeIpCoreOutputData "${ipcoreId}"
+				listItem="0"
+				listChoice=()
+				listSize="${#ipcoreSpecList[@]}"
+				if [ "${listSize}" -gt "1" ]; then
+					itemMatch=""
+					for (( i=0; i<listSize; i++ )); do
+						listName="${ipcoreSpecList[${i}]}"
+						hwName="$(mapGet "${listName}" "hwname")"
+						if [ "${hwName}" == "${ipcore}" ]; then
+							if [ "${itemMatch}" == "" ]; then
+								itemMatch="${i}"
+							else
+								itemMatch=""
+								break
+							fi
+						fi
+					done
+					if [ "${itemMatch}" != "" ]; then
+						listItem="${itemMatch}"
+					else
+						for (( i=0; i<listSize; i++ )); do
+							listName="${ipcoreSpecList[${i}]}"
+							listEntry="$(mapGet "${listName}" "hwname")"
+							listEntry+=" - $(mapGet "${listName}" "description")"
+							listChoice+=("${listEntry}")
+						done
+						listPrompt="There are ${listSize} drivers matching IP core ${ipcore} #${inst_raw} on PCI device ${5}"
+						listPrompt+=$'\n'
+						listPrompt+="Which one would you like to use?"
+						displayQuestion "${listPrompt}" "${listChoice[@]}"
+						listItem="${?}"
+					fi
+				fi
+				if [ "${listItem}" -ge "${listSize}" ]; then
+					echo "*** Aborted by user."
+					exit "1"
+				fi
+
+				listName="${ipcoreSpecList[${listItem}]}"
+				bbis_name=`echo $fpga_file | awk '{print tolower($1)}'`
+				ipcoreType="$(mapGet "${listName}" "devnameprefix")"
+				ipcoreHwName="$(mapGet "${listName}" "hwname")"
+				ipcoreName="$(mapGet "${listName}" "name")"
+				if [ "${ipcoreName}" == "" ]; then
+					ipcoreName="$(mapGet "${listName}" "swname")"
+				fi
+				ipcoreSettings="$(mapGet "${listName}" "settings")"
+				if [ "${ipcoreSettings}" != "" ]; then
+					ipcoreSettings="${ipcoreSettings//$'\n'/\\n}"
+				fi
+
+				echo "Writing ${ipcoreType,,}_${G_mdisInstanceCount} section to system.dsc"
+
+				cat $1/16zX.tpl | sed "s/SCAN_MDIS_INSTANCE/$G_mdisInstanceCount/g;s/SCAN_BBIS_NAME/$bbis_name/g;s/USCORESCAN_BBIS_INSTANCE/_$bbis_instance/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $G_bus_slot_count`/g;s/SCAN_IPCORE_TYPE/${ipcoreType,,}/g;s/SCAN_IPCORE_NAME/${ipcoreName^^}/g;s/SCAN_WIZMODEL_NAME/${ipcoreHwName}/g;s/SCAN_DEVICE_SETTINGS/${ipcoreSettings}/g;" >> $DSC_FILE
+
+				G_bus_slot_count=`expr $G_bus_slot_count + 1`
+				G_mdisInstanceCount=`expr $G_mdisInstanceCount + 1`
+
+				G_makefileNatDriver+=" $(mapGet "${listName}" "Native_Driver")"
+				G_makefileLlDriver+=" $(mapGet "${listName}" "Low_Level_Driver")"
+				G_makefileLlTool+=" $(mapGet "${listName}" "Driver_Specific_Tool")"
+				G_makefileUsrLibs+=" $(mapGet "${listName}" "User_Library")"
+
+				for (( i=0; i<listSize; i++ )); do
+					mapDelete "${ipcoreSpecList[${i}]}"
+				done
+			fi
+		fi
 	fi # do_parse
 
-        # skip to begin of IP cores table
+	# skip to begin of IP cores table
 	delimiter=`echo $devline | awk '{print $1}'`
-        if [ "$delimiter" == "---" ]; then
-            do_parse=1
-        elif [ "$delimiter" == "" ]; then
-            do_parse=0
+	if [ "$delimiter" == "---" ]; then
+		do_parse=1
+	elif [ "$delimiter" == "" ]; then
+		do_parse=0
 	fi
 
-    done 3< $TMP_CHAM_TBL
+	done 3< $TMP_CHAM_TBL
 }
 
 
@@ -595,7 +617,7 @@ function check_for_cham_devs {
         G_deviceIdV2=""    # clear list of IDs for next BBIS
 
 	# gather DEVICE_IDV2 data for this BBIS first
-	scan_cham_table $DSC_TPL_DIR $cham_file $inst_count 0
+	scan_cham_table $DSC_TPL_DIR $cham_file $inst_count 0 "${7}:${4}:0"
 
         # Now add the found device IDs to temporary BBIS desc file
         create_entry_dsc_bbis_cham $2 $3 $4 $5 $DSC_TPL_DIR $7
@@ -614,7 +636,7 @@ function check_for_cham_devs {
         # create MDIS dev entries under this BBIS device
 	G_bus_slot_count=0
         G_deviceIdV2=""    # clear list of IDs for next BBIS
-	scan_cham_table $DSC_TPL_DIR $cham_file $inst_count 1
+	scan_cham_table $DSC_TPL_DIR $cham_file $inst_count 1 "${7}:${4}:0"
     fi
 
 }
@@ -922,8 +944,6 @@ function create_entry_dsc_mmodule {
 	local boardName
 	local outFile
 	local mModule
-	local xData
-	local mkFiles
 	local xMakefile
 
 	tplDir="${1}"
@@ -959,26 +979,26 @@ function create_entry_dsc_mmodule {
 			done
 		fi
 		if [ "${mmodSpecList["Native Driver"]}" != "" ]; then
-                        for xMakefile in ${mmodSpecList["Native Driver"]}; do
-                                if [ "${xMakefile}" != *"${G_makefileNatDriver}"* ]; then
-                                        G_makefileNatDriver+=" ${xMakefile}"
-                                fi
-                        done
-                fi
+			for xMakefile in ${mmodSpecList["Native Driver"]}; do
+				if [ "${xMakefile}" != *"${G_makefileNatDriver}"* ]; then
+					G_makefileNatDriver+=" ${xMakefile}"
+				fi
+			done
+		fi
 		if [ "${mmodSpecList["Driver Specific Tool"]}" != "" ]; then
-                        for xMakefile in ${mmodSpecList["Driver Specific Tool"]}; do
-                                if [ "${xMakefile}" != *"${G_makefileLlTool}"* ]; then
-                                        G_makefileLlTool+=" ${xMakefile}"
-                                fi
-                        done
-                fi
+			for xMakefile in ${mmodSpecList["Driver Specific Tool"]}; do
+				if [ "${xMakefile}" != *"${G_makefileLlTool}"* ]; then
+					G_makefileLlTool+=" ${xMakefile}"
+				fi
+			done
+		fi
 		if [ "${mmodSpecList["User Library"]}" != "" ]; then
-                        for xMakefile in ${mmodSpecList["User Library"]}; do
-                                if [ "${xMakefile}" != *"${G_makefileUsrLibs}"* ]; then
-                                        G_makefileUsrLibs+=" ${xMakefile}"
-                                fi
-                        done
-                fi
+			for xMakefile in ${mmodSpecList["User Library"]}; do
+				if [ "${xMakefile}" != *"${G_makefileUsrLibs}"* ]; then
+					G_makefileUsrLibs+=" ${xMakefile}"
+				fi
+			done
+		fi
 	fi
 }
 
@@ -1249,6 +1269,183 @@ function create_makefile {
     cat -s "$TMP_MAKE_FILE" > $MAKE_FILE
 }
 
+### @brief Create map
+### @param $1 Map name
+mapNew() {
+	local -r keys="__MAP_KEYS_${1}"
+	local -r values="__MAP_VALUES_${1}"
+
+	declare -a "${keys}"
+	declare -a "${values}"
+
+	eval "${keys}=()"
+	eval "${values}=()"
+}
+
+### @brief Delete map
+### @param $1 Map name
+mapDelete() {
+	local -r keys="__MAP_KEYS_${1}"
+	local -r values="__MAP_VALUES_${1}"
+
+	eval "unset -v \"${keys}\""
+	eval "unset -v \"${values}\""
+}
+
+### @brief Clear map
+### @param $1 Map name
+mapClear() {
+	local -r keys="__MAP_KEYS_${1}"
+	local -r values="__MAP_VALUES_${1}"
+
+	eval "${keys}=()"
+	eval "${values}=()"
+}
+
+### @brief Get key value
+### @param $1 Map name
+### @param $2 Key
+### @return Value associated with key is echoed
+mapGet() {
+	local -r keys="__MAP_KEYS_${1}"
+	local -r values="__MAP_VALUES_${1}"
+	local -ir size="$(eval "echo \${#${keys}[@]}")"
+	local -i i
+	local key
+
+	for (( i=0 ; i<size ; i++ )); do
+		key="$(eval "echo \${${keys}[${i}]}")"
+		if [ "${key}" == "${2}" ]; then
+			eval "echo \"\${${values}[${i}]}\""
+			break
+		fi
+	done
+}
+
+### @brief Associate value with key
+### @param $1 Map name
+### @param $2 Key
+### @param $3 Value
+mapPut() {
+	local -r keys="__MAP_KEYS_${1}"
+	local -r values="__MAP_VALUES_${1}"
+	local -ir size="$(eval "echo \${#${keys}[@]}")"
+	local -i i
+	local key
+
+	if [ "${size}" == 0 ]; then
+		eval "${keys}+=(\"$2\")"
+		eval "${values}+=(\"$3\")"
+	else
+		for (( i=0 ; i<size ; i++ )); do
+			key="$(eval "echo \${${keys}[${i}]}")"
+			if [ "${key}" == "${2}" ]; then
+				eval "${values}[${i}]=\"${3}\""
+				break
+			fi
+		done
+		if [ "${i}" == "${size}" ]; then
+			eval "${keys}+=(\"$2\")"
+			eval "${values}+=(\"$3\")"
+		fi
+	fi
+}
+
+### @brief Remove key (and associated value)
+### @param $1 Map name
+### @param $2 Key
+mapRemove() {
+	local -r keys="__MAP_KEYS_${1}"
+	local -r values="__MAP_VALUES_${1}"
+	local -i size
+	local -i i
+	local key
+
+	size="$(eval "echo \${#${keys}[@]}")"
+	for (( i=0 ; i<size ; i++ )); do
+		key="$(eval "echo \${${keys}[${i}]}")"
+		if [ "${key}" == "${2}" ]; then
+			size="$((size-1))"
+			if [ "${size}" != "0" ]; then
+				eval "${keys}[${i}]=\"\${${keys}[${size}]}\""
+				eval "${values}[${i}]=\"\${${values}[${size}]}\""
+			fi
+			eval "unset -v \"${keys}[${size}]\""
+			eval "unset -v \"${values}[${size}]\""
+			break
+		fi
+	done
+}
+
+### @brief Get keys
+### @param $1 Map name
+### @return All keys are echoed
+mapKeys() {
+	local -r keys="__MAP_KEYS_${1}"
+
+	eval "echo \${${keys}[@]}"
+}
+
+### @brief Get values
+### @param $1 Map name
+### @return All values are echoed
+mapValues() {
+	local -r values="__MAP_VALUES_${1}"
+
+	eval "echo \${${values}[@]}"
+}
+
+### @brief Check if key is in map
+### @param $1 Map name
+### @param $2 Key
+### @return 0 if key is in map
+### @return non-zero otherwise
+mapKey() {
+	local -r keys="__MAP_KEYS_${1}"
+	local -ir size="$(eval "echo \${#${keys}[@]}")"
+	local -i i
+	local key
+
+	for (( i=0 ; i<size ; i++ )); do
+		key="$(eval "echo \${${keys}[${i}]}")"
+		if [ "${key}" == "${2}" ]; then
+			return "0"
+		fi
+	done
+
+	return "1"
+}
+
+### @brief Check if value is in map
+### @param $1 Map name
+### @param $2 Value
+### @return 0 if value is in map
+### @return non-zero otherwise
+mapValue() {
+	local -r values="__MAP_VALUES_${1}"
+	local -ir size="$(eval "echo \${#${values}[@]}")"
+	local -i i
+	local value
+
+	for (( i=0 ; i<size ; i++ )); do
+		value="$(eval "echo \${${values}[${i}]}")"
+		if [ "${value}" == "${2}" ]; then
+			return "0"
+		fi
+	done
+
+	return "1"
+}
+
+### @brief Get size
+### @param $1 Map name
+### @return Map size is echoed
+mapSize() {
+	local -r keys="__MAP_KEYS_${1}"
+
+	eval "echo \${#${keys}[@]}"
+}
+
 ### @brief Parse XML file
 ### @details SAX parser.
 ### Callback function is called on events like tag start (startElement), tag end
@@ -1268,8 +1465,8 @@ xmlParseXml() {
 	local -r EV_START="startElement"
 	local -r EV_END="endElement"
 	local -r EV_CHARS="characters"
-	local -r RE_XML="^(/?)([[:alpha:]]+)(([[:space:]]+[:[:alpha:]]+=\"[^\"]+\")*)(/?)$"
-	local -r RE_ATTR="s/([:[:alpha:]]+)=\"([^\"]+)\"/[\1]=\"\2\"/g"
+	local -r RE_XML="^(/?)([[:alnum:]]+)(([[:space:]]+[:[:alpha:]]+=\"[^\"]+\")*)(/?)$"
+	local -r RE_ATTR="s/([:[:alnum:]]+)=\"([^\"]+)\"/[\1]=\"\2\"/g"
 	local inFile
 	local cbFunc
 	local cbArg
@@ -1428,8 +1625,9 @@ makeMmodOutputDataCallback() {
 			xModel=()
 		elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule" ] && \
 			[ "${4}" == "swmodule" ]; then
-			if [ "${1}" == "${xModel["mmoduleid"]}" ] && \
-				[ "${xModel["internal"]}" != "true" ]; then
+			if [[ "${1}" == "${xModel["mmoduleid"]}" && \
+				( "${xModel["internal"]}" != "true" ||
+				"${INTERNAL_SWMODULES}" != "0" ) ]]; then
 				if [ "${xModel["name"]}" == "" ]; then
 					xModel+=(["name"]="${xModule["name"]}")
 				fi
@@ -1444,7 +1642,8 @@ makeMmodOutputDataCallback() {
 			xModule=()
 		elif [ "${3}" == "/package/swmodulelist/swmodule" ] && \
 			[ "${4}" == "swmodule" ]; then
-			if [ "${xModel["internal"]}" != "true" ]; then
+			if [[ "${xModel["internal"]}" != "true" ||
+				"${INTERNAL_SWMODULES}" != "0" ]]; then
 				if [ "${mmodSpecList["name"]}" == "" ]; then
 					mmodSpecList+=(["name"]="${xModule["name"]}")
 				fi
@@ -1484,6 +1683,207 @@ getMmodId() {
 	fi
 
 	echo "${mmId}"
+}
+
+### @brief Create IP core to XML file mapping associative array
+makeIpCoreFileMap() {
+	local xFiles
+	local xFile
+
+	if [ "${#ipcoreFileList[@]}" != "0" ]; then
+		return "0"
+	fi
+
+	echo -n "Building IP core database..."
+	xFiles=($(ls "${MEN_LIN_DIR}/PACKAGE_DESC/"13z*.xml 2> "/dev/null"))
+	for xFile in "${xFiles[@]}"; do
+		echo -n "."
+		xmlParseXml "${xFile}" "makeIpCoreFileMapCallback" "${xFile##*/}"
+	done
+	echo "done!"
+}
+
+### @brief xmlParseXml() callback for makeIpCoreFileMap()
+### @param $1 Callback argument
+### @param $2 Event reason
+### @param $3 Current xPath
+### @param $4 Event specific data#1
+### @param $5 Event specific data#2
+makeIpCoreFileMapCallback() {
+	if [ "${2}" == "characters" ] && \
+		[ "${3}" == "/package/modellist/model/autoid/chamv2id" ] && \
+		[ "${ipcoreFileList["${4}"]}" == "" ]; then
+		ipcoreFileList+=(["${4}"]="${1}")
+	fi
+}
+
+### @brief Create IP core output data
+### @param $1 IP core ID
+makeIpCoreOutputData() {
+	local xId
+	local xFile
+	local -A xModel
+	local -A xModule
+	local -A xSetting
+	local xName
+
+	xId="${1}"
+
+	ipcoreSpecList=()
+
+	xFile="${ipcoreFileList["${xId}"]}"
+	if [ "${xFile}" == "" ]; then
+		return "1"
+	fi
+
+	xmlParseXml "${MEN_LIN_DIR}/PACKAGE_DESC/${xFile}" "makeIpCoreOutputDataCallback" "${xId}"
+}
+
+### @brief xmlParseXml() callback for makeIpCoreOutputData()
+### @param $1 Callback argument
+### @param $2 Event reason
+### @param $3 Current xPath
+### @param $4 Event specific data#1
+### @param $5 Event specific data#2
+makeIpCoreOutputDataCallback() {
+	local xKey
+	local xVal
+	local xSize
+	local xMap
+	local xIdx
+
+	if [ "${2}" == "startElement" ]; then
+		if [ "${3}" == "/package/modellist" ] && \
+			[ "${4}" == "model" ]; then
+			xModel=()
+			xSize="${#ipcoreSpecList[@]}"
+			xName="ipcoreSwModule${xSize}"
+			mapNew "${xName}"
+		elif [[ ( "${3}" == "/package/modellist/model/swmodulelist" || \
+			"${3}" == "/package/swmodulelist" ) && \
+			"${4}" == "swmodule" ]]; then
+			xModule=()
+			if [ "${5}" != "" ]; then
+				eval "xModule+=(${5})"
+			fi
+		elif [ "${3}" == "/package/modellist/model/settinglist" ] && \
+			[ "${4}" == "setting" ]; then
+			xSetting=()
+		fi
+	elif [ "${2}" == "characters" ]; then
+		if [ "${3}" == "/package/modellist/model/hwname" ]; then
+			xModel+=(["hwname"]="${4}")
+		elif [ "${3}" == "/package/modellist/model/modelname" ]; then
+			xModel+=(["modelname"]="${4}")
+		elif [ "${3}" == "/package/modellist/model/description" ]; then
+			xModel+=(["description"]="${4}")
+		elif [ "${3}" == "/package/modellist/model/autoid/chamv2id" ]; then
+			xModel+=(["chamv2id"]="${4}")
+		elif [ "${3}" == "/package/modellist/model/devnameprefix" ]; then
+			xModel+=(["devnameprefix"]="${4}")
+		elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule/name" ]; then
+			xModule+=(["name"]="${4}")
+		elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule/type" ] || \
+			[ "${3}" == "/package/swmodulelist/swmodule/type" ]; then
+			xModule+=(["type"]="${4}")
+		elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule/makefilepath" ] || \
+			[ "${3}" == "/package/swmodulelist/swmodule/makefilepath" ]; then
+			xModule+=(["makefilepath"]="${4}")
+		elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule/os" ] || \
+			[ "${3}" == "/package/swmodulelist/swmodule/os" ]; then
+			xModule+=(["os"]="${4}")
+		elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule/notos" ] || \
+			[ "${3}" == "/package/swmodulelist/swmodule/notos" ]; then
+			if [ "${4}" == "Linux" ]; then
+				xModule+=(["notos"]="${4}")
+			fi
+		elif [ "${3}" == "/package/swmodulelist/swmodule/name" ]; then
+			if [ "${xModule["swname"]}" == "" ]; then
+				xModule+=(["swname"]="${4}")
+			fi
+		elif [ "${3}" == "/package/modellist/model/settinglist/setting/name" ]; then
+			xSetting+=(["name"]="${4}")
+		elif [ "${3}" == "/package/modellist/model/settinglist/setting/type" ]; then
+			xSetting+=(["type"]="${4}")
+		elif [ "${3}" == "/package/modellist/model/settinglist/setting/value" ]; then
+			xSetting+=(["value"]="${4}")
+		fi
+	elif [ "${2}" == "endElement" ]; then
+		if [ "${3}" == "/package/modellist/model" ] && \
+			[ "${4}" == "model" ]; then
+			if [ "${1}" == "${xModel["chamv2id"]}" ] && \
+				[ "${xModel["name"]: -3}" != "_io" ]; then
+				ipcoreSpecList+=("${xName}")
+				for xKey in "${!xModel[@]}"; do
+					mapPut "${xName}" "${xKey// /_}" "${xModel["${xKey}"]}"
+				done
+			else
+				mapDelete "${xName}"
+			fi
+			xModel=()
+		elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule" ] && \
+			[ "${4}" == "swmodule" ]; then
+			if [[ "${1}" == "${xModel["chamv2id"]}" && \
+				( "${xModel["internal"]}" != "true" || \
+				"${INTERNAL_SWMODULES}" != "0" ) ]]; then
+				if [ "${xModel["name"]}" == "" ]; then
+					xModel+=(["name"]="${xModule["name"]}")
+				fi
+				if [ "${xModule["type"]}" != "" ] && \
+					[ "${xModule["makefilepath"]}" != "" ]; then
+					if [ "${xModel["${xModule["type"]}"]}" != "" ]; then
+						xModel["${xModule["type"]}"]+=" "
+					fi
+					xModel["${xModule["type"]}"]+="${xModule["makefilepath"]}"
+				fi
+			fi
+			xModule=()
+		elif [ "${3}" == "/package/swmodulelist/swmodule" ] && \
+			[ "${4}" == "swmodule" ]; then
+			if [[ "${xModule["internal"]}" != "true" || \
+				"${INTERNAL_SWMODULES}" != "0" ]]; then
+				if [[ "${xModule["type"]}" != "" && \
+					"${xModule["makefilepath"]}" != "" && \
+					( ( "${xModule["os"]}" == "" || \
+					"${xModule["os"]}" == "Linux" ) && \
+					"${xModule["notos"]}" != "Linux" ) ]]; then
+					xSize="${#ipcoreSpecList[@]}"
+					for (( xIdx=0; xIdx<xSize; xIdx++ )); do
+						xMap="${ipcoreSpecList[${xIdx}]}"
+						xKey="${xModule["type"]}"
+						xKey="${xKey// /_}"
+						xVal="$(mapGet "${xMap}" "${xKey}")"
+						if [ "${xVal}" == "" ]; then
+							xVal="${xModule["makefilepath"]}"
+						else
+							xVal+=" ${xModule["makefilepath"]}"
+						fi
+						mapPut "${xMap}" "${xKey}" "${xVal}"
+						xKey="swname"
+						xVal="${xModule[${xKey}]}"
+						if [ "${xVal}" != "" ]; then
+							if ! mapKey "${xMap}" "${xKey}"; then
+								mapPut "${xMap}" "${xKey}" "${xVal}"
+							fi
+						fi
+					done
+				fi
+			fi
+			xModule=()
+		elif [ "${3}" == "/package/modellist/model/settinglist/setting" ] && \
+			[ "${4}" == "setting" ]; then
+			if [ "${xSetting["value"]}" != "" ]; then
+				xSet="${xSetting["name"]} = ${xSetting["type"]} ${xSetting["value"]}"
+				if [ "${xModel["settings"]}" == "" ]; then
+					xModel+=(["settings"]="${xSet}")
+				else
+					xModel["settings"]+=$'\n'
+					xModel["settings"]+="    ${xSet}"
+				fi
+			fi
+			xSetting=()
+		fi
+	fi
 }
 
 ### @brief Compile mm_ident tool
@@ -1547,23 +1947,24 @@ function scan_system_usage {
     echo "     3. /usr/src/linux/ points to valid kernel headers"
     echo ""
     echo "parameters:"
-    echo "     'MEN_LIN_DIR'     path to MDIS installation dir - default"
-    echo "                       /opt/menlinux/"
+    echo "     'MEN_LIN_DIR'          path to MDIS installation dir - default"
+    echo "                            /opt/menlinux/"
     echo "     -y, --yes"
-    echo "     --assume-yes      scan without user interaction."
-    echo "                       answer 'yes' for all questions"
-    echo "     --mdiswiz         used by mdiswiz only!"
-    echo "     --verbose         if 1 or 2 then additional debug info is dumped"
-    echo "                       ex: --verbose 1"
-    echo "     --buildtools      build mm_ident and fpga_load from source"
-    echo "     --drytest         run drytest with test PCI device list "
-    echo "                       if passed as alternative PCI devices temp" 
-    echo "                       file the default file /tmp/men_pci_devs is"
-    echo "                       not written. Used to test system.dsc"
-    echo "                       generation with predefined test data."   
-    echo "                       ex: --drytest sth"
-    echo "     --prerequisites   check if all prerequisites are met"
-    echo "     -h, --help        print help"
+    echo "     --assume-yes           scan without user interaction."
+    echo "                            answer 'yes' for all questions"
+    echo "     --mdiswiz              used by mdiswiz only!"
+    echo "     --verbose              if 1 or 2 then additional debug info is dumped"
+    echo "                            ex: --verbose 1"
+    echo "     --buildtools           build mm_ident and fpga_load from source"
+    echo "     --drytest              run drytest with test PCI device list "
+    echo "                            if passed as alternative PCI devices temp" 
+    echo "                            file the default file /tmp/men_pci_devs is"
+    echo "                            not written. Used to test system.dsc"
+    echo "                            generation with predefined test data."
+    echo "                            ex: --drytest sth"
+    echo "     --prerequisites        check if all prerequisites are met"
+    echo "     --internal-swmodules   also add internal sw modules"
+    echo "     -h, --help             print help"
     echo ""
 }
 
@@ -1743,6 +2144,7 @@ PCI_DRYTEST=""
 BUILD_TOOLS=""
 MEN_LIN_DIR=""
 ASSUME_YES=0
+INTERNAL_SWMODULES="0"
 
 if [ $# -lt 1 ] || [ "${1}" = "--help" ] || [ "${1}" = "-h" ]; then
     scan_system_usage
@@ -1808,6 +2210,11 @@ while test $# -gt 0 ; do
                 shift
                 check_scan_system_prerequisites
                 exit 1
+                ;;
+        --internal-swmodules)
+                shift
+                INTERNAL_SWMODULES="1"
+                echo "Internal sw modules will also be added"
                 ;;
         *)
                 echo "No valid parameters"
