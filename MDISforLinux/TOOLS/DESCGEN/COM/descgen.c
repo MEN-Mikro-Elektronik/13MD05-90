@@ -6,7 +6,7 @@
  *
  *       Author: kp
  *
- *  Description: Descriptor Generator for MDIS4
+ *  Description: Descriptor Generator for MDIS5
  *
  *               Scans all given input files into a local data base and
  *               creates output file(s) of specified format:
@@ -110,7 +110,7 @@ void Align( DESCR_TAG *topTag );
 void usage( int excode )
 {
 	fprintf(stderr,"Usage:    descgen [<opts>] <files> [<opts>]\n");
-	fprintf(stderr,"Function: MDIS4 descriptor generator\n");
+	fprintf(stderr,"Function: MDIS5 descriptor generator\n");
 	fprintf(stderr,"Options:\n");
 	fprintf(stderr,"    files        meta-descriptor files (*.dsc)\n");
 	fprintf(stderr,"\n");
