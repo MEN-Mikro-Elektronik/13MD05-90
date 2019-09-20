@@ -2195,11 +2195,18 @@ static long vme4l_ioctl(
 			break;
 		}
 
+	#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,0,0)
+		if( !access_ok( blk.dataP, blk.size)){
+			rv = -EFAULT;
+			break;
+		}
+	#else
 		if( !access_ok( (blk.direction == WRITE) ? VERIFY_READ : VERIFY_WRITE,
 						blk.dataP, blk.size)){
 			rv = -EFAULT;
 			break;
 		}
+	#endif
 
 		VME4LDBG( "vme4l_ioctl: VME4L_IO_RW_BLOCK: %s with size 0x%lx, data @ %p\n", blk.direction ? "write" : "read", blk.size, blk.dataP );
 
