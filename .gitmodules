@@ -298,3 +298,11 @@
 	path = 13M065-07
 	url = ../13M065-07
 	branch = jpe-dev
+[submodule "13M047-06"]
+	path = 13M047-06
+	url = ../13M047-06
+	branch = jpe-dev
+[submodule "13M199-06"]
+	path = 13M199-06
+	url = ../13M199-06
+	branch = jpe-dev
