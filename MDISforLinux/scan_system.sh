@@ -973,30 +973,22 @@ function create_entry_dsc_mmodule {
 	if [ "${mModuleInstances["${mModule}"]}" == "1" ]; then
 		if [ "${mmodSpecList["Low Level Driver"]}" != "" ]; then
 			for xMakefile in ${mmodSpecList["Low Level Driver"]}; do
-				if [ "${xMakefile}" != *"${G_makefileLlDriver}"* ]; then
-					G_makefileLlDriver+=" ${xMakefile}"
-				fi
+				G_makefileLlDriver+=" ${xMakefile}"
 			done
 		fi
 		if [ "${mmodSpecList["Native Driver"]}" != "" ]; then
 			for xMakefile in ${mmodSpecList["Native Driver"]}; do
-				if [ "${xMakefile}" != *"${G_makefileNatDriver}"* ]; then
-					G_makefileNatDriver+=" ${xMakefile}"
-				fi
+				G_makefileNatDriver+=" ${xMakefile}"
 			done
 		fi
 		if [ "${mmodSpecList["Driver Specific Tool"]}" != "" ]; then
 			for xMakefile in ${mmodSpecList["Driver Specific Tool"]}; do
-				if [ "${xMakefile}" != *"${G_makefileLlTool}"* ]; then
-					G_makefileLlTool+=" ${xMakefile}"
-				fi
+				G_makefileLlTool+=" ${xMakefile}"
 			done
 		fi
 		if [ "${mmodSpecList["User Library"]}" != "" ]; then
 			for xMakefile in ${mmodSpecList["User Library"]}; do
-				if [ "${xMakefile}" != *"${G_makefileUsrLibs}"* ]; then
-					G_makefileUsrLibs+=" ${xMakefile}"
-				fi
+				G_makefileUsrLibs+=" ${xMakefile}"
 			done
 		fi
 	fi
