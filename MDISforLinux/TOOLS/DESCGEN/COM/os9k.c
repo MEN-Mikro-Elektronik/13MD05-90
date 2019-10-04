@@ -242,6 +242,12 @@ int32 OutOS9000(
 		/* total size */
 		msize 		= crc_offs + 4;
 
+#if __GNUC__ > 7
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
+#endif
+
 		/* create port addr */
 		if (portaddr == 0) {
 			if (strlen(mname_str) > 4)
@@ -253,6 +259,9 @@ int32 OutOS9000(
 		}
 		else
 			mport = portaddr;
+#if __GNUC__ > 7
+#pragma GCC diagnostic pop
+#endif
 
 		VERBOSE(("Creating descriptor module '%s'\n",mname_str));
 		VERBOSE(("Port address    : 0x%08x\n",TWISTLONG(mport)));

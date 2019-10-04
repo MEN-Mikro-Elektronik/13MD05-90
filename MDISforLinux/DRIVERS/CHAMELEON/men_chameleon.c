@@ -678,7 +678,8 @@ static int __devinit pci_init_one(struct pci_dev *pdev,
 	tblfile[j] = '\0';
 
 	/* store table info for sysfs read function */
-	strncpy( h->fpgafile, tblfile, CHAM_TBL_FILE_LEN );
+	strncpy( h->fpgafile, tblfile, CHAM_TBL_FILE_LEN-1);
+	h->fpgafile[CHAM_TBL_FILE_LEN-1] = '\0';
 	snprintf( h->revstr, CHAM_TBL_DFLT_LEN, "%d.%d", table.revision, table.minRevision );
 	snprintf( h->magic, CHAM_TBL_DFLT_LEN, "0x%04X", table.magicWord);
 

@@ -242,12 +242,22 @@ int32 OutOS9(char *drvname, char *fmgrname, U_INT32_OR_64 portaddr, DESCR_TAG *t
 		/* total size */
 		msize 		= crc_offs + 4;
 
+#if __GNUC__ > 7
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
+#endif
 		/* create port addr */
 		if (portaddr == 0) {
+
 			if (strlen(mname_str) > 4)
 				strncpy((char*)&mport,mname_str+strlen(mname_str)-4,4);
 			else
 				strncpy((char*)&mport,mname_str,strlen(mname_str));
+#if __GNUC__ > 7
+#pragma GCC diagnostic pop
+#endif
+
 #ifdef _LIN64
 			mport = TWISTLONGLONG(mport);	/* (is twisted twice) */
 #else
