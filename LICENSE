@@ -5,9 +5,9 @@ License information for package with GPL as well as LGPL licensed software
 All user mode libraries which can be statically linked or dynamically used from
 application SW are licensed under the LGPL v2.1.
 
-All other SW modules are licensed under the GPL v2.
-
+All other SW modules are licensed under the GPL v2 if not otherwise specified.
 Please refer to the license comments in the sources.
+
 This file contains the GPL v2 and LGPL v2.1 license text.
 
 MEN Mikro Elektronik GmbH
