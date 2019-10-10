@@ -306,3 +306,19 @@
 	path = 13M199-06
 	url = ../13M199-06
 	branch = jpe-dev
+[submodule "MDISforLinux/LIBSRC/VME4L_API"]
+	path = MDISforLinux/LIBSRC/VME4L_API
+	url = ../mdis_libsrc_vme4l_api
+	branch = jpe-dev
+[submodule "MDISforLinux/LIBSRC/UTI"]
+	path = MDISforLinux/LIBSRC/UTI
+	url = ../mdis_libsrc_uti
+	branch = jpe-dev
+[submodule "MDISforLinux/LIBSRC/DBG"]
+	path = MDISforLinux/LIBSRC/DBG
+	url = ../mdis_libsrc_dbg
+	branch = jpe-dev
+[submodule "MDISforLinux/LIBSRC/OSS"]
+	path = MDISforLinux/LIBSRC/OSS
+	url = ../mdis_libsrc_oss
+	branch = jpe-dev
