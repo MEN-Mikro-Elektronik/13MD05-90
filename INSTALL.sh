@@ -344,6 +344,7 @@ copy_sources_into_installation_directory(){
         cd ${MENLINUX_ROOT}
         echo "Setting permissions..."
         find -type d -exec chmod 777 {} \; 2> /dev/null
+        find -type f -exec chmod a+rw '{}' \; 2> /dev/null
         result=$?
         if [ ${result} -ne 0 ]; then
                 show_insufficient_rights
