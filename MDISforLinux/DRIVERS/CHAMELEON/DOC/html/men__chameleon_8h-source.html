@@ -23,121 +23,112 @@
 <div class="qindex"><a class="qindex" href="index.html">Main&nbsp;Page</a> | <a class="qindex" href="modules.html">Modules</a> | <a class="qindex" href="annotated.html">Data&nbsp;Structures</a> | <a class="qindex" href="files.html">File&nbsp;List</a> | <a class="qindex" href="functions.html">Data&nbsp;Fields</a> | <a class="qindex" href="globals.html">Globals</a> | <a class="qindex" href="pages.html">Related&nbsp;Pages</a></div>
 <h1>men_chameleon.h</h1><a href="men__chameleon_8h.html">Go to the documentation of this file.</a><div class="fragment"><pre>00001 <span class="comment">/***********************  I n c l u d e  -  F i l e  ************************/</span>
 00013 <span class="comment">/*</span>
-00014 <span class="comment"> *---------------------------------------------------------------------------</span>
-00015 <span class="comment"> * Copyright (c) 2003-2019, MEN Mikro Elektronik GmbH</span>
-00016 <span class="comment"> *</span>
-00017 <span class="comment"> * This program is free software; you can redistribute  it and/or modify it</span>
-00018 <span class="comment"> * under  the terms of  the GNU General  Public License as published by the</span>
-00019 <span class="comment"> * Free Software Foundation;  either version 2 of the  License, or (at your</span>
-00020 <span class="comment"> * option) any later version.</span>
-00021 <span class="comment"> ******************************************************************************/</span>
-00022 <span class="comment">/*</span>
-00023 <span class="comment"> * This program is free software: you can redistribute it and/or modify</span>
-00024 <span class="comment"> * it under the terms of the GNU General Public License as published by</span>
-00025 <span class="comment"> * the Free Software Foundation, either version 2 of the License, or</span>
-00026 <span class="comment"> * (at your option) any later version.</span>
-00027 <span class="comment"> *</span>
-00028 <span class="comment"> * This program is distributed in the hope that it will be useful,</span>
-00029 <span class="comment"> * but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
-00030 <span class="comment"> * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
-00031 <span class="comment"> * GNU General Public License for more details.</span>
-00032 <span class="comment"> *</span>
-00033 <span class="comment"> * You should have received a copy of the GNU General Public License</span>
-00034 <span class="comment"> * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
-00035 <span class="comment"> */</span>
-00036 <span class="preprocessor">#ifndef _MEN_CHAMELEON_H</span>
-00037 <span class="preprocessor"></span><span class="preprocessor">#define _MEN_CHAMELEON_H</span>
-00038 <span class="preprocessor"></span>
-00039 <span class="preprocessor">#include &lt;MEN/men_typs.h&gt;</span>
-00040 <span class="preprocessor">#include &lt;linux/pci.h&gt;</span>
-00041 <span class="preprocessor">#include &lt;linux/list.h&gt;</span>
+00014 <span class="comment"> * This program is free software: you can redistribute it and/or modify</span>
+00015 <span class="comment"> * it under the terms of the GNU General Public License as published by</span>
+00016 <span class="comment"> * the Free Software Foundation, either version 2 of the License, or</span>
+00017 <span class="comment"> * (at your option) any later version.</span>
+00018 <span class="comment"> *</span>
+00019 <span class="comment"> * This program is distributed in the hope that it will be useful,</span>
+00020 <span class="comment"> * but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+00021 <span class="comment"> * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+00022 <span class="comment"> * GNU General Public License for more details.</span>
+00023 <span class="comment"> *</span>
+00024 <span class="comment"> * You should have received a copy of the GNU General Public License</span>
+00025 <span class="comment"> * along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+00026 <span class="comment"> */</span>
+00027 <span class="preprocessor">#ifndef _MEN_CHAMELEON_H</span>
+00028 <span class="preprocessor"></span><span class="preprocessor">#define _MEN_CHAMELEON_H</span>
+00029 <span class="preprocessor"></span>
+00030 <span class="preprocessor">#include &lt;MEN/men_typs.h&gt;</span>
+00031 <span class="preprocessor">#include &lt;linux/pci.h&gt;</span>
+00032 <span class="preprocessor">#include &lt;linux/list.h&gt;</span>
+00033 
+00034 <span class="comment">/* #define CHAMELEON_CODES_ONLY */</span>
+00035 <span class="preprocessor">#include &lt;<a class="code" href="chameleon_8h.html">MEN/chameleon.h</a>&gt;</span>
+00036 
+00037 <span class="comment">/*--------------------------------------+</span>
+00038 <span class="comment">|   DEFINES &amp; CONSTS                    |</span>
+00039 <span class="comment">+--------------------------------------*/</span>
+00040 <span class="preprocessor">#define CHAMELEON_MODCODE_END 0x3f </span><span class="comment">/* end of CHAMELEON_DRIVER_T.modCodeArr */</span>
+00041 <span class="preprocessor">#define CHAMELEONV2_DEVID_END 0x0000 </span><span class="comment">/* end of CHAMELEONV2_DRIVER_T.devIdArr */</span>
 00042 
-00043 <span class="comment">/* #define CHAMELEON_CODES_ONLY */</span>
-00044 <span class="preprocessor">#include &lt;<a class="code" href="chameleon_8h.html">MEN/chameleon.h</a>&gt;</span>
+00043 <span class="preprocessor">#define CHAMELEON_CFGTABLE_SZ ((h-&gt;numUnits+1)*8)</span>
+00044 <span class="preprocessor"></span>
 00045 
 00046 <span class="comment">/*--------------------------------------+</span>
-00047 <span class="comment">|   DEFINES &amp; CONSTS                    |</span>
+00047 <span class="comment">|   TYPEDEFS                            |</span>
 00048 <span class="comment">+--------------------------------------*/</span>
-00049 <span class="preprocessor">#define CHAMELEON_MODCODE_END 0x3f </span><span class="comment">/* end of CHAMELEON_DRIVER_T.modCodeArr */</span>
-00050 <span class="preprocessor">#define CHAMELEONV2_DEVID_END 0x0000 </span><span class="comment">/* end of CHAMELEONV2_DRIVER_T.devIdArr */</span>
-00051 
-00052 <span class="preprocessor">#define CHAMELEON_CFGTABLE_SZ ((h-&gt;numUnits+1)*8)</span>
-00053 <span class="preprocessor"></span>
-00054 
-00055 <span class="comment">/*--------------------------------------+</span>
-00056 <span class="comment">|   TYPEDEFS                            |</span>
-00057 <span class="comment">+--------------------------------------*/</span>
-00058 
-<a name="l00061"></a><a class="code" href="structCHAMELEON__UNIT__T.html">00061</a> <span class="keyword">typedef</span> <span class="keyword">struct </span>{
-<a name="l00062"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o0">00062</a>     u16 modCode;            
-<a name="l00063"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o1">00063</a>     u16 revision;           
-<a name="l00064"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o2">00064</a>     <span class="keywordtype">int</span> instance;           
-<a name="l00065"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o3">00065</a>     <span class="keywordtype">int</span> irq;                
-<a name="l00066"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o4">00066</a>     <span class="keywordtype">int</span> bar;                
-<a name="l00067"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o5">00067</a>     u32 offset;             
-<a name="l00068"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o6">00068</a>     <span class="keywordtype">void</span> *phys;             
-00070     <span class="comment">/* for pnp access routines only! */</span>
-<a name="l00071"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o7">00071</a>     <span class="keywordtype">int</span> chamNum;            
-<a name="l00072"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o8">00072</a>     <span class="keyword">struct </span>pci_dev *pdev;   
-<a name="l00074"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o9">00074</a>     <span class="keywordtype">void</span> *driver_data;      
-<a name="l00075"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o10">00075</a>     <span class="keyword">struct </span><a class="code" href="structCHAMELEON__DRIVER__T.html">CHAMELEON_DRIVER_T</a> *driver; 
-00077 } <a class="code" href="structCHAMELEON__UNIT__T.html">CHAMELEON_UNIT_T</a>;
-00078 
-<a name="l00081"></a><a class="code" href="structCHAMELEON__DRIVER__T.html">00081</a> <span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structCHAMELEON__DRIVER__T.html">CHAMELEON_DRIVER_T</a> {
-<a name="l00082"></a><a class="code" href="structCHAMELEON__DRIVER__T.html#o0">00082</a>     <span class="keyword">struct </span>list_head node;  
-<a name="l00083"></a><a class="code" href="structCHAMELEON__DRIVER__T.html#o1">00083</a>     <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="structCHAMELEON__DRIVER__T.html#o1">name</a>;       
-<a name="l00084"></a><a class="code" href="structCHAMELEON__DRIVER__T.html#o2">00084</a>     <span class="keyword">const</span> u16 *<a class="code" href="structCHAMELEON__DRIVER__T.html#o2">modCodeArr</a>;  
-00087     int (*probe)( CHAMELEON_UNIT_T *unit );
-00089     int (*remove)( CHAMELEON_UNIT_T *unit ); 
-00090 } <a class="code" href="structCHAMELEON__DRIVER__T.html">CHAMELEON_DRIVER_T</a>;
-00091 
-00092 
-<a name="l00095"></a><a class="code" href="structCHAMELEONV2__UNIT__T.html">00095</a> <span class="keyword">typedef</span> <span class="keyword">struct </span>{
-<a name="l00096"></a><a class="code" href="structCHAMELEONV2__UNIT__T.html#o0">00096</a>     <a class="code" href="structCHAMELEONV2__UNIT.html">CHAMELEONV2_UNIT</a> unitFpga;           
-00097     <span class="comment">/* for pnp access routines only! */</span>
-<a name="l00098"></a><a class="code" href="structCHAMELEONV2__UNIT__T.html#o1">00098</a>     <span class="keywordtype">int</span> chamNum;                         
-<a name="l00099"></a><a class="code" href="structCHAMELEONV2__UNIT__T.html#o2">00099</a>     <span class="keyword">struct </span>pci_dev *pdev;                
-<a name="l00101"></a><a class="code" href="structCHAMELEONV2__UNIT__T.html#o3">00101</a>     <span class="keywordtype">void</span> *driver_data;                   
-<a name="l00102"></a><a class="code" href="structCHAMELEONV2__UNIT__T.html#o4">00102</a>     <span class="keyword">struct </span><a class="code" href="structCHAMELEONV2__DRIVER__T.html">CHAMELEONV2_DRIVER_T</a> *driver; 
-00103 } <a class="code" href="structCHAMELEONV2__UNIT__T.html">CHAMELEONV2_UNIT_T</a>;
-00104 
-<a name="l00107"></a><a class="code" href="structCHAMELEONV2__DRIVER__T.html">00107</a> <span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structCHAMELEONV2__DRIVER__T.html">CHAMELEONV2_DRIVER_T</a> {
-<a name="l00108"></a><a class="code" href="structCHAMELEONV2__DRIVER__T.html#o0">00108</a>     <span class="keyword">struct </span>list_head node;  
-<a name="l00109"></a><a class="code" href="structCHAMELEONV2__DRIVER__T.html#o1">00109</a>     <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="structCHAMELEONV2__DRIVER__T.html#o1">name</a>;       
-<a name="l00110"></a><a class="code" href="structCHAMELEONV2__DRIVER__T.html#o2">00110</a>     <span class="keyword">const</span> u16 *<a class="code" href="structCHAMELEONV2__DRIVER__T.html#o2">devIdArr</a>;    
-00113     int (*probe)( CHAMELEONV2_UNIT_T *unit );
-00115     int (*remove)( CHAMELEONV2_UNIT_T *unit ); 
-00116 } <a class="code" href="structCHAMELEONV2__DRIVER__T.html">CHAMELEONV2_DRIVER_T</a>;
-00117 
-00118 <span class="comment">/*--------------------------------------+</span>
-00119 <span class="comment">|   PROTOTYPES                          |</span>
-00120 <span class="comment">+--------------------------------------*/</span>
-00121 <span class="comment">/* early access interface */</span>
-00122 <span class="preprocessor">#ifdef _ASM_PCI_BRIDGE_H</span>
-00123 <span class="preprocessor"></span><span class="keywordtype">int</span> men_chameleon_early_init( <span class="keyword">struct</span> pci_controller *hose, <span class="keywordtype">int</span> devNo);
-00124 <span class="preprocessor">#endif</span>
-00125 <span class="preprocessor"></span>
-00126 <span class="keywordtype">int</span> men_chameleon_early_unit_ident( <span class="keywordtype">int</span> idx, CHAMELEON_UNIT_T *info );
-00127 <span class="keywordtype">int</span> men_chameleon_early_unit_find( <span class="keywordtype">int</span> modCode, <span class="keywordtype">int</span> instance, 
-00128                                    CHAMELEON_UNIT_T *info);
+00049 
+<a name="l00052"></a><a class="code" href="structCHAMELEON__UNIT__T.html">00052</a> <span class="keyword">typedef</span> <span class="keyword">struct </span>{
+<a name="l00053"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o0">00053</a>     u16 modCode;            
+<a name="l00054"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o1">00054</a>     u16 revision;           
+<a name="l00055"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o2">00055</a>     <span class="keywordtype">int</span> instance;           
+<a name="l00056"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o3">00056</a>     <span class="keywordtype">int</span> irq;                
+<a name="l00057"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o4">00057</a>     <span class="keywordtype">int</span> bar;                
+<a name="l00058"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o5">00058</a>     u32 offset;             
+<a name="l00059"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o6">00059</a>     <span class="keywordtype">void</span> *phys;             
+00061     <span class="comment">/* for pnp access routines only! */</span>
+<a name="l00062"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o7">00062</a>     <span class="keywordtype">int</span> chamNum;            
+<a name="l00063"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o8">00063</a>     <span class="keyword">struct </span>pci_dev *pdev;   
+<a name="l00065"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o9">00065</a>     <span class="keywordtype">void</span> *driver_data;      
+<a name="l00066"></a><a class="code" href="structCHAMELEON__UNIT__T.html#o10">00066</a>     <span class="keyword">struct </span><a class="code" href="structCHAMELEON__DRIVER__T.html">CHAMELEON_DRIVER_T</a> *driver; 
+00068 } <a class="code" href="structCHAMELEON__UNIT__T.html">CHAMELEON_UNIT_T</a>;
+00069 
+<a name="l00072"></a><a class="code" href="structCHAMELEON__DRIVER__T.html">00072</a> <span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structCHAMELEON__DRIVER__T.html">CHAMELEON_DRIVER_T</a> {
+<a name="l00073"></a><a class="code" href="structCHAMELEON__DRIVER__T.html#o0">00073</a>     <span class="keyword">struct </span>list_head node;  
+<a name="l00074"></a><a class="code" href="structCHAMELEON__DRIVER__T.html#o1">00074</a>     <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="structCHAMELEON__DRIVER__T.html#o1">name</a>;       
+<a name="l00075"></a><a class="code" href="structCHAMELEON__DRIVER__T.html#o2">00075</a>     <span class="keyword">const</span> u16 *<a class="code" href="structCHAMELEON__DRIVER__T.html#o2">modCodeArr</a>;  
+00078     int (*probe)( CHAMELEON_UNIT_T *unit );
+00080     int (*remove)( CHAMELEON_UNIT_T *unit ); 
+00081 } <a class="code" href="structCHAMELEON__DRIVER__T.html">CHAMELEON_DRIVER_T</a>;
+00082 
+00083 
+<a name="l00086"></a><a class="code" href="structCHAMELEONV2__UNIT__T.html">00086</a> <span class="keyword">typedef</span> <span class="keyword">struct </span>{
+<a name="l00087"></a><a class="code" href="structCHAMELEONV2__UNIT__T.html#o0">00087</a>     <a class="code" href="structCHAMELEONV2__UNIT.html">CHAMELEONV2_UNIT</a> unitFpga;           
+00088     <span class="comment">/* for pnp access routines only! */</span>
+<a name="l00089"></a><a class="code" href="structCHAMELEONV2__UNIT__T.html#o1">00089</a>     <span class="keywordtype">int</span> chamNum;                         
+<a name="l00090"></a><a class="code" href="structCHAMELEONV2__UNIT__T.html#o2">00090</a>     <span class="keyword">struct </span>pci_dev *pdev;                
+<a name="l00092"></a><a class="code" href="structCHAMELEONV2__UNIT__T.html#o3">00092</a>     <span class="keywordtype">void</span> *driver_data;                   
+<a name="l00093"></a><a class="code" href="structCHAMELEONV2__UNIT__T.html#o4">00093</a>     <span class="keyword">struct </span><a class="code" href="structCHAMELEONV2__DRIVER__T.html">CHAMELEONV2_DRIVER_T</a> *driver; 
+00094 } <a class="code" href="structCHAMELEONV2__UNIT__T.html">CHAMELEONV2_UNIT_T</a>;
+00095 
+<a name="l00098"></a><a class="code" href="structCHAMELEONV2__DRIVER__T.html">00098</a> <span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structCHAMELEONV2__DRIVER__T.html">CHAMELEONV2_DRIVER_T</a> {
+<a name="l00099"></a><a class="code" href="structCHAMELEONV2__DRIVER__T.html#o0">00099</a>     <span class="keyword">struct </span>list_head node;  
+<a name="l00100"></a><a class="code" href="structCHAMELEONV2__DRIVER__T.html#o1">00100</a>     <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="structCHAMELEONV2__DRIVER__T.html#o1">name</a>;       
+<a name="l00101"></a><a class="code" href="structCHAMELEONV2__DRIVER__T.html#o2">00101</a>     <span class="keyword">const</span> u16 *<a class="code" href="structCHAMELEONV2__DRIVER__T.html#o2">devIdArr</a>;    
+00104     int (*probe)( CHAMELEONV2_UNIT_T *unit );
+00106     int (*remove)( CHAMELEONV2_UNIT_T *unit ); 
+00107 } <a class="code" href="structCHAMELEONV2__DRIVER__T.html">CHAMELEONV2_DRIVER_T</a>;
+00108 
+00109 <span class="comment">/*--------------------------------------+</span>
+00110 <span class="comment">|   PROTOTYPES                          |</span>
+00111 <span class="comment">+--------------------------------------*/</span>
+00112 <span class="comment">/* early access interface */</span>
+00113 <span class="preprocessor">#ifdef _ASM_PCI_BRIDGE_H</span>
+00114 <span class="preprocessor"></span><span class="keywordtype">int</span> men_chameleon_early_init( <span class="keyword">struct</span> pci_controller *hose, <span class="keywordtype">int</span> devNo);
+00115 <span class="preprocessor">#endif</span>
+00116 <span class="preprocessor"></span>
+00117 <span class="keywordtype">int</span> men_chameleon_early_unit_ident( <span class="keywordtype">int</span> idx, CHAMELEON_UNIT_T *info );
+00118 <span class="keywordtype">int</span> men_chameleon_early_unit_find( <span class="keywordtype">int</span> modCode, <span class="keywordtype">int</span> instance, 
+00119                                    CHAMELEON_UNIT_T *info);
+00120 
+00121 <span class="comment">/* Plug&amp;Play interface */</span>
+00122 
+00123 <span class="keyword">extern</span> <span class="keywordtype">int</span> men_chameleon_init(<span class="keywordtype">void</span>);
+00124 <span class="keywordtype">int</span> <a class="code" href="men__chameleon_8c.html#a49">men_chameleon_register_driver</a>( <a class="code" href="structCHAMELEON__DRIVER__T.html">CHAMELEON_DRIVER_T</a> *drv );
+00125 <span class="keywordtype">void</span> <a class="code" href="men__chameleon_8c.html#a51">men_chameleon_unregister_driver</a>( <a class="code" href="structCHAMELEON__DRIVER__T.html">CHAMELEON_DRIVER_T</a> *drv );
+00126 
+00127 <span class="comment">/* Non-Plug&amp;Play interface */</span>
+00128 <span class="keywordtype">int</span> <a class="code" href="men__chameleon_8c.html#a53">men_chameleon_unit_find</a>(<span class="keywordtype">int</span> modCode, <span class="keywordtype">int</span> idx, CHAMELEON_UNIT_T *unit);
 00129 
-00130 <span class="comment">/* Plug&amp;Play interface */</span>
-00131 
-00132 <span class="keyword">extern</span> <span class="keywordtype">int</span> men_chameleon_init(<span class="keywordtype">void</span>);
-00133 <span class="keywordtype">int</span> <a class="code" href="men__chameleon_8c.html#a49">men_chameleon_register_driver</a>( <a class="code" href="structCHAMELEON__DRIVER__T.html">CHAMELEON_DRIVER_T</a> *drv );
-00134 <span class="keywordtype">void</span> <a class="code" href="men__chameleon_8c.html#a51">men_chameleon_unregister_driver</a>( <a class="code" href="structCHAMELEON__DRIVER__T.html">CHAMELEON_DRIVER_T</a> *drv );
+00130 <span class="keywordtype">int</span> <a class="code" href="men__chameleon_8c.html#a50">men_chameleonV2_register_driver</a>( <a class="code" href="structCHAMELEONV2__DRIVER__T.html">CHAMELEONV2_DRIVER_T</a> *drv );
+00131 <span class="keywordtype">void</span> <a class="code" href="men__chameleon_8c.html#a52">men_chameleonV2_unregister_driver</a>( <a class="code" href="structCHAMELEONV2__DRIVER__T.html">CHAMELEONV2_DRIVER_T</a> *drv );
+00132 
+00133 <span class="comment">/* Non-Plug&amp;Play interface */</span>
+00134 <span class="keywordtype">int</span> <a class="code" href="men__chameleon_8c.html#a54">men_chameleonV2_unit_find</a>(<span class="keywordtype">int</span> devId, <span class="keywordtype">int</span> idx, CHAMELEONV2_UNIT_T *unit);
 00135 
-00136 <span class="comment">/* Non-Plug&amp;Play interface */</span>
-00137 <span class="keywordtype">int</span> <a class="code" href="men__chameleon_8c.html#a53">men_chameleon_unit_find</a>(<span class="keywordtype">int</span> modCode, <span class="keywordtype">int</span> idx, CHAMELEON_UNIT_T *unit);
-00138 
-00139 <span class="keywordtype">int</span> <a class="code" href="men__chameleon_8c.html#a50">men_chameleonV2_register_driver</a>( <a class="code" href="structCHAMELEONV2__DRIVER__T.html">CHAMELEONV2_DRIVER_T</a> *drv );
-00140 <span class="keywordtype">void</span> <a class="code" href="men__chameleon_8c.html#a52">men_chameleonV2_unregister_driver</a>( <a class="code" href="structCHAMELEONV2__DRIVER__T.html">CHAMELEONV2_DRIVER_T</a> *drv );
-00141 
-00142 <span class="comment">/* Non-Plug&amp;Play interface */</span>
-00143 <span class="keywordtype">int</span> <a class="code" href="men__chameleon_8c.html#a54">men_chameleonV2_unit_find</a>(<span class="keywordtype">int</span> devId, <span class="keywordtype">int</span> idx, CHAMELEONV2_UNIT_T *unit);
-00144 
-00145 <span class="preprocessor">#endif  </span><span class="comment">/* _MEN_CHAMELEON_H */</span>
-00146 
+00136 <span class="preprocessor">#endif  </span><span class="comment">/* _MEN_CHAMELEON_H */</span>
+00137 
 </pre></div>
 	</div>
 </div>
@@ -145,8 +136,7 @@
 <div class="footer">
 <!-- Footer -->
 	<p class="footer">
-	Generated for Chameleon System Unit Driver using <a href="http://www.doxygen.org">doxygen</a>.<br>
-	Copyright &copy; 2019 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
+	Generated for Chameleon System Unit Driver using <a href="http://www.doxygen.org">doxygen</a>. All Rights Reserved.
 	</p>
 </div>
 

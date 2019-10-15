@@ -126,14 +126,13 @@ int&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="men__ch
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 MEN Chameleon FPGA driver/device registration. 
 <p>
-<dl compact><dt><b>Author:</b></dt><dd>kp/ub/ts <dl compact><dt><b>Date</b></dt><dd>2013/08/29 16:49:09 </dd></dl>
-<dl compact><dt><b>Revision</b></dt><dd>1.34 </dd></dl>
-</dd></dl>
+<dl compact><dt><b>Author:</b></dt><dd>kp/ub/ts</dd></dl>
 <p>
 Derived from <a class="el" href="men__chameleon_8c.html">men_chameleon.c</a> contained in EM04A Linux BSP by Klaus Popp.<p>
 Registers each chameleon FPGA found to the PCI subsystem. Provides a driver registration/probe interface similar to the PCI subsystem.<p>
 Module parameters: usePciIrq : if 1, use the IRQ from the PCI config table for all devices in the FPGA - default if 0 use the IRQ from the Chameleon table. Can be different for every device. Currently makes sense with EM04/A only.<p>
-Switches: MEN_CHAMV2_IRQ_OFFSET - needed for onboard chameleon FPGAs with IRQs connected to external CPU IRQs instead of PCI interrupt.<hr><h2>Function Documentation</h2>
+Switches: MEN_CHAMV2_IRQ_OFFSET - needed for onboard chameleon FPGAs with IRQs connected to external CPU IRQs instead of PCI interrupt.<p>
+--------------------------------------------------------------------------- Copyright (c) 2004-2019, MEN Mikro Elektronik GmbH<hr><h2>Function Documentation</h2>
 <a name="a55" doxytag="men_chameleon.c::cham_sysfs_read"></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
@@ -591,8 +590,7 @@ Gets called (during execution of pci_register_driver for already existing device
 <div class="footer">
 <!-- Footer -->
 	<p class="footer">
-	Generated for Chameleon System Unit Driver using <a href="http://www.doxygen.org">doxygen</a>.<br>
-	Copyright &copy; 2019 <a href="http://www.men.de">MEN Mikro Elektronik GmbH</a>. All Rights Reserved.
+	Generated for Chameleon System Unit Driver using <a href="http://www.doxygen.org">doxygen</a>. All Rights Reserved.
 	</p>
 </div>
 

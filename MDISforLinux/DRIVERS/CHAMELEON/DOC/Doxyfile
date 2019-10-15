@@ -1,7 +1,7 @@
 @INCLUDE_PATH = $(MEN_DOXYGENTMPL)
 @INCLUDE = DoxyfileCommon
 
-#MDIS_COMMIT=b5b11c63014b9e397a494996165adbf1d51e5f15
+#MDIS_COMMIT=1b7f17ab7a62a3be1ec2fa640604cf58ab0438cd
 
 PROJECT_NAME           = "Chameleon System Unit Driver"
 INPUT                  = \
