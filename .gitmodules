@@ -316,9 +316,9 @@
 	branch = jpe-dev
 [submodule "MDISforLinux/LIBSRC/DBG"]
 	path = MDISforLinux/LIBSRC/DBG
-	url = ../mdis_libsrc_dbg
+	url = ../mdis_libsrc_dbg_linux
 	branch = jpe-dev
 [submodule "MDISforLinux/LIBSRC/OSS"]
 	path = MDISforLinux/LIBSRC/OSS
-	url = ../mdis_libsrc_oss
+	url = ../mdis_libsrc_oss_linux
 	branch = jpe-dev
