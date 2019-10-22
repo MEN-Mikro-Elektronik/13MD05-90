@@ -72,7 +72,7 @@ while test $# -gt 0 ; do
                 shift
                 install_only="1"
                 echo "Install without asking:"
-                echo "- install sources into /opt/menlinux"
+                echo "- install sources into provided path (default /opt/menlinux)"
                 echo "- do not scan the hardware"
                 ;;
         -y|--yes|--assume-yes)
@@ -164,7 +164,7 @@ make_history_script() {
         GIT_VERSION=$(which git 2> /dev/null)
 
         if [ -d "${CWD}/.git" ] && [ "${GIT_VERSION}" != "" ]; then
-                echo "Removing old history entry ..."
+                echo "Removing old history entry ${MDIS_HISTORY_PATH}"
                 rm -rf ${MDIS_HISTORY_PATH} &> /dev/null
                 result=$?
                 if [ ${result} -ne 0 ]; then
@@ -230,12 +230,6 @@ make_history_script() {
 #       `       1 - error (insufficient rights/others)
 create_installation_directory(){
         if [ ! -d "${MENLINUX_ROOT}" ]; then
-                # check if /opt writeable
-                if [ ! -w "${OPT}" ]; then
-                        show_insufficient_rights
-                        return 1
-                fi
-                # create MENLINUX
                 echo "Creating directory ${MENLINUX_ROOT}... "
                 mkdir -p ${MENLINUX_ROOT}
                 result=$?
@@ -264,17 +258,9 @@ create_installation_directory(){
 # returns :     0 - HISTORY is available
 #       `       1 - HISTORY is unavailable
 overwrite_installation_directory(){
-        echo "Checking if ${OPT} exists... "
-        if [ ! -d "${OPT}" ]; then
-                # /opt doesn't exists
-                echo >&2 "*** ${OPT} doesn't exists. Please create and then call ${this} again"
-                return 1
-        fi
-
         echo "Checking if ${MENLINUX_ROOT} exists... "
-        # ask wether to overwrite /opt/menlinux directory
+        # ask whether to overwrite install directory
         if [ -d "${MENLINUX_ROOT}" ]; then
-                echo
                 echo "Directory ${MENLINUX_ROOT} already exists."
                 if [ ${install_only} -eq "0" ] && [ ${assume_yes} -eq "0" ]; then
                         get_ynq_answer "Overwrite existing files?"
@@ -533,7 +519,8 @@ run=true
 state="OverwriteExistingSources"
 
 # Check if this script is running with root priviligies
-if [ "$EUID" -ne 0 ]; then
+# root priviligies are required while scanning the hardware
+if [ ${install_only} -eq "0" ] && [ $EUID -ne "0" ]; then
         show_insufficient_rights
         show_end_message
         exit
