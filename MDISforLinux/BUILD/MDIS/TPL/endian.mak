@@ -5,24 +5,9 @@
 # run the target's preprocessor on a dummy source file that includes
 # endian.h
 #
-#
-# $Log: endian.mak,v $
-# Revision 2.4  2011/02/11 16:18:07  CRuff
-# R: typo (additional space) caused build errors
-# M: removed space character
-#
-# Revision 2.3  2007/12/10 12:49:59  ts
-# enhanced endianess detection for descgen byteorder to generate proper
-# byte endings on cygwin (Windows) environments
-#
-# 2.2  01.06.2006 11:38:55 by ts
-# use $$NF instead $$3 to ensure 'big' or 'little' is catched
-#
-# 2.1  09.06.2004 11:13:00 by kp
-# Initial Revision
-#
-# $(warning - HOST_OS = $(HOST_OS) ----)
-
+#-----------------------------------------------------------------------------
+#   Copyright (c) 2004-2019, MEN Mikro Elektronik GmbH
+#***************************************************************************/
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 2 of the License, or
