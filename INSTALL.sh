@@ -336,9 +336,9 @@ copy_sources_into_installation_directory(){
                 show_insufficient_rights
                 return 1
         fi
-        chmod 775 BIN/fpga_load 2> /dev/null
-        chmod 775 BIN/mdiswiz 2> /dev/null
-        chmod 775 BIN/mm_ident 2> /dev/null
+        chmod 777 BIN/fpga_load 2> /dev/null
+        chmod 777 BIN/mdiswiz 2> /dev/null
+        chmod 777 BIN/mm_ident 2> /dev/null
         result=$?
         if [ ${result} -ne 0 ]; then
                 show_insufficient_rights
