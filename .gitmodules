@@ -322,3 +322,7 @@
 	path = MDISforLinux/LIBSRC/OSS
 	url = ../mdis_libsrc_oss_linux
 	branch = jpe-dev
+[submodule "13Z072-06"]
+	path = 13Z072-06
+	url = ../13Z072-06.git
+	branch = jpe-dev
