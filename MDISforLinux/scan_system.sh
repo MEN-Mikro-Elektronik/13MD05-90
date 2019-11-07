@@ -830,6 +830,7 @@ function scan_for_pci_devs {
                 count_usb_devs=0
                 state_check_f223=0
                 if [ "$count_instance_f223" == "1" ]; then
+                    G_makefileBbisDriver+=" PCI/DRIVER/COM/driver.mak"
                     G_makefileLlDriver+=" PI7C9_GPIO/DRIVER/COM/driver.mak"
                     G_makefileLlTool+=" PI7C9_GPIO/EXAMPLE/PI7C9_GPIO_SIMP/COM/program.mak"
                 fi
