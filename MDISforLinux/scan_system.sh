@@ -1145,6 +1145,8 @@ function create_makefile {
     local LIN_DISTRO_NAME="$(grep -oPs "(?<=^NAME=\")[^\"]+(?=\")" /etc/os-release)"
     if [ "${LIN_DISTRO_NAME}" == "CentOS Linux" ]; then
         LIB_INSTALL_DIR="/usr/lib"
+    elif [[ "${LIN_DISTRO_NAME}" =~ Yocto ]]; then
+        LIB_INSTALL_DIR="/usr/lib"
     fi
     local lib_dir="$(echo "${LIB_INSTALL_DIR}" | sed "s/\//@/g")"
     sed -i.bak "s/SCAN_LIB_INSTALL_DIR/${lib_dir}/g" $TMP_MAKE_FILE
