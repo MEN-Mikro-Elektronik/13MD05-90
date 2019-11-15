@@ -1,5 +1,55 @@
 # Changelog for 13MD05-90 "MEN MDIS for Linux System Package plus lowlevel drivers"
 
+## [13MD05-90_02_01] - 2019-12-13
+
+### Added
+- Automatic device node creating/destroying on VME4L module initialization/clean up
+- Automated M-Module detection in scanner script
+- hwbug as submodule
+- Version info to kernel submodules
+- Generating commit history for submodules
+- 13Z050-06 submodule
+- 13Z073-06 submodule
+- 13Z075-06 submodule
+- Automated IP core detection in scanner script
+- 13M065-07 submodule
+- VME4L_API as submodule
+- UTI as submodule
+- OSS as submodule
+- DBG as submodule
+- 13Z072-06 submodule
+- End-of-line normalization in text files
+
+
+### Changed
+- MDIS Wizard binary update
+- Renamed installation script  INSTALL to INSTALL.sh
+- Set default build mode for kernel modules to 'nodbg'
+- mm_ident and fpga_load tools compiled from sources when needed
+- Improved scanner script
+- Updated documentation
+
+
+### Removed
+13M065-06 submodue
+fpga_load 64-bit binary
+mdis_libsrc_smb2_com submodule
+mdis_drivers_bbis_smbpci_com
+
+
+### Fixed
+- Creation of sysfs directories
+- File permissions
+- Installation script
+- Scanner script
+- Warnings during compilation
+- IO mapping support in hwbug
+- Documentation
+- Copyrights
+- Licenses
+- Signal handling in OSS library
+
+
 ## [13MD05-90_02_00] - 2019-03-04
 
 ### Added
