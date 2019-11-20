@@ -788,23 +788,28 @@ function enable_memory_regions {
         local pciSubVend="$(echo ${line} | awk '{print $8}')"
 	    local memPciDevDisable="$(lspci -s ${pciBusHex}:${PciDevNrHex}.${pciDevFunHex} -v | grep 'Memory at.*disabled' | wc -l )"
 
-	    if [ "${pciVend}" == "0x1172" ] && [ "${pciDevId}" == "0x203d" ] && [ "${pciSubVend}" == "0x00b9" ] && [ ${memPciDevDisable} > 0 ]; then
-		    echo "Found d203 G204 board with 1 M-Module A24 with disabled mem"
-            echo "Enable memory via setpci cmd"
-            setpci -s ${pciBusHex}:${pciDevNrHex}.${pciDevFunHex} COMMAND=0x3
-	    fi
-
-	    if [ "${pciVend}" == "0x1172" ] && [ "${pciDevId}" == "0xd203" ] && [ "${pciSubVend}" == "0xff00" ] && [ ${memPciDevDisable} > 0 ]; then
-		    echo "Found d203 F204/F205 board with 1 or 2 M-Modules A08 with disabled mem"
-            echo "Enable memory via setpci cmd"
-            setpci -s ${pciBusHex}:${pciDevNrHex}.${pciDevFunHex} COMMAND=0x3
-	    fi
-
-	    if [ "${pciVend}" == "0x1172" ] && [ "${pciDevId}" == "0x203d" ] && [ "${pciSubVend}" == "0xff00" ] && [ ${memPciDevDisable} > 0 ]; then
-		    echo "Found d203 F204/F205 board with 1 or 2 M-Modules A24 with disabled mem"
-            echo "Enable memory via setpci cmd"
-            setpci -s ${pciBusHex}:${pciDevNrHex}.${pciDevFunHex} COMMAND=0x3
-	    fi
+        if [ "${memPciDevDisable}" -gt 0 ]; then
+	        if [ "${pciVend}" == "0x1172" ] && [ "${pciDevId}" == "0x203d" ] && [ "${pciSubVend}" == "0x00b9" ]; then
+		        echo "Found d203 G204 board with 1 M-Module A24 with disabled mem"
+                echo "Enable memory via setpci cmd"
+                setpci -s ${pciBusHex}:${pciDevNrHex}.${pciDevFunHex} COMMAND=0x3
+	        elif [ "${pciVend}" == "0x1172" ] && [ "${pciDevId}" == "0xd203" ] && [ "${pciSubVend}" == "0xff00" ]; then
+		        echo "Found d203 F204/F205 board with 1 or 2 M-Modules A08 with disabled memory region"
+                echo "Enable memory via setpci cmd"
+                setpci -s ${pciBusHex}:${pciDevNrHex}.${pciDevFunHex} COMMAND=0x3
+	        elif [ "${pciVend}" == "0x1172" ] && [ "${pciDevId}" == "0x203d" ] && [ "${pciSubVend}" == "0xff00" ]; then
+		        echo "Found d203 F204/F205 board with 1 or 2 M-Modules A24 with disabled memory region"
+                echo "Enable memory via setpci cmd"
+                setpci -s ${pciBusHex}:${pciDevNrHex}.${pciDevFunHex} COMMAND=0x3
+            elif [ "${pciVend}" == "0x1172" ] && [ "${pciDevId}" == "0x4d45" ] || [ "${pciVend}" == "0x1a88" ]; then
+		        echo "Found F2xx/G2xx carrier with disabled memory region"
+                echo "Enable memory via setpci cmd"
+                setpci -s ${pciBusHex}:${pciDevNrHex}.${pciDevFunHex} COMMAND=0x3
+            else
+		        echo "Memory disabled on device ${pciBusHex}:${pciDevNrHex}.${pciDevFunHex}"
+                echo "This is not valid board to enable memory regions, skip .."
+            fi
+        fi
     done 4< <(tail -n "+3" ${TMP_PCIDEVS})
 }
 
@@ -2571,9 +2576,9 @@ else
 
     # add the SMB2 userland API too
     G_makefileUsrLibs+=" SMB2_API/COM/library.mak"
-    echo " Check if all required memory regions are enabled"
+    echo "Check if all required memory regions are enabled"
     enable_memory_regions
-    echo " Scanning for MEN PCI devices: "
+    echo "Scanning for MEN PCI devices: "
     scan_for_pci_devs $G_primPciPath
     # display mcb blacklist warning if fpga is in use 
     if [ ! "${count_instance_f2xx}" == "0" ]; then
