@@ -264,19 +264,23 @@ create_installation_directory(){
 }
 
 #
-# Function creates/overwrites HISTORY dir when .git is accessible
+# Function check if MDIS Sources are available in system, and ask user
+# to overwrite, proceed or exit
 #
-# returns :     0 - HISTORY is available
-#       `       1 - HISTORY is unavailable
+# returns :     0 - Overwrite MDIS sources
+#               1 - proceed without overwriting files
+#               2 - force exit
+#
 overwrite_installation_directory(){
         echo "Checking if ${MENLINUX_ROOT} exists... "
-        # ask whether to overwrite install directory
+        # ask to overwrite /opt/menlinux directory
         if [ -d "${MENLINUX_ROOT}" ]; then
                 echo "Directory ${MENLINUX_ROOT} already exists."
                 if [ ${install_only} -eq "0" ] && [ ${assume_yes} -eq "0" ]; then
                         get_ynq_answer "Overwrite existing files?"
                         case $? in
-                        1 | 2) echo "*** Aborted by user."; return 1;;
+                        1) echo "Do not overwrite, proceed"; return 1;;
+                        2) echo "*** Aborted by user."; return 2;;
                         esac
                 fi
         fi
@@ -514,7 +518,7 @@ echo "__________________________________________________________________________
 echo "                                                                                "
 
 # User Questions
-readonly ASK_INSTALL_MDIS_SOURCES="Would you like to proceed, and install MDIS sources into ${MENLINUX_ROOT}?"
+readonly ASK_INSTALL_MDIS_SOURCES="Would you like to install MDIS sources into ${MENLINUX_ROOT}?"
 
 readonly ASK_SCAN_TARGET_SYSTEM="Would you like to create an MDIS configuration for your system by scanning your system's hardware?\n
 Note: This make only sense at your MEN target system!"
@@ -546,7 +550,10 @@ fi
 if [ ${install_only} -eq "0" ] && [ ${assume_yes} -eq "0" ]; then
     get_ynq_answer "${ASK_INSTALL_MDIS_SOURCES}"
     case $? in
-        1 | 2) echo "*** Aborted by user."; run=false;;
+        1) echo "proceed to scan..."
+           state="CheckTargetSystem";;
+        2) echo "*** Aborted by user."
+           run=false;;
     esac
 fi
 
@@ -554,12 +561,12 @@ while ${run}; do
         case ${state} in
         OverwriteExistingSources)
                 overwrite_installation_directory
-                result=$?
-                if [ ${result} -ne 0 ]; then
-                        state="Break_Failed"
-                        break
-                fi
-                state="CreateInstallationDir";;
+                case $? in
+                    0) state="CreateInstallationDir";;
+                    1) state="CheckTargetSystem";;
+                    2) state="Break_Failed";;
+                esac
+                ;;
         CreateInstallationDir)
                 create_installation_directory
                 result=$?
