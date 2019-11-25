@@ -787,30 +787,47 @@ function enable_memory_regions {
 		local pciDevId="$(echo ${line} | awk '{print $7}')"
 		local pciSubVend="$(echo ${line} | awk '{print $8}')"
 		local memPciDevDisable="$(lspci -s ${pciBusHex}:${PciDevNrHex}.${pciDevFunHex} -v | grep 'Memory at.*disabled' | wc -l )"
-
 		if [ "${memPciDevDisable}" -gt 0 ]; then
 			if [ "${pciVend}" == "0x1172" ] && [ "${pciDevId}" == "0x203d" ] && [ "${pciSubVend}" == "0x00b9" ]; then
-				echo "Found d203 G204 board with 1 M-Module A24 with disabled mem"
-				echo "Enable memory via setpci cmd"
-				setpci -s ${pciBusHex}:${pciDevNrHex}.${pciDevFunHex} COMMAND=0x3
+				echo "Found d203 G204 board with 1 M-Module A24 with disabled memory region(s)"
+				set_command_register "${pciBusHex}" "${pciDevNrHex}" "${pciDevFunHex}" "3"
 			elif [ "${pciVend}" == "0x1172" ] && [ "${pciDevId}" == "0xd203" ] && [ "${pciSubVend}" == "0xff00" ]; then
-				echo "Found d203 F204/F205 board with 1 or 2 M-Modules A08 with disabled memory region"
-				echo "Enable memory via setpci cmd"
-				setpci -s ${pciBusHex}:${pciDevNrHex}.${pciDevFunHex} COMMAND=0x3
+				echo "Found d203 F204/F205 board with 1 or 2 M-Modules A08 with disabled memory region(s)"
+				set_command_register "${pciBusHex}" "${pciDevNrHex}" "${pciDevFunHex}" "3"
 			elif [ "${pciVend}" == "0x1172" ] && [ "${pciDevId}" == "0x203d" ] && [ "${pciSubVend}" == "0xff00" ]; then
-				echo "Found d203 F204/F205 board with 1 or 2 M-Modules A24 with disabled memory region"
-				echo "Enable memory via setpci cmd"
-				setpci -s ${pciBusHex}:${pciDevNrHex}.${pciDevFunHex} COMMAND=0x3
+				echo "Found d203 F204/F205 board with 1 or 2 M-Modules A24 with disabled memory region(s)"
+				set_command_register "${pciBusHex}" "${pciDevNrHex}" "${pciDevFunHex}" "3"
 			elif [ "${pciVend}" == "0x1172" ] && [ "${pciDevId}" == "0x4d45" ] || [ "${pciVend}" == "0x1a88" ]; then
-				echo "Found F2xx/G2xx carrier with disabled memory region"
-				echo "Enable memory via setpci cmd"
-				setpci -s ${pciBusHex}:${pciDevNrHex}.${pciDevFunHex} COMMAND=0x3
+				echo "Found F2xx/G2xx carrier with disabled memory region(s)"
+				set_command_register "${pciBusHex}" "${pciDevNrHex}" "${pciDevFunHex}" "3"
 			else
 				echo "Memory disabled on device ${pciBusHex}:${pciDevNrHex}.${pciDevFunHex}"
 				echo "This is not valid board to enable memory regions, skip .."
 			fi
 		fi
 	done 4< <(tail -n "+3" ${TMP_PCIDEVS})
+}
+
+############################################################################
+# Set COMMAND register bits.
+# Function reads current COMMAND register value and sets specified bits
+# Bits that are set don't change.
+#
+# parameters:
+# $1    PCI_BUS_NR (Hex)
+# $2    PCI_DEV_NR (Hex)
+# $3    PCI_DEV_FUN_NR (Hex)
+# $4    COMMAND register value(Hex)
+#
+function set_command_register {
+	local pciBusHex=${1}
+	local pciDevNrHex=${2}
+	local pciDevFunHex=${3}
+	local pciCommandRegBits=${4}
+	echo "Enabling memory via setpci cmd:"
+	pciCommandRegValue="$(printf "%x" $(setpci -s ${pciBusHex}:${pciDevNrHex}.${pciDevFunHex} COMMAND))"
+	pciCommandRegValue="$(( 0x${pciCommandRegValue} | 0x${pciCommandRegBits} ))"
+	setpci -s ${pciBusHex}:${pciDevNrHex}.${pciDevFunHex} COMMAND=0x${pciCommandRegValue}
 }
 
 ############################################################################
