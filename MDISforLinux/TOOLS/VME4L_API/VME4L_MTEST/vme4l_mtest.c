@@ -11,7 +11,7 @@
  */
 /*
  *---------------------------------------------------------------------------
- * Copyright (c) 2003-2019, MEN Mikro Elektronik GmbH
+ * Copyright 2003-2019, MEN Mikro Elektronik GmbH
  ******************************************************************************/
 /*
  * This program is free software: you can redistribute it and/or modify
@@ -155,7 +155,7 @@ void version(void)
 {
 	fprintf(stderr, "\nV ");
     fprintf(stderr, "%s\n", IdentString);
-	fprintf(stderr, "Copyright (c) 2003-2019, MEN Mikro Elektronik GmbH\n");
+	fprintf(stderr, "Copyright 2003-2019, MEN Mikro Elektronik GmbH\n");
 }
 
 void show_test_result(void)

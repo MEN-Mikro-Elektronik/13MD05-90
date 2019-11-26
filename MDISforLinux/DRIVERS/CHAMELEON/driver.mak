@@ -5,7 +5,7 @@
 #    Description: makefile descriptor for chameleon Linux kernel module
 #                      
 #-----------------------------------------------------------------------------
-#   Copyright (c) 2004-2019, MEN Mikro Elektronik GmbH
+#   Copyright 2004-2019, MEN Mikro Elektronik GmbH
 #*****************************************************************************
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

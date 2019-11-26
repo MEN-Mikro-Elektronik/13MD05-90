@@ -5,7 +5,7 @@
 #    Description: Makefile definitions for VME4L_PLDZ002_LOCMON
 #
 #-----------------------------------------------------------------------------
-#   Copyright (c) 2003-2019, MEN Mikro Elektronik GmbH
+#   Copyright 2003-2019, MEN Mikro Elektronik GmbH
 #*****************************************************************************
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

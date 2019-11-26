@@ -9,7 +9,7 @@
  *     Switches: -
  *
  *---------------------------------------------------------------------------
- * Copyright (c) 2000-2019, MEN Mikro Elektronik GmbH
+ * Copyright 2000-2019, MEN Mikro Elektronik GmbH
  ******************************************************************************/
 /*
  * This library is free software; you can redistribute it and/or

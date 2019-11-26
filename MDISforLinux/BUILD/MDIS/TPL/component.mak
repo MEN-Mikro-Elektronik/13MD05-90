@@ -5,7 +5,7 @@
 #    Description: Make a Linux MDIS component (Kernel 2.6)
 #                      
 #-----------------------------------------------------------------------------
-#   Copyright (c) 2004-2019, MEN Mikro Elektronik GmbH
+#   Copyright 2004-2019, MEN Mikro Elektronik GmbH
 #*****************************************************************************
 
 # This program is free software: you can redistribute it and/or modify

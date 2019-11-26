@@ -5,7 +5,7 @@
 #    Description: makefile descriptor for VME4L TSI148
 #                      
 #-----------------------------------------------------------------------------
-#   Copyright (c) 2008-2019, MEN Mikro Elektronik GmbH
+#   Copyright 2008-2019, MEN Mikro Elektronik GmbH
 #*****************************************************************************
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
