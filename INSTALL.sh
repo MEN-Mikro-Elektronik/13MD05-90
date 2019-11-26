@@ -1,11 +1,11 @@
 #!/bin/bash
 #*****************************************************************************
-#  
-#         Author: Andreas Geissler
+#
+#       Author: Andreas Geissler
 #       Revision: 0.1
-#  
-#    Description: Installation script for MDIS5LINUX system package
-#      
+#
+#       Description: Installation script for MDIS5LINUX system package
+#
 #-----------------------------------------------------------------------------
 # (c) Copyright 2018-2019 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
 #*****************************************************************************
