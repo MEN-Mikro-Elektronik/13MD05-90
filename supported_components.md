@@ -60,10 +60,11 @@
 - 04M099
 - 04M199
 
-####EOS state components:
-**Comment:   EOS  (End  Of  Support)**   Legacy  product.  Product  support  is  still
-available, but not functionally tested any more during regression tests. 100% functionality can
-not be guaranteed.
+#### EOS state components:
+**Comment:   EOS  (End  Of  Support)**
+
+Legacy  product.  Product  support  is  still available, but not functionally tested any more during regression tests.
+100% functionality can not be guaranteed.
 
 - 02F011x
 - 02F014
@@ -135,6 +136,7 @@ not be guaranteed.
 
 #### EOL state components:
 **Comment:   EOL (End Of Life)**
+
 Existing support may be removed from 13MD05-90.
 
 - 02F007
