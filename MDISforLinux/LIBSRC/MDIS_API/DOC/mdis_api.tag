@@ -99,6 +99,71 @@
       <arglist>(MDIS_PATH path, const u_int8 *buffer, int32 length)</arglist>
     </member>
   </compound>
+  <compound kind="file">
+    <name>mdis_api_specification.c</name>
+    <path>/opt/menlinux/LIBSRC/MDIS_API/COM/</path>
+    <filename>mdis__api__specification_8c</filename>
+    <member kind="function">
+      <type>MDIS_PATH __MAPILIB</type>
+      <name>M_open</name>
+      <anchor>a0</anchor>
+      <arglist>(const char *device)</arglist>
+    </member>
+    <member kind="function">
+      <type>int32 __MAPILIB</type>
+      <name>M_close</name>
+      <anchor>a1</anchor>
+      <arglist>(MDIS_PATH path)</arglist>
+    </member>
+    <member kind="function">
+      <type>int32 __MAPILIB</type>
+      <name>M_read</name>
+      <anchor>a2</anchor>
+      <arglist>(MDIS_PATH path, int32 *valueP)</arglist>
+    </member>
+    <member kind="function">
+      <type>int32 __MAPILIB</type>
+      <name>M_write</name>
+      <anchor>a3</anchor>
+      <arglist>(MDIS_PATH path, int32 value)</arglist>
+    </member>
+    <member kind="function">
+      <type>int32 __MAPILIB</type>
+      <name>M_getblock</name>
+      <anchor>a4</anchor>
+      <arglist>(MDIS_PATH path, u_int8 *buffer, int32 length)</arglist>
+    </member>
+    <member kind="function">
+      <type>int32 __MAPILIB</type>
+      <name>M_setblock</name>
+      <anchor>a5</anchor>
+      <arglist>(MDIS_PATH path, const u_int8 *buffer, int32 length)</arglist>
+    </member>
+    <member kind="function">
+      <type>int32 __MAPILIB</type>
+      <name>M_getstat</name>
+      <anchor>a6</anchor>
+      <arglist>(MDIS_PATH path, int32 code, int32 *dataP)</arglist>
+    </member>
+    <member kind="function">
+      <type>int32 __MAPILIB</type>
+      <name>M_setstat</name>
+      <anchor>a7</anchor>
+      <arglist>(MDIS_PATH path, int32 code, INT32_OR_64 data)</arglist>
+    </member>
+    <member kind="function">
+      <type>char *__MAPILIB</type>
+      <name>M_errstring</name>
+      <anchor>a8</anchor>
+      <arglist>(int32 errCode)</arglist>
+    </member>
+    <member kind="function">
+      <type>char *__MAPILIB</type>
+      <name>M_errstringTs</name>
+      <anchor>a9</anchor>
+      <arglist>(int32 errCode, char *strBuf)</arglist>
+    </member>
+  </compound>
   <compound kind="struct">
     <name>M_ADDRSPACE</name>
     <filename>structM__ADDRSPACE.html</filename>
@@ -123,5 +188,15 @@
     <name>mdisapidummy</name>
     <title>MEN logo</title>
     <filename>mdisapidummy</filename>
+  </compound>
+  <compound kind="page">
+    <name>mdisapicommonspec</name>
+    <title>Common MDIS_API Specification &quot;MDIS5&quot;</title>
+    <filename>mdisapicommonspec</filename>
+  </compound>
+  <compound kind="page">
+    <name>mdis_api_dummy</name>
+    <title></title>
+    <filename>mdis_api_dummy</filename>
   </compound>
 </tagfile>

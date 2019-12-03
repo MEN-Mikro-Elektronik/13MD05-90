@@ -280,16 +280,16 @@
 00260 <span class="preprocessor"></span><span class="preprocessor">#   define __MAPILIB</span>
 00261 <span class="preprocessor"></span><span class="preprocessor">#endif</span>
 00262 <span class="preprocessor"></span>
-00263 <span class="keyword">extern</span> MDIS_PATH __MAPILIB <a class="code" href="mdis__api_8c.html#a4">M_open</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *device);
-00264 <span class="keyword">extern</span> int32 __MAPILIB <a class="code" href="mdis__api_8c.html#a9">M_close</a>(MDIS_PATH path);
-00265 <span class="keyword">extern</span> int32 __MAPILIB <a class="code" href="mdis__api_8c.html#a12">M_getstat</a>(MDIS_PATH path, int32 code, int32 *dataP);
-00266 <span class="keyword">extern</span> int32 __MAPILIB <a class="code" href="mdis__api_8c.html#a13">M_setstat</a>(MDIS_PATH path, int32 code, INT32_OR_64 data);
-00267 <span class="keyword">extern</span> int32 __MAPILIB <a class="code" href="mdis__api_8c.html#a10">M_read</a>(MDIS_PATH path, int32 *valueP);
-00268 <span class="keyword">extern</span> int32 __MAPILIB <a class="code" href="mdis__api_8c.html#a11">M_write</a>(MDIS_PATH path, int32 value);
-00269 <span class="keyword">extern</span> int32 __MAPILIB <a class="code" href="mdis__api_8c.html#a14">M_getblock</a>(MDIS_PATH path, u_int8 *buffer, int32 length);
-00270 <span class="keyword">extern</span> int32 __MAPILIB <a class="code" href="mdis__api_8c.html#a15">M_setblock</a>(MDIS_PATH path, <span class="keyword">const</span> u_int8 *buffer, int32 length);
-00271 <span class="keyword">extern</span> <span class="keywordtype">char</span>* __MAPILIB <a class="code" href="m__errstr_8c.html#a0">M_errstring</a>(int32 errCode);
-00272 <span class="keyword">extern</span> <span class="keywordtype">char</span>* __MAPILIB <a class="code" href="m__errstr_8c.html#a1">M_errstringTs</a>(int32 errCode, <span class="keywordtype">char</span> *strBuf);
+00263 <span class="keyword">extern</span> MDIS_PATH __MAPILIB <a class="code" href="mdis__api__specification_8c.html#a0">M_open</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *device);
+00264 <span class="keyword">extern</span> int32 __MAPILIB <a class="code" href="mdis__api__specification_8c.html#a1">M_close</a>(MDIS_PATH path);
+00265 <span class="keyword">extern</span> int32 __MAPILIB <a class="code" href="mdis__api__specification_8c.html#a6">M_getstat</a>(MDIS_PATH path, int32 code, int32 *dataP);
+00266 <span class="keyword">extern</span> int32 __MAPILIB <a class="code" href="mdis__api__specification_8c.html#a7">M_setstat</a>(MDIS_PATH path, int32 code, INT32_OR_64 data);
+00267 <span class="keyword">extern</span> int32 __MAPILIB <a class="code" href="mdis__api__specification_8c.html#a2">M_read</a>(MDIS_PATH path, int32 *valueP);
+00268 <span class="keyword">extern</span> int32 __MAPILIB <a class="code" href="mdis__api__specification_8c.html#a3">M_write</a>(MDIS_PATH path, int32 value);
+00269 <span class="keyword">extern</span> int32 __MAPILIB <a class="code" href="mdis__api__specification_8c.html#a4">M_getblock</a>(MDIS_PATH path, u_int8 *buffer, int32 length);
+00270 <span class="keyword">extern</span> int32 __MAPILIB <a class="code" href="mdis__api__specification_8c.html#a5">M_setblock</a>(MDIS_PATH path, <span class="keyword">const</span> u_int8 *buffer, int32 length);
+00271 <span class="keyword">extern</span> <span class="keywordtype">char</span>* __MAPILIB <a class="code" href="mdis__api__specification_8c.html#a8">M_errstring</a>(int32 errCode);
+00272 <span class="keyword">extern</span> <span class="keywordtype">char</span>* __MAPILIB <a class="code" href="mdis__api__specification_8c.html#a9">M_errstringTs</a>(int32 errCode, <span class="keywordtype">char</span> *strBuf);
 00273 
 00274 <span class="comment">/* Windows specific MDIS5 MDIS-API functions */</span>
 00275 <span class="preprocessor">#ifdef WINNT</span>

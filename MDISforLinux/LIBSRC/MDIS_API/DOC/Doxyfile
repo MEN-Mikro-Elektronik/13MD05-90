@@ -1,10 +1,11 @@
 @INCLUDE_PATH = $(MEN_DOXYGENTMPL)
 @INCLUDE = DoxyfileCommon
 
-#MDIS_COMMIT=6892df648b05db767b9462f3963d2b23bb8a57ea
+#MDIS_COMMIT=0a13bf10e0101bddef821cb37ab6fd9dd20e9188
 
 PROJECT_NAME           = "MDIS_API Library for Linux"
 INPUT                  = ../ \
+                         ../COM \
                          $(MEN_COM_INC)/MEN/mdis_api.h
 
 OUTPUT_DIRECTORY       = .

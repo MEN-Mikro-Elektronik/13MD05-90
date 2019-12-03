@@ -67,7 +67,22 @@ MDIS error string functions for MDIS_API.
 <p>
 Convert MDIS error code to static string. 
 <p>
- <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="m__errstr_8c.html#a1">M_errstringTs</a></dd></dl>
+<dl compact><dt><b><a class="el" href="deprecated.html#_deprecated000001">Deprecated:</a></b></dt><dd>Use of this function in multithreaded applications or under OSes with global namespace is dangerous, since this function uses and returns a static buffer to print its error messages. Better use thread-safe version <a class="el" href="m__errstr_8c.html#a1">M_errstringTs()</a>. </dd></dl>
+<a class="el" href="m__errstr_8c.html#a0">M_errstring()</a> creates an error message for error <em>errCode</em> and returns a pointer to the generated string with the following format:<p>
+<div class="fragment"><pre>
+ * ERROR &lt;errtype&gt; &lt;errcode&gt;: &lt;errdescr&gt; 
+ * </pre></div><p>
+where <em>errtype</em> describes if the error code comes from the system or the driver, <em>errcode</em> describes the error code in hexadecimal format or in the operating system’s native format. <em>errdescr</em> is the corresponding error message string.<p>
+<b>Examples</b>: <div class="fragment"><pre>
+   ERROR (MDIS) 0x1103: MK: illegal parameter
+   ERROR (OS9) #000:221: module not found
+   </pre></div><p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign=top><em>errCode</em>&nbsp;</td><td><b>IN</b> error code determined by <a class="elRef" doxygen="lin_usr_oss.tag:../../../../USR_OSS/DOC/html/" href="../../../../USR_OSS/DOC/html/errno_8c.html#a0">UOS_ErrnoGet()</a> </td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd>pointer to error message (static buffer!)</dd></dl>
  <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="m__errstr_8c.html#a1">M_errstringTs</a> </dd></dl>
     </td>
   </tr>
@@ -109,7 +124,23 @@ Convert MDIS error code to static string.
 <p>
 Convert MDIS error code to string. 
 <p>
- <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="m__errstr_8c.html#a0">M_errstring</a></dd></dl>
+<a class="el" href="m__errstr_8c.html#a1">M_errstringTs()</a> creates an error message for error <em>errCode</em> and returns a pointer to the generated string with the following format:<p>
+<div class="fragment"><pre>
+ * ERROR &lt;errtype&gt; &lt;errcode&gt;: &lt;errdescr&gt; 
+ * </pre></div><p>
+where <em>errtype</em> describes if the error code comes from the system or the driver, <em>errcode</em> describes the error code in hexadecimal format or in the operating system’s native format. <em>errdescr</em> is the corresponding error message string.<p>
+<b>Examples</b>: <div class="fragment"><pre>
+    ERROR (MDIS) 0x1103: MK: illegal parameter
+    ERROR (OS9) #000:221: module not found
+   </pre></div><p>
+<dl compact><dt><b>Remarks:</b></dt><dd>This function has been added in MDIS4/2003</dd></dl>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign=top><em>errCode</em>&nbsp;</td><td><b>IN</b> error code determined by <a class="elRef" doxygen="lin_usr_oss.tag:../../../../USR_OSS/DOC/html/" href="../../../../USR_OSS/DOC/html/errno_8c.html#a0">UOS_ErrnoGet()</a> </td></tr>
+    <tr><td valign=top><em>strBuf</em>&nbsp;</td><td><b>OUT</b> filled with error message (should have space for 512 characters, including '\0') </td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd><em>strBuf</em> </dd></dl>
  <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="m__errstr_8c.html#a0">M_errstring</a> </dd></dl>
     </td>
   </tr>
