@@ -765,6 +765,7 @@ function add_smb2_generic_support {
     G_makefileLlTool+=" SMB2/TOOLS/SMB2_POE/COM/program.mak"
     G_makefileLlDriver+=" SMB2/DRIVER/COM/driver.mak"
     G_makefileUsrLibs+=" SMB2_SHC/COM/library.mak"
+    G_makefileUsrLibs+=" SMB2_BMC_API/COM/library.mak"
 }
 
 ############################################################################
