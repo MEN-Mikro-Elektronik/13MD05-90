@@ -804,7 +804,7 @@ function enable_memory_regions {
                 echo "This is not valid board to enable memory regions, skip .."
             fi
         fi
-    done 4< <(tail -n "+3" ${TMP_PCIDEVS})
+    done 4< <(tail -n "+5" ${TMP_PCIDEVS})
 }
 
 ############################################################################
