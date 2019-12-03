@@ -4,7 +4,7 @@
 #MDIS_COMMIT=6892df648b05db767b9462f3963d2b23bb8a57ea
 
 PROJECT_NAME           = "MDIS_API Library for Linux"
-INPUT                  = ../ \
+INPUT                  = ../ ../COM \
                          $(MEN_COM_INC)/MEN/mdis_api.h
 
 OUTPUT_DIRECTORY       = .
