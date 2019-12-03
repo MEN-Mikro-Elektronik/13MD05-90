@@ -3,8 +3,6 @@
  *        \file  mdis_api_specification.c
  *
  *      \author  klaus.popp@men.de
- *        $Date: 2010/07/21 14:30:03 $
- *    $Revision: 1.7 $
  * 
  *       \brief  MDIS_API specification.
  *
@@ -12,38 +10,8 @@
  * the MDIS API.
  *
  */
-/*-------------------------------[ History ]---------------------------------
- *
- * $Log: mdis_api_specification.c,v $
- * Revision 1.7  2010/07/21 14:30:03  CKauntz
- * R:1. Path is MDIS_PATH instead of INT32_OR_64
- *   2. Description shows MDIS4
- * M:1. Changed path variable type to MDIS_PATH
- *   2. Description changed to MDIS5
- *
- * Revision 1.6  2008/11/12 16:30:46  channoyer
- * Cosmetics
- *
- * Revision 1.5  2008/08/18 16:18:54  CKauntz
- * R: Path is a 64bit pointer at WIN 64
- * M: Changed path variable to INT32_OR_64
- *
- * Revision 1.4  2008/04/10 11:02:43  ufranke
- * added
- *  + prepared for 64bit OS
- *  + added INT32_OR_64 to M_setstat argument
- *
- * Revision 1.3  2004/05/28 17:11:09  dpfeuffer
- * Changed prototypes of M_open and M_setblock (added const attributes)
- *
- * Revision 1.2  2003/05/19 16:23:59  dschmidt
- * cosmetics and /menimages added
- *
- * Revision 1.1  2003/05/09 12:25:04  kp
- * Initial Revision
- *
- *---------------------------------------------------------------------------
- * (c) Copyright 1997-2008 by MEN mikro elektronik GmbH, Nuernberg, Germany 
+/*---------------------------------------------------------------------------
+ * Copyright 1997-2019, MEN Mikro Elektronik GmbH
  ****************************************************************************/
 
 /*! \page mdisapicommonspec Common MDIS_API Specification "MDIS5"
@@ -500,7 +468,3 @@ char* __MAPILIB M_errstring(int32 errCode){}
  *
  */
 char* __MAPILIB M_errstringTs(int32 errCode, char *strBuf){}
-
-
-
-
