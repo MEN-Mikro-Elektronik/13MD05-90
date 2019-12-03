@@ -2450,9 +2450,9 @@ case $main_cpu in
         G_primPciPath=0x1e
         wiz_model_busif=0
         bCreateXm01bcDrv=1
-                bCreateSmb2GenericDrv=1
+        bCreateSmb2GenericDrv=1
         add_xm01bc_support
-                add_smb2_generic_support
+        add_smb2_generic_support
         ;;
     F022|F22P)
         wiz_model_cpu=F22P
