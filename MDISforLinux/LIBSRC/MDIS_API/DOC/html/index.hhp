@@ -17,12 +17,16 @@ files.html
 mdis__api_8h-source.html
 m__errstr_8c.html
 mdis__api_8c.html
+mdis__api__specification_8c.html
 annotated.html
 functions.html
 functions_vars.html
 structM__ADDRSPACE.html
 structM__SG__BLOCK.html
 mdisapidummy.html
+mdisapicommonspec.html
+mdis_api_dummy.html
+deprecated.html
 globals.html
 globals_func.html
 pages.html
