@@ -20,6 +20,7 @@
 - 13Z072-06 submodule
 - End-of-line normalization in text files
 - Automatic enabling of memory regions in PCI devices in scanner script
+- MDIS Quickstart Guide
 
 
 ### Changed
