@@ -1,5 +1,5 @@
 # **List of Supported Components**
-#### Supported tested components:
+#### Supported tested components for release 13MD05-90_02_01:
 - 02F023P
 - 02F026L
 - 02G023
@@ -23,13 +23,21 @@
 - 04M072
 - 04M077N
 - 04M082
-- Ubuntu 16.04.6 LTS 32-/64-bit
-- Ubuntu 18.04.2 LTS 32-/64-bit
-- CentOS 7.5 64-bit
-- CentOS 7.6 64-bit
-- Debian 10 32-/64-bit
-- Yocto - Sumo, Kernel 4.14, 64-bit (F26L + G25A only)
-- Yocto - NewestFancy, Kernel 4.19 64-bit (F26L + G25A only)
+- Ubuntu 16.04.6 LTS 4.15.0-45 32-/64-bit
+- Ubuntu 18.04.3 4.15.0-45 LTS 32-bit
+- Ubuntu 18.04.1 5.0.0-23 LTS 64-bit
+- CentOS 7.5 3.10.0-862 64-bit
+- CentOS 7.6 3.10.0-957 64-bit
+- Debian 10 4.19.0-6 32-/64-bit
+- Yocto - Sumo, Kernel 4.15.18 64-bit (F26L + G25A only)
+- Yocto - NewestFancy, Kernel 4.19.19 64-bit (F26L + G25A only)
+#####Compilation - tested kernel versions:
+- 3.16.73
+- 4.4.190
+- 4.9.190
+- 4.14.190
+- 4.19.69
+- 5.2.11
 
 #### Supported not tested components:
 - 15CB70
