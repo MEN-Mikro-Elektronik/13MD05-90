@@ -31,7 +31,7 @@
 - Debian 10 4.19.0-6 32-/64-bit
 - Yocto - Sumo, Kernel 4.15.18 64-bit (F26L + G25A only)
 - Yocto - NewestFancy, Kernel 4.19.19 64-bit (F26L + G25A only)
-#####Compilation - tested kernel versions:
+**Compilation - tested kernel versions:**
 - 3.16.73
 - 4.4.190
 - 4.9.190
