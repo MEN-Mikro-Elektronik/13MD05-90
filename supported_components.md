@@ -107,7 +107,6 @@ Legacy  product.  Product  support  is  still available, but not functionally te
 - 15P599
 - 15P506
 - 16Z024_SRAM
-- 16Z029_CAN
 - 16Z044_DISP
 - 16Z050_BIOC
 - 16Z057_UART
@@ -184,7 +183,6 @@ Existing support may be removed from 13MD05-90.
 - 02F203
 - 02D201
 - 02D302
-- 16Z001_SMB
 - 16Z047_WDOG
 - 16Z069_RST
 - 04M008
