@@ -25,7 +25,7 @@
 - 04M082
 - Ubuntu 16.04.6 LTS 4.15.0-45 32-/64-bit
 - Ubuntu 18.04.3 4.15.0-45 LTS 32-bit
-- Ubuntu 18.04.1 5.0.0-23 LTS 64-bit
+- Ubuntu 18.04.3 5.0.0-23 LTS 64-bit
 - CentOS 7.5 3.10.0-862 64-bit
 - CentOS 7.6 3.10.0-957 64-bit
 - Debian 10 4.19.0-6 32-/64-bit
