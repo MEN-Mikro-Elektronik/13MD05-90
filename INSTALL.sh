@@ -512,7 +512,7 @@ folder_recursive() {
 # - Run make install
 
 echo "                                                                                "
-echo "Installing the MEN MDIS for Linux System Package 13MD05-90_02_00                "
+echo "Installing the MEN MDIS for Linux System Package 13MD05-90_02_01                "
 echo "(see MDIS User Manual for details)                                              "
 echo "________________________________________________________________________________"
 echo "                                                                                "

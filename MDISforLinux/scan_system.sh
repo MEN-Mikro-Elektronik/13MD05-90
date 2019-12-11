@@ -758,15 +758,14 @@ function add_smb2_generic_support {
     G_makefileLlTool+=" SMB2/TOOLS/SMB2_CTRL/COM/program.mak"
     G_makefileLlTool+=" SMB2/TOOLS/SMB2_BOARDIDENT/COM/program.mak"
     G_makefileLlTool+=" SMB2/TOOLS/SMB2_TOUCH/COM/program.mak"
-    G_makefileLlTool+=" SMB2/TOOLS/SMB2_BMC/COM/program.mak"
+    G_makefileLlTool+=" SMB2/TOOLS/SMB2_BMC_CTRL/COM/program.mak"
     G_makefileLlTool+=" SMB2/TOOLS/SMB2_SHC_CTRL/COM/program.mak"
     G_makefileLlTool+=" SMB2/TOOLS/SMB2_STM32_FLASH/COM/program.mak"
     G_makefileLlTool+=" SMB2/TOOLS/SMB2_EETEMP/COM/program.mak"
     G_makefileLlTool+=" SMB2/TOOLS/SMB2_POE/COM/program.mak"
-    G_makefileLlTool+=" SMB2/TOOLS/SMB2_EEPROD2/COM/program.mak"
-    G_makefileLlTool+=" SMB2/TOOLS/SMB2_TEST/COM/program.mak"
     G_makefileLlDriver+=" SMB2/DRIVER/COM/driver.mak"
     G_makefileUsrLibs+=" SMB2_SHC/COM/library.mak"
+    G_makefileUsrLibs+=" SMB2_BMC_API/COM/library.mak"
 }
 
 ############################################################################
@@ -2452,9 +2451,9 @@ case $main_cpu in
         G_primPciPath=0x1e
         wiz_model_busif=0
         bCreateXm01bcDrv=1
-                bCreateSmb2GenericDrv=1
+        bCreateSmb2GenericDrv=1
         add_xm01bc_support
-                add_smb2_generic_support
+        add_smb2_generic_support
         ;;
     F022|F22P)
         wiz_model_cpu=F22P
