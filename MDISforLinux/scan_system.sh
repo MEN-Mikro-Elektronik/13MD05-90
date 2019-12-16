@@ -2161,27 +2161,29 @@ displayQuestion() {
     fi
 }
 
-### @brief display mcb mcb_pci blacklist warning
+### @brief display mcb mcb_pci blacklist warning if mcb/mcb_pci is available
 blacklist_warning_message() {
-    # display warning if any F2xx/G2xx carrier is present in system
-    readonly blacklist_warning="Starting with Linux kernel 3.15, the modules mcb and mcb_pci
-must be blacklisted to avoid inconveniences which could led to a kernel panic.
-Please refer to the MDIS User Manual 21md05-90.pdf for details."
 
-    # if user choose 'n' or 'q' option, then Makefile is not generated
-    readonly blacklist_warning_question="Would you like to proceed?"
-    echo ""
-    echo "${blacklist_warning}"
-    if [ ${ASSUME_YES} -eq 0 ]; then
-        get_ynq_answer "${blacklist_warning_question}"
-        case $? in
-        1 | 2)
-            echo "*** Aborted by user."
-            exit 1;
-            ;;
-        esac
+    readonly blacklist_warning="The kernel modules mcb/mcb_pci are available at 
+your system and must be blacklisted to avoid inconveniences which could led to 
+a kernel panic. Please refer to the MDIS User Manual 21md05-90.pdf for details."
+
+    local mcb_available=0
+    modinfo mcb > /dev/null 2>&1
+    if [[ "$?" -eq 0 ]]; then
+        mcb_available=1
     fi
 
+    modinfo mcb_pci > /dev/null 2>&1
+    if [[ "$?" -eq 0 ]]; then
+        mcb_available=1
+    fi
+
+    if [[ "${mcb_available}" -eq 1 ]]; then
+        echo ""
+        echo "${blacklist_warning}"
+        echo ""
+    fi
 }
 
 ############################################################################
