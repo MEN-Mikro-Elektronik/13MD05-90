@@ -26,7 +26,10 @@
 set -u
 
 this=$0
-CWD="$( cd "$(dirname "$0")" ; pwd -P )"
+# INSTALL.sh, MDIS source directory
+MDIS_REPO_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
+# Directory from which INSTALL script is invoked
+CURRENT_WORKING_DIR=$(pwd)
 
 # installation dir
 OPT=/opt
@@ -35,7 +38,7 @@ MENHISTORY=HISTORY
 
 # default path
 MENLINUX_ROOT=${OPT}/${MENLINUX}
-MDIS_HISTORY_PATH="${CWD}/${MENHISTORY}"
+MDIS_HISTORY_PATH="${MDIS_REPO_DIR}/${MENHISTORY}"
 
 # system package git repository name
 MDIS_PACKAGE=MDISforLinux
@@ -174,7 +177,7 @@ make_history_script() {
         local GIT_VERSION
         GIT_VERSION=$(which git 2> /dev/null)
 
-        if [ -d "${CWD}/.git" ] && [ "${GIT_VERSION}" != "" ]; then
+        if [ -d "${MDIS_REPO_DIR}/.git" ] && [ "${GIT_VERSION}" != "" ]; then
                 echo "Removing old history entry ${MDIS_HISTORY_PATH}"
                 rm -rf ${MDIS_HISTORY_PATH} &> /dev/null
                 result=$?
@@ -197,18 +200,18 @@ make_history_script() {
         mkdir "${MDIS_HISTORY_PATH}"
 
         # Add 13MD05-90 History
-        local gitRevision=$(git --git-dir "${CWD}/.git" describe --dirty --long --tags --always)
-        local gitDate=$(git --git-dir "${CWD}/.git" --no-pager show -s --date=short --format=format:"%cd%n")
-        git --git-dir "${CWD}/.git" log > "${MDIS_HISTORY_PATH}/13MD05-90_history.txt"
-        git --git-dir "${CWD}/.git" remote -v > "${MDIS_HISTORY_PATH}/13MD05-90_url.txt"
+        local gitRevision=$(git --git-dir "${MDIS_REPO_DIR}/.git" describe --dirty --long --tags --always)
+        local gitDate=$(git --git-dir "${MDIS_REPO_DIR}/.git" --no-pager show -s --date=short --format=format:"%cd%n")
+        git --git-dir "${MDIS_REPO_DIR}/.git" log > "${MDIS_HISTORY_PATH}/13MD05-90_history.txt"
+        git --git-dir "${MDIS_REPO_DIR}/.git" remote -v > "${MDIS_HISTORY_PATH}/13MD05-90_url.txt"
         echo "${gitRevision}_${gitDate}" > "${MDIS_HISTORY_PATH}/13MD05-90_version.txt"
-        git --git-dir "${CWD}/.git" describe --exact-match --tags $(git --git-dir \
-"${CWD}/.git" rev-parse --verify HEAD) &> "${MDIS_HISTORY_PATH}/13MD05-90_tag.txt"
+        git --git-dir "${MDIS_REPO_DIR}/.git" describe --exact-match --tags $(git --git-dir \
+"${MDIS_REPO_DIR}/.git" rev-parse --verify HEAD) &> "${MDIS_HISTORY_PATH}/13MD05-90_tag.txt"
 
         # Add history files for all submodules within 13MD05-90 repository.
-        submoduleList=$(git --git-dir "${CWD}/.git" config --file "${CWD}/.gitmodules" \
+        submoduleList=$(git --git-dir "${MDIS_REPO_DIR}/.git" config --file "${MDIS_REPO_DIR}/.gitmodules" \
 --get-regexp path | sed 's/submodule.//g' | sed 's/.url//g' | awk '{print $2}' | sed 's/\.\.\///g' | sed 's/.git//g')
-        submoduleShortUrlList=$(git --git-dir "${CWD}/.git" config --file "${CWD}/.gitmodules" \
+        submoduleShortUrlList=$(git --git-dir "${MDIS_REPO_DIR}/.git" config --file "${MDIS_REPO_DIR}/.gitmodules" \
 --get-regexp url | sed 's/submodule.//g' | sed 's/.url//g' | awk '{print $2}' | sed 's/\.\.\///g' | sed 's/.git//g')
 
         rm "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt" 2> /dev/null
@@ -219,7 +222,7 @@ make_history_script() {
         done
 
         while read -r var1 var2; do
-                i=${CWD}/${var1}
+                i=${MDIS_REPO_DIR}/${var1}
                 if [ -d "${i}" ]; then
                     cd ${i}
                     git log > "${MDIS_HISTORY_PATH}/${var2}_history.txt"
@@ -228,7 +231,7 @@ make_history_script() {
                     gitDate=$(git --no-pager show -s --date=short --format=format:"%cd%n")
                     echo "${gitRevision}_${gitDate}" > "${MDIS_HISTORY_PATH}/${var2}_version.txt"
                     git describe --exact-match --tags $(git rev-parse --verify HEAD) &> "${MDIS_HISTORY_PATH}/${var2}_tag.txt"
-                    cd ${CWD}
+                    cd ${MDIS_REPO_DIR}
                 fi
         done < <(cat "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt")
 
@@ -294,7 +297,7 @@ overwrite_installation_directory(){
 copy_sources_into_installation_directory(){
         cd ${MENLINUX_ROOT}
         echo "Copy ${MDIS_PACKAGE}..."
-        rsync -ru --exclude=.git  ${CWD}/${MDIS_PACKAGE}/* . 2> /dev/null
+        rsync -ru --exclude=.git  ${MDIS_REPO_DIR}/${MDIS_PACKAGE}/* . 2> /dev/null
         result=$?
         if [ ${result} -ne 0 ]; then
                 show_insufficient_rights
@@ -302,7 +305,7 @@ copy_sources_into_installation_directory(){
         fi
 
         echo "Copy History..."
-        rsync -ru --exclude=.git  ${CWD}/${MENHISTORY}/* ${MENHISTORY}/ 2> /dev/null
+        rsync -ru --exclude=.git  ${MDIS_REPO_DIR}/${MENHISTORY}/* ${MENHISTORY}/ 2> /dev/null
         result=$?
         if [ ${result} -ne 0 ]; then
                 show_insufficient_rights
@@ -310,16 +313,16 @@ copy_sources_into_installation_directory(){
         fi
 
         # Copy changelog into ${MENLINUX_ROOT}
-        cp  "${CWD}/13MD05-90_changelog.md" "${MENLINUX_ROOT}/13MD05-90_changelog.md"
+        cp  "${MDIS_REPO_DIR}/13MD05-90_changelog.md" "${MENLINUX_ROOT}/13MD05-90_changelog.md"
 
         echo "Copy MDIS drivers..."
 
-        dirToCopyList=$(ls -l ${CWD} | grep '^d' | awk '{ print $9 }' | grep "13.*")
+        dirToCopyList=$(ls -l ${MDIS_REPO_DIR} | grep '^d' | awk '{ print $9 }' | grep "13.*")
         # additional directories that have to be copied into install directory
         dirToCopyList+=$'\n'"mdis_ll_mt"
 
         while read -r i; do
-                i=${CWD}/${i}
+                i=${MDIS_REPO_DIR}/${i}
                 if [ -d "$i" ]; then
                         for folder_type in BIN BUILD DOXYGENTMPL DRIVERS INCLUDE LIBSRC LICENSES PACKAGE_DESC TOOLS WINDOWS; do
                                 if [ -d "$i/${folder_type}" ]; then
@@ -336,7 +339,7 @@ copy_sources_into_installation_directory(){
 
         # update *.mak and *.xml files
         echo "Makefiles update ..."
-        cd ${CWD}
+        cd ${MDIS_REPO_DIR}
         update_makefiles
         echo "XML files update ..."
         update_xmlfiles
@@ -607,8 +610,8 @@ while ${run}; do
                 fi
                 ;;
         Scan)
-                curr_dir=$(pwd)
-                cd ${CWD}
+                cd ${CURRENT_WORKING_DIR}
+                echo "State Scan:"
                 state="Make"
                 run_scan_system ${MENLINUX_ROOT}
                 result=$?
@@ -616,11 +619,8 @@ while ${run}; do
                         state="Break_Failed"
                         break
                 fi
-                show_status_message "Scan success"
-                cd ${curr_dir};;
+                show_status_message "Scan success";;
         Make)
-                curr_dir=$(pwd)
-                cd ${CWD}
                 state="MakeInstall"
                 if [ ${assume_yes} -ne "1" ]; then
                     get_ynq_answer "${ASK_BUILD_MDIS_MODULES}"
@@ -643,10 +643,8 @@ while ${run}; do
                             break
                     fi
                 fi
-                cd ${curr_dir};;
+                ;;
         MakeInstall)
-                curr_dir=$(pwd)
-                cd ${CWD}
                 state="Break_Success"
                 if [ ${assume_yes} -ne "1" ]; then
                     get_ynq_answer "${ASK_INSTALL_MDIS_MODULES}"
@@ -670,7 +668,7 @@ while ${run}; do
                     fi
                     show_status_message "${CALL_MAKE_INSTALL}"
                 fi
-                cd ${curr_dir};;
+                ;;
         Break_Failed)
                 run=false;;
         Break_Success)
