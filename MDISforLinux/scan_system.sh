@@ -768,6 +768,8 @@ function add_smb2_generic_support {
 # G204/F204/F205 boards
 #
 function enable_memory_regions {
+    local pciDevLineNr=$(grep -nh "Nr.| dom|bus|dev" ${TMP_PCIDEVS} | cut -f1 -d:)
+    pciDevLineNr=$((pciDevLineNr+1))
     while read line <&4; do
         # Nr.| dom|bus|dev|fun| Ven ID | Dev ID | SubVen ID |
         #  25   0   5  15   0   0x12d8   0xe110    0x0000
@@ -797,7 +799,7 @@ function enable_memory_regions {
                 echo "This is not valid board to enable memory regions, skip .."
             fi
         fi
-    done 4< <(tail -n "+5" ${TMP_PCIDEVS})
+    done 4< <(tail -n "+${pciDevLineNr}" ${TMP_PCIDEVS})
 }
 
 ############################################################################
