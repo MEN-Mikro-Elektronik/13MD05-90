@@ -1957,7 +1957,7 @@ function compile_mm_ident {
 
 ### @brief Compile fpga_load tool
 function compile_fpga_tools {
-    echo "compiling fpga_tools"
+
     echo "compiling fpga_tools, and other requried libraries like pciutils..."
     if [ -d "${MEN_LIN_DIR}TOOLS/FPGA_LOAD" ]; then
         make clean -C "${MEN_LIN_DIR}TOOLS/FPGA_LOAD" &> ${MEN_LIN_DIR}TOOLS/FPGA_LOAD/make_clean.log
@@ -2020,7 +2020,7 @@ function scan_system_usage {
 ### @brief check if passed argument is valid directory in system
 function check_if_mdis_path {
     local DirPath=${1}
-    echo "${DirPath}" | grep "/.*"
+    debug_print "DirPath: ${DirPath}"
     local CmdResult=$?
 
     if [ ${CmdResult} -ne 0 ]; then
@@ -2211,7 +2211,7 @@ fi
 
 # read parameters
 while test $# -gt 0 ; do
-    # This 'check_if_mdis_path' part is necessary to make scan_system.sh script  
+    # This 'check_if_mdis_path' part is necessary to make scan_system.sh script
     # compatible with  previous versions
     case "$1" in
         -h|--help)
@@ -2584,12 +2584,12 @@ else
         G_SmbDeviceSlotNumber=$((G_SmbDeviceSlotNumber+1))
     fi 
     if [ "$bCreateXm01bcDrv" == "1" ]; then
-    create_entry_dsc_smb_drv  $DSC_TPL_DIR $G_SmBusNumber xm01bc_1 XM01BC XM01BC $G_SmbDeviceSlotNumber
-    add_device_smb_scan_list $DSC_TPL_DIR $G_SmbDeviceSlotNumber xm01bc_1
-    G_SmbDeviceSlotNumber=$((G_SmbDeviceSlotNumber+1))
+        create_entry_dsc_smb_drv  $DSC_TPL_DIR $G_SmBusNumber xm01bc_1 XM01BC XM01BC $G_SmbDeviceSlotNumber
+        add_device_smb_scan_list $DSC_TPL_DIR $G_SmbDeviceSlotNumber xm01bc_1
+        G_SmbDeviceSlotNumber=$((G_SmbDeviceSlotNumber+1))
     fi
     if [ "$bCreateF14bcDrv" == "1" ]; then
-    create_entry_dsc_smb_drv  $DSC_TPL_DIR $G_SmBusNumber f14bc_1 F14BC F14BC $G_SmbDeviceSlotNumber
+        create_entry_dsc_smb_drv  $DSC_TPL_DIR $G_SmBusNumber f14bc_1 F14BC F14BC $G_SmbDeviceSlotNumber
         add_device_smb_scan_list $DSC_TPL_DIR $G_SmbDeviceSlotNumber f14bc_1
         G_SmbDeviceSlotNumber=$((G_SmbDeviceSlotNumber+1))
     fi
