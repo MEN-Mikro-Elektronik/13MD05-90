@@ -869,7 +869,11 @@ function scan_for_pci_devs {
             # previous line was a Pericom bridge. Are now 4 subsequent USB bridges following?
             if [ "$pcivend" == "0x12d8" ] && [ "$pcidevid" == "0x400a" ]; then
                 count_usb_devs=`expr $count_usb_devs + 1`
-            else # other device showed up in between -> its no F223.
+            # wait for first USB bridge, there might be other board(s) between
+            # PCI bridge 12d8:e110 and USB bridges 13d8:400a
+            elif [ "${count_usb_devs}" == "0" ]; then
+                echo "device $pcivend $pcidevid between PCI - USB bridge"
+            else # other device showed up in between USB bridges -> its no F223
                 state_check_f223=0
                 count_usb_devs=0
             fi
