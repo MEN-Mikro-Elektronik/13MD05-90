@@ -130,6 +130,10 @@ declare -A mModuleInstances=()
 declare -A ipcoreFileList
 ### @brief IP Core specification map list
 declare -a ipcoreSpecList=()
+### @brief MDIS driver packages to xml file map
+declare -A mdisDriverFileList
+### @brief MDIS driver specification map list
+declare -A mdisDriverSpecList
 
 ############################################################################
 # verbose debug outputs if VERBOSE_PRINT is 1 or 2
@@ -306,7 +310,7 @@ function create_entry_dsc_pp04 {
     #echo " _WIZ_MODEL = $3, SM Bus nr. = $2  SM Bus IF nr. = $4 "
     cat $1/pp04.tpl | sed "s/SCAN_MDIS_INSTANCE/$2/g;s/SCAN_BBIS_INSTANCE/$3/g" >> ${OUTPUT_DIR_PATH}/${DSC_FILE}
     if [ "$2" == "1" ]; then
-        G_makefileLlDriver+=" PP04/DRIVER/COM/driver.mak"
+        add_mdis_drivers "PP04"
     fi
 }
 
@@ -720,47 +724,42 @@ function create_entry_dsc_d203_a24 {
 # add the xm01bc LL driver, tool to LL driver and LL tool list. Some
 # F-Cards have a BMC, some dont (F21P). bundle necessary mak file adding here
 #
-function add_xm01bc_support {
-    G_makefileLlTool+=" XM01BC/TOOLS/XM01BC_CTRL/COM/program.mak"
-    G_makefileLlDriver+=" XM01BC/DRIVER/COM/driver.mak"
-}
-
-############################################################################
-# add the xm01bc LL driver, tool to LL driver and LL tool list. Some
-# F-Cards have a BMC, some dont (F21P). bundle necessary mak file adding here
-#
-function add_f14bc_support {
-    G_makefileLlTool+=" F14BC/TOOLS/F14BC_CTRL/COM/program.mak"
-    G_makefileLlDriver+=" F14BC/DRIVER/COM/driver.mak"
-}
-
-############################################################################
-# add the xm01bc LL driver, tool to LL driver and LL tool list. Some
-# F-Cards have a BMC, some dont (F21P). bundle necessary mak file adding here
-#
 function add_z001_io_support {
     G_makefileNatDriver+=" DRIVERS/Z001_SMB/driver_g2x.mak DRIVERS/CHAMELEON/driver.mak"
 }
 
 ############################################################################
-# add the smb2_x generic support with tools 
+# add mdis drivers from files in mdisDriverSpecList
 #
-function add_smb2_generic_support {
-    G_makefileLlTool+=" SMB2/EXAMPLE/SMB2_SIMP/COM/program.mak"
-    G_makefileLlTool+=" SMB2/EXAMPLE/SMB2_F601/COM/program.mak"
-    G_makefileLlTool+=" SMB2/TOOLS/SMB2_CTRL/COM/program.mak"
-    G_makefileLlTool+=" SMB2/TOOLS/SMB2_BOARDIDENT/COM/program.mak"
-    G_makefileLlTool+=" SMB2/TOOLS/SMB2_TOUCH/COM/program.mak"
-    G_makefileLlTool+=" SMB2/TOOLS/SMB2_BMC_CTRL/COM/program.mak"
-    G_makefileLlTool+=" SMB2/TOOLS/SMB2_SHC_CTRL/COM/program.mak"
-    G_makefileLlTool+=" SMB2/TOOLS/SMB2_STM32_FLASH/COM/program.mak"
-    G_makefileLlTool+=" SMB2/TOOLS/SMB2_EETEMP/COM/program.mak"
-    G_makefileLlTool+=" SMB2/TOOLS/SMB2_POE/COM/program.mak"
-    G_makefileLlDriver+=" SMB2/DRIVER/COM/driver.mak"
-    G_makefileUsrLibs+=" SMB2_SHC/COM/library.mak"
-    G_makefileUsrLibs+=" SMB2_BMC_API/COM/library.mak"
+# parameters:
+# $1 swmodule name
+function add_mdis_drivers {
+    local mdisDriverName=${1}
+    debug_args "add_mdis_drivers ${1}"
+    makeMdisDriverOutputData ${mdisDriverName}
+    if [ "${mdisDriverSpecList["name"]}" == "" ]; then
+        echo "add_mdis_drivers: No valid data"
+        return 1
+    fi
+    if [ "${mdisDriverSpecList["Low Level Driver"]}" != "" ]; then
+        for xMakefile in ${mdisDriverSpecList["Low Level Driver"]}; do
+            debug_args "Low Level Driver: ${xMakefile}"
+            G_makefileLlDriver+=" ${xMakefile}"
+        done
+    fi
+    if [ "${mdisDriverSpecList["Driver Specific Tool"]}" != "" ]; then
+        for xMakefile in ${mdisDriverSpecList["Driver Specific Tool"]}; do
+            debug_args "Driver Specific Tool: ${xMakefile}"
+            G_makefileLlTool+=" ${xMakefile}"
+        done
+    fi
+    if [ "${mdisDriverSpecList["User Library"]}" != "" ]; then
+        for xMakefile in ${mdisDriverSpecList["User Library"]}; do
+            debug_args "User Library: ${xMakefile}"
+            G_makefileUsrLibs+=" ${xMakefile}"
+        done
+    fi
 }
-
 ############################################################################
 # For some MEN CPU boards memory regions are disabled by default while
 # booting from UEFI mode.
@@ -890,8 +889,7 @@ function scan_for_pci_devs {
                 state_check_f223=0
                 if [ "$count_instance_f223" == "1" ]; then
                     G_makefileBbisDriver+=" PCI/DRIVER/COM/driver.mak"
-                    G_makefileLlDriver+=" PI7C9_GPIO/DRIVER/COM/driver.mak"
-                    G_makefileLlTool+=" PI7C9_GPIO/EXAMPLE/PI7C9_GPIO_SIMP/COM/program.mak"
+                    add_mdis_drivers "PI7C9_GPIO"
                 fi
                 create_entry_dsc_f223 $DSC_TPL_DIR $count_instance_f223 \
                   $bus_num_f223 $dev_num_f223
@@ -1937,6 +1935,131 @@ makeIpCoreOutputDataCallback() {
     fi
 }
 
+### @brief Create MDIS Drivers XML file mapping associative array
+makeMdisDriversFileMap() {
+    local xFiles
+    local xFile
+
+    if [ "${#mdisDriverFileList[@]}" != "0" ]; then
+        return "0"
+    fi
+
+    echo -n "Building MDIS driver database..."
+    xFiles=($(ls "${MEN_LIN_DIR}/PACKAGE_DESC/"13y*.xml 2> "/dev/null"))
+    xFiles=("${xFiles[@]}" $(ls "${MEN_LIN_DIR}/PACKAGE_DESC/"13xm*.xml 2> "/dev/null"))
+    xFiles=("${xFiles[@]}" $(echo "${MEN_LIN_DIR}/PACKAGE_DESC/13pp0406.xml"))
+    xFiles=("${xFiles[@]}" $(echo "${MEN_LIN_DIR}/PACKAGE_DESC/13p7c906.xml"))
+    for xFile in "${xFiles[@]}"; do
+        echo -n "."
+        xmlParseXml "${xFile}" "makeMdisDriverFileMapCallback" "${xFile##*/}"
+    done
+    echo "done!"
+}
+
+### @brief xmlParseXml() callback for makeMdisDriversFileMap()
+### @param $1 Callback argument
+### @param $2 Event reason
+### @param $3 Current xPath
+### @param $4 Event specific data#1
+makeMdisDriverFileMapCallback() {
+    if [ "${2}" == "characters" ] && \
+        [ "${3}" == "/package/modellist/model/hwname" ] && \
+        [ "${mdisDriverFileList["${4}"]}" == "" ]; then
+        mdisDriverFileList+=(["${4}"]="${1}")
+    fi
+}
+
+### @brief Create IP core output data
+### @param $1 IP core ID
+makeMdisDriverOutputData() {
+    local xId
+    local xFile
+    local -A xModel
+    local -A xModule
+
+    xId="${1}"
+
+    mdisDriverSpecList=()
+
+    xFile="${mdisDriverFileList["${xId}"]}"
+    if [ "${xFile}" == "" ]; then
+        return "1"
+    fi
+
+    xmlParseXml "${MEN_LIN_DIR}/PACKAGE_DESC/${xFile}" "makeMdisDriverOutputDataCallback" "${xId}"
+}
+
+### @brief xmlParseXml() callback for makeMdisDriverOutputData()
+### @param $1 Callback argument
+### @param $2 Event reason
+### @param $3 Current xPath
+### @param $4 Event specific data#1
+### @param $5 Event specific data#2
+makeMdisDriverOutputDataCallback() {
+    local xKey
+
+    if [ "${2}" == "startElement" ]; then
+        if [ "${3}" == "/package/modellist" ] && \
+            [ "${4}" == "model" ]; then
+            xModel=()
+        elif [[ ("${3}" == "/package/modellist/model/swmodulelist" || \
+            "${3}" == "/package/swmodulelist") && \
+            "${4}" == "swmodule" ]]; then
+            xModule=()
+            if [ "${5}" != "" ]; then
+                eval "xModule+=(${5})"
+            fi
+        fi
+    elif [ "${2}" == "characters" ]; then
+        if [ "${3}" == "/package/modellist/model/hwname" ]; then
+            xModel+=(["hwname"]="${4}")
+        elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule/name" ] || \
+            [ "${3}" == "/package/swmodulelist/swmodule/name" ]; then
+            xModule+=(["name"]="${4}")
+        elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule/type" ] || \
+            [ "${3}" == "/package/swmodulelist/swmodule/type" ]; then
+            xModule+=(["type"]="${4}")
+        elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule/makefilepath" ] || \
+            [ "${3}" == "/package/swmodulelist/swmodule/makefilepath" ]; then
+            xModule+=(["makefilepath"]="${4}")
+        fi
+    elif [ "${2}" == "endElement" ]; then
+        if [ "${3}" == "/package/swmodulelist/swmodule" ] && \
+            [ "${4}" == "swmodule" ]; then
+            if [[ "${xModule["internal"]}" != "true" ||
+                "${INTERNAL_SWMODULES}" != "0" ]]; then
+                if [ "${mdisDriverSpecList["name"]}" == "" ]; then
+                    mdisDriverSpecList+=(["name"]="${xModule["name"]}")
+                fi
+                if [ "${xModule["type"]}" != "" ] && \
+                    [ "${xModule["makefilepath"]}" != "" ]; then
+                    if [ "${mdisDriverSpecList["${xModule["type"]}"]}" != "" ]; then
+                        mdisDriverSpecList["${xModule["type"]}"]+=" "
+                    fi
+                    mdisDriverSpecList["${xModule["type"]}"]+="${xModule["makefilepath"]}"
+                fi
+            fi
+        xModule=()
+        elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule" ] && \
+              [ "${4}" == "swmodule" ]; then
+            if [[ "${xModule["internal"]}" != "true" ||
+                "${INTERNAL_SWMODULES}" != "0" ]]; then
+                if [ "${mdisDriverSpecList["name"]}" == "" ]; then
+                    mdisDriverSpecList+=(["name"]="${xModule["name"]}")
+                fi
+                if [ "${xModule["type"]}" != "" ] && \
+                    [ "${xModule["makefilepath"]}" != "" ]; then
+                    if [ "${mdisDriverSpecList["${xModule["type"]}"]}" != "" ]; then
+                        mdisDriverSpecList["${xModule["type"]}"]+=" "
+                    fi
+                    mdisDriverSpecList["${xModule["type"]}"]+="${xModule["makefilepath"]}"
+                fi
+            fi
+        xModule=()
+        fi
+    fi
+}
+
 ### @brief Compile mm_ident tool
 function compile_mm_ident {
     echo "compiling mm_ident"
@@ -2216,7 +2339,7 @@ fi
 # read parameters
 while test $# -gt 0 ; do
     # This 'check_if_mdis_path' part is necessary to make scan_system.sh script
-    # compatible with  previous versions
+    # compatible with previous versions
     case "$1" in
         -h|--help)
                 scan_system_usage
@@ -2379,6 +2502,8 @@ DATE=$(LANG=en_us_88591; date)
 # Add cretion note into system.dsc file
 echo "# ${CREATION_NOTE}\n# ${COMMIT_ID}\n# ${DATE}\n" > ${OUTPUT_DIR_PATH}/${DSC_FILE}
 
+makeMdisDriversFileMap
+
 #unfortunately some F-cards seem to be have IDs with and without '0' (marketing name)
 case $main_cpu in
     SC24)
@@ -2399,8 +2524,8 @@ case $main_cpu in
         G_primPciPath=0x3c
         bCreateXm01bcDrv=1
         bCreateSmb2GenericDrv=1
-        add_xm01bc_support
-        add_smb2_generic_support
+        add_mdis_drivers "XM01BC"
+        add_mdis_drivers "SMB2"
         ;;
     F11S)
         wiz_model_cpu=F11S
@@ -2408,36 +2533,36 @@ case $main_cpu in
         G_primPciPath=0x3c
         bCreateXm01bcDrv=1
         bCreateSmb2GenericDrv=1
-        add_xm01bc_support
-        add_smb2_generic_support
+        add_mdis_drivers "XM01BC"
+        add_mdis_drivers "SMB2"
         ;;
     F14|F014)
         wiz_model_cpu=F14
         wiz_model_smb=SMBPCI_ICH
         G_primPciPath=0x1e
         bCreateXm01bcDrv=1
-        add_xm01bc_support
+        add_mdis_drivers "XM01BC"
         ;;
     F15)
         wiz_model_cpu=F15
         wiz_model_smb=SMBPCI_ICH
         G_primPciPath=0x1e
         bCreateXm01bcDrv=1
-        add_xm01bc_support
+        add_mdis_drivers "XM01BC"
         ;;
     F015)
         wiz_model_cpu=F15
         wiz_model_smb=SMBPCI_ICH
         G_primPciPath=0x1e
         bCreateXm01bcDrv=1
-        add_xm01bc_support
+        add_mdis_drivers "XM01BC"
         ;;
     F17|F017)
         wiz_model_cpu=F17
         wiz_model_smb=SMBPCI_ICH
         G_primPciPath=0x1e
         bCreateF14bcDrv=1
-        add_f14bc_support
+        add_mdis_drivers "F14BC"
         ;;
     F19P|F19C|F019)
         wiz_model_cpu=F19P_F19C
@@ -2445,8 +2570,8 @@ case $main_cpu in
         G_primPciPath=0x1e
         bCreateXm01bcDrv=1
         bCreateSmb2GenericDrv=1
-        add_xm01bc_support
-        add_smb2_generic_support
+        add_mdis_drivers "XM01BC"
+        add_mdis_drivers "SMB2"
         ;;
     F21P|F21C|F021)
         wiz_model_cpu=F21P_F21C
@@ -2455,8 +2580,8 @@ case $main_cpu in
         wiz_model_busif=0
         bCreateXm01bcDrv=1
         bCreateSmb2GenericDrv=1
-        add_xm01bc_support
-        add_smb2_generic_support
+        add_mdis_drivers "XM01BC"
+        add_mdis_drivers "SMB2"
         ;;
     F026)
         wiz_model_cpu=F26L
@@ -2465,8 +2590,8 @@ case $main_cpu in
         wiz_model_busif=0
         bCreateXm01bcDrv=1
         bCreateSmb2GenericDrv=1
-        add_xm01bc_support
-        add_smb2_generic_support
+        add_mdis_drivers "XM01BC"
+        add_mdis_drivers "SMB2"
         ;;
     F022|F22P)
         wiz_model_cpu=F22P
@@ -2475,8 +2600,8 @@ case $main_cpu in
         wiz_model_busif=0
         bCreateXm01bcDrv=1
         bCreateSmb2GenericDrv=1
-        add_xm01bc_support
-        add_smb2_generic_support
+        add_mdis_drivers "XM01BC"
+        add_mdis_drivers "SMB2"
         ;;
     F023|F23P)
         wiz_model_cpu=F23P
@@ -2485,8 +2610,8 @@ case $main_cpu in
         wiz_model_busif=0
         bCreateXm01bcDrv=1
         bCreateSmb2GenericDrv=1
-        add_xm01bc_support
-        add_smb2_generic_support
+        add_mdis_drivers "XM01BC"
+        add_mdis_drivers "SMB2"
         ;;
     F075|F75P)
         wiz_model_cpu=F75P
@@ -2494,16 +2619,16 @@ case $main_cpu in
         G_primPciPath=0x18
         bCreateXm01bcDrv=1
         bCreateSmb2GenericDrv=1
-        add_xm01bc_support
-        add_smb2_generic_support
+        add_mdis_drivers "XM01BC"
+        add_mdis_drivers "SMB2"
         ;;
     XM01)
         wiz_model_cpu=XM1
         wiz_model_smb=SMBPCI_SCH
         bCreateXm01bcDrv=1
         bCreateSmb2GenericDrv=1
-        add_xm01bc_support
-        add_smb2_generic_support
+        add_mdis_drivers "XM01BC"
+        add_mdis_drivers "SMB2"
         ;;
     MM01)
         wiz_model_cpu=MM1
@@ -2511,8 +2636,8 @@ case $main_cpu in
         G_primPciPath=0x1c
         bCreateXm01bcDrv=1
         bCreateSmb2GenericDrv=1
-        add_xm01bc_support
-        add_smb2_generic_support
+        add_mdis_drivers "XM01BC"
+        add_mdis_drivers "SMB2"
         ;;
     G20-)
         wiz_model_cpu=G20
@@ -2529,9 +2654,9 @@ case $main_cpu in
         wiz_model_busif=7
         bCreateSmb2GenericDrv=1
         bCreateXm01bcDrv=1
-        add_xm01bc_support
+        add_mdis_drivers "XM01BC"
         add_z001_io_support
-        add_smb2_generic_support
+        add_mdis_drivers "SMB2"
         ;;
     G23-|G023)
         wiz_model_cpu=G23
@@ -2540,9 +2665,9 @@ case $main_cpu in
         wiz_model_busif=7
         bCreateXm01bcDrv=1
         bCreateSmb2GenericDrv=1
-        add_xm01bc_support
+        add_mdis_drivers "XM01BC"
         add_z001_io_support
-        add_smb2_generic_support
+        add_mdis_drivers "SMB2"
         ;;
 
     G25-|G25A|G025)
@@ -2552,9 +2677,9 @@ case $main_cpu in
         wiz_model_busif=7
         bCreateXm01bcDrv=1
         bCreateSmb2GenericDrv=1
-        add_xm01bc_support
+        add_mdis_drivers "XM01BC"
         add_z001_io_support
-        add_smb2_generic_support
+        add_mdis_drivers "SMB2"
         ;;
     *)
         echo "No MEN CPU type found!"
@@ -2600,8 +2725,6 @@ else
     #insert all smb drv scan list into smb2_1 device
     fill_entry_dsc_smb_scan_list 
 
-    # add the SMB2 userland API too
-    G_makefileUsrLibs+=" SMB2_API/COM/library.mak"
     debug_print "Check if all required memory regions are enabled"
     enable_memory_regions
     echo "Scanning for MEN PCI devices: "
