@@ -79,7 +79,7 @@ while test $# -gt 0 ; do
                 shift
                 ;;
         --path*)
-                export MENLINUX_ROOT=$(echo $1 | sed -e 's/^[^=]*=//g' | awk 'print $1')
+                export MENLINUX_ROOT=$(echo $1 | sed -e 's/^[^=]*=//g')
                 shift
                 ;;
         --install-only)
