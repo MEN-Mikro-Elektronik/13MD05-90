@@ -179,7 +179,7 @@ build: $(COMP_OBJ)
 
 $(COMP_OBJ): $(TMP_COMP_OBJS) $(MAK_LIBS)
 	@$(ECHO) Linking $@
-	$(Q)$(CC) $(LDFLAGS) $(TMP_COMP_OBJS) $(MAK_LIBS) -o $@
+	$(Q)$(CC) $(LDFLAGS) $(TMP_COMP_OBJS) $(MAK_LIBS) -o $@ -lm
 
 # Dependencies
 $(TMP_COMP_OBJS): 	$(MAK_INCL) \
