@@ -49,16 +49,25 @@ assume_yes="0"
 
 ### @brief script usage --help
 function install_usage {
-    echo "INSTALL.sh   script to install MDIS sources into system"
+    echo "INSTALL.sh - install MDIS sources into system"
     echo ""
-    echo "parameters:"
-    echo "     -y, --yes"
-    echo "     --assume-yes      install and scan without user interaction."
-    echo "                       answer 'yes' for all questions"
-    echo "     --install-only    install sources and exit without user interaction"
-    echo "     -p, --path=PATH   specify a installation path"
-    echo "     -h, --help        print help"
+    echo "USAGE"
+    echo "    INSTALL.sh -h | --help"
+    echo "    INSTALL.sh [-y] [--install-only] [-p PATH]"
     echo ""
+    echo "OPTIONS"
+    echo "    -y, --yes, --assume-yes"
+    echo "        Install and scan without user interaction. Answer 'yes' for all"
+    echo "        questions."
+    echo ""
+    echo "    --install-only"
+    echo "        Install sources and exit without user interaction"
+    echo ""
+    echo "    -p PATH, --path=PATH"
+    echo "        Specify an installation path"
+    echo ""
+    echo "    -h, --help"
+    echo "        Print this help"
 }
 
 # read parameters
