@@ -2107,41 +2107,58 @@ function compile_fpga_tools {
 
 ### @brief script usage --help
 function scan_system_usage {
-    echo "scan_system.sh   script to generate an automatic MDIS configuration"
-    echo "                 when doing a selfhosted project"
+    echo "scan_system.sh - generate MDIS configuration for a selfhosted project"
     echo ""
-    echo "  The script checks which CPU we are on. The SMB2 drivers"
-    echo "  are always added to the CPU to provide BMC and watchdog"
-    echo "  drivers."
+    echo "USAGE"
+    echo "    scan_system.sh -h | --help"
+    echo "    scan_system.sh <DIRECTORY>"
+    echo "    scan_system.sh <DIRECTORY> [-y] [-p PATH] [--verbose LEVEL] [--drytest FILE]"
+    echo "                   [--buildtools] [--internal-submodules]"
+    echo "    scan_system.sh --prerequisites"
     echo ""
-    echo "IMPORTANT:"
-    echo "    1. Path to MDIS install dir has to passed as first argument"
-    echo "    2. Tools must be available in system: i2cdump, setpci, lspci,"
-    echo "       libelf-dev or libelf-devel."
-    echo "    3. /usr/src/linux/ points to valid kernel headers"
+    echo "DESCRIPTION"
+    echo "    scan_system.sh scans the system to detect all MDIS hardware. The"
+    echo "    configuration is then written to system.dsc and Makefile files."
     echo ""
-    echo "parameters:"
-    echo "    'MEN_LIN_DIR'          path to MDIS installation dir - default"
-    echo "                           /opt/menlinux/"
-    echo "    -y, --yes"
-    echo "    --assume-yes           scan without user interaction."
-    echo "                           answer 'yes' for all questions"
-    echo "    -p --path=PATH         overwrite default path for"
-    echo "                           Makefile/system.dsc creation"
-    echo "    --mdiswiz              used by mdiswiz only!"
-    echo "    --verbose              if 1 or 2 then additional debug info is "
-    echo "                           dumped ex: --verbose 1"
-    echo "    --buildtools           build mm_ident and fpga_load from source"
-    echo "    --drytest              run drytest with test PCI device list "
-    echo "                           if passed as alternative PCI devices temp" 
-    echo "                           file the default file /tmp/men_pci_devs is"
-    echo "                           not written. Used to test system.dsc"
-    echo "                           generation with predefined test data."
-    echo "                           ex: --drytest sth"
-    echo "    --prerequisites        check if all prerequisites are met"
-    echo "    --internal-swmodules   also add internal sw modules"
-    echo "    -h, --help             print help"
+    echo "OPTIONS"
+    echo "    DIRECTORY"
+    echo "        Path to MDIS installation directory. The default is /opt/menlinux"
     echo ""
+    echo "    -y, --yes, --assume-yes"
+    echo "        Scan without user interaction. Answer 'yes' for all questions."
+    echo ""
+    echo "    -p PATH, --path=PATH"
+    echo "        Overwrite default path for Makefile and system.dsc creation"
+    echo ""
+    echo "    --mdiswiz"
+    echo "        Used by mdiswiz only!"
+    echo ""
+    echo "    --verbose LEVEL"
+    echo "        Print additional debug info. Possible values for LEVEL are:"
+    echo "        1 - verbose output"
+    echo "        2 - verbose and function arguments output"
+    echo ""
+    echo "    --buildtools"
+    echo "        Build mm_ident and fpga_load tools from source"
+    echo ""
+    echo "    --drytest FILE"
+    echo "        Run dry test with test PCI device list if passed as alternative PCI"
+    echo "        devices temporary file. The default file /tmp/men_pci_devs is not"
+    echo "        written. Used to test system.dsc generation with predefined test data."
+    echo ""
+    echo "    --prerequisites"
+    echo "        Check if all prerequisites are met"
+    echo ""
+    echo "    --internal-swmodules"
+    echo "        Also add internal software modules"
+    echo ""
+    echo "    -h, --help"
+    echo "        Print this help"
+    echo ""
+    echo "IMPORTANT"
+    echo "    1. Following tools must be available in the system: i2cdump, setpci, lspci,"
+    echo "       libelf-dev or libelf-devel"
+    echo "    2. /usr/src/linux has to point to valid kernel headers directory"
 }
 
 ### @brief check if passed argument is valid directory in system
@@ -2307,10 +2324,6 @@ a kernel panic. Please refer to the MDIS User Manual 21md05-90.pdf for details."
 ##
 
 #set -x
-echo "============================================================"
-echo "MDIS System Scan - generate initial system.dsc / Makefile"
-echo "============================================================"
-echo
 
 PCI_DRYTEST=""
 BUILD_TOOLS=""
@@ -2322,6 +2335,12 @@ if [ $# -lt 1 ] || [ "${1}" = "--help" ] || [ "${1}" = "-h" ]; then
     scan_system_usage
     exit 1
 fi
+
+echo "============================================================"
+echo "MDIS System Scan - generate initial system.dsc / Makefile"
+echo "============================================================"
+echo
+
 
 check_if_mdis_path $1
 CmdResult=$?
