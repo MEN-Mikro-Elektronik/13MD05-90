@@ -184,7 +184,7 @@ function check_if_men_cpu {
 # parameters: N/A
 #
 function detect_board_id {
-    echo "Scanning for MEN ID EEProm."
+    echo "Scanning for MEN ID EEProm"
     # these can be safely assumed to exist on any recent distribution.
     modprobe i2c-dev   # for i2cdetect
     modprobe i2c-i801  # F1x SMB controllers
@@ -238,7 +238,7 @@ function detect_board_id {
 # parameters: N/A
 #
 function map_sc24_fpga {
-    echo "SC24 detected, mapping FPGA."
+    echo "SC24 detected, mapping FPGA"
     # PCI location is fixed (inside AMD chipset)
     setpci -s 00:14.3 0x48.B=0x27
     setpci -s 00:14.3 0x60.B=0x00
@@ -258,7 +258,7 @@ function map_sc24_fpga {
 # $4    SMB bus IF nr "cpu,0' or "cpu,1" etc
 #
 function create_entry_dsc_smb_type {
-    echo "Writing CPU SMB BBIS section."
+    debug_print echo "Writing CPU SMB BBIS section"
     #echo " _WIZ_MODEL = $3, SM Bus nr. = $2  SM Bus IF nr. = $4 "
     cat $1/smb.tpl | sed "s/SCAN_SMBDRV/$3/g; s/SCAN_SMBNR/`printf \"0x%x\" $2`/g; s/SCAN_SMBUSIF/$4/g;" >> ${OUTPUT_DIR_PATH}/${DSC_FILE}
 }
@@ -306,7 +306,7 @@ function add_device_smb_scan_list {
 # $3    SCAN_BBIS_INSTANCE carrier boards instance
 #
 function create_entry_dsc_pp04 {
-    echo "Writing PP04 MDIS driver section."
+    debug_print echo "Writing PP04 MDIS driver section"
     #echo " _WIZ_MODEL = $3, SM Bus nr. = $2  SM Bus IF nr. = $4 "
     cat $1/pp04.tpl | sed "s/SCAN_MDIS_INSTANCE/$2/g;s/SCAN_BBIS_INSTANCE/$3/g" >> ${OUTPUT_DIR_PATH}/${DSC_FILE}
     if [ "$2" == "1" ]; then
@@ -326,7 +326,7 @@ function create_entry_dsc_pp04 {
 # $5    WIZ_MODEL
 #
 function create_entry_dsc_smb_drv {
-    echo "creating CPU SMB driver section: _WIZ_MODEL = $3, SM Bus nr. = $2 at DEVICE_SLOT = $6"
+    debug_print echo "creating CPU SMB driver section: _WIZ_MODEL = $3, SM Bus nr. = $2 at DEVICE_SLOT = $6"
 
     if [ "$3" == "smb2_1" ]; then
         cat $1/smb_drv_no_addr.tpl | \
@@ -346,7 +346,7 @@ function create_entry_dsc_smb_drv {
 # $2    _WIZ_MODEL
 #
 function create_entry_dsc_cpu_type {
-    echo "Writing system.dsc cpu section: _WIZ_MODEL = $2"
+    debug_print echo "Writing system.dsc cpu section: _WIZ_MODEL = $2"
     cat $1/cpu.tpl | sed "s/SCAN_CPU/$2/g" >> ${OUTPUT_DIR_PATH}/${DSC_FILE}
 }
 
@@ -403,14 +403,14 @@ function create_entry_dsc_bbis_cham {
 
     local is_pcie=$(echo "${lspci_device_verbose_data}" | grep "Capabilities.*Express Legacy Endpoint")
     if [ -z "${is_pcie}" ]; then
-        echo  "Device: ${pci_vd}:${pci_dev} PCI subvendor: ${pci_subv} is CPCI device"
+        debug_print echo  "Device: ${pci_vd}:${pci_dev} PCI subvendor: ${pci_subv} is CPCI device"
         local pcibus_slot=${G_cPciRackSlotStandard}
         # for standard cPCI always
         local bus_if="cpu,1"
         # count to next stndard cPCI slot nr.
         G_cPciRackSlotStandard=`expr ${G_cPciRackSlotStandard} + 1`
     else
-        echo  "Device: ${pci_vd}:${pci_dev} PCI subvendor: ${pci_subv} is CPCI serial device"
+        debug_print echo  "Device: ${pci_vd}:${pci_dev} PCI subvendor: ${pci_subv} is CPCI serial device"
         local pcibus_slot=${G_cPciRackSlotSerial}
         # on cPCI serial the businterface nr. is equal to its slot
         # what about boards that are connected to CPU board?
@@ -515,7 +515,7 @@ function scan_cham_table {
                     fi
                 fi
                 if [ "${listItem}" -ge "${listSize}" ]; then
-                    echo "*** Aborted by user."
+                    echo "*** Aborted by user"
                     exit "1"
                 fi
 
@@ -532,7 +532,7 @@ function scan_cham_table {
                     ipcoreSettings="${ipcoreSettings//$'\n'/\\n}"
                 fi
 
-                echo "Writing ${ipcoreType,,}_${G_mdisInstanceCount} section to system.dsc"
+                debug_print echo "Writing ${ipcoreType,,}_${G_mdisInstanceCount} section to system.dsc"
 
                 cat $1/16zX.tpl | sed "s/SCAN_MDIS_INSTANCE/$G_mdisInstanceCount/g;s/SCAN_BBIS_NAME/$bbis_name/g;s/USCORESCAN_BBIS_INSTANCE/_$bbis_instance/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" $G_bus_slot_count`/g;s/SCAN_IPCORE_TYPE/${ipcoreType,,}/g;s/SCAN_IPCORE_NAME/${ipcoreName^^}/g;s/SCAN_WIZMODEL_NAME/${ipcoreHwName}/g;s/SCAN_DEVICE_SETTINGS/${ipcoreSettings}/g;" >> ${OUTPUT_DIR_PATH}/${DSC_FILE}
 
@@ -652,7 +652,7 @@ function check_for_cham_devs {
 # $4  PCI device number (subst. SCAN_PCI_DEV_NR tag)
 #
 function create_entry_dsc_f223 {
-    echo "Writing f223_$2 section to system.dsc "
+    debug_print echo "Writing f223_$2 section to system.dsc "
     debug_args " \$1 = $1   \$2 = $2    \$3 = $3    \$4 = $4  "
     cat $1/f223.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;"\
 "s/SCAN_MDIS_INSTANCE/$2/g;s/SCAN_PCI_BUS_NR/`printf \"0x%x\" $3`/g;"\
@@ -671,7 +671,7 @@ function create_entry_dsc_f223 {
 # $4  PCI_BUS sec. path (subst. SCAN_PCIPATH_SEC tag)
 #
 function create_entry_dsc_f207 {
-    echo "Writing f207_$2 section to system.dsc "
+    debug_print echo "Writing f207_$2 section to system.dsc "
     debug_args " \$1 = $1 \$2 = $2  \$3 = $3  \$4 = $4 "
     cat $1/f207.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_PCIPATH_PRIM/`printf \"0x%x\" $3`/g;s/SCAN_PCIPATH_SEC/`printf \"0x%x\" $4`/g" >> ${OUTPUT_DIR_PATH}/${DSC_FILE}
 }
@@ -689,7 +689,7 @@ function create_entry_dsc_f207 {
 # $7  DSC output file
 #
 function create_entry_dsc_d203 {
-    echo "Writing d203_$2 section to system.dsc "
+    debug_print echo "Writing d203_$2 section to system.dsc "
     debug_args " \$1 = $1 \$2 = $2  \$3 = $3  \$4 = $4  \$5 = $5  \$6 = $6 "
     cat $1/d203.tpl  | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_SMBUSIF/$3/g;s/SCAN_PCI_BUS_NR/`printf \"0x%x\" $4`/g;s/SCAN_BBIS_NAME/$5/g;s/SCAN_PCI_DEV_NR/`printf \"0x%x\" $6`/g" >> $7
     if [ "$2" == "1" ]; then
@@ -711,7 +711,7 @@ function create_entry_dsc_d203 {
 # $7  DSC output file
 #
 function create_entry_dsc_d203_a24 {
-    echo "Writing d203_a24_$2 section to system.dsc "
+    debug_print echo "Writing d203_a24_$2 section to system.dsc "
     debug_args " \$1 = $1 \$2 = $2 \$3 = $3 \$4 = $4 \$5 = $5 \$6 = $6 "
     cat $1/d203_a24.tpl | sed "s/SCAN_BBIS_INSTANCE/$2/g;s/SCAN_SMBUSIF/$3/g;s/SCAN_PCI_BUS_NR/`printf \"0x%x\" $4`/g;s/SCAN_BBIS_NAME/$5/g;s/SCAN_PCI_DEV_NR/`printf \"0x%x\" $6`/g" >> $7
     if [ "$2" == "1" ]; then
@@ -795,7 +795,7 @@ function enable_memory_regions {
                 set_command_register "${pciBusHex}" "${pciDevNrHex}" "${pciDevFunHex}" "3"
             else
                 echo "Memory disabled on device ${pciBusHex}:${pciDevNrHex}.${pciDevFunHex}"
-                echo "This is not valid board to enable memory regions, skip .."
+                echo "This is not valid board to enable memory regions, skipping"
             fi
         fi
     done 4< <(tail -n "+${pciDevLineNr}" ${TMP_PCIDEVS})
@@ -900,7 +900,7 @@ function scan_for_pci_devs {
         if [ "$state_check_pp04" == "1" ]; then
             # previous line was a F207. Do we find a PP04 now? PP04 has V0 cham table.
             if [ "$pcivend"=="0x1172" ] && [ "$pcidevid"=="0x000c" ] && [ "$pcisubvend"=="0x4d45" ]; then
-                echo "Found PP04 MVB card. adding dsc entries for F207 and PP04."
+                echo "Found PP04 MVB card. adding dsc entries for F207 and PP04"
                 count_pp04_devs=`expr $count_pp04_devs + 1`
                 create_entry_dsc_f207 $DSC_TPL_DIR $count_instance_f207 $bus_path_prim $bus_path_sec
                 create_entry_dsc_pp04 $DSC_TPL_DIR $count_pp04_devs $count_instance_f207
@@ -920,7 +920,7 @@ function scan_for_pci_devs {
 
          # check if TI Bridge (=F207), if so check if a PP04 follows next
         if [ "$pcivend" == "0x104c" ] && [ "$pcidevid" == "0xac28" ]; then
-            echo "Found TI2050 PCI bridge, possibly F207. Keep looking if PP04 appears."
+            echo "Found TI2050 PCI bridge, possibly F207. Keep looking if PP04 appears"
             # store PCI devnr. in case its a F223
             bus_path_sec=$pcidevnr
             count_instance_f207=`expr $count_instance_f207 + 1`
@@ -930,7 +930,7 @@ function scan_for_pci_devs {
         # any other F2xx/G2xx carrier (mezzanine chameleon) ?
         if [ "$pcivend" == "0x1172" ] && [ "$pcidevid" == "0x4d45" ] || [ "$pcivend" == "0x1a88" ]; then
             count_instance_f2xx=`expr $count_instance_f2xx + 1`
-            echo "Found possible MEN chameleon device(s), checking."
+            echo "Found possible MEN chameleon device(s), checking"
             check_for_cham_devs $MEN_LIN_DIR \
                 $pcivend $pcidevid $pcidevnr $pcisubvend \
                 $count_instance_f2xx $pcibus
@@ -1021,9 +1021,9 @@ function create_entry_dsc_mmodule {
         mModuleInstances["${mModule}"]="$((mModuleInstances["${mModule}"]+=1))"
     fi
 
-    echo "Found ${mModule^^} (${mmodSpecList["mmoduleid"]}) on ${boardName}_${boardNum}"
+    echo "Found ${mModule^^} M-Module" #(${mmodSpecList["mmoduleid"]}) on ${boardName}_${boardNum}"
 
-    echo "Writing ${mModule,,}_${mModuleInstances["${mModule}"]} section to system.dsc"
+    debug_print echo "Writing ${mModule,,}_${mModuleInstances["${mModule}"]} section to system.dsc"
     cat "${tplDir}/mX.tpl" | sed "s/SCAN_MMODULE_INSTANCE/${mModuleInstances["${mModule}"]}/g;s/SCAN_BBIS_NAME/${boardName}/g;s/USCORESCAN_BBIS_INSTANCE/_${boardNum}/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" ${mm_device_slot}`/g;s/SCAN_MMODULE_NAMELCASE/${mmodSpecList["hwname"],,}/g;s/SCAN_MMODULE_NAME/${mmodSpecList["name"]^^}/g;s/SCAN_WIZMODEL_NAME/${mmodSpecList["hwname"]^^}/g" >> "${outFile}"
 
     if [ "${mModuleInstances["${mModule}"]}" == "1" ]; then
@@ -1221,7 +1221,7 @@ function create_makefile {
                 sed -i.bak "s/#SCAN_NEXT_BB_DRIVER/$subs\n#SCAN_NEXT_BB_DRIVER/g" $TMP_MAKE_FILE
             fi
         else
-        debug_print "BB driver '$i' not found in MDIS tree, skipping."
+        debug_print "BB driver '$i' not found in MDIS tree, skipping"
         fi
     done
     sed -i.bak "s/$subs/#LAST_BBIS_DRIVER/g" $TMP_MAKE_FILE
@@ -1280,7 +1280,7 @@ function create_makefile {
                 sed -i.bak "s/#SCAN_NEXT_NAT_DRIVER/$subs\n#SCAN_NEXT_NAT_DRIVER/g" $TMP_MAKE_FILE
             fi
         else
-            echo "native driver '$i' not found in MDIS tree, skipping."
+            echo "native driver '$i' not found in MDIS tree, skipping"
         fi
     done
     sed -i.bak "s/$subs/#LAST_NAT_DRIVER/g" $TMP_MAKE_FILE
@@ -1298,7 +1298,7 @@ function create_makefile {
                 sed -i.bak "s/#SCAN_NEXT_USR_LIB/$subs\n#SCAN_NEXT_USR_LIB/g" $TMP_MAKE_FILE
             fi
         else
-            echo "user lib '$usrlib' not found in MDIS tree, skipping."
+            echo "user lib '$usrlib' not found in MDIS tree, skipping"
         fi
     done
     sed -i.bak "s/$subs/#LAST_USR_LIB/g" $TMP_MAKE_FILE
@@ -2275,7 +2275,7 @@ displayQuestion() {
             read answer
             case ${answer} in
             [Yy]) return 0;;
-            [Qq]) echo "*** Aborted by user."
+            [Qq]) echo "*** Aborted by user"
                   exit 1;;
             *)    if [[ "${answer}" =~ ^[0][0-9]+$ ]] || ! [[ "${answer}" =~ ^[0-9]+$ ]]; then
                       echo -e "${question}"
@@ -2331,7 +2331,7 @@ MEN_LIN_DIR=""
 ASSUME_YES=0
 INTERNAL_SWMODULES="0"
 
-if [ $# -lt 1 ] || [ "${1}" = "--help" ] || [ "${1}" = "-h" ]; then
+if [ $# -lt 1 ] || [ "${1}" == "--help" ] || [ "${1}" == "-h" ]; then
     scan_system_usage
     exit 1
 fi
@@ -2473,7 +2473,7 @@ if [ "$PCI_DRYTEST" == "" ]; then
     fi
 
 else
-    echo "PCI_DRYTEST set, using file $PCI_DRYTEST."
+    echo "PCI_DRYTEST set, using file $PCI_DRYTEST"
     TMP_PCIDEVS=$PCI_DRYTEST
 fi
 
@@ -2761,4 +2761,4 @@ fi
 # remove unnecessary fields from dsc file
 sed -i ':a;N;$!ba;s/#SCAN_NEXT_DEVID\n//g' ${OUTPUT_DIR_PATH}/${DSC_FILE}
 
-echo "finished."
+echo "finished"
