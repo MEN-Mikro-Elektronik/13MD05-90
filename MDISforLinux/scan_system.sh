@@ -1001,6 +1001,7 @@ function create_entry_dsc_mmodule {
     local outFile
     local mModule
     local xMakefile
+    local wizModelName
 
     tplDir="${1}"
     boardNum="${2}"
@@ -1022,9 +1023,35 @@ function create_entry_dsc_mmodule {
     fi
 
     echo "Found ${mModule^^} M-Module" #(${mmodSpecList["mmoduleid"]}) on ${boardName}_${boardNum}"
+    # Check if M-Module has its modelname
+    if [ "${mmodSpecList["modelname"]}" != "" ]; then
+        wizModelName="${mmodSpecList["modelname"]^^}"
+    else
+        wizModelName="${mmodSpecList["hwname"]^^}"
+    fi
 
-    debug_print echo "Writing ${mModule,,}_${mModuleInstances["${mModule}"]} section to system.dsc"
-    cat "${tplDir}/mX.tpl" | sed "s/SCAN_MMODULE_INSTANCE/${mModuleInstances["${mModule}"]}/g;s/SCAN_BBIS_NAME/${boardName}/g;s/USCORESCAN_BBIS_INSTANCE/_${boardNum}/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" ${mm_device_slot}`/g;s/SCAN_MMODULE_NAMELCASE/${mmodSpecList["hwname"],,}/g;s/SCAN_MMODULE_NAME/${mmodSpecList["name"]^^}/g;s/SCAN_WIZMODEL_NAME/${mmodSpecList["hwname"]^^}/g" >> "${outFile}"
+    local chars=""
+    local mModuleDevNo=1
+    local mModuleDevParameters=()
+    if [ "${mmodSpecList["subdevofftbl"]}" != "" ]; then
+        debug_print echo "mmodSpecList[\"subdevofftbl\"]: ${mmodSpecList["subdevofftbl"]}"
+        chars=( {a..x} )
+        mModuleDevNo="$(echo "${mmodSpecList["subdevofftbl"]}" | tr , '\n' | wc -l)"
+        for (( subDev=0; subDev<${mModuleDevNo}; subDev++ ))
+        do
+            subDevOffset="$(echo "${mmodSpecList["subdevofftbl"]}" | awk -v subDev="$((${subDev}+1))" -F',' '{print $subDev}')"
+            mModuleDevParameters+=("    SUBDEVICE_OFFSET_0 = U_INT32 0x${subDevOffset}\n")
+            echo "Create subdevice: ${mModule,,}_${mModuleInstances["${mModule}"]}${chars[subDev]} with offset: 0x${subDevOffset}"
+        done
+    else
+        mModuleDevParameters=""
+    fi
+
+    for (( devCnt=0; devCnt<${mModuleDevNo}; devCnt++ ))
+    do
+        debug_print echo "Writing ${mModule,,}_${mModuleInstances["${mModule}"]}${chars[devCnt]} section to system.dsc"
+        cat "${tplDir}/mX.tpl" | sed "s/SCAN_MMODULE_INSTANCE/${mModuleInstances["${mModule}"]}${chars[devCnt]}/g;s/SCAN_BBIS_NAME/${boardName}/g;s/USCORESCAN_BBIS_INSTANCE/_${boardNum}/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" ${mm_device_slot}`/g;s/SCAN_MMODULE_NAMELCASE/${mmodSpecList["hwname"],,}/g;s/SCAN_MMODULE_NAME/${mmodSpecList["name"]^^}/g;s/SCAN_WIZMODEL_NAME/${wizModelName}/g;s/DEVICE_PARAMETERS/${mModuleDevParameters[devCnt]}/g" >> "${outFile}"
+    done
 
     if [ "${mModuleInstances["${mModule}"]}" == "1" ]; then
         if [ "${mmodSpecList["Low Level Driver"]}" != "" ]; then
@@ -1650,8 +1677,12 @@ makeMmodOutputDataCallback() {
     elif [ "${2}" == "characters" ]; then
         if [ "${3}" == "/package/modellist/model/hwname" ]; then
             xModel+=(["hwname"]="${4}")
+        elif [ "${3}" == "/package/modellist/model/modelname" ]; then
+            xModel+=(["modelname"]="${4}")
         elif [ "${3}" == "/package/modellist/model/autoid/mmoduleid" ]; then
             xModel+=(["mmoduleid"]="${4}")
+        elif [ "${3}" == "/package/modellist/model/subdevofftbl" ]; then
+            xModel+=(["subdevofftbl"]="${4}")
         elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule/name" ] || \
             [ "${3}" == "/package/swmodulelist/swmodule/name" ]; then
             xModule+=(["name"]="${4}")

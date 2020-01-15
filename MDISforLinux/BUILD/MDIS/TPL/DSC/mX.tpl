@@ -16,7 +16,7 @@ SCAN_MMODULE_NAMELCASE_SCAN_MMODULE_INSTANCE {
     # ------------------------------------------------------------------------
     #        device parameters
     # ------------------------------------------------------------------------
-
+DEVICE_PARAMETERS
     # ------------------------------------------------------------------------
     #        debug levels (optional)
     #        these keys have only effect on debug drivers
