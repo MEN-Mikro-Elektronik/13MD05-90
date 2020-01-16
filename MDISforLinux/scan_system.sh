@@ -1032,25 +1032,37 @@ function create_entry_dsc_mmodule {
 
     local chars=""
     local mModuleDevNo=1
-    local mModuleDevParameters=()
+    local mModuleSubDevOffset=()
+    local mModuleDevParam=""
     if [ "${mmodSpecList["subdevofftbl"]}" != "" ]; then
-        debug_print echo "mmodSpecList[\"subdevofftbl\"]: ${mmodSpecList["subdevofftbl"]}"
+        debug_print "mmodSpecList[\"subdevofftbl\"]: ${mmodSpecList["subdevofftbl"]}"
         chars=( {a..x} )
         mModuleDevNo="$(echo "${mmodSpecList["subdevofftbl"]}" | tr , '\n' | wc -l)"
         for (( subDev=0; subDev<${mModuleDevNo}; subDev++ ))
         do
             subDevOffset="$(echo "${mmodSpecList["subdevofftbl"]}" | awk -v subDev="$((${subDev}+1))" -F',' '{print $subDev}')"
-            mModuleDevParameters+=("    SUBDEVICE_OFFSET_0 = U_INT32 0x${subDevOffset}\n")
-            echo "Create subdevice: ${mModule,,}_${mModuleInstances["${mModule}"]}${chars[subDev]} with offset: 0x${subDevOffset}"
+            mModuleSubDevOffset+=("    SUBDEVICE_OFFSET_0 = U_INT32 0x${subDevOffset}\n")
+            debug_print "Create subdevice: ${mModule,,}_${mModuleInstances["${mModule}"]}${chars[subDev]} with offset: 0x${subDevOffset}"
         done
     else
-        mModuleDevParameters=""
+        mModuleSubDevOffset=""
+    fi
+    # Add M-Module settings
+    if [ "${mmodSpecList["settingno"]}" != "" ]; then
+        for (( setNo=1; setNo<=${mmodSpecList["settingno"]}; setNo++ ))
+        do
+          if [ "${mmodSpecList["settingname${setNo}"]}" != "" ]; then
+              mModuleDevParam+="    ${mmodSpecList["settingname${setNo}"]} = ${mmodSpecList["settingtype${setNo}"]} ${mmodSpecList["settingvalue${setNo}"]}\n"
+              debug_print "Add ${mModule,,} M-Module required parameter:"
+              debug_print "${mmodSpecList["settingname${setNo}"]}=${mmodSpecList["settingtype${setNo}"]} ${mmodSpecList["settingvalue${setNo}"]}"
+          fi
+        done
     fi
 
     for (( devCnt=0; devCnt<${mModuleDevNo}; devCnt++ ))
     do
-        debug_print echo "Writing ${mModule,,}_${mModuleInstances["${mModule}"]}${chars[devCnt]} section to system.dsc"
-        cat "${tplDir}/mX.tpl" | sed "s/SCAN_MMODULE_INSTANCE/${mModuleInstances["${mModule}"]}${chars[devCnt]}/g;s/SCAN_BBIS_NAME/${boardName}/g;s/USCORESCAN_BBIS_INSTANCE/_${boardNum}/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" ${mm_device_slot}`/g;s/SCAN_MMODULE_NAMELCASE/${mmodSpecList["hwname"],,}/g;s/SCAN_MMODULE_NAME/${mmodSpecList["name"]^^}/g;s/SCAN_WIZMODEL_NAME/${wizModelName}/g;s/DEVICE_PARAMETERS/${mModuleDevParameters[devCnt]}/g" >> "${outFile}"
+        debug_print "Writing ${mModule,,}_${mModuleInstances["${mModule}"]}${chars[devCnt]} section to system.dsc"
+        cat "${tplDir}/mX.tpl" | sed "s/SCAN_MMODULE_INSTANCE/${mModuleInstances["${mModule}"]}${chars[devCnt]}/g;s/SCAN_BBIS_NAME/${boardName}/g;s/USCORESCAN_BBIS_INSTANCE/_${boardNum}/g;s/SCAN_DEV_SLOT/`printf \"0x%x\" ${mm_device_slot}`/g;s/SCAN_MMODULE_NAMELCASE/${mmodSpecList["hwname"],,}/g;s/SCAN_MMODULE_NAME/${mmodSpecList["name"]^^}/g;s/SCAN_WIZMODEL_NAME/${wizModelName}/g;s/SUBDEVICE_OFFSET/${mModuleSubDevOffset[devCnt]}/g;s/DEVICE_PARAMETERS/${mModuleDevParam}/g" >> "${outFile}"
     done
 
     if [ "${mModuleInstances["${mModule}"]}" == "1" ]; then
@@ -1639,6 +1651,7 @@ makeMmodOutputData() {
     local xId
     local xFile
     local -A xModel
+    local -A xModuleSettings
     local -A xModule
 
     xId="${1}"
@@ -1673,6 +1686,9 @@ makeMmodOutputDataCallback() {
             if [ "${5}" != "" ]; then
                 eval "xModule+=(${5})"
             fi
+        elif [ "${3}" == "/package/settinglist" ] && \
+              [ "${4}" == "setting" ]; then
+            xModuleSettings=()
         fi
     elif [ "${2}" == "characters" ]; then
         if [ "${3}" == "/package/modellist/model/hwname" ]; then
@@ -1692,6 +1708,14 @@ makeMmodOutputDataCallback() {
         elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule/makefilepath" ] || \
             [ "${3}" == "/package/swmodulelist/swmodule/makefilepath" ]; then
             xModule+=(["makefilepath"]="${4}")
+        elif [ "${3}" == "/package/settinglist/setting/name" ]; then
+            xModuleSettings+=(["settingname"]="${4}")
+        elif [ "${3}" == "/package/settinglist/setting/type" ]; then
+            xModuleSettings+=(["settingtype"]="${4}")
+        elif [ "${3}" == "/package/settinglist/setting/value" ]; then
+            xModuleSettings+=(["settingvalue"]="${4}")
+        elif [ "${3}" == "/package/settinglist/setting/defaultvalue" ]; then
+            xModuleSettings+=(["settingdefaultvalue"]="${4}")
         fi
     elif [ "${2}" == "endElement" ]; then
         if [ "${3}" == "/package/modellist/model" ] && \
@@ -1736,6 +1760,25 @@ makeMmodOutputDataCallback() {
                 fi
             fi
             xModule=()
+        elif [ "${3}" == "/package/settinglist/setting" ] && \
+             [ "${4}" == "setting" ]; then
+                if [ "${xModuleSettings["settingname"]}" != "" ] && \
+                    [ "${xModuleSettings["settingtype"]}" != "" ] && \
+                    [ "${xModuleSettings["settingvalue"]}" != "" ] && \
+                    [ "${xModuleSettings["settingdefaultvalue"]}" != "" ]; then
+                      if [ "${xModuleSettings["settingvalue"]}" != ${xModuleSettings["settingdefaultvalue"]} ]; then
+                          local settingNo=0
+                          if [ "${mmodSpecList["settingno"]}" != "" ]; then
+                              settingNo="${mmodSpecList["settingno"]}"
+                          fi
+                          settingNo=$((settingNo+1))
+                          mmodSpecList["settingno"]=${settingNo}
+                          mmodSpecList["settingname${settingNo}"]="${xModuleSettings["settingname"]}"
+                          mmodSpecList["settingtype${settingNo}"]="${xModuleSettings["settingtype"]}"
+                          mmodSpecList["settingvalue${settingNo}"]="${xModuleSettings["settingvalue"]}"
+                      fi
+                fi
+            xModuleSettings=()
         fi
     fi
 }
@@ -2231,11 +2274,11 @@ function check_scan_system_prerequisites {
     fi
 
     # check if /usr/src/linux/ exists and if its a valid kernel src/header folder
-    echo "checking if /usr/src/linux/ points to valid kernel headers..."
+    debug_print "checking if /usr/src/linux/ points to valid kernel headers..."
     find ${LIN_SRC_DIR}/include/ -name "autoconf.h" > /dev/null 2>&1
     local linux_src_link=$?
     if [ "${linux_src_link}" == "0" ]; then
-        echo "/usr/src/linux/ points to valid kernel headers: PASSED"
+        debug_print "/usr/src/linux/ points to valid kernel headers: PASSED"
     else
         echo "*** error: please set a symlink /usr/src/linux to the headers of your current running kernel:"
         echo "           e.g.   ln -s /usr/src/linux-headers.x.y.z /usr/src/linux"
@@ -2243,7 +2286,7 @@ function check_scan_system_prerequisites {
     fi
     echo "In case of warning: \"Cannot use CONFIG_STACK_VALIDATION=y\""
     echo "please install libelf-dev, libelf-devel or elfutils-libelf-devel"
-
+    echo ""
     return ${prerequisites_result}
 }
 
@@ -2484,11 +2527,11 @@ if [ "${CmdResult}" != "0" ]; then
 fi
 
 if [[ -e "${OUTPUT_DIR_PATH}/${DSC_FILE}" && ${SCAN_SIM} == 0 ]]; then
-    echo "backing up system.dsc..."
+    echo "Backing up system.dsc"
     mv ${OUTPUT_DIR_PATH}/${DSC_FILE} ${OUTPUT_DIR_PATH}/${DSC_FILE}.bak
 fi
 if [[ -e "$MAKE_FILE" && $SCAN_SIM == 0 ]]; then
-    echo "backing up Makefile..."
+    echo "Backing up Makefile"
     mv $MAKE_FILE $MAKE_FILE.bak
 fi
 
@@ -2792,4 +2835,4 @@ fi
 # remove unnecessary fields from dsc file
 sed -i ':a;N;$!ba;s/#SCAN_NEXT_DEVID\n//g' ${OUTPUT_DIR_PATH}/${DSC_FILE}
 
-echo "finished"
+echo "Finished"
