@@ -1350,6 +1350,9 @@ function create_makefile {
     sed -i.bak "s/@/\//g;s/\.mak/\.mak \\\/g" $TMP_MAKE_FILE
     sed -i.bak "s/\.lastmak/\.mak/g" $TMP_MAKE_FILE
 
+    # add path to mdis sources
+    sed -i.bak "/.*MEN_LIN_DIR =.*/c MEN_LIN_DIR = ${MEN_LIN_DIR}" $TMP_MAKE_FILE
+
     # finally replace ##REPLNEWLINExxx tags with LF (after
     # removing all doublette line no linefeeds would be left
     # making the Makefile looking ugly...)
@@ -2284,9 +2287,6 @@ function check_scan_system_prerequisites {
         echo "           e.g.   ln -s /usr/src/linux-headers.x.y.z /usr/src/linux"
         prerequisites_result=3
     fi
-    echo "In case of warning: \"Cannot use CONFIG_STACK_VALIDATION=y\""
-    echo "please install libelf-dev, libelf-devel or elfutils-libelf-devel"
-    echo ""
     return ${prerequisites_result}
 }
 
@@ -2413,8 +2413,10 @@ fi
 echo "============================================================"
 echo "MDIS System Scan - generate initial system.dsc / Makefile"
 echo "============================================================"
-echo
-
+echo ""
+echo "In case of warning: \"Cannot use CONFIG_STACK_VALIDATION=y\""
+echo "please install libelf-dev, libelf-devel or elfutils-libelf-devel"
+echo ""
 
 check_if_mdis_path $1
 CmdResult=$?
@@ -2502,15 +2504,23 @@ while test $# -gt 0 ; do
         esac
 done
 
-if [[ ! -d ${OUTPUT_DIR_PATH} ]]; then
-    echo "Directory: ${OUTPUT_DIR_PATH} is not valid/does not exists"
-    exit 1
-fi
-
 if [ ${UID} != 0 ]; then
     echo "*** error: only root can run this script"
     echo "*** if you are running this script via mdiswiz, please run mdiswiz as root"
     exit 1
+fi
+
+OUTPUT_DIR_PATH="$(cd "$(dirname "${OUTPUT_DIR_PATH}")" && pwd)/$(basename "${OUTPUT_DIR_PATH}")"
+
+if [[ ! -d ${OUTPUT_DIR_PATH} ]]; then
+    echo "Directory: ${OUTPUT_DIR_PATH} does not exists"
+    echo "Creating directory ${OUTPUT_DIR_PATH}"
+    mkdir -p ${OUTPUT_DIR_PATH}
+    CmdResult=$?
+    if [ "${CmdResult}" != "0" ]; then
+        echo "*** error while creating directory"
+        exit "${CmdResult}"
+    fi
 fi
 
 DSC_TPL_DIR=${MEN_LIN_DIR}/BUILD/MDIS/TPL/DSC

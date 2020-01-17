@@ -39,6 +39,7 @@ MENHISTORY=HISTORY
 # default path
 MENLINUX_ROOT=${OPT}/${MENLINUX}
 MDIS_HISTORY_PATH="${MDIS_REPO_DIR}/${MENHISTORY}"
+SYSTEM_SCAN_PATH=${CURRENT_WORKING_DIR}
 
 # system package git repository name
 MDIS_PACKAGE=MDISforLinux
@@ -53,7 +54,7 @@ function install_usage {
     echo ""
     echo "USAGE"
     echo "    INSTALL.sh -h | --help"
-    echo "    INSTALL.sh [-y] [--install-only] [-p PATH]"
+    echo "    INSTALL.sh [-y] [--install-only] [-p PATH] [--path-scan]"
     echo ""
     echo "OPTIONS"
     echo "    -y, --yes, --assume-yes"
@@ -65,6 +66,9 @@ function install_usage {
     echo ""
     echo "    -p PATH, --path=PATH"
     echo "        Specify an installation path"
+    echo ""
+    echo "    --scan-path=PATH"
+    echo "        Specify path to create Makefile, system.dsc files"
     echo ""
     echo "    -h, --help"
     echo "        Print this help"
@@ -89,6 +93,10 @@ while test $# -gt 0 ; do
                 ;;
         --path*)
                 export MENLINUX_ROOT=$(echo $1 | sed -e 's/^[^=]*=//g')
+                shift
+                ;;
+        --scan-path*)
+                SYSTEM_SCAN_PATH=$(echo $1 | sed -e 's/^[^=]*=//g')
                 shift
                 ;;
         --install-only)
@@ -149,7 +157,7 @@ show_insufficient_rights() {
 get_ynq_answer() {
         while true
         do
-                echo -e -n $1 '(y/n/q): '
+                echo -e -n "$1" '(y/n/q): '
                 read answer
                 case ${answer} in
                 [Yy]) return 0;;
@@ -160,15 +168,16 @@ get_ynq_answer() {
 }     
 
 #
-# input: directory of installed MDIS sources
+# input: arg1 = Path to installed MDIS sources
+#        arg2 = Path to place scan_system output files
 # returns scan system result
 run_scan_system() {
     if [ ${assume_yes} -eq "1" ]; then
-        echo "scanning system. Calling $1/scan_system.sh $1 --assume-yes"
-        /$1/scan_system.sh $1 --assume-yes
+        echo "Scanning system. Calling $1/scan_system.sh $1 $2 --assume-yes"
+        /$1/scan_system.sh "$1" "$2" --assume-yes
     else
-        echo "scanning system. Calling $1/scan_system.sh $1"
-        /$1/scan_system.sh $1
+        echo "Scanning system. Calling $1/scan_system.sh $1 $2"
+        /$1/scan_system.sh "$1" "$2"
     fi
 }
 
@@ -523,6 +532,9 @@ folder_recursive() {
 # - Run make
 # - Run make install
 
+MENLINUX_ROOT="$(cd "$(dirname "${MENLINUX_ROOT}")" && pwd)/$(basename "${MENLINUX_ROOT}")"
+SYSTEM_SCAN_PATH="$(cd "$(dirname "${SYSTEM_SCAN_PATH}")" && pwd)/$(basename "${SYSTEM_SCAN_PATH}")"
+
 echo "                                                                                "
 echo "Installing the MEN MDIS for Linux System Package 13MD05-90_02_01                "
 echo "(see MDIS User Manual for details)                                              "
@@ -622,7 +634,7 @@ while ${run}; do
                 cd ${CURRENT_WORKING_DIR}
                 echo "State Scan:"
                 state="Make"
-                run_scan_system ${MENLINUX_ROOT}
+                run_scan_system ${MENLINUX_ROOT} "-p ${SYSTEM_SCAN_PATH}"
                 result=$?
                 if [ ${result} -ne 0 ]; then
                         state="Break_Failed"
@@ -645,7 +657,7 @@ while ${run}; do
                                     state="Break_Failed";;
                     esac
                 else
-                    make
+                    make -C "${SYSTEM_SCAN_PATH}"
                     result=$?
                     if [ ${result} -ne 0 ]; then
                             state="Break_Failed"
@@ -658,7 +670,7 @@ while ${run}; do
                 if [ ${assume_yes} -ne "1" ]; then
                     get_ynq_answer "${ASK_INSTALL_MDIS_MODULES}"
                     case $? in
-                            0 )     make install
+                            0 )     make -C "${SYSTEM_SCAN_PATH}" install
                                     result=$?
                                     if [ ${result} -ne 0 ]; then
                                             state="Break_Failed"
@@ -669,7 +681,7 @@ while ${run}; do
                                     state="Break_Failed";;
                     esac
                 else
-                    make install
+                    make -C "${SYSTEM_SCAN_PATH}" install
                     result=$?
                     if [ ${result} -ne 0 ]; then
                             state="Break_Failed"
