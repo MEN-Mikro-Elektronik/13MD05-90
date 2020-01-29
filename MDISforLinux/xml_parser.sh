@@ -1,3 +1,8 @@
+### @brief M-Module ID to XML file map
+declare -A mmodFileList
+### @brief MDIS driver packages to xml file map
+declare -A mdisDriverFileList
+
 ### @brief Parse XML file
 ### @details SAX parser.
 ### Callback function is called on events like tag start (startElement), tag end
