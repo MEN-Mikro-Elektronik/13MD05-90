@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ### @brief M-Module ID to XML file map
 declare -A mmodFileList
 ### @brief MDIS driver packages to xml file map
@@ -235,7 +237,7 @@ makeMmodOutputDataCallback() {
                     [ "${xModuleSettings["settingtype"]}" != "" ] && \
                     [ "${xModuleSettings["settingvalue"]}" != "" ] && \
                     [ "${xModuleSettings["settingdefaultvalue"]}" != "" ]; then
-                      if [ "${xModuleSettings["settingvalue"]}" != ${xModuleSettings["settingdefaultvalue"]} ]; then
+                      if [ "${xModuleSettings["settingvalue"]}" != "${xModuleSettings["settingdefaultvalue"]}" ]; then
                           local settingNo=0
                           if [ "${mmodSpecList["settingno"]}" != "" ]; then
                               settingNo="${mmodSpecList["settingno"]}"

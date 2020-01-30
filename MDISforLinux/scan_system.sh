@@ -129,8 +129,61 @@ declare -a ipcoreSpecList=()
 ### @brief MDIS driver specification map list
 declare -A mdisDriverSpecList
 
-source "/opt/menlinux/map.sh"
-source "/opt/menlinux/xml_parser.sh"
+### @brief script usage --help
+scan_system_usage () {
+    echo "scan_system.sh - generate MDIS configuration for a selfhosted project"
+    echo ""
+    echo "USAGE"
+    echo "    scan_system.sh -h | --help"
+    echo "    scan_system.sh <DIRECTORY>"
+    echo "    scan_system.sh <DIRECTORY> [-y] [-p PATH] [--verbose LEVEL] [--drytest FILE]"
+    echo "                   [--buildtools] [--internal-submodules]"
+    echo "    scan_system.sh --prerequisites"
+    echo ""
+    echo "DESCRIPTION"
+    echo "    scan_system.sh scans the system to detect all MDIS hardware. The"
+    echo "    configuration is then written to system.dsc and Makefile files."
+    echo ""
+    echo "OPTIONS"
+    echo "    DIRECTORY"
+    echo "        Path to MDIS installation directory. The default is /opt/menlinux"
+    echo ""
+    echo "    -y, --yes, --assume-yes"
+    echo "        Scan without user interaction. Answer 'yes' for all questions."
+    echo ""
+    echo "    -p PATH, --path=PATH"
+    echo "        Overwrite default path for Makefile and system.dsc creation"
+    echo ""
+    echo "    --mdiswiz"
+    echo "        Used by mdiswiz only!"
+    echo ""
+    echo "    --verbose LEVEL"
+    echo "        Print additional debug info. Possible values for LEVEL are:"
+    echo "        1 - verbose output"
+    echo "        2 - verbose and function arguments output"
+    echo ""
+    echo "    --buildtools"
+    echo "        Build mm_ident and fpga_load tools from source"
+    echo ""
+    echo "    --drytest FILE"
+    echo "        Run dry test with test PCI device list if passed as alternative PCI"
+    echo "        devices temporary file. The default file /tmp/men_pci_devs is not"
+    echo "        written. Used to test system.dsc generation with predefined test data."
+    echo ""
+    echo "    --prerequisites"
+    echo "        Check if all prerequisites are met"
+    echo ""
+    echo "    --internal-swmodules"
+    echo "        Also add internal software modules"
+    echo ""
+    echo "    -h, --help"
+    echo "        Print this help"
+    echo ""
+    echo "IMPORTANT"
+    echo "    1. Following tools must be available in the system: i2cdump, setpci, lspci,"
+    echo "       libelf-dev or libelf-devel"
+    echo "    2. /usr/src/linux has to point to valid kernel headers directory"
+}
 
 ############################################################################
 # verbose debug outputs if VERBOSE_PRINT is 1 or 2
@@ -388,20 +441,21 @@ create_entry_dsc_cpu_type () {
 #
 create_entry_dsc_bbis_cham () {
     echo "create chameleon BBIS device - based on lspci data"
-    debug_args " \$1 = ${1}  \$2 = ${2}  \$3 = ${3}  \$4 = ${4}  \$5 = ${5}  \$6 = ${6}"
+    debug_args " \$1 = ${1}  \$2 = ${2}  \$3 = ${3}  \$4 = ${4}  \$5 = ${5}  \$6 = ${6} \$7 = ${7}"
     
     local pci_vd
     local pci_dev
     local pci_devnr=${3}
-    local pci_subv=
+    local pci_subv
     local tpl_dir=${5}
     local pci_busnr=${6}
     local wiz_mod="MEZZ_CHAM"
     local lspci_device_verbose_data
     local is_pcie
-    pci_vd=$(echo "${1}" | sed "s:"0x":"":g")
-    pci_dev=$(echo "${2}" | sed "s:"0x":"":g")
-    pci_subv=$(echo "${4}" | sed "s:"0x":"":g")
+    local mezz_cham_instance=${7}
+    pci_vd="${1//"0x"/""}"
+    pci_dev="${2//"0x"/""}"
+    pci_subv="${4//"0x"/""}"
     lspci_device_verbose_data=$(lspci -s "$(lspci -d "${pci_vd}":"${pci_dev}" -m | grep "${pci_subv}" | cut -f 1 -d " ")" -v)
     is_pcie=$(echo "${lspci_device_verbose_data}" | grep "Capabilities.*Express Legacy Endpoint")
 
@@ -427,7 +481,7 @@ create_entry_dsc_bbis_cham () {
     local tpl_name=mezz_cham.tpl
 
     # TODO generate the long filter commands dynamically..
-    < "${tpl_dir}/${tpl_name}" sed "s/SCAN_BBIS_INSTANCE/${bbis_instance}/g;s/SCAN_WIZ_MODEL/${wiz_mod}/g;s/SCAN_WIZ_BUSIF/${bus_if}/g;s/SCAN_PCI_BUS_NR/$(printf 0x%x "${pci_busnr}")/g;s/SCAN_PCI_BUS_SLOT/$(printf 0x%x "${pcibus_slot}")/g;s/SCAN_PCI_DEV_NR/$(printf 0x%x "${pci_devnr}")/g" > "${TMP_BBIS_DSC}"
+    < "${tpl_dir}/${tpl_name}" sed "s/SCAN_BBIS_INSTANCE/${mezz_cham_instance}/g;s/SCAN_WIZ_MODEL/${wiz_mod}/g;s/SCAN_WIZ_BUSIF/${bus_if}/g;s/SCAN_PCI_BUS_NR/$(printf 0x%x "${pci_busnr}")/g;s/SCAN_PCI_BUS_SLOT/$(printf 0x%x "${pcibus_slot}")/g;s/SCAN_PCI_DEV_NR/$(printf 0x%x "${pci_devnr}")/g" > "${TMP_BBIS_DSC}"
 }
 
 ############################################################################
@@ -467,7 +521,7 @@ scan_cham_table () {
     local itemMatch
     local hwName
 
-    while read devline <&3; do
+    while read -r devline <&3; do
     if [ "${do_parse}" == "1" ]; then
         ipcore=$(echo "${devline}" | awk '{print $3}')
         devid=$(echo "${devline}" | awk '{print $2}' | awk '{print substr($1,5,2)}')
@@ -623,7 +677,7 @@ check_for_cham_devs () {
         scan_cham_table "${DSC_TPL_DIR}" "${cham_file}" "${inst_count}" 0 "${7}:${4}:0"
 
         # Now add the found device IDs to temporary BBIS desc file
-        create_entry_dsc_bbis_cham "${2}" "${3}" "${4}" "${5}" "${DSC_TPL_DIR}" "${7}"
+        create_entry_dsc_bbis_cham "${2}" "${3}" "${4}" "${5}" "${DSC_TPL_DIR}" "${7}" "${6}"
         for id in ${G_deviceIdV2}; do
             # format data into a DEVICE_IDV2 entry and add same scan tag in next line
             idv2line="    DEVICE_IDV2_${device_id_count} = U_INT32 ${id}\n#SCAN_NEXT_DEVID"
@@ -658,8 +712,8 @@ check_for_cham_devs () {
 create_entry_dsc_f223 () {
     debug_print "Writing f223_${2} section to system.dsc "
     debug_args " \$1 = ${1}   \$2 = ${2}    \$3 = ${3}    \$4 = ${4}  "
-    < "${1}/f223.tpl" sed "s/SCAN_BBIS_INSTANCE/${2}/g;"\
-"s/SCAN_MDIS_INSTANCE/${2}/g;s/SCAN_PCI_BUS_NR/$(printf 0x%x "${3}")/g;"\
+    < "${1}/f223.tpl" sed "s/SCAN_BBIS_INSTANCE/${2}/g;" \
+"s/SCAN_MDIS_INSTANCE/${2}/g;s/SCAN_PCI_BUS_NR/$(printf 0x%x "${3}")/g;" \
 "s/SCAN_PCI_DEV_NR/$(printf 0x%x "${4}")/g" >> "${OUTPUT_DIR_PATH}/${DSC_FILE}"
 }
 
@@ -782,7 +836,7 @@ enable_memory_regions () {
     pciDevLineNr=$(grep -nh "Nr.| dom|bus|dev" ${TMP_PCIDEVS} | cut -f1 -d:)
     pciDevLineNr=$((pciDevLineNr+1))
 
-    while read line <&4; do
+    while read -r line <&4; do
         # Nr.| dom|bus|dev|fun| Ven ID | Dev ID | SubVen ID |
         #  25   0   5  15   0   0x12d8   0xe110    0x0000
         pciBusHex="$(printf "%x" "$(echo "${line}" | awk '{print $3}')")"
@@ -867,7 +921,7 @@ scan_for_pci_devs () {
     local dev_num_f223=0
     local reverse_enum_f205=0
 
-    while read line <&4; do
+    while read -r line <&4; do
     # Nr.| dom|bus|dev|fun| Ven ID | Dev ID | SubVen ID |
     #  25   0   5  15   0   0x12d8   0xe110    0x0000
         pcibus=$(echo "${line}" | awk '{print $3}')
@@ -1290,7 +1344,7 @@ create_makefile () {
         fi
     done
     sed -i.bak "s/${subs}/#LAST_BBIS_DRIVER/g" ${TMP_MAKE_FILE}
-    subs=$(echo "${subs}" | sed "s/\.mak/\.lastmak/g")
+    subs="${subs//".mak"/".lastmak"}"
     sed -i.bak "s/#LAST_BBIS_DRIVER/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_BB_DRIVER//g" ${TMP_MAKE_FILE}
 
@@ -1311,7 +1365,7 @@ create_makefile () {
         fi
     done
     sed -i.bak "s/${subs}/#LAST_LL_DRIVER/g" ${TMP_MAKE_FILE}
-    subs=$(echo "${subs}" | sed "s/\.mak/\.lastmak/g")
+    subs="${subs//".mak"/".lastmak"}"
     sed -i.bak "s/#LAST_LL_DRIVER/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_LL_DRIVER//g" ${TMP_MAKE_FILE}
 
@@ -1330,7 +1384,7 @@ create_makefile () {
         fi
     done
     sed -i.bak "s/${subs}/#LAST_LL_TOOL/g" ${TMP_MAKE_FILE}
-    subs=$(echo "${subs}" | sed "s/\.mak/\.lastmak/g")
+    subs="${subs//".mak"/".lastmak"}"
     sed -i.bak "s/#LAST_LL_TOOL/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_LL_TOOL//g" ${TMP_MAKE_FILE}
 
@@ -1349,7 +1403,7 @@ create_makefile () {
         fi
     done
     sed -i.bak "s/${subs}/#LAST_NAT_DRIVER/g" ${TMP_MAKE_FILE}
-    subs=$(echo "${subs}" | sed "s/\.mak/\.lastmak/g")
+    subs="${subs//".mak"/".lastmak"}"
     sed -i.bak "s/#LAST_NAT_DRIVER/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_NAT_DRIVER//g" ${TMP_MAKE_FILE}
 
@@ -1367,7 +1421,7 @@ create_makefile () {
         fi
     done
     sed -i.bak "s/${subs}/#LAST_USR_LIB/g" ${TMP_MAKE_FILE}
-    subs=$(echo "${subs}" | sed "s/\.mak/\.lastmak/g")
+    subs="${subs//".mak"/".lastmak"}"
     sed -i.bak "s/#LAST_USR_LIB/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_USR_LIB//g" ${TMP_MAKE_FILE}
 
@@ -1428,62 +1482,6 @@ compile_fpga_tools () {
     fi
 
     return ${CmdResult}
-}
-
-### @brief script usage --help
-scan_system_usage () {
-    echo "scan_system.sh - generate MDIS configuration for a selfhosted project"
-    echo ""
-    echo "USAGE"
-    echo "    scan_system.sh -h | --help"
-    echo "    scan_system.sh <DIRECTORY>"
-    echo "    scan_system.sh <DIRECTORY> [-y] [-p PATH] [--verbose LEVEL] [--drytest FILE]"
-    echo "                   [--buildtools] [--internal-submodules]"
-    echo "    scan_system.sh --prerequisites"
-    echo ""
-    echo "DESCRIPTION"
-    echo "    scan_system.sh scans the system to detect all MDIS hardware. The"
-    echo "    configuration is then written to system.dsc and Makefile files."
-    echo ""
-    echo "OPTIONS"
-    echo "    DIRECTORY"
-    echo "        Path to MDIS installation directory. The default is /opt/menlinux"
-    echo ""
-    echo "    -y, --yes, --assume-yes"
-    echo "        Scan without user interaction. Answer 'yes' for all questions."
-    echo ""
-    echo "    -p PATH, --path=PATH"
-    echo "        Overwrite default path for Makefile and system.dsc creation"
-    echo ""
-    echo "    --mdiswiz"
-    echo "        Used by mdiswiz only!"
-    echo ""
-    echo "    --verbose LEVEL"
-    echo "        Print additional debug info. Possible values for LEVEL are:"
-    echo "        1 - verbose output"
-    echo "        2 - verbose and function arguments output"
-    echo ""
-    echo "    --buildtools"
-    echo "        Build mm_ident and fpga_load tools from source"
-    echo ""
-    echo "    --drytest FILE"
-    echo "        Run dry test with test PCI device list if passed as alternative PCI"
-    echo "        devices temporary file. The default file /tmp/men_pci_devs is not"
-    echo "        written. Used to test system.dsc generation with predefined test data."
-    echo ""
-    echo "    --prerequisites"
-    echo "        Check if all prerequisites are met"
-    echo ""
-    echo "    --internal-swmodules"
-    echo "        Also add internal software modules"
-    echo ""
-    echo "    -h, --help"
-    echo "        Print this help"
-    echo ""
-    echo "IMPORTANT"
-    echo "    1. Following tools must be available in the system: i2cdump, setpci, lspci,"
-    echo "       libelf-dev or libelf-devel"
-    echo "    2. /usr/src/linux has to point to valid kernel headers directory"
 }
 
 ### @brief check if passed argument is valid directory in system
@@ -1550,7 +1548,7 @@ get_ynq_answer() {
     while true
     do
         echo -e -n "${1}" '(y/n/q): '
-        read answer
+        read -r answer
         case ${answer} in
         [Yy]) return 0;;
         [Nn]) return 1;;
@@ -1596,7 +1594,7 @@ displayQuestion() {
         echo -e "${question}"
         while true
         do
-            read answer
+            read -r answer
             case ${answer} in
             [Yy]) return 0;;
             [Qq]) echo "*** Aborted by user"
@@ -1676,7 +1674,13 @@ elif [ ${CmdResult} -eq 1 ]; then
 else
     echo "$1 :invalid path"
     exit 1
-fi  
+fi
+
+# Check if exist and import required sources
+source "${MEN_LIN_DIR}/SCAN_SYSTEM_SCRIPTS/map.sh" || \
+      { echo "SCAN_SYSTEM/map.sh not found - exit"; exit 1; }
+source "${MEN_LIN_DIR}/SCAN_SYSTEM_SCRIPTS/xml_parser.sh" || \
+      { echo "SCAN_SYSTEM/xml_parser.sh not found - exit "; exit 1; }
 
 # read parameters
 while test $# -gt 0 ; do

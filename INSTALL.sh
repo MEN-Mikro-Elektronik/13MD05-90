@@ -25,9 +25,11 @@
 # warn when using uninitialised variables
 set -u
 
-this=$0
 # INSTALL.sh, MDIS source directory
-MDIS_REPO_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
+MDIS_REPO_DIR="$( cd "$(dirname "$0")" || \
+              { echo "cannot change dir to: $(dirname "$0")"; exit 1; }; pwd -P )"
+this=$0
+
 # Directory from which INSTALL script is invoked
 CURRENT_WORKING_DIR=$(pwd)
 
@@ -84,7 +86,7 @@ while test $# -gt 0 ; do
         -p)
                 shift
                 if test $# -gt 0; then
-                        export MENLINUX_ROOT=$1
+                        MENLINUX_ROOT=$1
                 else
                         echo "no path specified"
                         exit 1
@@ -92,11 +94,11 @@ while test $# -gt 0 ; do
                 shift
                 ;;
         --path*)
-                export MENLINUX_ROOT=$(echo $1 | sed -e 's/^[^=]*=//g')
+                MENLINUX_ROOT="$(echo "$1" | sed -e 's/^[^=]*=//g')"
                 shift
                 ;;
         --scan-path*)
-                SYSTEM_SCAN_PATH=$(echo $1 | sed -e 's/^[^=]*=//g')
+                SYSTEM_SCAN_PATH="$(echo "$1" | sed -e 's/^[^=]*=//g')"
                 shift
                 ;;
         --install-only)
@@ -117,7 +119,6 @@ while test $# -gt 0 ; do
                 ;;
         esac
 done
-
 
 show_next_steps() {
         echo "The next steps could be:"
@@ -158,7 +159,7 @@ get_ynq_answer() {
         while true
         do
                 echo -e -n "$1" '(y/n/q): '
-                read answer
+                read -r answer
                 case ${answer} in
                 [Yy]) return 0;;
                 [Nn]) return 1;;
@@ -174,10 +175,10 @@ get_ynq_answer() {
 run_scan_system() {
     if [ ${assume_yes} -eq "1" ]; then
         echo "Scanning system. Calling $1/scan_system.sh $1 $2 --assume-yes"
-        /$1/scan_system.sh "$1" "$2" --assume-yes
+        "/$1/scan_system.sh" "$1" "$2" --assume-yes
     else
         echo "Scanning system. Calling $1/scan_system.sh $1 $2"
-        /$1/scan_system.sh "$1" "$2"
+        "/$1/scan_system.sh" "$1" "$2"
     fi
 }
 
@@ -197,7 +198,7 @@ make_history_script() {
 
         if [ -d "${MDIS_REPO_DIR}/.git" ] && [ "${GIT_VERSION}" != "" ]; then
                 echo "Removing old history entry ${MDIS_HISTORY_PATH}"
-                rm -rf ${MDIS_HISTORY_PATH} &> /dev/null
+                rm -rf "${MDIS_HISTORY_PATH}" &> /dev/null
                 result=$?
                 if [ ${result} -ne 0 ]; then
                         show_insufficient_rights
@@ -218,13 +219,15 @@ make_history_script() {
         mkdir "${MDIS_HISTORY_PATH}"
 
         # Add 13MD05-90 History
-        local gitRevision=$(git --git-dir "${MDIS_REPO_DIR}/.git" describe --dirty --long --tags --always)
-        local gitDate=$(git --git-dir "${MDIS_REPO_DIR}/.git" --no-pager show -s --date=short --format=format:"%cd%n")
+        local gitRevision
+        local gitDate
+        gitRevision=$(git --git-dir "${MDIS_REPO_DIR}/.git" describe --dirty --long --tags --always)
+        gitDate=$(git --git-dir "${MDIS_REPO_DIR}/.git" --no-pager show -s --date=short --format=format:"%cd%n")
         git --git-dir "${MDIS_REPO_DIR}/.git" log > "${MDIS_HISTORY_PATH}/13MD05-90_history.txt"
         git --git-dir "${MDIS_REPO_DIR}/.git" remote -v > "${MDIS_HISTORY_PATH}/13MD05-90_url.txt"
         echo "${gitRevision}_${gitDate}" > "${MDIS_HISTORY_PATH}/13MD05-90_version.txt"
-        git --git-dir "${MDIS_REPO_DIR}/.git" describe --exact-match --tags $(git --git-dir \
-"${MDIS_REPO_DIR}/.git" rev-parse --verify HEAD) &> "${MDIS_HISTORY_PATH}/13MD05-90_tag.txt"
+        git --git-dir "${MDIS_REPO_DIR}/.git" describe --exact-match --tags "$(git --git-dir \
+"${MDIS_REPO_DIR}/.git" rev-parse --verify HEAD)" &> "${MDIS_HISTORY_PATH}/13MD05-90_tag.txt"
 
         # Add history files for all submodules within 13MD05-90 repository.
         submoduleList=$(git --git-dir "${MDIS_REPO_DIR}/.git" config --file "${MDIS_REPO_DIR}/.gitmodules" \
@@ -235,21 +238,21 @@ make_history_script() {
         rm "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt" 2> /dev/null
         submoduleCnt=$(echo "${submoduleList}" | wc -l)
         for ((i=1;i<=submoduleCnt;i++)); do
-           echo $(echo "${submoduleList}" | awk -v i="${i}" NR==i) " " $(echo "${submoduleShortUrlList}" \
-| awk -v i="${i}" NR==i) >> "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt"
+           echo "$(echo "${submoduleList}" | awk -v i="${i}" NR==i)" " " "$(echo "${submoduleShortUrlList}" \
+| awk -v i="${i}" NR==i)" >> "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt"
         done
 
         while read -r var1 var2; do
                 i=${MDIS_REPO_DIR}/${var1}
                 if [ -d "${i}" ]; then
-                    cd ${i}
+                    cd "${i}" || { echo "cannot change directory into: ${i}"; exit 1; }
                     git log > "${MDIS_HISTORY_PATH}/${var2}_history.txt"
                     git remote -v > "${MDIS_HISTORY_PATH}/${var2}_url.txt"
                     gitRevision=$(git describe --dirty --long --tags --always)
                     gitDate=$(git --no-pager show -s --date=short --format=format:"%cd%n")
                     echo "${gitRevision}_${gitDate}" > "${MDIS_HISTORY_PATH}/${var2}_version.txt"
-                    git describe --exact-match --tags $(git rev-parse --verify HEAD) &> "${MDIS_HISTORY_PATH}/${var2}_tag.txt"
-                    cd ${MDIS_REPO_DIR}
+                    git describe --exact-match --tags "$(git rev-parse --verify HEAD)" &> "${MDIS_HISTORY_PATH}/${var2}_tag.txt"
+                    cd "${MDIS_REPO_DIR}" || { echo "cannot change directory into: ${MDIS_REPO_DIR}"; exit 1; }
                 fi
         done < <(cat "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt")
 
@@ -263,13 +266,13 @@ make_history_script() {
 create_installation_directory(){
         if [ ! -d "${MENLINUX_ROOT}" ]; then
                 echo "Creating directory ${MENLINUX_ROOT}... "
-                mkdir -p ${MENLINUX_ROOT}
+                mkdir -p "${MENLINUX_ROOT}"
                 result=$?
                 if [ ${result} -ne 0 ]; then
                         show_insufficient_rights
                         return 1
                 fi
-                chmod 777 ${MENLINUX_ROOT}
+                chmod 777 "${MENLINUX_ROOT}"
                 result=$?
                 if [ ${result} -ne 0 ]; then
                         show_insufficient_rights
@@ -313,7 +316,7 @@ overwrite_installation_directory(){
 # returns :     0 - copying of sources is succesfull
 #       `       1 - error (insufficient rights/others)
 copy_sources_into_installation_directory(){
-        cd ${MENLINUX_ROOT}
+        cd "${MENLINUX_ROOT}" || { echo "cannot change directory into: ${MENLINUX_ROOT}"; exit 1; }
         echo "Copy ${MDIS_PACKAGE}..."
         rsync -ru --exclude=.git  ${MDIS_REPO_DIR}/${MDIS_PACKAGE}/* . 2> /dev/null
         result=$?
@@ -323,7 +326,7 @@ copy_sources_into_installation_directory(){
         fi
 
         echo "Copy History..."
-        rsync -ru --exclude=.git  ${MDIS_REPO_DIR}/${MENHISTORY}/* ${MENHISTORY}/ 2> /dev/null
+        rsync -ru --exclude=.git ${MDIS_REPO_DIR}/${MENHISTORY}/* "${MENHISTORY}/" 2> /dev/null
         result=$?
         if [ ${result} -ne 0 ]; then
                 show_insufficient_rights
@@ -335,7 +338,7 @@ copy_sources_into_installation_directory(){
 
         echo "Copy MDIS drivers..."
 
-        dirToCopyList=$(ls -l ${MDIS_REPO_DIR} | grep '^d' | awk '{ print $9 }' | grep "13.*")
+        dirToCopyList=$(ls -l "${MDIS_REPO_DIR}" | grep '^d' | awk '{ print $9 }' | grep "13.*")
         # additional directories that have to be copied into install directory
         dirToCopyList+=$'\n'"mdis_ll_mt"
 
@@ -345,7 +348,7 @@ copy_sources_into_installation_directory(){
                         for folder_type in BIN BUILD DOXYGENTMPL DRIVERS INCLUDE LIBSRC LICENSES PACKAGE_DESC TOOLS WINDOWS; do
                                 if [ -d "$i/${folder_type}" ]; then
                                         mkdir -p ./${folder_type}
-                                        folder_recursive $i/${folder_type} ${MENLINUX_ROOT}/${folder_type}
+                                        folder_recursive "$i/${folder_type}" "${MENLINUX_ROOT}/${folder_type}"
                                         result=$?
                                         if [ ${result} -ne 0 ]; then
                                                 return 1
@@ -357,16 +360,16 @@ copy_sources_into_installation_directory(){
 
         # update *.mak and *.xml files
         echo "Makefiles update ..."
-        cd ${MDIS_REPO_DIR}
+        cd "${MDIS_REPO_DIR}" || { echo "cannot change directory into: ${MDIS_REPO_DIR}"; exit 1; }
         update_makefiles
         echo "XML files update ..."
         update_xmlfiles
 
         # set permissions in "BUILD" and "BIN" directory for all users
-        cd ${MENLINUX_ROOT}
+        cd "${MENLINUX_ROOT}" || { echo "cannot change directory into: ${MENLINUX_ROOT}"; exit 1; }
         echo "Setting permissions..."
-        find -type d -exec chmod 777 {} \; 2> /dev/null
-        find -type f -exec chmod a+rw '{}' \; 2> /dev/null
+        find . -type d -exec chmod 777 {} \; 2> /dev/null
+        find . -type f -exec chmod a+rw '{}' \; 2> /dev/null
         result=$?
         if [ ${result} -ne 0 ]; then
                 show_insufficient_rights
@@ -397,10 +400,12 @@ update_makefiles(){
         makFilesInSubmodule=$(echo "${makFilesToUpdate}" | grep "${var1}")
         if [ ! -z "${makFilesInSubmodule}" ]; then
             while read -r makfile; do
-                local stampedRevision=$(cat "${MDIS_HISTORY_PATH}/${var2}_version.txt")
-                local menlinuxMakPath=$(echo "${makfile}" | awk -F / '{for (i=3; i<NF; i++) printf $i "/"; print $NF}')
-                sed -i 's/'"STAMPED_REVISION=.*"'/'"STAMPED_REVISION=${stampedRevision}"'/g' ${MENLINUX_ROOT}/${menlinuxMakPath}
-                makFilesModified=$((${makFilesModified}+1))
+                local stampedRevision
+                local menlinuxMakPath
+                stampedRevision=$(cat "${MDIS_HISTORY_PATH}/${var2}_version.txt")
+                menlinuxMakPath=$(echo "${makfile}" | awk -F / '{for (i=3; i<NF; i++) printf $i "/"; print $NF}')
+                sed -i 's/'"STAMPED_REVISION=.*"'/'"STAMPED_REVISION=${stampedRevision}"'/g' "${MENLINUX_ROOT}/${menlinuxMakPath}"
+                makFilesModified=$((makFilesModified+1))
                 makFilesToUpdateMainRepo=$(grep -v "${menlinuxMakPath}" <<< "${makFilesToUpdateMainRepo}")
             done <<< "${makFilesInSubmodule}"
         fi
@@ -409,10 +414,12 @@ update_makefiles(){
     # update files in main repository
     if [ ! -z "${makFilesToUpdateMainRepo}" ]; then
         while read -r makfile; do
-            local stampedRevision=$(cat "${MDIS_HISTORY_PATH}/13MD05-90_version.txt")
-            local menlinuxMakPath=$(echo "${makfile}" | awk -F / '{for (i=3; i<NF; i++) printf $i "/"; print $NF}')
-            sed -i 's/'"STAMPED_REVISION=.*"'/'"STAMPED_REVISION=${stampedRevision}"'/g' ${MENLINUX_ROOT}/${menlinuxMakPath}
-            makFilesModified=$((${makFilesModified}+1))
+            local stampedRevision
+            local menlinuxMakPath
+            stampedRevision=$(cat "${MDIS_HISTORY_PATH}/13MD05-90_version.txt")
+            menlinuxMakPath=$(echo "${makfile}" | awk -F / '{for (i=3; i<NF; i++) printf $i "/"; print $NF}')
+            sed -i 's/'"STAMPED_REVISION=.*"'/'"STAMPED_REVISION=${stampedRevision}"'/g' "${MENLINUX_ROOT}/${menlinuxMakPath}"
+            makFilesModified=$((makFilesModified+1))
         done <<< "${makFilesToUpdateMainRepo}"
     fi
 
@@ -441,17 +448,19 @@ update_xmlfiles(){
             while read -r xmlfile; do
                 local revisiondate=""
                 local revisionEndIdx=0
-                local revision=$(cat "${MDIS_HISTORY_PATH}/${var2}_version.txt")
-                local menlinuxXmlPath=$(echo "${xmlfile}" | awk -F"/" '{print $NF}')
-                revisionEndIdx=$(echo ${revision} | awk -F"_" '{print length($0)-length($NF)}')
-                revisionEndIdx=$((${revisionEndIdx}-1))
-                revisiondate=$(echo ${revision} | awk -F"_" '{print $NF}')
-                revision=$(echo ${revision} | cut -c1-${revisionEndIdx})
+                local revision
+                local menlinuxXmlPath
+                revision=$(cat "${MDIS_HISTORY_PATH}/${var2}_version.txt")
+                menlinuxXmlPath=$(echo "${xmlfile}" | awk -F"/" '{print $NF}')
+                revisionEndIdx=$(echo "${revision}" | awk -F"_" '{print length($0)-length($NF)}')
+                revisionEndIdx=$((revisionEndIdx-1))
+                revisiondate=$(echo "${revision}" | awk -F"_" '{print $NF}')
+                revision=$(echo "${revision}" | cut -c1-${revisionEndIdx})
                 xmlFilesToUpdateMainRepo=$(grep -v "${menlinuxXmlPath}" <<< "${xmlFilesToUpdateMainRepo}")
-                menlinuxXmlPath=$(echo "${MENLINUX_ROOT}/PACKAGE_DESC/${menlinuxXmlPath}")
-                sed -i 's|'"<date>.*</date>"'|'"<date>${revisiondate}</date>"'|g' ${menlinuxXmlPath}
-                sed -i 's|'"<revision>.*</revision>"'|'"<revision>${revision}</revision>"'|g' ${menlinuxXmlPath}
-                xmlFilesModified=$((${xmlFilesModified}+1))
+                menlinuxXmlPath="${MENLINUX_ROOT}/PACKAGE_DESC/${menlinuxXmlPath}"
+                sed -i 's|'"<date>.*</date>"'|'"<date>${revisiondate}</date>"'|g' "${menlinuxXmlPath}"
+                sed -i 's|'"<revision>.*</revision>"'|'"<revision>${revision}</revision>"'|g' "${menlinuxXmlPath}"
+                xmlFilesModified=$((xmlFilesModified+1))
             done <<< "${xmlFilesInSubmodule}"
         fi
     done < <(cat "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt")
@@ -461,16 +470,18 @@ update_xmlfiles(){
         while read -r xmlfile; do
             local revisiondate=""
             local revisionEndIdx=0
-            local revision=$(cat "${MDIS_HISTORY_PATH}/13MD05-90_version.txt")
-            local menlinuxXmlPath=$(echo "${xmlfile}" | awk -F"/" '{print $NF}')
-            revisionEndIdx=$(echo ${revision} | awk -F"_" '{print length($0)-length($NF)}')
-            revisionEndIdx=$((${revisionEndIdx}-1))
-            revisiondate=$(echo ${revision} | awk -F"_" '{print $NF}')
-            revision=$(echo ${revision} | cut -c1-${revisionEndIdx})
-            menlinuxXmlPath=$(echo "${MENLINUX_ROOT}/PACKAGE_DESC/${menlinuxXmlPath}")
-            sed -i 's|'"<date>.*</date>"'|'"<date>${revisiondate}</date>"'|g' ${menlinuxXmlPath}
-            sed -i 's|'"<revision>.*</revision>"'|'"<revision>${revision}</revision>"'|g' ${menlinuxXmlPath}
-            xmlFilesModified=$((${xmlFilesModified}+1))
+            local revision
+            local menlinuxXmlPath
+            revision=$(cat "${MDIS_HISTORY_PATH}/13MD05-90_version.txt")
+            menlinuxXmlPath=$(echo "${xmlfile}" | awk -F"/" '{print $NF}')
+            revisionEndIdx=$(echo "${revision}" | awk -F"_" '{print length($0)-length($NF)}')
+            revisionEndIdx=$((revisionEndIdx-1))
+            revisiondate=$(echo "${revision}" | awk -F"_" '{print $NF}')
+            revision=$(echo "${revision}" | cut -c1-${revisionEndIdx})
+            menlinuxXmlPath="${MENLINUX_ROOT}/PACKAGE_DESC/${menlinuxXmlPath}"
+            sed -i 's|'"<date>.*</date>"'|'"<date>${revisiondate}</date>"'|g' "${menlinuxXmlPath}"
+            sed -i 's|'"<revision>.*</revision>"'|'"<revision>${revision}</revision>"'|g' "${menlinuxXmlPath}"
+            xmlFilesModified=$((xmlFilesModified+1))
         done <<< "${xmlFilesToUpdateMainRepo}"
     fi
 
@@ -499,14 +510,14 @@ folder_recursive() {
                         #################
                         # It is a file
                         #################
-                        rsync --exclude=.git ${subfolder} ${DST_FOLDER}/
+                        rsync --exclude=.git "${subfolder}" "${DST_FOLDER}/"
                         continue;
                 else
                         #################
                         # It is a folder
                         #################
                         echo "Install ${subfolder} to ${DST_FOLDER}"
-                        rsync -ru --exclude=.git ${subfolder} ${DST_FOLDER}/
+                        rsync -ru --exclude=.git "${subfolder}" "${DST_FOLDER}/"
                         result=$?
                         if [ ${result} -ne 0 ]; then
                                 echo "*** Can't sync MDIS sources due to insufficient rights."
@@ -631,10 +642,10 @@ while ${run}; do
                 fi
                 ;;
         Scan)
-                cd ${CURRENT_WORKING_DIR}
+                cd "${CURRENT_WORKING_DIR}" || { echo "cannot change directory into: ${CURRENT_WORKING_DIR}"; exit 1; }
                 echo "State Scan:"
                 state="Make"
-                run_scan_system ${MENLINUX_ROOT} "-p ${SYSTEM_SCAN_PATH}"
+                run_scan_system "${MENLINUX_ROOT}" "-p ${SYSTEM_SCAN_PATH}"
                 result=$?
                 if [ ${result} -ne 0 ]; then
                         state="Break_Failed"

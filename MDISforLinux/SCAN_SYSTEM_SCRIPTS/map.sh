@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ### @brief Create map
 ### @param $1 Map name
 mapNew() {
