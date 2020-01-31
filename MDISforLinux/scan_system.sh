@@ -458,7 +458,7 @@ create_entry_dsc_cpu_type () {
 create_entry_dsc_bbis_cham () {
     echo "create chameleon BBIS device - based on lspci data"
     debug_args " \$1 = ${1}  \$2 = ${2}  \$3 = ${3}  \$4 = ${4}  \$5 = ${5}  \$6 = ${6} \$7 = ${7}"
-    
+
     local pci_vd
     local pci_dev
     local pci_devnr=${3}
@@ -1704,72 +1704,72 @@ while test $# -gt 0 ; do
     # compatible with previous versions
     case "$1" in
         -h|--help)
-                scan_system_usage
-                exit 1
-                ;;
+            scan_system_usage
+            exit 1
+            ;;
         --buildtools)
-                shift
-                BUILD_TOOLS="1"
-                echo "Build mm_ident and fpga_load tool"
-                ;;
+            shift
+            BUILD_TOOLS="1"
+            echo "Build mm_ident and fpga_load tool"
+            ;;
         --mdiswiz|-y|--yes|--assume-yes)
-                shift
-                ASSUME_YES=1
-                echo "Automatic yes to prompts; assume \"yes\" as answer"
-                echo "to all prompts and run non-interactively"
-                ;;
+            shift
+            ASSUME_YES=1
+            echo "Automatic yes to prompts; assume \"yes\" as answer"
+            echo "to all prompts and run non-interactively"
+            ;;
         -p)
-                shift
-                if test $# -gt 0; then
-                    OUTPUT_DIR_PATH=${1}
-                    OUTPUT_DIR_PATH=$(get_abs_path "${OUTPUT_DIR_PATH}")
-                else
-                    echo "no path specified"
-                    exit 1
-                fi
-                shift
-                ;;
-        --path*)
-                OUTPUT_DIR_PATH=$(echo "${1}" | sed -e 's/^[^=]*=//g')
+            shift
+            if test $# -gt 0; then
+                OUTPUT_DIR_PATH=${1}
                 OUTPUT_DIR_PATH=$(get_abs_path "${OUTPUT_DIR_PATH}")
-                shift
-                ;;
-        --verbose)
-                shift
-                if test $# -gt 0; then
-                    VERBOSE_PRINT=${1}
-                    echo "Verbose option: ${VERBOSE_PRINT}"
-                else
-                    echo "VERBOSE_PRINT unspecified"
-                    exit 1
-                fi
-                shift
-                ;;
-        --drytest)
-                shift
-                if test $# -gt 0; then
-                    PCI_DRYTEST=${1}
-                    echo "drytest option: ${PCI_DRYTEST}"
-                else
-                    echo "PCI_DRYTEST unspecified"
-                    exit 1
-                fi
-                shift
-                ;;
-        --prerequisites)
-                shift
-                check_scan_system_prerequisites
+            else
+                echo "no path specified"
                 exit 1
-                ;;
+            fi
+            shift
+            ;;
+        --path*)
+            OUTPUT_DIR_PATH=$(echo "${1}" | sed -e 's/^[^=]*=//g')
+            OUTPUT_DIR_PATH=$(get_abs_path "${OUTPUT_DIR_PATH}")
+            shift
+            ;;
+        --verbose)
+            shift
+            if test $# -gt 0; then
+                VERBOSE_PRINT=${1}
+                echo "Verbose option: ${VERBOSE_PRINT}"
+            else
+                echo "VERBOSE_PRINT unspecified"
+                exit 1
+            fi
+            shift
+            ;;
+        --drytest)
+            shift
+            if test $# -gt 0; then
+                PCI_DRYTEST=${1}
+                echo "drytest option: ${PCI_DRYTEST}"
+            else
+                echo "PCI_DRYTEST unspecified"
+                exit 1
+            fi
+            shift
+            ;;
+        --prerequisites)
+            shift
+            check_scan_system_prerequisites
+            exit 1
+            ;;
         --internal-swmodules)
-                shift
-                INTERNAL_SWMODULES="1"
-                echo "Internal sw modules will also be added"
-                ;;
+            shift
+            INTERNAL_SWMODULES="1"
+            echo "Internal sw modules will also be added"
+            ;;
         *)
-                echo "No valid parameters"
-                break
-                ;;
+            echo "No valid parameters"
+            break
+            ;;
         esac
 done
 
