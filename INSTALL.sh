@@ -92,78 +92,78 @@ get_abs_path () {
 
 # read parameters
 while test $# -gt 0 ; do
-   case "$1" in 
+    case "$1" in 
         -h|--help)
-                install_usage
-                exit 0
-                ;;
+            install_usage
+            exit 0
+            ;;
         -p)
-                shift
-                if test $# -gt 0; then
-                        MENLINUX_ROOT=$1
-                        MENLINUX_ROOT=$(get_abs_path "${MENLINUX_ROOT}")
-                else
-                        echo "no path specified"
-                        exit 1
-                fi
-                shift
-                ;;
-        --path*)
-                MENLINUX_ROOT=$(echo "$1" | sed -e 's/^[^=]*=//g')
+            shift
+            if test $# -gt 0; then
+                MENLINUX_ROOT=$1
                 MENLINUX_ROOT=$(get_abs_path "${MENLINUX_ROOT}")
-                shift
-                ;;
+            else
+                echo "no path specified"
+                exit 1
+            fi
+            shift
+            ;;
+        --path*)
+            MENLINUX_ROOT=$(echo "$1" | sed -e 's/^[^=]*=//g')
+            MENLINUX_ROOT=$(get_abs_path "${MENLINUX_ROOT}")
+            shift
+            ;;
         --scan-path*)
-                SYSTEM_SCAN_PATH="$(echo "$1" | sed -e 's/^[^=]*=//g')"
-                SYSTEM_SCAN_PATH=$(get_abs_path "${SYSTEM_SCAN_PATH}")
-                shift
-                ;;
+            SYSTEM_SCAN_PATH="$(echo "$1" | sed -e 's/^[^=]*=//g')"
+            SYSTEM_SCAN_PATH=$(get_abs_path "${SYSTEM_SCAN_PATH}")
+            shift
+            ;;
         --install-only)
-                shift
-                install_only="1"
-                echo "Install without asking:"
-                echo "- install sources into provided path (default /opt/menlinux)"
-                echo "- do not scan the hardware"
-                ;;
+            shift
+            install_only="1"
+            echo "Install without asking:"
+            echo "- install sources into provided path (default /opt/menlinux)"
+            echo "- do not scan the hardware"
+            ;;
         -y|--yes|--assume-yes)
-                shift
-                assume_yes="1"
-                echo "Automatic yes to prompts; assume \"yes\" as answer"
-                echo "to all prompts and run non-interactively"
-                ;;
+            shift
+            assume_yes="1"
+            echo "Automatic yes to prompts; assume \"yes\" as answer"
+            echo "to all prompts and run non-interactively"
+            ;;
         *)
-                break
-                ;;
+            break
+            ;;
         esac
 done
 
 show_next_steps() {
-        echo "The next steps could be:"
-        echo " - generate a MDIS project by opening MDIS Wizard and run automatic system scan or"
-        echo " - generate a MDIS project by opening MDIS Wizard and manually create a system configuration"
+    echo "The next steps could be:"
+    echo " - generate a MDIS project by opening MDIS Wizard and run automatic system scan or"
+    echo " - generate a MDIS project by opening MDIS Wizard and manually create a system configuration"
 }
 
 show_manual_steps() {
-        echo "Please create the MDIS configuration for your target system (see user manual) by:"
-        echo " - Running the MDIS Wizard at the host system."
-        echo " - Initiate the system scan manually at the target system"
+    echo "Please create the MDIS configuration for your target system (see user manual) by:"
+    echo " - Running the MDIS Wizard at the host system."
+    echo " - Initiate the system scan manually at the target system"
 }
 
 show_status_message() {
-        echo "________________________________________________________________________________"
-        echo -e "${1}"
-        echo ""
+    echo "________________________________________________________________________________"
+    echo -e "${1}"
+    echo ""
 }
 
 show_end_message() {
-        echo "________________________________________________________________________________"
-        echo "Please download and read 13MD05-90 User Manual for further instructions.  "
-        echo "https://www.men.de/software/13md05-90/"
+    echo "________________________________________________________________________________"
+    echo "Please download and read 13MD05-90 User Manual for further instructions.  "
+    echo "https://www.men.de/software/13md05-90/"
 }
 
 show_insufficient_rights() {
-        echo "*** Insufficient rights"
-        echo "*** Please login as root and then call ${this} again"
+    echo "*** Insufficient rights"
+    echo "*** Please login as root and then call ${this} again"
 }
 
 #
@@ -173,17 +173,20 @@ show_insufficient_rights() {
 #               1="n"
 #               2="q"
 get_ynq_answer() {
-        while true
-        do
-                echo -e -n "$1" '(y/n/q): '
-                read -r answer
-                case ${answer} in
-                [Yy]) return 0;;
-                [Nn]) return 1;;
-                [Qq]) return 2;;
-                esac
-        done
-}     
+    while true
+    do
+        echo -e -n "$1" '(y/n/q): '
+        read -r answer
+        case ${answer} in
+            [Yy])
+                return 0;;
+            [Nn])
+                return 1;;
+            [Qq])
+                return 2;;
+        esac
+    done
+}
 
 #
 # input: arg1 = Path to installed MDIS sources
@@ -205,74 +208,72 @@ run_scan_system() {
 # returns :     0 - HISTORY is available
 #       `       1 - HISTORY is unavailable
 make_history_script() {
+    # Check if .git files exists in directory
+    # If YES -> remove, and create fresh HISTORY
+    # If NO -> do not remove HISTORY, copy history into MENLINUX_ROOT dir
+    #
+    local GIT_VERSION
+    GIT_VERSION=$(which git 2> /dev/null)
 
-        # Check if .git files exists in directory
-        # If YES -> remove, and create fresh HISTORY
-        # If NO -> do not remove HISTORY, copy history into MENLINUX_ROOT dir
-        #
-        local GIT_VERSION
-        GIT_VERSION=$(which git 2> /dev/null)
-
-        if [ -d "${MDIS_REPO_DIR}/.git" ] && [ "${GIT_VERSION}" != "" ]; then
-                echo "Removing old history entry ${MDIS_HISTORY_PATH}"
-                rm -rf "${MDIS_HISTORY_PATH}" &> /dev/null
-                result=$?
-                if [ ${result} -ne 0 ]; then
-                        show_insufficient_rights
-                        return 1
-                fi
-        else
-                if [ -d "${MDIS_HISTORY_PATH}" ]; then
-                        echo "GIT repository not present, ${MDIS_HISTORY_PATH} availaiable"
-                        return 0
-                else
-                        echo "GIT repository not present, ${MDIS_HISTORY_PATH} not availaiable"
-                        echo "MDIS package is broken - exit"
-                        return 1
-                fi
+    if [ -d "${MDIS_REPO_DIR}/.git" ] && [ "${GIT_VERSION}" != "" ]; then
+        echo "Removing old history entry ${MDIS_HISTORY_PATH}"
+        rm -rf "${MDIS_HISTORY_PATH}" &> /dev/null
+        result=$?
+        if [ ${result} -ne 0 ]; then
+            show_insufficient_rights
+            return 1
         fi
+    else
+        if [ -d "${MDIS_HISTORY_PATH}" ]; then
+            echo "GIT repository not present, ${MDIS_HISTORY_PATH} availaiable"
+            return 0
+        else
+            echo "GIT repository not present, ${MDIS_HISTORY_PATH} not availaiable"
+            echo "MDIS package is broken - exit"
+            return 1
+        fi
+    fi
 
-        echo "Creating ${MENHISTORY}..."
-        mkdir "${MDIS_HISTORY_PATH}"
+    echo "Creating ${MENHISTORY}..."
+    mkdir "${MDIS_HISTORY_PATH}"
 
-        # Add 13MD05-90 History
-        local gitRevision
-        local gitDate
-        gitRevision=$(git --git-dir "${MDIS_REPO_DIR}/.git" describe --dirty --long --tags --always)
-        gitDate=$(git --git-dir "${MDIS_REPO_DIR}/.git" --no-pager show -s --date=short --format=format:"%cd%n")
-        git --git-dir "${MDIS_REPO_DIR}/.git" log > "${MDIS_HISTORY_PATH}/13MD05-90_history.txt"
-        git --git-dir "${MDIS_REPO_DIR}/.git" remote -v > "${MDIS_HISTORY_PATH}/13MD05-90_url.txt"
-        echo "${gitRevision}_${gitDate}" > "${MDIS_HISTORY_PATH}/13MD05-90_version.txt"
-        git --git-dir "${MDIS_REPO_DIR}/.git" describe --exact-match --tags "$(git --git-dir \
-"${MDIS_REPO_DIR}/.git" rev-parse --verify HEAD)" &> "${MDIS_HISTORY_PATH}/13MD05-90_tag.txt"
+    # Add 13MD05-90 History
+    local gitRevision
+    local gitDate
+    gitRevision=$(git --git-dir "${MDIS_REPO_DIR}/.git" describe --dirty --long --tags --always)
+    gitDate=$(git --git-dir "${MDIS_REPO_DIR}/.git" --no-pager show -s --date=short --format=format:"%cd%n")
+    git --git-dir "${MDIS_REPO_DIR}/.git" log > "${MDIS_HISTORY_PATH}/13MD05-90_history.txt"
+    git --git-dir "${MDIS_REPO_DIR}/.git" remote -v > "${MDIS_HISTORY_PATH}/13MD05-90_url.txt"
+    echo "${gitRevision}_${gitDate}" > "${MDIS_HISTORY_PATH}/13MD05-90_version.txt"
+    git --git-dir "${MDIS_REPO_DIR}/.git" describe --exact-match --tags "$(git --git-dir \
+    "${MDIS_REPO_DIR}/.git" rev-parse --verify HEAD)" &> "${MDIS_HISTORY_PATH}/13MD05-90_tag.txt"
 
-        # Add history files for all submodules within 13MD05-90 repository.
-        submoduleList=$(git --git-dir "${MDIS_REPO_DIR}/.git" config --file "${MDIS_REPO_DIR}/.gitmodules" \
+    # Add history files for all submodules within 13MD05-90 repository.
+    submoduleList=$(git --git-dir "${MDIS_REPO_DIR}/.git" config --file "${MDIS_REPO_DIR}/.gitmodules" \
 --get-regexp path | sed 's/submodule.//g' | sed 's/.url//g' | awk '{print $2}' | sed 's/\.\.\///g' | sed 's/.git//g')
-        submoduleShortUrlList=$(git --git-dir "${MDIS_REPO_DIR}/.git" config --file "${MDIS_REPO_DIR}/.gitmodules" \
+    submoduleShortUrlList=$(git --git-dir "${MDIS_REPO_DIR}/.git" config --file "${MDIS_REPO_DIR}/.gitmodules" \
 --get-regexp url | sed 's/submodule.//g' | sed 's/.url//g' | awk '{print $2}' | sed 's/\.\.\///g' | sed 's/.git//g')
 
-        rm "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt" 2> /dev/null
-        submoduleCnt=$(echo "${submoduleList}" | wc -l)
-        for ((i=1;i<=submoduleCnt;i++)); do
-           echo "$(echo "${submoduleList}" | awk -v i="${i}" NR==i)" " " "$(echo "${submoduleShortUrlList}" \
-| awk -v i="${i}" NR==i)" >> "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt"
-        done
+    rm "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt" 2> /dev/null
+    submoduleCnt=$(echo "${submoduleList}" | wc -l)
+    for ((i=1;i<=submoduleCnt;i++)); do
+        echo "$(echo "${submoduleList}" | awk -v i="${i}" NR==i)" " " "$(echo "${submoduleShortUrlList}" \
+        | awk -v i="${i}" NR==i)" >> "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt"
+    done
 
-        while read -r var1 var2; do
-                i=${MDIS_REPO_DIR}/${var1}
-                if [ -d "${i}" ]; then
-                    cd "${i}" || { echo "cannot change directory into: ${i}"; exit 1; }
-                    git log > "${MDIS_HISTORY_PATH}/${var2}_history.txt"
-                    git remote -v > "${MDIS_HISTORY_PATH}/${var2}_url.txt"
-                    gitRevision=$(git describe --dirty --long --tags --always)
-                    gitDate=$(git --no-pager show -s --date=short --format=format:"%cd%n")
-                    echo "${gitRevision}_${gitDate}" > "${MDIS_HISTORY_PATH}/${var2}_version.txt"
-                    git describe --exact-match --tags "$(git rev-parse --verify HEAD)" &> "${MDIS_HISTORY_PATH}/${var2}_tag.txt"
-                    cd "${MDIS_REPO_DIR}" || { echo "cannot change directory into: ${MDIS_REPO_DIR}"; exit 1; }
-                fi
-        done < <(cat "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt")
-
+    while read -r var1 var2; do
+        i=${MDIS_REPO_DIR}/${var1}
+        if [ -d "${i}" ]; then
+            cd "${i}" || { echo "cannot change directory into: ${i}"; exit 1; }
+            git log > "${MDIS_HISTORY_PATH}/${var2}_history.txt"
+            git remote -v > "${MDIS_HISTORY_PATH}/${var2}_url.txt"
+            gitRevision=$(git describe --dirty --long --tags --always)
+            gitDate=$(git --no-pager show -s --date=short --format=format:"%cd%n")
+            echo "${gitRevision}_${gitDate}" > "${MDIS_HISTORY_PATH}/${var2}_version.txt"
+            git describe --exact-match --tags "$(git rev-parse --verify HEAD)" &> "${MDIS_HISTORY_PATH}/${var2}_tag.txt"
+            cd "${MDIS_REPO_DIR}" || { echo "cannot change directory into: ${MDIS_REPO_DIR}"; exit 1; }
+        fi
+    done < <(cat "${MDIS_HISTORY_PATH}/13MD05-90_submodules.txt")
 }
 
 #
@@ -281,27 +282,27 @@ make_history_script() {
 # returns :     0 - success
 #       `       1 - error (insufficient rights/others)
 create_installation_directory(){
-        if [ ! -d "${MENLINUX_ROOT}" ]; then
-                echo "Creating directory ${MENLINUX_ROOT}... "
-                mkdir -p "${MENLINUX_ROOT}"
-                result=$?
-                if [ ${result} -ne 0 ]; then
-                        show_insufficient_rights
-                        return 1
-                fi
-                chmod 777 "${MENLINUX_ROOT}"
-                result=$?
-                if [ ${result} -ne 0 ]; then
-                        show_insufficient_rights
-                        return 1
-                fi
+    if [ ! -d "${MENLINUX_ROOT}" ]; then
+        echo "Creating directory ${MENLINUX_ROOT}... "
+        mkdir -p "${MENLINUX_ROOT}"
+        result=$?
+        if [ ${result} -ne 0 ]; then
+            show_insufficient_rights
+            return 1
         fi
+        chmod 777 "${MENLINUX_ROOT}"
+        result=$?
+        if [ ${result} -ne 0 ]; then
+            show_insufficient_rights
+            return 1
+        fi
+    fi
 
-        # $MENLINUX_ROOT exists, check if it's writeable
-        if [ ! -w "${MENLINUX_ROOT}" ]; then
-                show_insufficient_rights
-                return 1
-        fi
+    # $MENLINUX_ROOT exists, check if it's writeable
+    if [ ! -w "${MENLINUX_ROOT}" ]; then
+        show_insufficient_rights
+        return 1
+    fi
 }
 
 #
@@ -313,18 +314,18 @@ create_installation_directory(){
 #               2 - force exit
 #
 overwrite_installation_directory(){
-        echo "Checking if ${MENLINUX_ROOT} exists... "
-        # ask to overwrite /opt/menlinux directory
-        if [ -d "${MENLINUX_ROOT}" ]; then
-                echo "Directory ${MENLINUX_ROOT} already exists."
-                if [ ${install_only} -eq "0" ] && [ ${assume_yes} -eq "0" ]; then
-                        get_ynq_answer "Overwrite existing files?"
-                        case $? in
-                        1) echo "Do not overwrite, proceed"; return 1;;
-                        2) echo "*** Aborted by user."; return 2;;
-                        esac
-                fi
+    echo "Checking if ${MENLINUX_ROOT} exists... "
+    # ask to overwrite /opt/menlinux directory
+    if [ -d "${MENLINUX_ROOT}" ]; then
+        echo "Directory ${MENLINUX_ROOT} already exists."
+        if [ ${install_only} -eq "0" ] && [ ${assume_yes} -eq "0" ]; then
+            get_ynq_answer "Overwrite existing files?"
+            case $? in
+            1) echo "Do not overwrite, proceed"; return 1;;
+            2) echo "*** Aborted by user."; return 2;;
+            esac
         fi
+    fi
 }
 
 #
@@ -333,73 +334,73 @@ overwrite_installation_directory(){
 # returns :     0 - copying of sources is succesfull
 #       `       1 - error (insufficient rights/others)
 copy_sources_into_installation_directory(){
-        cd "${MENLINUX_ROOT}" || { echo "cannot change directory into: ${MENLINUX_ROOT}"; exit 1; }
-        echo "Copy ${MDIS_PACKAGE}..."
-        rsync -ru --exclude=.git  ${MDIS_REPO_DIR}/${MDIS_PACKAGE}/* . 2> /dev/null
-        result=$?
-        if [ ${result} -ne 0 ]; then
-                show_insufficient_rights
-                return 1
-        fi
+    cd "${MENLINUX_ROOT}" || { echo "cannot change directory into: ${MENLINUX_ROOT}"; exit 1; }
+    echo "Copy ${MDIS_PACKAGE}..."
+    rsync -ru --exclude=.git  ${MDIS_REPO_DIR}/${MDIS_PACKAGE}/* . 2> /dev/null
+    result=$?
+    if [ ${result} -ne 0 ]; then
+        show_insufficient_rights
+        return 1
+    fi
 
-        echo "Copy History..."
-        rsync -ru --exclude=.git ${MDIS_REPO_DIR}/${MENHISTORY}/* "${MENHISTORY}/" 2> /dev/null
-        result=$?
-        if [ ${result} -ne 0 ]; then
-                show_insufficient_rights
-                return 1
-        fi
+    echo "Copy History..."
+    rsync -ru --exclude=.git ${MDIS_REPO_DIR}/${MENHISTORY}/* "${MENHISTORY}/" 2> /dev/null
+    result=$?
+    if [ ${result} -ne 0 ]; then
+        show_insufficient_rights
+        return 1
+    fi
 
-        # Copy changelog into ${MENLINUX_ROOT}
-        cp  "${MDIS_REPO_DIR}/13MD05-90_changelog.md" "${MENLINUX_ROOT}/13MD05-90_changelog.md"
+    # Copy changelog into ${MENLINUX_ROOT}
+    cp  "${MDIS_REPO_DIR}/13MD05-90_changelog.md" "${MENLINUX_ROOT}/13MD05-90_changelog.md"
 
-        echo "Copy MDIS drivers..."
+    echo "Copy MDIS drivers..."
 
-        dirToCopyList=$(ls -l "${MDIS_REPO_DIR}" | grep '^d' | awk '{ print $9 }' | grep "13.*")
-        # additional directories that have to be copied into install directory
-        dirToCopyList+=$'\n'"mdis_ll_mt"
+    dirToCopyList=$(ls -l "${MDIS_REPO_DIR}" | grep '^d' | awk '{ print $9 }' | grep "13.*")
+    # additional directories that have to be copied into install directory
+    dirToCopyList+=$'\n'"mdis_ll_mt"
 
-        while read -r i; do
-                i=${MDIS_REPO_DIR}/${i}
-                if [ -d "$i" ]; then
-                        for folder_type in BIN BUILD DOXYGENTMPL DRIVERS INCLUDE LIBSRC LICENSES PACKAGE_DESC TOOLS WINDOWS; do
-                                if [ -d "$i/${folder_type}" ]; then
-                                        mkdir -p ./${folder_type}
-                                        folder_recursive "$i/${folder_type}" "${MENLINUX_ROOT}/${folder_type}"
-                                        result=$?
-                                        if [ ${result} -ne 0 ]; then
-                                                return 1
-                                        fi
-                                fi
-                        done
+    while read -r i; do
+        i=${MDIS_REPO_DIR}/${i}
+        if [ -d "$i" ]; then
+            for folder_type in BIN BUILD DOXYGENTMPL DRIVERS INCLUDE LIBSRC LICENSES PACKAGE_DESC TOOLS WINDOWS; do
+                if [ -d "$i/${folder_type}" ]; then
+                    mkdir -p ./${folder_type}
+                    folder_recursive "$i/${folder_type}" "${MENLINUX_ROOT}/${folder_type}"
+                    result=$?
+                    if [ ${result} -ne 0 ]; then
+                        return 1
+                    fi
                 fi
-        done <<< "${dirToCopyList}"
-
-        # update *.mak and *.xml files
-        echo "Makefiles update ..."
-        cd "${MDIS_REPO_DIR}" || { echo "cannot change directory into: ${MDIS_REPO_DIR}"; exit 1; }
-        update_makefiles
-        echo "XML files update ..."
-        update_xmlfiles
-
-        # set permissions in "BUILD" and "BIN" directory for all users
-        cd "${MENLINUX_ROOT}" || { echo "cannot change directory into: ${MENLINUX_ROOT}"; exit 1; }
-        echo "Setting permissions..."
-        find . -type d -exec chmod 777 {} \; 2> /dev/null
-        find . -type f -exec chmod a+rw '{}' \; 2> /dev/null
-        result=$?
-        if [ ${result} -ne 0 ]; then
-                show_insufficient_rights
-                return 1
+            done
         fi
-        chmod 777 BIN/fpga_load 2> /dev/null
-        chmod 777 BIN/mdiswiz 2> /dev/null
-        chmod 777 BIN/mm_ident 2> /dev/null
-        result=$?
-        if [ ${result} -ne 0 ]; then
-                show_insufficient_rights
-                return 1
-        fi
+    done <<< "${dirToCopyList}"
+
+    # update *.mak and *.xml files
+    echo "Makefiles update ..."
+    cd "${MDIS_REPO_DIR}" || { echo "cannot change directory into: ${MDIS_REPO_DIR}"; exit 1; }
+    update_makefiles
+    echo "XML files update ..."
+    update_xmlfiles
+
+    # set permissions in "BUILD" and "BIN" directory for all users
+    cd "${MENLINUX_ROOT}" || { echo "cannot change directory into: ${MENLINUX_ROOT}"; exit 1; }
+    echo "Setting permissions..."
+    find . -type d -exec chmod 777 {} \; 2> /dev/null
+    find . -type f -exec chmod a+rw '{}' \; 2> /dev/null
+    result=$?
+    if [ ${result} -ne 0 ]; then
+        show_insufficient_rights
+        return 1
+    fi
+    chmod 777 BIN/fpga_load 2> /dev/null
+    chmod 777 BIN/mdiswiz 2> /dev/null
+    chmod 777 BIN/mm_ident 2> /dev/null
+    result=$?
+    if [ ${result} -ne 0 ]; then
+        show_insufficient_rights
+        return 1
+    fi
 }
 
 #
@@ -515,34 +516,34 @@ update_xmlfiles(){
 # input: arg1 = Source folder 
 #        arg2 = Destination folder
 folder_recursive() {
-        local SRC_FOLDER=$1
-        local DST_FOLDER=$2
+    local SRC_FOLDER=$1
+    local DST_FOLDER=$2
 
-        # check if subfolder already exists
-        for subfolder in ${SRC_FOLDER}/* ; do
-                # get base name
-                #subfolder_base=$(basename ${subfolder})
+    # check if subfolder already exists
+    for subfolder in ${SRC_FOLDER}/* ; do
+        # get base name
+        #subfolder_base=$(basename ${subfolder})
 
-                if  [ -f "${subfolder}" ] ; then
-                        #################
-                        # It is a file
-                        #################
-                        rsync --exclude=.git "${subfolder}" "${DST_FOLDER}/"
-                        continue;
-                else
-                        #################
-                        # It is a folder
-                        #################
-                        echo "Install ${subfolder} to ${DST_FOLDER}"
-                        rsync -ru --exclude=.git "${subfolder}" "${DST_FOLDER}/"
-                        result=$?
-                        if [ ${result} -ne 0 ]; then
-                                echo "*** Can't sync MDIS sources due to insufficient rights."
-                                echo "*** Please login as root and then call ${this} again"
-                                return 1
-                        fi
-                fi;
-        done
+        if  [ -f "${subfolder}" ] ; then
+            #################
+            # It is a file
+            #################
+            rsync --exclude=.git "${subfolder}" "${DST_FOLDER}/"
+            continue;
+        else
+            #################
+            # It is a folder
+            #################
+            echo "Install ${subfolder} to ${DST_FOLDER}"
+            rsync -ru --exclude=.git "${subfolder}" "${DST_FOLDER}/"
+            result=$?
+            if [ ${result} -ne 0 ]; then
+                echo "*** Can't sync MDIS sources due to insufficient rights."
+                echo "*** Please login as root and then call ${this} again"
+                return 1
+            fi
+        fi;
+    done
 }
 
 ###############################################################################
@@ -587,9 +588,9 @@ state="OverwriteExistingSources"
 # Check if this script is running with root priviligies
 # root priviligies are required while scanning the hardware
 if [ ${install_only} -eq "0" ] && [ $EUID -ne "0" ]; then
-        show_insufficient_rights
-        show_end_message
-        exit
+    show_insufficient_rights
+    show_end_message
+    exit
 fi
 
 # If install_only is set, install is done without asking user for action,
@@ -599,126 +600,133 @@ fi
 if [ ${install_only} -eq "0" ] && [ ${assume_yes} -eq "0" ]; then
     get_ynq_answer "${ASK_INSTALL_MDIS_SOURCES}"
     case $? in
-        1) echo "proceed to scan..."
-           state="CheckTargetSystem";;
-        2) echo "*** Aborted by user."
-           run=false;;
+        1)
+            echo "proceed to scan..."
+            state="CheckTargetSystem";;
+        2)
+            echo "*** Aborted by user."
+            run=false;;
     esac
 fi
 
 while ${run}; do
-        case ${state} in
+    case ${state} in
         OverwriteExistingSources)
-                overwrite_installation_directory
-                case $? in
-                    0) state="CreateInstallationDir";;
-                    1) state="CheckTargetSystem";;
-                    2) state="Break_Failed";;
-                esac
-                ;;
+            overwrite_installation_directory
+            case $? in
+                0) state="CreateInstallationDir";;
+                1) state="CheckTargetSystem";;
+                2) state="Break_Failed";;
+            esac
+            ;;
         CreateInstallationDir)
-                create_installation_directory
-                result=$?
-                if [ ${result} -ne 0 ]; then
-                        state="Break_Failed"
-                        break
-                fi
-                state="CreateHistory";;
+            create_installation_directory
+            result=$?
+            if [ ${result} -ne 0 ]; then
+                state="Break_Failed"
+                break
+            fi
+            state="CreateHistory";;
         CreateHistory)
-                make_history_script
-                result=$?
-                if [ ${result} -ne 0 ]; then
-                        echo "History of modules is not created !!"
-                fi
-                state="CopySourcesIntoInstallationDir";;
+            make_history_script
+            result=$?
+            if [ ${result} -ne 0 ]; then
+                echo "History of modules is not created !!"
+            fi
+            state="CopySourcesIntoInstallationDir";;
         CopySourcesIntoInstallationDir)
-                copy_sources_into_installation_directory
-                result=$?
-                if [ ${result} -ne 0 ]; then
-                        state="Break_Failed"
-                        break
-                fi
-                show_status_message "Installation success"
-                state="CheckTargetSystem";;
+            copy_sources_into_installation_directory
+            result=$?
+            if [ ${result} -ne 0 ]; then
+                state="Break_Failed"
+                break
+            fi
+            show_status_message "Installation success"
+            state="CheckTargetSystem";;
         CheckTargetSystem)
-                if [ ${install_only} -eq "1" ]; then
+            if [ ${install_only} -eq "1" ]; then
+                state="Break_Failed"
+                break
+            fi
+            state="Scan"
+            if [ ${assume_yes} -ne "1" ]; then
+                get_ynq_answer "${ASK_SCAN_TARGET_SYSTEM}"
+                case $? in
+                    1 | 2)
+                        show_manual_steps
                         state="Break_Failed"
                         break
-                fi
-                state="Scan"
-                if [ ${assume_yes} -ne "1" ]; then
-                    get_ynq_answer "${ASK_SCAN_TARGET_SYSTEM}"
-                    case $? in
-                            1 | 2)  show_manual_steps
-                                    state="Break_Failed"
-                                    break
-                    esac
-                fi
-                ;;
+                esac
+            fi
+            ;;
         Scan)
-                cd "${CURRENT_WORKING_DIR}" || { echo "cannot change directory into: ${CURRENT_WORKING_DIR}"; exit 1; }
-                echo "State Scan:"
-                state="Make"
-                run_scan_system "${MENLINUX_ROOT}" "--path=${SYSTEM_SCAN_PATH}"
+            cd "${CURRENT_WORKING_DIR}" || { echo "cannot change directory into: ${CURRENT_WORKING_DIR}"; exit 1; }
+            echo "State Scan:"
+            state="Make"
+            run_scan_system "${MENLINUX_ROOT}" "--path=${SYSTEM_SCAN_PATH}"
+            result=$?
+            if [ ${result} -ne 0 ]; then
+                state="Break_Failed"
+                break
+            fi
+            show_status_message "Scan success";;
+        Make)
+            state="MakeInstall"
+            if [ ${assume_yes} -ne "1" ]; then
+                get_ynq_answer "${ASK_BUILD_MDIS_MODULES}"
+                case $? in
+                    0 )
+                        make -C "${SYSTEM_SCAN_PATH}"
+                        result=$?
+                        if [ ${result} -ne 0 ]; then
+                            state="Break_Failed"
+                            break
+                        fi
+                        show_status_message "Build success";;
+                    1 | 2)
+                        echo "*** Aborted by user. "
+                        state="Break_Failed";;
+                esac
+            else
+                make -C "${SYSTEM_SCAN_PATH}"
                 result=$?
                 if [ ${result} -ne 0 ]; then
-                        state="Break_Failed"
-                        break
+                    state="Break_Failed"
+                    break
                 fi
-                show_status_message "Scan success";;
-        Make)
-                state="MakeInstall"
-                if [ ${assume_yes} -ne "1" ]; then
-                    get_ynq_answer "${ASK_BUILD_MDIS_MODULES}"
-                    case $? in
-                            0 )     make -C "${SYSTEM_SCAN_PATH}"
-                                    result=$?
-                                    if [ ${result} -ne 0 ]; then
-                                            state="Break_Failed"
-                                            break
-                                    fi
-                                    show_status_message "Build success";;
-                            1 | 2)  echo "*** Aborted by user. "
-                                    state="Break_Failed";;
-                    esac
-                else
-                    make -C "${SYSTEM_SCAN_PATH}"
-                    result=$?
-                    if [ ${result} -ne 0 ]; then
-                            state="Break_Failed"
-                            break
-                    fi
-                fi
-                ;;
+            fi
+            ;;
         MakeInstall)
-                state="Break_Success"
-                if [ ${assume_yes} -ne "1" ]; then
-                    get_ynq_answer "${ASK_INSTALL_MDIS_MODULES}"
-                    case $? in
-                            0 )     make -C "${SYSTEM_SCAN_PATH}" install
-                                    result=$?
-                                    if [ ${result} -ne 0 ]; then
-                                            state="Break_Failed"
-                                            break
-                                    fi
-                                    show_status_message "${CALL_MAKE_INSTALL}";;
-                         1 | 2)     echo "*** Aborted by user. "
-                                    state="Break_Failed";;
-                    esac
-                else
-                    make -C "${SYSTEM_SCAN_PATH}" install
-                    result=$?
-                    if [ ${result} -ne 0 ]; then
+            state="Break_Success"
+            if [ ${assume_yes} -ne "1" ]; then
+                get_ynq_answer "${ASK_INSTALL_MDIS_MODULES}"
+                case $? in
+                    0 )
+                        make -C "${SYSTEM_SCAN_PATH}" install
+                        result=$?
+                        if [ ${result} -ne 0 ]; then
                             state="Break_Failed"
                             break
-                    fi
-                    show_status_message "${CALL_MAKE_INSTALL}"
+                        fi
+                        show_status_message "${CALL_MAKE_INSTALL}";;
+                    1 | 2)
+                        echo "*** Aborted by user. "
+                        state="Break_Failed";;
+                esac
+            else
+                make -C "${SYSTEM_SCAN_PATH}" install
+                result=$?
+                if [ ${result} -ne 0 ]; then
+                    state="Break_Failed"
+                    break
                 fi
-                ;;
+                show_status_message "${CALL_MAKE_INSTALL}"
+            fi
+            ;;
         Break_Failed)
-                run=false;;
+            run=false;;
         Break_Success)
-                run=false;;
+            run=false;;
         esac
 done
 
