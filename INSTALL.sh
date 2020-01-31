@@ -76,6 +76,20 @@ function install_usage {
     echo "        Print this help"
 }
 
+### @brief get absolute path from relative path
+# input: arg1 = relative path
+# return path = absolute path
+get_abs_path () {
+    local path="${1}"
+    pathStart=""
+    case "${path}" in "~/"*)
+        pathStart="${HOME}/"
+        path="${path/"~/"/}"
+    esac
+    path="$(realpath -m "${pathStart}""${path}")"
+    echo "${path}"
+}
+
 # read parameters
 while test $# -gt 0 ; do
    case "$1" in 
@@ -87,6 +101,7 @@ while test $# -gt 0 ; do
                 shift
                 if test $# -gt 0; then
                         MENLINUX_ROOT=$1
+                        MENLINUX_ROOT=$(get_abs_path "${MENLINUX_ROOT}")
                 else
                         echo "no path specified"
                         exit 1
@@ -94,11 +109,13 @@ while test $# -gt 0 ; do
                 shift
                 ;;
         --path*)
-                MENLINUX_ROOT="$(echo "$1" | sed -e 's/^[^=]*=//g')"
+                MENLINUX_ROOT=$(echo "$1" | sed -e 's/^[^=]*=//g')
+                MENLINUX_ROOT=$(get_abs_path "${MENLINUX_ROOT}")
                 shift
                 ;;
         --scan-path*)
                 SYSTEM_SCAN_PATH="$(echo "$1" | sed -e 's/^[^=]*=//g')"
+                SYSTEM_SCAN_PATH=$(get_abs_path "${SYSTEM_SCAN_PATH}")
                 shift
                 ;;
         --install-only)
@@ -175,7 +192,7 @@ get_ynq_answer() {
 run_scan_system() {
     if [ ${assume_yes} -eq "1" ]; then
         echo "Scanning system. Calling $1/scan_system.sh $1 $2 --assume-yes"
-        "/$1/scan_system.sh" "$1" "$2" --assume-yes
+        "/$1/scan_system.sh" "$1" "$2" "--assume-yes"
     else
         echo "Scanning system. Calling $1/scan_system.sh $1 $2"
         "/$1/scan_system.sh" "$1" "$2"
@@ -543,9 +560,6 @@ folder_recursive() {
 # - Run make
 # - Run make install
 
-MENLINUX_ROOT="$(cd "$(dirname "${MENLINUX_ROOT}")" && pwd)/$(basename "${MENLINUX_ROOT}")"
-SYSTEM_SCAN_PATH="$(cd "$(dirname "${SYSTEM_SCAN_PATH}")" && pwd)/$(basename "${SYSTEM_SCAN_PATH}")"
-
 echo "                                                                                "
 echo "Installing the MEN MDIS for Linux System Package 13MD05-90_02_01                "
 echo "(see MDIS User Manual for details)                                              "
@@ -645,7 +659,7 @@ while ${run}; do
                 cd "${CURRENT_WORKING_DIR}" || { echo "cannot change directory into: ${CURRENT_WORKING_DIR}"; exit 1; }
                 echo "State Scan:"
                 state="Make"
-                run_scan_system "${MENLINUX_ROOT}" "-p ${SYSTEM_SCAN_PATH}"
+                run_scan_system "${MENLINUX_ROOT}" "--path=${SYSTEM_SCAN_PATH}"
                 result=$?
                 if [ ${result} -ne 0 ]; then
                         state="Break_Failed"
@@ -657,7 +671,7 @@ while ${run}; do
                 if [ ${assume_yes} -ne "1" ]; then
                     get_ynq_answer "${ASK_BUILD_MDIS_MODULES}"
                     case $? in
-                            0 )     make
+                            0 )     make -C "${SYSTEM_SCAN_PATH}"
                                     result=$?
                                     if [ ${result} -ne 0 ]; then
                                             state="Break_Failed"

@@ -186,6 +186,22 @@ scan_system_usage () {
 }
 
 ############################################################################
+# get absolute path from relative path
+#
+# parameters: $1 relative path
+# return absolute path
+get_abs_path () {
+    local path="${1}"
+    pathStart=""
+    case "${path}" in "~/"*)
+        pathStart="${HOME}/"
+        path="${path/"~/"/}"
+    esac
+    path="$(realpath -m "${pathStart}""${path}")"
+    echo "${path}"
+}
+
+############################################################################
 # verbose debug outputs if VERBOSE_PRINT is 1 or 2
 #
 # parameters: $1 text to print
@@ -1706,6 +1722,7 @@ while test $# -gt 0 ; do
                 shift
                 if test $# -gt 0; then
                     OUTPUT_DIR_PATH=${1}
+                    OUTPUT_DIR_PATH=$(get_abs_path "${OUTPUT_DIR_PATH}")
                 else
                     echo "no path specified"
                     exit 1
@@ -1713,7 +1730,8 @@ while test $# -gt 0 ; do
                 shift
                 ;;
         --path*)
-                OUTPUT_DIR_PATH=$(echo "${1}" | sed -e 's/^[^=]*=//g' | awk 'print $1')
+                OUTPUT_DIR_PATH=$(echo "${1}" | sed -e 's/^[^=]*=//g')
+                OUTPUT_DIR_PATH=$(get_abs_path "${OUTPUT_DIR_PATH}")
                 shift
                 ;;
         --verbose)
@@ -1760,8 +1778,6 @@ if [ ${UID} != 0 ]; then
     echo "*** if you are running this script via mdiswiz, please run mdiswiz as root"
     exit 1
 fi
-
-OUTPUT_DIR_PATH="$(cd "$(dirname "${OUTPUT_DIR_PATH}")" && pwd)/$(basename "${OUTPUT_DIR_PATH}")"
 
 if [[ ! -d ${OUTPUT_DIR_PATH} ]]; then
     echo "Directory: ${OUTPUT_DIR_PATH} does not exists"
