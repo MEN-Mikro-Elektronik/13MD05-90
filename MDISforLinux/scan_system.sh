@@ -1686,6 +1686,7 @@ if [ ${CmdResult} -eq 0 ]; then
     exit 1
 elif [ ${CmdResult} -eq 1 ]; then
     MEN_LIN_DIR=${1}
+    MEN_LIN_DIR=$(get_abs_path "${MEN_LIN_DIR}")
     shift
 else
     echo "$1 :invalid path"
