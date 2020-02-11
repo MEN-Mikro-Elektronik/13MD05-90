@@ -56,7 +56,7 @@ function install_usage {
     echo ""
     echo "USAGE"
     echo "    INSTALL.sh -h | --help"
-    echo "    INSTALL.sh [-y] [--install-only] [-p PATH] [--path-scan]"
+    echo "    INSTALL.sh [-y] [--install-only] [-p PATH] [--scan-path=PATH]"
     echo ""
     echo "OPTIONS"
     echo "    -y, --yes, --assume-yes"
