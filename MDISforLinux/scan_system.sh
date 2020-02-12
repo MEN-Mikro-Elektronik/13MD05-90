@@ -956,7 +956,7 @@ scan_for_pci_devs () {
             # wait for first USB bridge, there might be other board(s) between
             # PCI bridge 12d8:e110 and USB bridges 13d8:400a
             elif [ "${count_usb_devs}" == "0" ]; then
-                echo "device ${pcivend} ${pcidevid} between PCI - USB bridge"
+                debug_print "device ${pcivend} ${pcidevid} between PCI - USB bridge"
             else # other device showed up in between USB bridges -> its no F223
                 state_check_f223=0
                 count_usb_devs=0
