@@ -1633,10 +1633,6 @@ displayQuestion() {
 
 ### @brief display mcb mcb_pci blacklist warning if mcb/mcb_pci is available
 blacklist_warning_message() {
-    readonly blacklist_warning="The kernel modules mcb/mcb_pci are available at 
-your system and must be blacklisted to avoid inconveniences which could led to 
-a kernel panic. Please refer to the MDIS User Manual 21md05-90.pdf for details."
-
     local mcb_available=0
     if modinfo mcb > /dev/null 2>&1; then
         mcb_available=1
@@ -1648,7 +1644,9 @@ a kernel panic. Please refer to the MDIS User Manual 21md05-90.pdf for details."
 
     if [[ "${mcb_available}" -eq 1 ]]; then
         echo ""
-        echo "${blacklist_warning}"
+        echo "The kernel modules mcb/mcb_pci are available at your system and must be"
+        echo "blacklisted to avoid inconveniences which could led to a kernel panic."
+        echo "Please refer to the MDIS User Manual 21md05-90.pdf for details."
         echo ""
     fi
 
