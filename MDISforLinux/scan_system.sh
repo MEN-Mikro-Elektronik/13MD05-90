@@ -728,9 +728,7 @@ check_for_cham_devs () {
 create_entry_dsc_f223 () {
     debug_print "Writing f223_${2} section to system.dsc "
     debug_args " \$1 = ${1}   \$2 = ${2}    \$3 = ${3}    \$4 = ${4}  "
-    < "${1}/f223.tpl" sed "s/SCAN_BBIS_INSTANCE/${2}/g;" \
-"s/SCAN_MDIS_INSTANCE/${2}/g;s/SCAN_PCI_BUS_NR/$(printf 0x%x "${3}")/g;" \
-"s/SCAN_PCI_DEV_NR/$(printf 0x%x "${4}")/g" >> "${OUTPUT_DIR_PATH}/${DSC_FILE}"
+    < "${1}/f223.tpl" sed "s/SCAN_BBIS_INSTANCE/${2}/g;s/SCAN_MDIS_INSTANCE/${2}/g;s/SCAN_PCI_BUS_NR/$(printf 0x%x "${3}")/g;s/SCAN_PCI_DEV_NR/$(printf 0x%x "${4}")/g" >> "${OUTPUT_DIR_PATH}/${DSC_FILE}"
 }
 
 ############################################################################
