@@ -1,11 +1,14 @@
 # MDIS for Linux - Quick Start Guide
 
-This document is intended for developers who have already read the MDIS User Manual for Linux and know the details of MDIS. You can use it as a cheat sheet to set up MDIS for Linux, but it doesn't provide any background information on MDIS.
-For comprehensive information, please refer to the MDIS User Manual for Linux: https://www.men.de/software/13md05-90/#doc
+This document is intended for developers who have already read the MDIS User Manual
+for Linux and know the details of MDIS. You can use it as a cheat sheet to set up
+MDIS for Linux, but it doesn't provide any background information on MDIS.
+For comprehensive information, please refer to the MDIS User Manual for Linux:
+<https://www.men.de/software/13md05-90/#doc>
 
 ## Conventions
 
-- **Host system**: Your development workstation, where you compile the MDIS software modules.
+- **Host system**: Development workstation, where you build the MDIS software modules.
 - **Target system**: MEN computer system where the MDIS software modules run.
 - ``$ <command>``: Indicates to run command as normal user
 - ``# <command>``: Indicates to run command as root
@@ -13,7 +16,7 @@ For comprehensive information, please refer to the MDIS User Manual for Linux: h
 ## MDIS Software and Documentation
 
 The MDIS5 Software and Documentation for Linux is available from the MEN website
-https://www.men.de/software/13md05-90/ :
+<https://www.men.de/software/13md05-90/>:
 
 - MDIS5 System Package (*13md05-90.zip*)
 - MDIS5 under Linux User Manual (*21md05-90.pdf*)
@@ -24,17 +27,23 @@ https://www.men.de/software/13md05-90/ :
 To compile kernel modules on the host system, you require:
 
 - **Build Toolchain**
-  gcc, make, ...
+  - gcc, make, ...
+
 - **Kernel Headers (or Sources)**
-  - The kernel headers must match the exact version of the running kernel on the target system.
-    Determine the running kernel version:
+  - The kernel headers must match the exact version of the running kernel on the
+    target system. Determine the running kernel version:
+
     ```
     $ uname -r
     4.18.0-80.11.2.el8_0.x86_64
     ```
-  - You must prepare the kernel headers. Otherwise, you may get error messages saying that a version file like *utsrelease.h*/*version.h* can't be found or "No rule to make target ../.kernelsettings" during compilation of kernel modules.
+
+  - You must prepare the kernel headers. Otherwise, you may get error messages
+    saying that a version file like *utsrelease.h*/*version.h* can't be found or
+    "No rule to make target ../.kernelsettings" during compilation of kernel modules.
+
 - **Symlink to Kernel Headers**
-  /usr/src/linux --> kernel-header-location 
+  - /usr/src/linux --> kernel-header-location
 
 ### Ubuntu / Debian
 
@@ -43,7 +52,6 @@ To compile kernel modules on the host system, you require:
   ``# apt-get install build-essential``
   
 - Install the kernel headers
-
   - for specified kernel version:
 
     ``# apt-get install kernel-headers-<kernel-version>``
@@ -62,6 +70,7 @@ To compile kernel modules on the host system, you require:
     ``# ln -s /usr/src/linux-headers-$(uname -r) /usr/src/linux``
   
 - Prepare the kernel headers:
+
   ```
   # cd /usr/src/linux
   # make prepare
@@ -72,13 +81,13 @@ To compile kernel modules on the host system, you require:
 Note: RedHat Linux is not officially supported!
 
 - Install the build toolchain:
+
   ```
   # yum groupinstall "Development Tools"
   # yum install elfutils-libelf-devel
   ```
 
 - Install the kernel headers
-
   - for specified kernel version:
 
     ``# yum install kernel-devel-<kernel-version>``
@@ -97,6 +106,7 @@ Note: RedHat Linux is not officially supported!
     ``# ln -s /usr/src/kernels/$(uname -r) /usr/src/linux``
 
 - Prepare the kernel headers:
+
   ```
   # cd /usr/src/linux
   # make oldconfig
@@ -114,6 +124,7 @@ Example for self-hosted development:
   ``# pacman -Sy base-devel``
 
 - Determine the matching kernel header package:
+
   ```
   # uname -r
   5.3.11-1-MANJARO
@@ -137,7 +148,6 @@ Example for self-hosted development:
 
 - Install the build toolchain and the kernel sources:
 
-
   ``# zypper in -t pattern kernel-devel``
 
 - Create the Symlink to the kernel sources:
@@ -147,19 +157,22 @@ Example for self-hosted development:
 - Prepare the kernel sources:
 
   - Configure kernel sources:
+
     ```
     # cd /usr/src/linux
     # make cloneconfig
     # make prepare
     # make scripts
     ```
+
   - Copy Module.symvers:
 
     ``# cp /usr/src/linux-obj/x86_64/default/Module.symvers /usr/src/linux``
 
 ## Target Prerequisites
 
-For a system scan with *scan_system.sh*, the following packages must be installed on the target system:
+For a system scan with *scan_system.sh*, the following packages must be installed
+on the target system:
 
 - *i2c-utils*
 - *pci-utils*
@@ -179,20 +192,27 @@ Note: *scan_system.sh* checks the existence of these packages.
   ``$ tar -xvzf 13MD05-90_02_00.tar.gz``
 
 - Call install script as root and follow the installation instructions:
+
   ```
-  cd 13MD05-90
-  ./INSTALL
+  # cd 13MD05-90
+  # ./INSTALL
   ```
-- If you are using the target system as host system (self-hosted), you can optionally
-  - perform a system scan to detect MEN hardware and to automatically create a base MDIS configuration for your target system.
-  - build the MDIS modules with the configuration from the system scan.
-  - install the built MDIS modules at your system.
+
+- If you are using the target system as host system (self-hosted), you can optionally:
+
+  - Perform a system scan to detect MEN hardware and to automatically create a
+    base MDIS configuration for your target system.
+
+  - Build the MDIS modules with the configuration from the system scan.
+
+  - Install the built MDIS modules at your system.
 
 ## MDIS Project Configuration
 
 An MDIS project configuration is stored in two files:
 
 - *Makefile*: stores the build configuration
+
 - *system.dsc*: stores device configuration for the drivers
 
 ### Creating the Configuration by Scanning the Target
@@ -204,24 +224,29 @@ The *scan_system.sh* script performs a scan. You can execute it in different way
 - During the MDIS Host Installation with the INSTALL script (see above).
 
 - Manually from the root console:
+
   ```
   # mkdir myproj
   # cd myproj
-  # /opt/menlinux/scan_system.sh /opt/menlinux 
+  # /opt/menlinux/scan_system.sh /opt/menlinux
   ```
 
 - From the MDIS Wizard:
   
   - Start the MDIS Wizard
+
     ```
     # mkdir myproj
     # cd myproj
     # /opt/menlinux/BIN/mdiswiz
     ```
-  - Click *Cancel*.
-  - Click *Build* > *Scan*.
 
-The created *Makefile*/*system.dsc* will be stored in the current working directory (in the examples above in the *myproj* directory).
+  - Click *Cancel*
+
+  - Click *Build* > *Scan*
+
+The created *Makefile*/*system.dsc* will be stored in the current working directory
+(in the examples above in the *myproj* directory).
 
 ### Creating the Configuration Manually on the Host
 
@@ -229,11 +254,13 @@ The created *Makefile*/*system.dsc* will be stored in the current working direct
 
   ``# /opt/menlinux/BIN/mdiswiz``
 
-- Select *Create new project* (default), then press *OK* and follow the MDIS Wizard instructions
+- Select *Create new project* (default), then press *OK* and follow the MDIS Wizard
+  instructions
 
 ### Changing an MDIS Configuration
 
-- Change the working directory to an existing MDIS project (where *Makefile*/*system.dsc* resides):
+- Change the working directory to an existing MDIS project
+  (where *Makefile*/*system.dsc* resides):
 
   ``# cd ~/myproj``
 
@@ -248,7 +275,8 @@ You can execute the utility manually or from the MDIS Wizard (*Build* > *Build*)
 
 ### Building MDIS Modules Using the Command Line
 
-- Change the working directory to an existing MDIS project (where *Makefile*/*system.dsc* resides):
+- Change the working directory to an existing MDIS project
+  (where *Makefile*/*system.dsc* resides):
 
   ``# cd ~/myproj``
 
@@ -260,19 +288,26 @@ You can execute the utility manually or from the MDIS Wizard (*Build* > *Build*)
 
   ``# make <build-target>``
 
-  You can add the following build targets as optional parameters to perform special build tasks:
-  - *clean* : remove all binaries
-  - *buildmods* : build all kernel modules, this includes the following sub targets:
-    - *all_ll* : low-level drivers
-    - *all_bb* : BBIS drivers
-    - *all_kernel* : MDIS/BBIS kernel
-    - *all_core* : core libs 
-  - *buildusr* : build all user mode libs and programs, this includes the following sub targets:
-    - *all_usr_libs* : user mode libs
-    - *all_ll_tools* : low-lever driver tools
+  You can add the following build targets as optional parameters to perform special
+  build tasks:
+
+  - *clean*         : Remove all binaries
+
+  - *buildmods*     : Build all kernel modules,
+                     this includes the following sub targets:
+    - *all_ll*        : low-level drivers
+    - *all_bb*        : BBIS drivers
+    - *all_kernel*    : MDIS/BBIS kernel
+    - *all_core*      : core libs
+
+  - *buildusr*      : Build all user mode libs and programs,
+                     this includes the following sub targets:
+    - *all_usr_libs*  : user mode libs
+    - *all_ll_tools*  : low-lever driver tools
     - *all_com_tools* : common tools
     - *all_nat_tools* : native tools
-  - *all_desc* : build all descriptors
+
+  - *all_desc*      : Build all descriptors
 
 ## Installing MDIS Binaries
 
@@ -281,7 +316,8 @@ You can execute the utility manually or from the MDIS Wizard (*Build* > *Install
 
 ### Installing MDIS Binaries Using the Command Line
 
-- Change the working directory to an existing MDIS project (where *Makefile*/*system.dsc* resides):
+- Change the working directory to an existing MDIS project
+  (where *Makefile*/*system.dsc* resides):
 
   ``# cd ~/myproj``
 
@@ -315,20 +351,29 @@ It is sufficient to load just the *men_mdis_kernel* kernel module with *modprobe
 
 ``# modprobe men_mdis_kernel``
 
-- *modprobe* loads the specified and all dependent kernel modules (*men_oss*, *men_dbg*, ..)
-- When a device handle to an MDIS device instance is opened by calling *M_open()*, all necessary MDIS kernel modules are loaded automatically.
+- *modprobe* loads the specified and all dependent kernel modules
+  (*men_oss*, *men_dbg*, ..)
+
+- When a device handle to an MDIS device instance is opened by calling *M_open()*,
+  all necessary MDIS kernel modules are loaded automatically.
 
 ### Automatic driver load during Linux boot
 
-You can configure your Linux to automatically load *men_mdis_kernel* at boot time. Under most Linux distributions, you can achieve this by adding a new config file in the */etc/modules-load.d* directory:
+You can configure your Linux to automatically load *men_mdis_kernel* at boot time.
+Under most Linux distributions, you can achieve this by adding a new config file
+in the */etc/modules-load.d* directory:
 
 ``# echo "men_mdis_kernel" > /etc/modules-load.d/mdis.conf``
 
 ### Blacklist mcb and mcb_pci
 
-When using MDIS for MEN Chameleon FPGAs, it may be necessary to blacklist the *mcb* and *mcb_pci* kernel modules if these modules are available as loadable kernel modules in the Linux distribution. Otherwise, you may have problems using the MDIS *men_lx_chameleon* driver.
+When using MDIS for MEN Chameleon FPGAs, it may be necessary to blacklist the
+*mcb* and *mcb_pci* kernel modules if these modules are available as loadable
+kernel modules in the Linux distribution. Otherwise, you may have problems using
+the MDIS *men_lx_chameleon* driver.
 
-Note: *mcb* stands for MEN Chameleon Bus. These are Linux native drivers from MEN and mainline since Linux kernel 3.15. 
+Note: *mcb* stands for MEN Chameleon Bus. These are Linux native drivers from MEN
+and mainline since Linux kernel 3.15.
 
 - Check if *mcb*/*mcb_pci* is available:
 
@@ -347,9 +392,13 @@ Note: *mcb* stands for MEN Chameleon Bus. These are Linux native drivers from ME
 
 ## Unloading MDIS Drivers
 
-To unload all MDIS drivers, manually unload all MDIS kernel modules (e.g. *men_bb_*, *men_ll_*) that are not used by other kernel modules with *modprobe -r*:
+To unload all MDIS drivers, manually unload all MDIS kernel modules
+(e.g. *men_bb_*, *men_ll_*) that are not used by other kernel modules with
+*modprobe -r*:
 
-- *modprobe -r* unloads the specified and all dependent kernel modules (*men_oss*, *men_dbg*, ..)
+- *modprobe -r* unloads the specified and all dependent kernel modules
+  (*men_oss*, *men_dbg*, ..)
+
 - Only kernel modules which are not in use by other kernel modules can be unloaded.
 
 **Example:**
@@ -378,11 +427,14 @@ You have to unload this kernel modules:
 
 ## Testing the Drivers
 
-In general, MDIS tools require a device name as first parameter. All MDIS device names are defined in the MDIS project configuration. You can change the names individually within the MDIS Wizard.
+In general, MDIS tools require a device name as first parameter. All MDIS device
+names are defined in the MDIS project configuration. You can change the names
+individually within the MDIS Wizard.
 
 ### Using the m_open Tool
 
-You can test if the driver is ready to use with the *m_open* utility, that calls *M_open()* and *M_close()*:
+You can test if the driver is ready to use with the *m_open* utility, that calls
+*M_open()* and *M_close()*:
 
 ```
 # m_open gpio_1
@@ -393,9 +445,10 @@ close path
 
 ### Using Driver Specific Tools
 
-Each MDIS driver comes with one or more example programs and tools. Usually the binary names of the tools use the driver name as prefix.
+Each MDIS driver comes with one or more example programs and tools. Usually the
+binary names of the tools use the driver name as prefix.
 
-**Example for the Z17 GPIO MDIS driver**
+#### Example for the Z17 GPIO MDIS driver
 
 List available tools:
 
@@ -439,7 +492,8 @@ holding path open until keypress
 
 ### View SW Module Documentation
 
-Most MDIS modules (drivers, APIs) come with an HTML documentation generated from source code:
+Most MDIS modules (drivers, APIs) come with an HTML documentation generated from
+source code:
 
 - The documentation is usually located in a *DOC* subfolder of the module sources.
 
@@ -495,7 +549,8 @@ Most MDIS modules (drivers, APIs) come with an HTML documentation generated from
   can_8.bin   gpio_f215_2.bin  mezz_cham_2.bin  uart_11.bin
   ```
 
-  Note: Useful to show the MDIS device names. The descriptor file are named according the device names (with the extension *.bin*).
+  Note: Useful to show the MDIS device names. The descriptor file are named
+  according the device names (with the extension *.bin*).
 
 ### Check for Loaded MEN Drivers
 
@@ -546,7 +601,9 @@ men_dbg                13038  4 men_mdis_kernel,men_oss,men_bbis_kernel,men_desc
 
 ### Show Debug Output
 
-Only MDIS binaries with debug information prints debug messages. By default, the binaries are built without debug information. You can specify to build debug binaries within MDIS Wizard or directly in the makefile.
+Only MDIS binaries with debug information prints debug messages. By default, the
+binaries are built without debug information. You can specify to build debug
+binaries within MDIS Wizard or directly in the makefile.
 
 ```
 # dmesg
@@ -577,7 +634,8 @@ Only MDIS binaries with debug information prints debug messages. By default, the
   05:00.0 Communication controller: MEN Mikro Elektronik Multifunction IP core (rev 01)
   ```
 
-  Note: Check for either MEN PCI vendor ID 0x1a88 or Altera's PCI vendor ID 0x1172, which is used on older MEN Chameleon FPGA designs.
+  Note: Check for either MEN PCI vendor ID 0x1a88 or Altera's PCI vendor ID 0x1172,
+  which is used on older MEN Chameleon FPGA designs.
 
 - List MEN PCI devices with PCI vendor, device and subvendor IDs (*lspci*):
 
@@ -700,7 +758,10 @@ Only MDIS binaries with debug information prints debug messages. By default, the
   ...
   ```
 
-  Note: The content of the Board Information EEPROM with SMB address 0x57 (7-bit notation) was dumped. The address in 8-bit notation is 0xAE (=0x57<<1).
+  Note: The content of the Board Information EEPROM with SMB address 0x57
+  (7-bit notation) was dumped. The address in 8-bit notation is 0xAE (=0x57<<1).
 
-For further information about the usage of Linux I2C/SMB controller drivers and i2c tools on MEN CPUs, see application note *Using the Standard I2C Tools on MEN CPUs under Linux*:
-https://www.men.de/downloads/search/dl/sk/Application%20Note%20I2C%20Tools%20Linux/
+For further information about the usage of Linux I2C/SMB controller drivers and
+i2c tools on MEN CPUs, see application note
+*Using the Standard I2C Tools on MEN CPUs under Linux*:
+<https://www.men.de/downloads/search/dl/sk/Application%20Note%20I2C%20Tools%20Linux/>
