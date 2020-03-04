@@ -136,9 +136,10 @@ _ALL_USR_LIBS 	=  $(ALL_USR_LIBS) \
 					MDIS_API/library.mak
 
 ifndef NO_STD_ALL_COM_TOOLS
-_ALL_COM_TOOLS	=  $(ALL_COM_TOOLS) \
-					MDIS_API/MDIS_CREATEDEV/program.mak \
-
+_ALL_COM_TOOLS	=  $(ALL_COM_TOOLS)
+	ifeq (,$(findstring MDIS_API/MDIS_CREATEDEV/program.mak,$(ALL_COM_TOOLS)))
+		_ALL_COM_TOOLS += MDIS_API/MDIS_CREATEDEV/program.mak
+	endif
 else
 _ALL_COM_TOOLS  = $(ALL_COM_TOOLS)
 endif
