@@ -499,4 +499,4 @@ callkernelbuild:
 	@$(ECHO) "++++++++ Building kernel modules ++++++++++"
 	@$(ECHO) -n "obj-m +=" >OBJ/Makefile
 	cat $(THIS_DIR)/.kernelsubdirs >>OBJ/Makefile
-	$(Q)$(MAKE) -C $(LIN_KERNEL_DIR) SUBDIRS=$(THIS_DIR)/OBJ
+	$(Q)$(MAKE) -C $(LIN_KERNEL_DIR) M=$(THIS_DIR)/OBJ
