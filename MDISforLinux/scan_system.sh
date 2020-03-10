@@ -469,9 +469,9 @@ create_entry_dsc_bbis_cham () {
     local lspci_device_verbose_data
     local is_pcie
     local mezz_cham_instance=${7}
-    pci_vd="${1//"0x"/""}"
-    pci_dev="${2//"0x"/""}"
-    pci_subv="${4//"0x"/""}"
+    pci_vd="${1//0x/}"
+    pci_dev="${2//0x/}"
+    pci_subv="${4//0x/}"
     lspci_device_verbose_data=$(lspci -s "$(lspci -d "${pci_vd}":"${pci_dev}" -m | grep "${pci_subv}" | cut -f 1 -d " ")" -v)
     is_pcie=$(echo "${lspci_device_verbose_data}" | grep "Capabilities.*Express Legacy Endpoint")
 

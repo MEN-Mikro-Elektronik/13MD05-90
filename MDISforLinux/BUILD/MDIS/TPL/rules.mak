@@ -136,9 +136,10 @@ _ALL_USR_LIBS 	=  $(ALL_USR_LIBS) \
 					MDIS_API/library.mak
 
 ifndef NO_STD_ALL_COM_TOOLS
-_ALL_COM_TOOLS	=  $(ALL_COM_TOOLS) \
-					MDIS_API/MDIS_CREATEDEV/program.mak \
-
+_ALL_COM_TOOLS	=  $(ALL_COM_TOOLS)
+	ifeq (,$(findstring MDIS_API/MDIS_CREATEDEV/program.mak,$(ALL_COM_TOOLS)))
+		_ALL_COM_TOOLS += MDIS_API/MDIS_CREATEDEV/program.mak
+	endif
 else
 _ALL_COM_TOOLS  = $(ALL_COM_TOOLS)
 endif
@@ -498,4 +499,4 @@ callkernelbuild:
 	@$(ECHO) "++++++++ Building kernel modules ++++++++++"
 	@$(ECHO) -n "obj-m +=" >OBJ/Makefile
 	cat $(THIS_DIR)/.kernelsubdirs >>OBJ/Makefile
-	$(Q)$(MAKE) -C $(LIN_KERNEL_DIR) SUBDIRS=$(THIS_DIR)/OBJ
+	$(Q)$(MAKE) -C $(LIN_KERNEL_DIR) M=$(THIS_DIR)/OBJ
