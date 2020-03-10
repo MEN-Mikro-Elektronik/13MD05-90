@@ -328,5 +328,5 @@
 	branch = jpe-dev
 [submodule "13Z055-90"]
 	path = 13Z055-90
-	url = ./13Z055-90
+	url = ../13Z055-90
 	branch = jpe-dev
