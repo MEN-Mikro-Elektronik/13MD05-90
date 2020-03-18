@@ -466,13 +466,29 @@ create_entry_dsc_bbis_cham () {
     local tpl_dir=${5}
     local pci_busnr=${6}
     local wiz_mod="MEZZ_CHAM"
+    local lspci_device_ident
     local lspci_device_verbose_data
     local is_pcie
     local mezz_cham_instance=${7}
     pci_vd="${1//0x/}"
     pci_dev="${2//0x/}"
     pci_subv="${4//0x/}"
-    lspci_device_verbose_data=$(lspci -s "$(lspci -d "${pci_vd}":"${pci_dev}" -m | grep "${pci_subv}" | cut -f 1 -d " ")" -v)
+
+    # it is assumed that devices with the same Ven ID, Dev ID and SubVen ID
+    # are the same type (cPCI or cPCI-serial)
+    if ! lspci_device_ident=$(lspci -d "${pci_vd}":"${pci_dev}" -m 2>/dev/null)
+    then
+        echo "*** error: lspci -d ${pci_vd}:${pci_dev} -m 2>/dev/null"
+        exit 1
+    fi
+
+    lspci_device_ident=$(echo "${lspci_device_ident}" | grep "${pci_subv}" | cut -f 1 -d " "| awk NR==1)
+    if ! lspci_device_verbose_data=$(lspci -s "${lspci_device_ident}" -v 2>/dev/null)
+    then
+        echo "*** error: lspci -s ${lspci_device_ident} -v 2>/dev/null"
+        exit 1
+    fi
+
     is_pcie=$(echo "${lspci_device_verbose_data}" | grep "Capabilities.*Express Legacy Endpoint")
 
     debug_args "${lspci_device_verbose_data}"
