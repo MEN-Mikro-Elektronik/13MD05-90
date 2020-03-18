@@ -1659,7 +1659,7 @@ blacklist_warning_message() {
     if [[ "${mcb_available}" -eq 1 ]]; then
         echo ""
         echo "The kernel modules mcb/mcb_pci are available at your system and must be"
-        echo "blacklisted to avoid inconveniences which could led to a kernel panic."
+        echo "blacklisted to avoid inconveniences which could lead to a kernel panic."
         echo "Please refer to the MDIS User Manual 21md05-90.pdf for details."
         echo ""
     fi
