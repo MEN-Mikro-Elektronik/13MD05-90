@@ -188,6 +188,23 @@ get_ynq_answer() {
     done
 }
 
+# Check INSTALL.sh prerequisites
+# returns :     0 - HISTORY is available
+#       `       1 - HISTORY is unavailable
+check_scan_system_prerequisites () {
+    local toolMissing=0
+    for i in rsync git; do
+        if ! which "${i}" >/dev/null; then
+            toolMissing=1
+            echo "*** Please install ${i}"
+        fi
+    done
+    if [ "${toolMissing}" -eq "1" ]; then
+        echo "*** Install missing tools and run INSTALL.sh once again"
+        exit 1
+    fi
+}
+
 #
 # input: arg1 = Path to installed MDIS sources
 #        arg2 = Path to place scan_system output files
@@ -217,10 +234,9 @@ make_history_script() {
 
     if [ -d "${MDIS_REPO_DIR}/.git" ] && [ "${GIT_VERSION}" != "" ]; then
         echo "Removing old history entry ${MDIS_HISTORY_PATH}"
-        rm -rf "${MDIS_HISTORY_PATH}" &> /dev/null
-        result=$?
-        if [ ${result} -ne 0 ]; then
-            show_insufficient_rights
+        if ! rm -rf "${MDIS_HISTORY_PATH}" &> /dev/null
+        then
+            echo "Cannot remove old history MDIS entries"
             return 1
         fi
     else
@@ -284,23 +300,21 @@ make_history_script() {
 create_installation_directory(){
     if [ ! -d "${MENLINUX_ROOT}" ]; then
         echo "Creating directory ${MENLINUX_ROOT}... "
-        mkdir -p "${MENLINUX_ROOT}"
-        result=$?
-        if [ ${result} -ne 0 ]; then
-            show_insufficient_rights
+        if ! mkdir -p "${MENLINUX_ROOT}"
+        then
+            echo "Cannot create ${MENLINUX_ROOT} directory"
             return 1
         fi
-        chmod 777 "${MENLINUX_ROOT}"
-        result=$?
-        if [ ${result} -ne 0 ]; then
-            show_insufficient_rights
+        if ! chmod 777 "${MENLINUX_ROOT}"
+        then
+            echo "Cannot change ${MENLINUX_ROOT} files permission"
             return 1
         fi
     fi
 
     # $MENLINUX_ROOT exists, check if it's writeable
     if [ ! -w "${MENLINUX_ROOT}" ]; then
-        show_insufficient_rights
+        echo "Wrong ${MENLINUX_ROOT} files permission"
         return 1
     fi
 }
@@ -336,18 +350,16 @@ overwrite_installation_directory(){
 copy_sources_into_installation_directory(){
     cd "${MENLINUX_ROOT}" || { echo "cannot change directory into: ${MENLINUX_ROOT}"; exit 1; }
     echo "Copy ${MDIS_PACKAGE}..."
-    rsync -ru --exclude=.git  ${MDIS_REPO_DIR}/${MDIS_PACKAGE}/* . 2> /dev/null
-    result=$?
-    if [ ${result} -ne 0 ]; then
-        show_insufficient_rights
+    if ! rsync -ru --exclude=.git  ${MDIS_REPO_DIR}/${MDIS_PACKAGE}/* . 2> /dev/null
+    then
+        echo "Failed to copy ${MDIS_PACKAGE} into ${MENLINUX_ROOT}"
         return 1
     fi
 
     echo "Copy History..."
-    rsync -ru --exclude=.git ${MDIS_REPO_DIR}/${MENHISTORY}/* "${MENHISTORY}/" 2> /dev/null
-    result=$?
-    if [ ${result} -ne 0 ]; then
-        show_insufficient_rights
+    if ! rsync -ru --exclude=.git ${MDIS_REPO_DIR}/${MENHISTORY}/* "${MENHISTORY}/" 2> /dev/null
+    then
+        echo "Failed to copy MDIS package history"
         return 1
     fi
 
@@ -366,9 +378,8 @@ copy_sources_into_installation_directory(){
             for folder_type in BIN BUILD DOXYGENTMPL DRIVERS INCLUDE LIBSRC LICENSES PACKAGE_DESC TOOLS WINDOWS; do
                 if [ -d "$i/${folder_type}" ]; then
                     mkdir -p ./${folder_type}
-                    folder_recursive "$i/${folder_type}" "${MENLINUX_ROOT}/${folder_type}"
-                    result=$?
-                    if [ ${result} -ne 0 ]; then
+                    if ! folder_recursive "$i/${folder_type}" "${MENLINUX_ROOT}/${folder_type}"
+                    then
                         return 1
                     fi
                 fi
@@ -390,7 +401,7 @@ copy_sources_into_installation_directory(){
     find . -type f -exec chmod a+rw '{}' \; 2> /dev/null
     result=$?
     if [ ${result} -ne 0 ]; then
-        show_insufficient_rights
+        echo "Wrong ${MENLINUX_ROOT} files permission"
         return 1
     fi
     chmod 777 BIN/fpga_load 2> /dev/null
@@ -398,7 +409,7 @@ copy_sources_into_installation_directory(){
     chmod 777 BIN/mm_ident 2> /dev/null
     result=$?
     if [ ${result} -ne 0 ]; then
-        show_insufficient_rights
+        echo "Cannot change ${MENLINUX_ROOT}/BIN/* files permission"
         return 1
     fi
 }
@@ -535,9 +546,8 @@ folder_recursive() {
             # It is a folder
             #################
             echo "Install ${subfolder} to ${DST_FOLDER}"
-            rsync -ru --exclude=.git "${subfolder}" "${DST_FOLDER}/"
-            result=$?
-            if [ ${result} -ne 0 ]; then
+            if ! rsync -ru --exclude=.git "${subfolder}" "${DST_FOLDER}/"
+            then
                 echo "*** Can't sync MDIS sources due to insufficient rights."
                 echo "*** Please login as root and then call ${this} again"
                 return 1
@@ -585,6 +595,9 @@ If you update your kernel you have to rebuild the modules for the new kernel!"
 run=true
 state="OverwriteExistingSources"
 
+# Check if all required tools are installed in system
+check_scan_system_prerequisites
+
 # Check if this script is running with root priviligies
 # root priviligies are required while scanning the hardware
 if [ ${install_only} -eq "0" ] && [ $EUID -ne "0" ]; then
@@ -620,24 +633,21 @@ while ${run}; do
             esac
             ;;
         CreateInstallationDir)
-            create_installation_directory
-            result=$?
-            if [ ${result} -ne 0 ]; then
+            if ! create_installation_directory
+            then
                 state="Break_Failed"
                 break
             fi
             state="CreateHistory";;
         CreateHistory)
-            make_history_script
-            result=$?
-            if [ ${result} -ne 0 ]; then
+            if ! make_history_script
+            then
                 echo "History of modules is not created !!"
             fi
             state="CopySourcesIntoInstallationDir";;
         CopySourcesIntoInstallationDir)
-            copy_sources_into_installation_directory
-            result=$?
-            if [ ${result} -ne 0 ]; then
+            if ! copy_sources_into_installation_directory
+            then
                 state="Break_Failed"
                 break
             fi
@@ -663,9 +673,8 @@ while ${run}; do
             cd "${CURRENT_WORKING_DIR}" || { echo "cannot change directory into: ${CURRENT_WORKING_DIR}"; exit 1; }
             echo "State Scan:"
             state="Make"
-            run_scan_system "${MENLINUX_ROOT}" "--path=${SYSTEM_SCAN_PATH}"
-            result=$?
-            if [ ${result} -ne 0 ]; then
+            if ! run_scan_system "${MENLINUX_ROOT}" "--path=${SYSTEM_SCAN_PATH}"
+            then
                 state="Break_Failed"
                 break
             fi
@@ -676,9 +685,8 @@ while ${run}; do
                 get_ynq_answer "${ASK_BUILD_MDIS_MODULES}"
                 case $? in
                     0 )
-                        make -C "${SYSTEM_SCAN_PATH}"
-                        result=$?
-                        if [ ${result} -ne 0 ]; then
+                        if ! make -C "${SYSTEM_SCAN_PATH}"
+                        then
                             state="Break_Failed"
                             break
                         fi
@@ -688,9 +696,8 @@ while ${run}; do
                         state="Break_Failed";;
                 esac
             else
-                make -C "${SYSTEM_SCAN_PATH}"
-                result=$?
-                if [ ${result} -ne 0 ]; then
+                if ! make -C "${SYSTEM_SCAN_PATH}"
+                then
                     state="Break_Failed"
                     break
                 fi
@@ -702,9 +709,8 @@ while ${run}; do
                 get_ynq_answer "${ASK_INSTALL_MDIS_MODULES}"
                 case $? in
                     0 )
-                        make -C "${SYSTEM_SCAN_PATH}" install
-                        result=$?
-                        if [ ${result} -ne 0 ]; then
+                        if ! make -C "${SYSTEM_SCAN_PATH}" install
+                        then
                             state="Break_Failed"
                             break
                         fi
@@ -714,9 +720,8 @@ while ${run}; do
                         state="Break_Failed";;
                 esac
             else
-                make -C "${SYSTEM_SCAN_PATH}" install
-                result=$?
-                if [ ${result} -ne 0 ]; then
+                if ! make -C "${SYSTEM_SCAN_PATH}" install
+                then
                     state="Break_Failed"
                     break
                 fi
