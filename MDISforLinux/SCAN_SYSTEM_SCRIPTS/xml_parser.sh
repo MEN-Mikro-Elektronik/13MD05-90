@@ -94,7 +94,7 @@ makeMmodFileMap() {
     fi
 
     echo -n "Building M-Module database..."
-    xFiles=($(ls "${MEN_LIN_DIR}/PACKAGE_DESC/"13m0*.xml 2> "/dev/null"))
+    xFiles=($(ls "${MEN_LIN_DIR}/PACKAGE_DESC/"13m*.xml 2> "/dev/null"))
     for xFile in "${xFiles[@]}"; do
         echo -n "."
         xmlParseXml "${xFile}" "makeMmodFileMapCallback" "${xFile##*/}"
