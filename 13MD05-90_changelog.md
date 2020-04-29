@@ -1,5 +1,33 @@
 # Changelog for 13MD05-90 "MEN MDIS for Linux System Package plus lowlevel drivers"
 
+## [13MD05-90_02_02] - 2020-05-15
+
+### Added
+- fpga_load_ppc binary for PowerPC
+- 13Z055-90 submodule
+- m47_test tool for 13M047-06
+- PCI memory regions enabling for fpga_load
+
+### Changed
+- Improved installation script
+- Improved system scanner script
+- MDIS Wizard binary update
+- fpga_load binary update
+- hwbug_ppc and hwbug_cmd_ppc binaries update
+- Module name from smb_z001 to men_lx_z001 for 13Z001-90
+- Logo files for 13Z044-90
+
+### Fixed
+- Installation script
+- System scanner script
+- Compiler warnigns
+- icanl2_veri tool for 13M065-07
+- Compilation on Linux kernel 4.19 for 13Z055-90
+- MAC address issue for 13Z077-90
+- IRQ issue for mdis_drivers_bbis_a21_com
+- Chameleon table display when accessed by LPC/ISA bus for fpga_load
+
+
 ## [13MD05-90_02_01] - 2019-12-13
 
 ### Added
@@ -22,7 +50,6 @@
 - Automatic enabling of memory regions in PCI devices in scanner script
 - MDIS Quickstart Guide
 
-
 ### Changed
 - MDIS Wizard binary update
 - Renamed installation script  INSTALL to INSTALL.sh
@@ -31,13 +58,11 @@
 - Improved scanner script
 - Updated documentation
 
-
 ### Removed
-13M065-06 submodue
-fpga_load 64-bit binary
-mdis_libsrc_smb2_com submodule
-mdis_drivers_bbis_smbpci_com
-
+- 13M065-06 submodue
+- fpga_load 64-bit binary
+- mdis_libsrc_smb2_com submodule
+- mdis_drivers_bbis_smbpci_com submodule
 
 ### Fixed
 - Creation of sysfs directories
