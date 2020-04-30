@@ -24,7 +24,7 @@
 #                     default file /tmp/men_pci_devs is not written. Used to
 #                     test system.dsc generation with predefined test data.
 ############################################################################
-# copyright (c) 2013-2019 MEN Mikro Elektronik GmbH Nuremberg
+# Copyright 2013-2020, MEN Mikro Elektronik GmbH
 ############################################################################
 
 ##########

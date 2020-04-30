@@ -7,7 +7,7 @@
 #       Description: Installation script for MDIS5LINUX system package
 #
 #-----------------------------------------------------------------------------
-# (c) Copyright 2018-2019 by MEN Mikro Elektronik GmbH, Nuremberg, Germany
+# Copyright 2018-2020, MEN Mikro Elektronik GmbH
 #*****************************************************************************
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
