@@ -359,7 +359,7 @@ $(THIS_DIR)/.kernelsettings: $(LIN_KERNEL_COMMON_DIR)/Makefile
 	@$(ECHO) "Getting Compiler/Linker settings from Linux Kernel Makefile"
 	@$(Q)$(MAKE) -C $(LIN_KERNEL_COMMON_DIR) \
 	--no-print-directory -f $(TPL_DIR)kernelsettings.mak \
-	KERNEL_SETTINGS_FILE=$(THIS_DIR)/.kernelsettings > /dev/null 2>&1
+	KERNEL_SETTINGS_FILE=$(THIS_DIR)/.kernelsettings
 
 $(THIS_DIR)/.endian: Makefile $(LIN_KERNEL_COMMON_DIR)/Makefile
 	@$(ECHO) "Getting Compiler/Linker settings from Linux Kernel Makefile"
