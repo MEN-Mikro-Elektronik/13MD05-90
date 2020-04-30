@@ -188,12 +188,38 @@ get_ynq_answer() {
     done
 }
 
+### @brief Get installer and scanner prerequisites
+### @return Prerequisites are echoed
+getPrerequisites() {
+	local -a prerequisites=( \
+		"rsync" \
+		"make" \
+		"cc" \
+	)
+
+	# Require git if there's a .git repo dir
+	if [ -e "${CURRENT_WORKING_DIR}/.git" ]; then
+		prerequisites=("git" ${prerequisites[*]})
+	fi
+
+	# Require lex and yacc if kernel version >= 4.16
+	if [[ "$(uname -r)" =~ ([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
+		if [ "${BASH_REMATCH[1]}" -ge 4 ] || \
+			([ "${BASH_REMATCH[1]}" -ge 4 ] && \
+			"${BASH_REMATCH[2]}" -ge 16]); then
+			prerequisites+=("lex" "yacc")
+		fi
+	fi
+
+	echo ${prerequisites[*]}
+}
+
 # Check INSTALL.sh prerequisites
 # returns :     0 - HISTORY is available
 #       `       1 - HISTORY is unavailable
 check_scan_system_prerequisites () {
     local toolMissing=0
-    for i in rsync git; do
+    for i in $(getPrerequisites); do
         if ! which "${i}" >/dev/null; then
             toolMissing=1
             echo "*** Please install ${i}"
