@@ -202,12 +202,12 @@ getPrerequisites() {
 		prerequisites=("git" ${prerequisites[*]})
 	fi
 
-	# Require lex and yacc if kernel version >= 4.16
+	# Require flex and bison if kernel version >= 4.16
 	if [[ "$(uname -r)" =~ ([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
 		if [ "${BASH_REMATCH[1]}" -ge 4 ] || \
 			([ "${BASH_REMATCH[1]}" -ge 4 ] && \
 			"${BASH_REMATCH[2]}" -ge 16]); then
-			prerequisites+=("lex" "yacc")
+			prerequisites+=("flex" "bison")
 		fi
 	fi
 
