@@ -4,6 +4,10 @@
 - 02F026L
 - 02G023
 - 02G025A
+- 15CB70
+- 01A025
+- 09BL50/09BC50 (SC24)
+- 09BL70/09BC70 (SC25)
 - 09BL51/09BC51 (SC31)
 - 02F215
 - 02F223
@@ -13,61 +17,57 @@
 - 16Z029_CAN
 - 16Z034_GPIO
 - 16Z037_GPIO
+- 16Z055_HDLC
+- 16Z087_ETH
 - 16Z125_UART
+- 16Z127_GPIO
+- 16Z135_HSUART
 - 02F205
 - 02G204
 - 04M011
 - 04M031
-- 04M035N
-- 04M066
-- 04M072
-- 04M077N
-- 04M082
-- Ubuntu 16.04.6 LTS 4.15.0-45 32-/64-bit
-- Ubuntu 18.04.3 4.15.0-45 LTS 32-bit
-- Ubuntu 18.04.3 5.0.0-23 LTS 64-bit
-- CentOS 7.5 3.10.0-862 64-bit
-- CentOS 7.6 3.10.0-957 64-bit
-- Debian 10 4.19.0-6 32-/64-bit
-- Yocto - Sumo, Kernel 4.15.18 64-bit (F26L + G25A only)
-- Yocto - NewestFancy, Kernel 4.19.19 64-bit (F26L + G25A only)
-
-**Compilation - tested kernel versions:**
-- 3.16.73
-- 4.4.190
-- 4.9.190
-- 4.14.190
-- 4.19.69
-- 5.2.11
-
-#### Supported not tested components:
-- 15CB70
-- 01A025
-- 02F026C
-- Box PC 09BL50/09BC50 (SC24)
-- 09BL70/09BC70 PC BL/BC70 (SC25)
-- Display Computer DC19 (SC31)
-- Display Computer DC20 (SC31)
-- 16Z025_UART
-- 16Z051_DAC
-- 16Z087_ETH
-- 16Z127_GPIO
-- 16Z135_HSUART
-- 02D203
-- 02F204
 - 04M032
 - 04M033
-- 04M036
-- 04M037
-- 04M043
+- 04M035N
+- 04M036N
+- 04M037N
+- 04M043N
 - 04M047
 - 04M057
 - 04M058
-- 04M062
-- 04M065
+- 04M062N
+- 04M065N
+- 04M066
+- 04M072
+- 04M077N
 - 04M081
+- 04M082
 - 04M099
 - 04M199
+- Ubuntu 18.04 LTS 32-bit
+- Ubuntu 18.04 LTS 64-bit
+- Ubuntu 20 LTS 64-bit
+- CentOS 7.7 64-bit
+- CentOS 8.1 64-bit
+- Debian 10 4.19.0-6-686-pae 32-bit
+- Debian 10 4.19.0-6-amd64 64-bit
+- Yocto - Sumo, Kernel 4.15.18 64-bit (02F026L + 02G025A only)
+
+**Compilation - tested kernel versions:**
+- 3.16
+- 4.4
+- 4.9
+- 4.14
+- 4.19
+- 5.4
+- 5.6
+
+#### Supported not tested components:
+- 02F026C
+- Display Computer DC19 (SC31)
+- Display Computer DC20 (SC31)
+- 02D203
+- 02F204
 
 #### EOS state components:
 **Comment:   EOS  (End  Of  Support)**
