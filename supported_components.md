@@ -1,5 +1,5 @@
 # **List of Supported Components**
-#### Supported tested components for release 13MD05-90_02_01:
+#### Supported tested components for release 13MD05-90_02_02:
 - 02F023P
 - 02F026L
 - 02G023
@@ -75,7 +75,7 @@
 Legacy  product.  Product  support  is  still available, but not functionally tested any more during regression tests.
 100% functionality can not be guaranteed.
 
-- 02F011x
+- 02F011S
 - 02F014
 - 02F017
 - 02F018
@@ -107,8 +107,10 @@ Legacy  product.  Product  support  is  still available, but not functionally te
 - 15P599
 - 15P506
 - 16Z024_SRAM
+- 16Z025_UART
 - 16Z044_DISP
 - 16Z050_BIOC
+- 16Z051_DAC
 - 16Z057_UART
 - 16Z061_PWM
 - 16Z075_SPEED
@@ -126,9 +128,11 @@ Legacy  product.  Product  support  is  still available, but not functionally te
 - 04M045N
 - 04M051
 - 04M054
+- 04M065
 - 04M069N
 - 04M075
 - 04M076
+- 04M077
 - 04M078
 - 04M079
 - 15PP04
@@ -140,6 +144,7 @@ Legacy  product.  Product  support  is  still available, but not functionally te
 - Ubuntu 14.04.5 LTS
 - Ubuntu 16.04.1 LTS
 - Ubuntu 16.04.5 LTS
+- Ubuntu 16.04.6 LTS
 - Ubuntu 18.04.1 LTS
 
 #### EOL state components:
@@ -191,6 +196,7 @@ Existing support may be removed from 13MD05-90.
 - 04M016
 - 04M029
 - 04M030
+- 04M035
 - 04M039
 - 04M041
 - 04M044
@@ -207,5 +213,6 @@ Existing support may be removed from 13MD05-90.
 - 04M070
 - 04M074
 - 04M097
-- 04MS09
+- 04MS09N
 - ELinOS
+- Yocto - Sumo, kernel 4.14
