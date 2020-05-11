@@ -24,7 +24,7 @@
 #                     default file /tmp/men_pci_devs is not written. Used to
 #                     test system.dsc generation with predefined test data.
 ############################################################################
-# copyright (c) 2013-2019 MEN Mikro Elektronik GmbH Nuremberg
+# Copyright 2013-2020, MEN Mikro Elektronik GmbH
 ############################################################################
 
 ##########
@@ -1187,6 +1187,31 @@ create_entry_dsc_mmodule () {
             done
         fi
     fi
+}
+
+### @brief Get M-Module ID
+### @param $1 M-Module address
+### @return M-Module ID is echoed
+### @return Empty string is echoed on error
+getMmodId() {
+    local mmAddress
+    local mmId
+    local mmMagic
+    local mmIdent
+
+    mmAddress="${1}"
+
+    mmMagic="$("${MEN_LIN_DIR}"/BIN/"${MM_IDENT}" "${mmAddress}" | grep "MAGIC:" | head -n 1)"
+    if [[ "${mmMagic}" =~ ^MAGIC:[[:space:]]0x([[:xdigit:]]{4})$ ]]; then
+        mmMagic="${BASH_REMATCH[1]}"
+        mmIdent="$("${MEN_LIN_DIR}"/BIN/"${MM_IDENT}" "${mmAddress}" | grep "ID:" | head -n 1)"
+        if [[ "${mmIdent}" =~ [[:space:]]ID:[[:space:]]0x([[:xdigit:]]{4}), ]]; then
+            mmIdent="${BASH_REMATCH[1]}"
+            mmId="0x${mmMagic}${mmIdent}"
+        fi
+    fi
+
+    echo "${mmId}"
 }
 
 ############################################################################
