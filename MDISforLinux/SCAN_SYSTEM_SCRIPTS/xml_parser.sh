@@ -16,6 +16,8 @@
 declare -A mmodFileList
 ### @brief MDIS driver packages to xml file map
 declare -A mdisDriverFileList
+### @brief VME driver packages to xml file map
+declare -A mdisVMEFileList
 
 ### @brief Parse XML file
 ### @details SAX parser.
@@ -585,6 +587,127 @@ makeMdisDriverOutputDataCallback() {
                         mdisDriverSpecList["${xModule["type"]}"]+=" "
                     fi
                     mdisDriverSpecList["${xModule["type"]}"]+="${xModule["makefilepath"]}"
+                fi
+            fi
+        xModule=()
+        fi
+    fi
+}
+
+### @brief Create MDIS VME Drivers XML file mapping associative array
+makeVMEDriversFileMap() {
+    local xFiles
+    local xFile
+
+    if [ "${#mdisVMEFileList[@]}" != "0" ]; then
+        return "0"
+    fi
+
+    echo -n "Building MDIS VME driver database..."
+    xFiles=("${xFiles[@]}" $(echo "${MEN_LIN_DIR}/PACKAGE_DESC/13z01490.xml"))
+    for xFile in "${xFiles[@]}"; do
+        echo -n "."
+        xmlParseXml "${xFile}" "makeVMEDriverFileMapCallback" "${xFile##*/}"
+    done
+    echo "done!"
+}
+
+### @brief xmlParseXml() callback for makeVMEDriversFileMap()
+### @param $1 Callback argument
+### @param $2 Event reason
+### @param $3 Current xPath
+### @param $4 Event specific data#1
+makeVMEDriverFileMapCallback() {
+    if [ "${2}" == "characters" ] && \
+        [ "${3}" == "/package/modellist/model/hwname" ] && \
+        [ "${mdisVMEFileList["${4}"]}" == "" ]; then
+        mdisVMEFileList+=(["${4}"]="${1}")
+    fi
+}
+
+### @brief Create IP core output data
+### @param $1 IP core ID
+makeVMEDriverOutputData() {
+    local xId
+    local xFile
+    local -A xModel
+    local -A xModule
+
+    xId="${1}"
+
+    mdisVMESpecList=()
+
+    xFile="${mdisVMEFileList["${xId}"]}"
+    if [ "${xFile}" == "" ]; then
+        return "1"
+    fi
+
+    xmlParseXml "${MEN_LIN_DIR}/PACKAGE_DESC/${xFile}" "makeMdisVMEOutputDataCallback" "${xId}"
+}
+
+### @brief xmlParseXml() callback for makeVMEDriverOutputData()
+### @param $1 Callback argument
+### @param $2 Event reason
+### @param $3 Current xPath
+### @param $4 Event specific data#1
+### @param $5 Event specific data#2
+makeMdisVMEOutputDataCallback() {
+    local xKey
+    if [ "${2}" == "startElement" ]; then
+        if [ "${3}" == "/package/modellist" ] && \
+            [ "${4}" == "model" ]; then
+            xModel=()
+        elif [[ ("${3}" == "/package/modellist/model/swmodulelist" || \
+            "${3}" == "/package/swmodulelist") && \
+            "${4}" == "swmodule" ]]; then
+            xModule=()
+            if [ "${5}" != "" ]; then
+                eval "xModule+=(${5})"
+            fi
+        fi
+    elif [ "${2}" == "characters" ]; then
+        if [ "${3}" == "/package/modellist/model/hwname" ]; then
+            xModel+=(["hwname"]="${4}")
+        elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule/name" ] || \
+            [ "${3}" == "/package/swmodulelist/swmodule/name" ]; then
+            xModule+=(["name"]="${4}")
+        elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule/type" ] || \
+            [ "${3}" == "/package/swmodulelist/swmodule/type" ]; then
+            xModule+=(["type"]="${4}")
+        elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule/makefilepath" ] || \
+            [ "${3}" == "/package/swmodulelist/swmodule/makefilepath" ]; then
+            xModule+=(["makefilepath"]="${4}")
+        fi
+    elif [ "${2}" == "endElement" ]; then
+        if [ "${3}" == "/package/swmodulelist/swmodule" ] && \
+            [ "${4}" == "swmodule" ]; then
+            if [[ "${xModule["internal"]}" != "true" ||
+                "${INTERNAL_SWMODULES}" != "0" ]]; then
+                if [ "${mdisVMESpecList["name"]}" == "" ]; then
+                    mdisVMESpecList+=(["name"]="${xModule["name"]}")
+                fi
+                if [ "${xModule["type"]}" != "" ] && \
+                    [ "${xModule["makefilepath"]}" != "" ]; then
+                    if [ "${mdisVMESpecList["${xModule["type"]}"]}" != "" ]; then
+                        mdisVMESpecList["${xModule["type"]}"]+=" "
+                    fi
+                    mdisVMESpecList["${xModule["type"]}"]+="${xModule["makefilepath"]}"
+                fi
+            fi
+        xModule=()
+        elif [ "${3}" == "/package/modellist/model/swmodulelist/swmodule" ] && \
+              [ "${4}" == "swmodule" ]; then
+            if [[ "${xModule["internal"]}" != "true" ||
+                "${INTERNAL_SWMODULES}" != "0" ]]; then
+                if [ "${mdisVMESpecList["name"]}" == "" ]; then
+                    mdisVMESpecList+=(["name"]="${xModule["name"]}")
+                fi
+                if [ "${xModule["type"]}" != "" ] && \
+                    [ "${xModule["makefilepath"]}" != "" ]; then
+                    if [ "${mdisVMESpecList["${xModule["type"]}"]}" != "" ]; then
+                        mdisVMESpecList["${xModule["type"]}"]+=" "
+                    fi
+                    mdisVMESpecList["${xModule["type"]}"]+="${xModule["makefilepath"]}"
                 fi
             fi
         xModule=()

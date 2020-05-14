@@ -42,7 +42,7 @@ MOD_DIR=/lib/modules/$(uname -r)
 OUTPUT_DIR_PATH=$(pwd)
 # currently detected CPU boards. ADD NEW BOARDS HERE!
 # also take care for special (native) driver adding etc.
-CPU_KNOWN_BOARDS="SC25 SC24 SC31 F011 F11S F14- F014 F15- F015 F17- F017 F075 F75P F19P F19C F019 F21P F22P F23P F21C F021 F026 XM01 MM01 G20- G22- G022 G22A G23- G23A G25- G25A G025"
+CPU_KNOWN_BOARDS="SC25 SC24 SC31 F011 F11S F14- F014 F15- F015 F17- F017 F075 F75P F19P F19C F019 F21P F22P F23P F21C F021 F026 XM01 MM01 G20- G22- G022 G22A G23- G23A G25- G25A G025 A025"
 
 # which SMB adresses to scan for CPU ID eeproms
 ID_EEPROM_ADRESSES="0x57 0x55"
@@ -111,6 +111,8 @@ G_makefileLlTool=""
 G_makefileBbisDriver=""
 G_makefileNatDriver=""
 G_makefileUsrLibs=""
+G_makefileCommonTools=""
+G_mdisExtraDefs=""
 # DEVICE_IDV2_xx list
 G_deviceIdV2=""
 # SMB device list 
@@ -128,6 +130,8 @@ declare -A ipcoreFileList
 declare -a ipcoreSpecList=()
 ### @brief MDIS driver specification map list
 declare -A mdisDriverSpecList
+### @brief MDIS VME driver specification map list
+declare -A mdisVMESpecList
 
 ### @brief script usage --help
 scan_system_usage () {
@@ -405,7 +409,7 @@ create_entry_dsc_smb_drv () {
     else
         < "${1}/smb_drv.tpl" \
         sed "s/SCAN_DEVNAME/$3/g;s/SCAN_HWTYPE/${4}/g;s/SCAN_WIZMODEL/${5}/g;s/SCAN_SMBNR/$(printf 0x%x "${2}")/g;s/SCAN_DEVICE_SLOT/$(printf 0x%x "${6}")/g" >> "${OUTPUT_DIR_PATH}/${DSC_FILE}"
-    fi 
+    fi
 }
 
 ############################################################################
@@ -847,6 +851,55 @@ add_mdis_drivers () {
         done
     fi
 }
+
+############################################################################
+# add mdis VME drivers from files in mdisVMESpecList
+#
+# parameters:
+# $1 swmodule name
+add_vme_drivers () {
+    local mdisVMEName=${1}
+    debug_args "add_mdis_drivers ${1}"
+    makeVMEDriverOutputData "${mdisVMEName}"
+    if [ "${mdisVMESpecList["name"]}" == "" ]; then
+        echo "add_mdis_drivers: No valid data"
+        return 1
+    fi
+    if [ "${mdisVMESpecList["Low Level Driver"]}" != "" ]; then
+        for xMakefile in ${mdisVMESpecList["Low Level Driver"]}; do
+            debug_args "Low Level Driver: ${xMakefile}"
+            G_makefileLlDriver+=" ${xMakefile}"
+        done
+    fi
+    if [ "${mdisVMESpecList["Driver Specific Tool"]}" != "" ]; then
+        for xMakefile in ${mdisVMESpecList["Driver Specific Tool"]}; do
+            debug_args "Driver Specific Tool: ${xMakefile}"
+            G_makefileLlTool+=" ${xMakefile}"
+        done
+    fi
+    if [ "${mdisVMESpecList["User Library"]}" != "" ]; then
+        for xMakefile in ${mdisVMESpecList["User Library"]}; do
+            debug_args "User Library: ${xMakefile}"
+            G_makefileUsrLibs+=" ${xMakefile}"
+        done
+    fi
+    if [ "${mdisVMESpecList["Common Tool"]}" != "" ]; then
+        for xMakefile in ${mdisVMESpecList["Common Tool"]}; do
+            debug_args "Common Tool: ${xMakefile}"
+            G_makefileCommonTools+=" ${xMakefile}"
+        done
+    fi
+    if [ "${mdisVMESpecList["Native Driver"]}" != "" ]; then
+        for xMakefile in ${mdisVMESpecList["Native Driver"]}; do
+            debug_args "Native Driver: ${xMakefile}"
+            if ! grep -c "pldz002" <<< "${xMakefile}" > /dev/null
+            then
+                G_makefileNatDriver+=" ${xMakefile}"
+            fi
+        done
+    fi
+}
+
 
 ############################################################################
 # For some MEN CPU boards memory regions are disabled by default while
@@ -1361,6 +1414,8 @@ check_makefile () {
 #
 create_makefile () {
     debug_print "creation of Makefile..."
+    local subs=""
+
     # start with the template
     cat "${DSC_TPL_DIR}/Makefile.tpl" > ${TMP_MAKE_FILE}
     # Add cretion note into Makefile
@@ -1383,6 +1438,16 @@ create_makefile () {
     kern_dir=$(echo "${LIN_SRC_DIR}" | sed "s/\//@/g")
     sed -i.bak "s/SCAN_LIN_KERNEL_DIR/${kern_dir}/g" ${TMP_MAKE_FILE}
 
+    # insert all collected Mdis Extra Defs into Makefile
+    local EXTRA_DEFS=""
+    for i in ${G_mdisExtraDefs}; do
+        echo "Add Mdis Extra Define: ${i}"
+        EXTRA_DEFS=$(printf "%s %s" ${EXTRA_DEFS} ${i})
+    done
+    if [ ! -z "${EXTRA_DEFS}" ]
+    then
+        sed -i.bak "/^DEVNODE_INSTALL_DIR.*/a MDIS_EXTRA_DEFS = ${EXTRA_DEFS}" ${TMP_MAKE_FILE}
+    fi 
     # insert all collected BBIS drivers into Makefile
     for i in ${G_makefileBbisDriver}; do
     debug_print "checking bbis driver: ${i}"
@@ -1391,18 +1456,21 @@ create_makefile () {
             check_makefile "${i}"
             CmdResult=$?
             if [ ${CmdResult} -eq 0 ]; then
-                subs=$(echo "    ${i}" | sed "s/\//@/g")
+                subs=$(printf "\t%s" "${i}" | sed "s/\//@/g")
                 sed -i.bak "s/#SCAN_NEXT_BB_DRIVER/${subs}\n#SCAN_NEXT_BB_DRIVER/g" ${TMP_MAKE_FILE}
             fi
         else
         debug_print "BB driver '${i}' not found in MDIS tree, skipping"
         fi
     done
-    sed -i.bak "s/${subs}/#LAST_BBIS_DRIVER/g" ${TMP_MAKE_FILE}
-    subs="${subs//".mak"/".lastmak"}"
+    if [ ! -z "${subs}" ]
+    then
+        sed -i.bak "s/${subs}/#LAST_BBIS_DRIVER/g" ${TMP_MAKE_FILE}
+        subs="${subs//".mak"/".lastmak"}"
+    fi
     sed -i.bak "s/#LAST_BBIS_DRIVER/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_BB_DRIVER//g" ${TMP_MAKE_FILE}
-
+    subs=""
 
     # insert all collected LL drivers into Makefile
     for i in ${G_makefileLlDriver}; do
@@ -1412,17 +1480,21 @@ create_makefile () {
             check_makefile "${i}"
             CmdResult=$?
             if [ ${CmdResult} -eq 0 ]; then
-                subs=$(echo "    ${i}" | sed "s/\//@/g")
+                subs=$(printf "\t%s" "${i}" | sed "s/\//@/g")
                 sed -i.bak "s/#SCAN_NEXT_LL_DRIVER/${subs}\n#SCAN_NEXT_LL_DRIVER/g" ${TMP_MAKE_FILE}
             fi
         else
             debug_print "skipping LL driver '${i}'"
         fi
     done
-    sed -i.bak "s/${subs}/#LAST_LL_DRIVER/g" ${TMP_MAKE_FILE}
-    subs="${subs//".mak"/".lastmak"}"
+    if [ ! -z "${subs}" ]
+    then
+        sed -i.bak "s/${subs}/#LAST_LL_DRIVER/g" ${TMP_MAKE_FILE}
+        subs="${subs//".mak"/".lastmak"}"
+    fi
     sed -i.bak "s/#LAST_LL_DRIVER/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_LL_DRIVER//g" ${TMP_MAKE_FILE}
+    subs=""
 
     # insert all collected LL Tools into Makefile
     for i in ${G_makefileLlTool}; do
@@ -1431,17 +1503,21 @@ create_makefile () {
             check_makefile "${i}"
             CmdResult=$?
             if [ ${CmdResult} -eq 0 ]; then
-                subs=$(echo "    ${i}" | sed "s/\//@/g")
+                subs=$(printf "\t%s" "${i}" | sed "s/\//@/g")
                 sed -i.bak "s/#SCAN_NEXT_LL_TOOL/${subs}\n#SCAN_NEXT_LL_TOOL/g" ${TMP_MAKE_FILE}
             fi
         else
             debug_print "skipping LL tool '${i}'"
         fi
     done
-    sed -i.bak "s/${subs}/#LAST_LL_TOOL/g" ${TMP_MAKE_FILE}
-    subs="${subs//".mak"/".lastmak"}"
+    if [ ! -z "${subs}" ]
+    then
+        sed -i.bak "s/${subs}/#LAST_LL_TOOL/g" ${TMP_MAKE_FILE}
+        subs="${subs//".mak"/".lastmak"}"
+    fi
     sed -i.bak "s/#LAST_LL_TOOL/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_LL_TOOL//g" ${TMP_MAKE_FILE}
+    subs=""
 
     # insert all collected native drivers into Makefile
     for i in ${G_makefileNatDriver}; do
@@ -1450,17 +1526,21 @@ create_makefile () {
             check_makefile "${i}"
             CmdResult=$?
             if [ ${CmdResult} -eq 0 ]; then
-                subs=$(echo "    ${i}" | sed "s/\//@/g")
+                subs=$(printf "\t%s" "${i}" | sed "s/\//@/g")
                 sed -i.bak "s/#SCAN_NEXT_NAT_DRIVER/${subs}\n#SCAN_NEXT_NAT_DRIVER/g" ${TMP_MAKE_FILE}
             fi
         else
             echo "native driver '$i' not found in MDIS tree, skipping"
         fi
     done
-    sed -i.bak "s/${subs}/#LAST_NAT_DRIVER/g" ${TMP_MAKE_FILE}
-    subs="${subs//".mak"/".lastmak"}"
+    if [ ! -z "${subs}" ]
+    then
+        sed -i.bak "s/${subs}/#LAST_NAT_DRIVER/g" ${TMP_MAKE_FILE}
+        subs="${subs//".mak"/".lastmak"}"
+    fi
     sed -i.bak "s/#LAST_NAT_DRIVER/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_NAT_DRIVER//g" ${TMP_MAKE_FILE}
+    subs=""
 
     for i in ${G_makefileUsrLibs}; do
         if [ -f "${MEN_LIN_DIR}"/LIBSRC/"${i}" ]; then
@@ -1468,25 +1548,50 @@ create_makefile () {
             check_makefile "${i}"
             CmdResult=$?
             if [ ${CmdResult} -eq 0 ]; then
-                subs=$(echo "    ${i}" | sed "s/\//@/g")
+                subs=$(printf "\t%s" "${i}" | sed "s/\//@/g")
                 sed -i.bak "s/#SCAN_NEXT_USR_LIB/${subs}\n#SCAN_NEXT_USR_LIB/g" ${TMP_MAKE_FILE}
             fi
         else
             echo "user lib not found in MDIS tree, skipping"
         fi
     done
-    sed -i.bak "s/${subs}/#LAST_USR_LIB/g" ${TMP_MAKE_FILE}
-    subs="${subs//".mak"/".lastmak"}"
+    if [ ! -z "${subs}" ]
+    then
+        sed -i.bak "s/${subs}/#LAST_USR_LIB/g" ${TMP_MAKE_FILE}
+        subs="${subs//".mak"/".lastmak"}"
+    fi
     sed -i.bak "s/#LAST_USR_LIB/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_USR_LIB//g" ${TMP_MAKE_FILE}
+    subs=""
 
+    for i in ${G_makefileCommonTools}; do
+        if [ -f "${MEN_LIN_DIR}"/TOOLS/"${i}" ]; then
+            debug_print "usr lib: ${i}"
+            check_makefile "${i}"
+            CmdResult=$?
+            if [ ${CmdResult} -eq 0 ]; then
+                subs=$(printf "\t%s" "${i}" | sed "s/\//@/g")
+                sed -i.bak "s/#SCAN_NEXT_COM_TOOL/${subs}\n#SCAN_NEXT_COM_TOOL/g" ${TMP_MAKE_FILE}
+            fi
+        else
+            echo "user common tool not found in MDIS tree, skipping"
+        fi
+    done
+    if [ ! -z "${subs}" ]
+    then
+        sed -i.bak "s/${subs}/#LAST_COM_TOOL/g" ${TMP_MAKE_FILE}
+        subs="${subs//".mak"/".lastmak"}"
+    fi
+    sed -i.bak "s/#LAST_COM_TOOL/${subs}\n/g" ${TMP_MAKE_FILE}
+    sed -i.bak "s/#SCAN_NEXT_COM_TOOL//g" ${TMP_MAKE_FILE}
+    subs=""
 
     # add '\' behind every .mak that is not last and replace @ with '/'
-    sed -i.bak "s/@/\//g;s/\.mak/\.mak \\\/g" ${TMP_MAKE_FILE}
+    sed -i.bak "s/@/\//g;s/\.mak/\.mak \\\/g" ${TMP_MAKE_FILE} 
     sed -i.bak "s/\.lastmak/\.mak/g" ${TMP_MAKE_FILE}
 
     # add path to mdis sources
-    sed -i.bak "/.*MEN_LIN_DIR =.*/c MEN_LIN_DIR = ${MEN_LIN_DIR}" ${TMP_MAKE_FILE}
+    sed -i.bak "/.*MEN_LIN_DIR =.*/c MEN_LIN_DIR = ${MEN_LIN_DIR}" ${TMP_MAKE_FILE} > /dev/null
 
     # finally replace ##REPLNEWLINExxx tags with LF (after
     # removing all doublette line no linefeeds would be left
@@ -1893,8 +1998,7 @@ fi
 # all ok, let the games begin...
 # check on which CPU we are running
 
-detect_board_id
-
+#detect_board_id
 G_SmBusNumber=${smbus}
 main_cpu=$(echo "${G_cpu}" | awk '{print substr($1,1,4)}')
 wiz_model_cpu=""
@@ -2079,7 +2183,6 @@ case $main_cpu in
         add_z001_io_support
         add_mdis_drivers "SMB2"
         ;;
-
     G25-|G25A|G025)
         wiz_model_cpu=G25A
         wiz_model_smb=SMBPCI_ICH
@@ -2090,6 +2193,12 @@ case $main_cpu in
         add_mdis_drivers "XM01BC"
         add_z001_io_support
         add_mdis_drivers "SMB2"
+        ;;
+    A025)
+        makeVMEDriversFileMap
+        wiz_model_cpu=A25
+        add_vme_drivers "TSI148"
+        G_mdisExtraDefs+=" -DCONFIG_MEN_VME_KERNELIF"
         ;;
     *)
         echo "No MEN CPU type found!"
@@ -2121,7 +2230,7 @@ else
         create_entry_dsc_smb_drv  "${DSC_TPL_DIR}" "${G_SmBusNumber}" smb2_1 SMB2 SMB2 "${G_SmbDeviceSlotNumber}"
         add_device_smb_scan_list "${DSC_TPL_DIR}" "${G_SmbDeviceSlotNumber}" smb2_1
         G_SmbDeviceSlotNumber=$((G_SmbDeviceSlotNumber+1))
-    fi 
+    fi
     if [ "${bCreateXm01bcDrv}" == "1" ]; then
         create_entry_dsc_smb_drv  "${DSC_TPL_DIR}" "${G_SmBusNumber}" xm01bc_1 XM01BC XM01BC "${G_SmbDeviceSlotNumber}"
         add_device_smb_scan_list "${DSC_TPL_DIR}" "${G_SmbDeviceSlotNumber}" xm01bc_1
@@ -2133,7 +2242,7 @@ else
         G_SmbDeviceSlotNumber=$((G_SmbDeviceSlotNumber+1))
     fi
     #insert all smb drv scan list into smb2_1 device
-    fill_entry_dsc_smb_scan_list 
+    fill_entry_dsc_smb_scan_list
 
     debug_print "Check if all required memory regions are enabled"
     enable_memory_regions
