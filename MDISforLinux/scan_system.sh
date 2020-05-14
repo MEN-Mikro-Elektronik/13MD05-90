@@ -2008,6 +2008,7 @@ wiz_model_busif=1
 bCreateXm01bcDrv=0
 bCreateF14bcDrv=0
 bCreateSmb2GenericDrv=0
+bCreateSmbGeneric=1
 
 COMMIT_ID=$(cat "${MEN_LIN_DIR}/HISTORY/13MD05-90_version.txt")
 DATE=$(LANG=en_us_88591; date)
@@ -2022,6 +2023,7 @@ makeMdisDriversFileMap
 case $main_cpu in
     CB70)
         wiz_model_cpu=CB70C
+        bCreateSmbGeneric=0
         ;;
     SC24)
         wiz_model_cpu=Bx50x
@@ -2228,7 +2230,9 @@ elif  [ "${main_cpu}" == "SC31" ]; then
 else
     #all other CPUs: detect PCI boards, start with CPU/SMB drivers
     create_entry_dsc_cpu_type "${DSC_TPL_DIR}" "${wiz_model_cpu}"
+    if [ "${bCreateSmbGeneric}" == "1" ]; then
     create_entry_dsc_smb_type "${DSC_TPL_DIR}" "${G_SmBusNumber}" "${wiz_model_smb}" "${wiz_model_busif}"
+    fi
     if [ "${bCreateSmb2GenericDrv}" == "1" ]; then
         create_entry_dsc_smb_drv  "${DSC_TPL_DIR}" "${G_SmBusNumber}" smb2_1 SMB2 SMB2 "${G_SmbDeviceSlotNumber}"
         add_device_smb_scan_list "${DSC_TPL_DIR}" "${G_SmbDeviceSlotNumber}" smb2_1
