@@ -1591,7 +1591,7 @@ create_makefile () {
     sed -i.bak "s/\.lastmak/\.mak/g" ${TMP_MAKE_FILE}
 
     # add path to mdis sources
-    sed -i.bak "/.*MEN_LIN_DIR =.*/c MEN_LIN_DIR = ${MEN_LIN_DIR}" ${TMP_MAKE_FILE} > /dev/null
+    sed -i.bak "/.*MEN_LIN_DIR =.*/c MEN_LIN_DIR = ${MEN_LIN_DIR}" ${TMP_MAKE_FILE}
 
     # finally replace ##REPLNEWLINExxx tags with LF (after
     # removing all doublette line no linefeeds would be left
@@ -1998,7 +1998,7 @@ fi
 # all ok, let the games begin...
 # check on which CPU we are running
 
-#detect_board_id
+detect_board_id
 G_SmBusNumber=${smbus}
 main_cpu=$(echo "${G_cpu}" | awk '{print substr($1,1,4)}')
 wiz_model_cpu=""
