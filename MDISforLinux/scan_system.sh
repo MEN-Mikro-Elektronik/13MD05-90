@@ -892,11 +892,13 @@ add_vme_drivers () {
     if [ "${mdisVMESpecList["Native Driver"]}" != "" ]; then
         for xMakefile in ${mdisVMESpecList["Native Driver"]}; do
             debug_args "Native Driver: ${xMakefile}"
-            if ! grep -c "pldz002" <<< "${xMakefile}" > /dev/null
+            if ! grep -c "tsi148" <<< "${xMakefile}" > /dev/null
             then
                 G_makefileNatDriver+=" ${xMakefile}"
             fi
         done
+        # Add required chameleon driver
+        G_makefileNatDriver+=" DRIVERS/CHAMELEON/driver.mak"
     fi
 }
 
@@ -2197,7 +2199,7 @@ case $main_cpu in
     A025)
         makeVMEDriversFileMap
         wiz_model_cpu=A25
-        add_vme_drivers "TSI148"
+        add_vme_drivers "PLDZ002"
         G_mdisExtraDefs+=" -DCONFIG_MEN_VME_KERNELIF"
         ;;
     *)
