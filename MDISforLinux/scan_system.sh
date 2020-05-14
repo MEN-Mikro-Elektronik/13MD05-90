@@ -2022,7 +2022,6 @@ makeMdisDriversFileMap
 case $main_cpu in
     CB70)
         wiz_model_cpu=CB70C
-        wiz_model_smb=SMBPCI_FCH
         ;;
     SC24)
         wiz_model_cpu=Bx50x
