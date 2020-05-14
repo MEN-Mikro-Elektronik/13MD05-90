@@ -42,7 +42,7 @@ MOD_DIR=/lib/modules/$(uname -r)
 OUTPUT_DIR_PATH=$(pwd)
 # currently detected CPU boards. ADD NEW BOARDS HERE!
 # also take care for special (native) driver adding etc.
-CPU_KNOWN_BOARDS="SC25 SC24 SC31 F011 F11S F14- F014 F15- F015 F17- F017 F075 F75P F19P F19C F019 F21P F22P F23P F21C F021 F026 XM01 MM01 G20- G22- G022 G22A G23- G23A G25- G25A G025 A025"
+CPU_KNOWN_BOARDS="CB70 SC25 SC24 SC31 F011 F11S F14- F014 F15- F015 F17- F017 F075 F75P F19P F19C F019 F21P F22P F23P F21C F021 F026 XM01 MM01 G20- G22- G022 G22A G23- G23A G25- G25A G025 A025"
 
 # which SMB adresses to scan for CPU ID eeproms
 ID_EEPROM_ADRESSES="0x57 0x55"
@@ -2010,6 +2010,7 @@ wiz_model_busif=1
 bCreateXm01bcDrv=0
 bCreateF14bcDrv=0
 bCreateSmb2GenericDrv=0
+bCreateSmbGeneric=1
 
 COMMIT_ID=$(cat "${MEN_LIN_DIR}/HISTORY/13MD05-90_version.txt")
 DATE=$(LANG=en_us_88591; date)
@@ -2022,6 +2023,10 @@ makeMdisDriversFileMap
 
 #unfortunately some F-cards seem to be have IDs with and without '0' (marketing name)
 case $main_cpu in
+    CB70)
+        wiz_model_cpu=CB70C
+        bCreateSmbGeneric=0
+        ;;
     SC24)
         wiz_model_cpu=Bx50x
         wiz_model_smb=SMBPCI_FCH
@@ -2227,7 +2232,9 @@ elif  [ "${main_cpu}" == "SC31" ]; then
 else
     #all other CPUs: detect PCI boards, start with CPU/SMB drivers
     create_entry_dsc_cpu_type "${DSC_TPL_DIR}" "${wiz_model_cpu}"
+    if [ "${bCreateSmbGeneric}" == "1" ]; then
     create_entry_dsc_smb_type "${DSC_TPL_DIR}" "${G_SmBusNumber}" "${wiz_model_smb}" "${wiz_model_busif}"
+    fi
     if [ "${bCreateSmb2GenericDrv}" == "1" ]; then
         create_entry_dsc_smb_drv  "${DSC_TPL_DIR}" "${G_SmBusNumber}" smb2_1 SMB2 SMB2 "${G_SmbDeviceSlotNumber}"
         add_device_smb_scan_list "${DSC_TPL_DIR}" "${G_SmbDeviceSlotNumber}" smb2_1
