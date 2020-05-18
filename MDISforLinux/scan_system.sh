@@ -2228,7 +2228,7 @@ elif  [ "${main_cpu}" == "SC25" ]; then
 elif  [ "${main_cpu}" == "SC31" ]; then 
     < "${DSC_TPL_DIR}/sc31.tpl" sed "s/SCAN_WIZ_MODEL/${wiz_model_cpu}/g; s/SCAN_SMB_BUS_NR/$(printf 0x%x "${G_SmBusNumber}")/g;" >> "${OUTPUT_DIR_PATH}/${DSC_FILE}"
     blacklist_warning_message
-    cat"${DSC_TPL_DIR}/Makefile.sc31.tpl" >> "${MAKE_FILE}"
+    cat "${DSC_TPL_DIR}/Makefile.sc31.tpl" >> "${MAKE_FILE}"
 else
     #all other CPUs: detect PCI boards, start with CPU/SMB drivers
     create_entry_dsc_cpu_type "${DSC_TPL_DIR}" "${wiz_model_cpu}"
