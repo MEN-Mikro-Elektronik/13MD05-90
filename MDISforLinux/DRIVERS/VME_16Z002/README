@@ -23,6 +23,7 @@ The current release supports following boards:
 
   Board       Architecture     VME bridge     Bridge driver Required PLD 
   ----------  ---------------  -------------- ------------- ------------
+  MEN A25     Intel Xeon D     MEN PLDZ002    vme4l-pldz002      -
   MEN A20     Intel Core Duo   Tundra TSI148  vme4l-tsi148       -
   MEN A19     Intel Core Duo   Tundra TSI148  vme4l-tsi148       -
   MEN A17     PowerPC 854x     Tundra TSI148  vme4l-tsi148       -
