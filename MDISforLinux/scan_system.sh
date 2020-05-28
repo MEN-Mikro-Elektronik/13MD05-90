@@ -2224,7 +2224,7 @@ if [ "${main_cpu}" == "SC24" ]; then
     cat "${DSC_TPL_DIR}/Makefile.sc24.tpl" >> "${MAKE_FILE}"
 # create SC25 based Bx70x CPU model - no FPGA mapping necessary here
 elif  [ "${main_cpu}" == "SC25" ]; then 
-    < "${DSC_TPL_DIR}/sc25.tpl" sed "s/SCAN_WIZ_MODEL/${wiz_model_cpu}/g;" >> "${OUTPUT_DIR_PATH}/${DSC_FILE}"
+    < "${DSC_TPL_DIR}/sc25.tpl" sed "s/SCAN_WIZ_MODEL/${wiz_model_cpu}/g; s/SCAN_SMB_BUS_NR/$(printf 0x%x "${G_SmBusNumber}")/g;" >> "${OUTPUT_DIR_PATH}/${DSC_FILE}"
     blacklist_warning_message
     cat "${DSC_TPL_DIR}/Makefile.sc24.tpl" >> "${MAKE_FILE}"
 elif  [ "${main_cpu}" == "SC31" ]; then 
