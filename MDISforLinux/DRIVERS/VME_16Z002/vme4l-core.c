@@ -2195,7 +2195,8 @@ static long vme4l_ioctl(
 			break;
 		}
 
-	#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,0,0)
+	#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5,0,0)) || \
+		(LINUX_VERSION_CODE >= KERNEL_VERSION(4,18,0) && defined(RHEL_RELEASE))
 		if( !access_ok( blk.dataP, blk.size)){
 			rv = -EFAULT;
 			break;
