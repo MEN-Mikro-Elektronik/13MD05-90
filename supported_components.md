@@ -60,7 +60,7 @@
 - 4.14
 - 4.19
 - 5.4
-- 5.6
+- 5.5
 
 #### Supported not tested components:
 - 02F026C
