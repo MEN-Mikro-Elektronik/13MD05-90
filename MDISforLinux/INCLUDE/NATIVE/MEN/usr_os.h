@@ -50,8 +50,18 @@
 
 #ifndef UOS_FOR_RTAI
  /* some predefined signal codes */
-# define UOS_SIG_USR1		(SIGUSR1)
-# define UOS_SIG_USR2		(SIGUSR2)
+/*
+ * We use linux real-time signals, because multiple instances of real-time signals
+ * can be queued.
+ * Warning: Becasue SIGRTMIN is not a fix value and defined as function call in
+ * user space, it isn't usable in switch/case constructs. However, as workaround we
+ * use here a fix value. On most linux distros SIGRTMIN is 34 or 35. 
+ */
+#define SIGRTMIN_FIX	(36)
+#define UOS_SIG_USR1	(SIGRTMIN_FIX+1)
+#define UOS_SIG_USR2	(SIGRTMIN_FIX+2)
+#define UOS_SIG_USR3	(SIGRTMIN_FIX+3)
+#define UOS_SIG_USR4	(SIGRTMIN_FIX+4)
 
 #endif /* !UOS_FOR_RTAI */
 
