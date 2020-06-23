@@ -92,7 +92,7 @@ Legacy  product.  Product  support  is  still available, but not functionally te
 - KAHLUA_BOX_x
 - 15MM01
 - 15XM02
-- 08SC24
+- 13SC24-91 - Linux tool for UART Mode Settings
 - 01A012a/b/c
 - 01A015a/b/c
 - 01B011
