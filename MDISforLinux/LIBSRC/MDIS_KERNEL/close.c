@@ -75,9 +75,7 @@ int32 MDIS_FinalClose( MK_DEV *dev )
 	+------------------------------*/
 	/* disable irqs (if installed), ignore error */
 	if (dev->irqUse) {
-		MK_UNLOCK;
 		MDIS_EnableIrq( dev, FALSE );
-		MK_LOCK(error);
 	}
 	dev->initialized = FALSE;
 

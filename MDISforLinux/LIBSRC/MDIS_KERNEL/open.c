@@ -359,9 +359,7 @@ int32 MDIS_InitialOpen(
 	|  enable interrupt             |
 	+------------------------------*/
 	if (dev->irqUse) {
-		MK_UNLOCK;
 		MDIS_EnableIrq(dev, dev->irqEnableKey);
-		MK_LOCK(error);
 	}
 
 	OSS_DL_AddTail( &G_devList, &dev->node ); /* add to device list */
@@ -1084,10 +1082,6 @@ int32 MDIS_EnableIrq(MK_DEV *dev, u_int32 enable)
 
 	DBGWRT_1((DBH,"MDIS_EnableIrq %sableIrq %d\n",
 			  enable ? "en":"dis", dev->irqLevel ));
-
-	MK_LOCK( error );
-	if( error )
-		return -EINTR;
 	
 	/*---------------------+
     |  enable interrupt    |
@@ -1133,7 +1127,6 @@ int32 MDIS_EnableIrq(MK_DEV *dev, u_int32 enable)
 			error = ERR_MK_IRQ_ENABLE;
 		}
 	}
-	MK_UNLOCK;
 
 #ifdef DBG
 	if (ret1) {

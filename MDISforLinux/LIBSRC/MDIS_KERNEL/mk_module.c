@@ -183,7 +183,7 @@ int mk_release (struct inode *inode, struct file *filp)
 		MK_LOCK( err );
 
 		DBGWRT_2((DBH," %s useCount was %d\n", dev->devName, dev->useCount ));
-		if( (--dev->useCount == 0) && (dev->persist == FALSE) ){
+		if( (dev->useCount > 0) && (--dev->useCount == 0) && (dev->persist == FALSE) ){
 			/* do the final close */
 			if( (err = MDIS_FinalClose(dev)))
 				ret = -err;
@@ -327,6 +327,11 @@ int mk_ioctl (
 				ret = -EFAULT;
 				break;
 			}
+			MK_LOCK( ret );
+			if( ret ) {
+				ret = -EINTR;
+				break;
+			}
 			/* find device by its name and remove it */
 			if( (dev = MDIS_FindDevByName( mop.devName )) != NULL ){
 				if( dev->useCount == 0 ){
@@ -339,6 +344,7 @@ int mk_ioctl (
 			}
 			else
 				ret = -ENOENT;
+			MK_UNLOCK;
 		}
 		break;
 

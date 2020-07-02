@@ -198,7 +198,7 @@ int mdis_open_external_dev(
 									   &dev->space[0].virtAddr))) {
 		DBGWRT_ERR((DBH," *** %scan't map addr space[0]\n",fname));
 		error = -EBUSY;
-		return(error);
+		goto errexit;
 	}
 	dev->space[0].flags |= MK_MAPPED;
 	dev->ma[0] = (MACCESS)dev->space[0].virtAddr;
@@ -315,8 +315,14 @@ int mdis_install_external_irq(
 		return -EINVAL;
 
 	/* enable irq on carrier board */
+	MK_LOCK( error );
+	if( error )
+		return -EINTR;
+
 	if( (error = MDIS_EnableIrq( dev, TRUE )) )
 		return -EINVAL;
+
+	MK_UNLOCK;
 
 	return 0;
 }
