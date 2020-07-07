@@ -509,14 +509,17 @@ static void *MDIS_GetUsrBuf( u_int32 size, void **bufIdP )
 {
 	void *buf = NULL;
 	OSS_DL_NODE *node;
+	int error;
 
 	*bufIdP = NULL;
 
 	if( size <= MK_USRBUF_SIZE ){
+		MK_LOCK(error);
 		if( (node = OSS_DL_RemHead( &G_freeUsrBufList )) != NULL ){
 			buf = (void *)(node+1);
 			*bufIdP = (void *)node;
 		}
+		MK_UNLOCK;
 		if( buf == NULL )
 			buf = kmalloc( size, GFP_KERNEL );
 	}
@@ -541,10 +544,15 @@ static void *MDIS_GetUsrBuf( u_int32 size, void **bufIdP )
  ****************************************************************************/
 static void MDIS_RelUsrBuf( void *data, void *bufId )
 {
+	int error;
+
 	if( bufId == (void *)-1)
 		vfree( data );
-	else if (bufId)		
+	else if (bufId) {
+		MK_LOCK(error);
 		OSS_DL_AddTail( &G_freeUsrBufList, (OSS_DL_NODE *)bufId );
+		MK_UNLOCK;
+	}
 	else
 		kfree( data );
 }
