@@ -138,6 +138,7 @@ EXPORT_SYMBOL(mdis_find_ll_handle);
 EXPORT_SYMBOL(mdis_open_external_dev);
 EXPORT_SYMBOL(mdis_close_external_dev);
 EXPORT_SYMBOL(mdis_install_external_irq);
+EXPORT_SYMBOL(mdis_enable_external_irq);
 EXPORT_SYMBOL(mdis_remove_external_irq);
 
 /****************************** mk_open ***************************************
