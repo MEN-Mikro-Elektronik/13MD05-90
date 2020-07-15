@@ -221,12 +221,12 @@ int mdis_open_external_dev(
 	dev->initialized = TRUE;
 
  goodexit:
-	MK_UNLOCK;
 	dev->useCount++;
 	*devP = dev;
 	if( ossHandleP )
 		*ossHandleP = dev->osh;
 	*mappedAddrP = (void *)dev->ma[0];
+	MK_UNLOCK;
 	return 0;
 
  errexit:
@@ -262,7 +262,10 @@ int mdis_close_external_dev( void *_dev )
 
 	DBGWRT_1((DBH,"%sdev=%s\n", fname, dev->devName ));
 
-	mdis_remove_external_irq( _dev );
+	MDIS_RemoveSysirq( dev );
+
+	dev->llJumpTbl.irq = NULL;
+	dev->ll            = NULL;
 
 	if( --dev->useCount == 0 ){
 		MDIS_FinalClose( dev );
@@ -307,23 +310,28 @@ int mdis_install_external_irq(
 
 	DBGWRT_1((DBH,"%s\n", fname ));
 
+	MK_LOCK( error );
+	if( error )
+		return -EINTR;
+
 	dev->llJumpTbl.irq = (int32 (*)(LL_HANDLE*))handler;
 	dev->ll			   = data;
 
 	/*
 	 * install normal interrupt
 	 */
-	if( (error = MDIS_InstallSysirq( dev )))
+	if( (error = MDIS_InstallSysirq( dev ))) {
+		MK_UNLOCK;
 		return -EINVAL;
+	}
 
 #if ! extra_enable
 	/* enable irq on carrier board */
-	MK_LOCK( error );
-	if( error )
-		return -EINTR;
 
-	if( (error = MDIS_EnableIrq( dev, TRUE )) )
+	if( (error = MDIS_EnableIrq( dev, TRUE )) ) {
+		MK_UNLOCK;
 		return -EINVAL;
+	}
 #endif
 
 	MK_UNLOCK;
@@ -342,9 +350,17 @@ int mdis_enable_external_irq(
 
 	DBGWRT_1((DBH,"%s\n", fname ));
 
+	MK_LOCK( error );
+	if( error )
+		return -EINTR;
+
 	/* enable irq on carrier board */
-	if( (error = MDIS_EnableIrq( dev, TRUE )) )
+	if( (error = MDIS_EnableIrq( dev, TRUE )) ) {
+		MK_UNLOCK;
 		return -EINVAL;
+	}
+
+	MK_UNLOCK;
 
 	return 0;
 }
@@ -363,13 +379,20 @@ int mdis_remove_external_irq( void *_dev )
 {
 	MK_DEV *dev = (MK_DEV *)_dev;
 	DBGCMD(const char fname[] = "mdis_remove_external_irq: "; )
+	int32 error;
 
 	DBGWRT_1((DBH,"%s\n", fname ));
+
+	MK_LOCK( error );
+	if( error )
+		return -EINTR;
 
 	MDIS_RemoveSysirq( dev );
 
 	dev->llJumpTbl.irq = NULL;
 	dev->ll            = NULL;
+
+	MK_UNLOCK;
 
 	return 0;
 }
