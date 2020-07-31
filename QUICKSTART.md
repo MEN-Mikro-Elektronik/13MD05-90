@@ -13,6 +13,8 @@ For comprehensive information, please refer to the MDIS User Manual for Linux:
 - ``$ <command>``: Indicates to run command as normal user
 - ``# <command>``: Indicates to run command as root
 
+Note: Host system and target system can be the same physical computer (self-hosted target system).
+
 ## MDIS Software and Documentation
 
 The MDIS5 Software and Documentation for Linux is available from the MEN website
@@ -54,11 +56,11 @@ To compile kernel modules on the host system, you require:
 - Install the kernel headers
   - for specified kernel version:
 
-    ``# apt-get install kernel-headers-<kernel-version>``
+    ``# apt-get install linux-headers-<kernel-version>``
 
   - for running kernel version:
 
-    ``# apt-get install kernel-headers-$(uname -r)``
+    ``# apt-get install linux-headers-$(uname -r)``
   
 - Create the Symlink to the kernel headers
   - for specified kernel version:
@@ -68,13 +70,6 @@ To compile kernel modules on the host system, you require:
   - for running kernel version:
 
     ``# ln -s /usr/src/linux-headers-$(uname -r) /usr/src/linux``
-  
-- Prepare the kernel headers:
-
-  ```
-  # cd /usr/src/linux
-  # make prepare
-  ```
 
 ### CentOs / RedHat
 
@@ -174,8 +169,8 @@ Example for self-hosted development:
 For a system scan with *scan_system.sh*, the following packages must be installed
 on the target system:
 
-- *i2c-utils*
-- *pci-utils*
+- *i2c-tools*
+- *pciutils*
 
 Note: *scan_system.sh* checks the existence of these packages.
 
@@ -321,9 +316,9 @@ You can execute the utility manually or from the MDIS Wizard (*Build* > *Install
 
   ``# cd ~/myproj``
 
-- Build all MDIS Modules:
+- Install the MDIS Modules:
 
-  ``# make``
+  ``# make install``
 
 ### Binary Locations
 
@@ -386,8 +381,8 @@ and mainline since Linux kernel 3.15.
 - Blacklist *mcb*/*mcb_pci*:
 
   ```
-  # echo mcb >> /etc/modprobe.d/blacklist.conf
-  # echo mcb_pci >> /etc/modprobe.d/blacklist.conf
+  # echo "blacklist mcb" >> /etc/modprobe.d/blacklist.conf
+  # echo "blacklist mcb_pci" >> /etc/modprobe.d/blacklist.conf
   ```
 
 ## Unloading MDIS Drivers
