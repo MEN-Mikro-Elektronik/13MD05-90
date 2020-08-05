@@ -1487,14 +1487,14 @@ static ssize_t mk_read_procmem( struct file *filp, char *buf, size_t count, loff
   DBGWRT_3((DBH,"mk_read_procmem: count %d\n", count));
   MK_LOCK(error);
   if (error)
-	return -EINTR;
+    return -EINTR;
 
-	locbuf = vmalloc(PROC_BUF_LEN);
-	if (!locbuf)
-		return -ENOMEM;
-	tmp = locbuf;
+  locbuf = vmalloc(PROC_BUF_LEN);
+  if (!locbuf)
+    return -ENOMEM;
+  tmp = locbuf;
 
-	memset(locbuf, 0x00, PROC_BUF_LEN);
+  memset(locbuf, 0x00, PROC_BUF_LEN);
 
   /* user buffers */
   {
