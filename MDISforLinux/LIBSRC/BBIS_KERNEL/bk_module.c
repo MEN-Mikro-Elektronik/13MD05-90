@@ -612,6 +612,7 @@ static ssize_t bk_read_procmem( struct file *filp, char *buf, size_t count, loff
 
   DBGWRT_3((DBH,"mk_read_procmem: count %d\n", count));
   BK_LOCK(i);
+  if( i ) return (-ERESTARTSYS);
 
 	memset(locbuf, 0x00, PROC_BUF_LEN);
 

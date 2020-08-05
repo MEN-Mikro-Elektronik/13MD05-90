@@ -182,6 +182,8 @@ int mk_release (struct inode *inode, struct file *filp)
 		dev = mkPath->dev;		/* point to MDIS device */
 
 		MK_LOCK( err );
+		if (err)
+			return -EINTR;
 
 		DBGWRT_2((DBH," %s useCount was %d\n", dev->devName, dev->useCount ));
 		if( (dev->useCount > 0) && (--dev->useCount == 0) && (dev->persist == FALSE) ){
@@ -516,6 +518,8 @@ static void *MDIS_GetUsrBuf( u_int32 size, void **bufIdP )
 
 	if( size <= MK_USRBUF_SIZE ){
 		MK_LOCK(error);
+		if (error)
+			return NULL;
 		if( (node = OSS_DL_RemHead( &G_freeUsrBufList )) != NULL ){
 			buf = (void *)(node+1);
 			*bufIdP = (void *)node;
@@ -551,6 +555,8 @@ static void MDIS_RelUsrBuf( void *data, void *bufId )
 		vfree( data );
 	else if (bufId) {
 		MK_LOCK(error);
+		if (error)
+			return;
 		OSS_DL_AddTail( &G_freeUsrBufList, (OSS_DL_NODE *)bufId );
 		MK_UNLOCK;
 	}
@@ -1394,6 +1400,8 @@ static int mk_read_procmem( char *page, char **start, off_t off, int count, int 
 
   DBGWRT_3((DBH,"mk_read_procmem: count %d page=%p\n", count, page));
   MK_LOCK(error);
+  if (error)
+    return -EINTR;
 
 
   /* user buffers */
@@ -1478,6 +1486,8 @@ static ssize_t mk_read_procmem( struct file *filp, char *buf, size_t count, loff
 
   DBGWRT_3((DBH,"mk_read_procmem: count %d\n", count));
   MK_LOCK(error);
+  if (error)
+	return -EINTR;
 
 	locbuf = vmalloc(PROC_BUF_LEN);
 	if (!locbuf)
