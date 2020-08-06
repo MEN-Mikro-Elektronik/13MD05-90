@@ -78,6 +78,9 @@ static const char IdentString[]=MENT_XSTR(MAK_REVISION);
 #define PLDZ002_A32D32_SIZE_32M		 0x2000000
 #define PLDZ002_A32D32_SIZE_16M		 0x1000000
 
+#define PLDZ002_A25_DEV_ID		0x4d45	/* Device ID for A25 */
+#define PLDZ002_A25_SUBSYS_VEN_ID	0x00d5	/* Subsystem Vendor ID for A25 */
+
 /* convert a chameleon BAR entry to its location in PCI config space (0x10, 0x14..) */
 #define CHAM_BAR2PCI_BASE_ADDR(x) (((x)*4)+0x10)
 
@@ -2215,8 +2218,18 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 	for (i = 0; i < PLDZ002_MAX_UNITS ; i++)
 	{
 		if (men_chameleonV2_unit_find( CHAMELEON_16Z002_VME, i, &u) != 0) {
-				printk(KERN_ERR_PFX "%s: Did not find PLDZ002 unit %d\n",
-				       __func__, i);
+			/* no CHAMELEON_16Z002_VME unit found */
+			if ((PLDZ002_MAX_UNITS-1) == i) {
+				/* we're making a suspicion here that this is not an A25,
+				 * so there's no eighth unit */
+				if (!(chu->pdev->device == PLDZ002_A25_DEV_ID &&
+					chu->pdev->subsystem_vendor == PLDZ002_A25_SUBSYS_VEN_ID)) {
+					/* not an A25, not an error */
+					break;
+				}
+			}
+			printk(KERN_ERR_PFX "%s: Did not find PLDZ002 unit %d\n",
+				__func__, i);
 			rv = -EINVAL;
 			goto CLEANUP;
 		}
