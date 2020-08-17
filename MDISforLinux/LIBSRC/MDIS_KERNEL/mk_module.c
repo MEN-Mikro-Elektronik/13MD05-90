@@ -1567,7 +1567,11 @@ static struct file_operations mk_fops = {
 };
 
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
+static struct proc_ops mk_proc_ops = {
+	.proc_read = mk_read_procmem,
+};
+#elif LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
 static struct file_operations mk_proc_fops = {
      read:       	mk_read_procmem,
 };
@@ -1647,7 +1651,9 @@ int init_module(void)
 		OSS_DL_AddTail( &G_freeUsrBufList, (OSS_DL_NODE *)pg );
 	}
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
+	proc_create("mdis", 0, NULL, &mk_proc_ops);
+#elif LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	create_proc_read_entry ("mdis", 0, NULL, mk_read_procmem, NULL);
 #else
 	proc_create (           "mdis", 0, NULL, &mk_proc_fops);
