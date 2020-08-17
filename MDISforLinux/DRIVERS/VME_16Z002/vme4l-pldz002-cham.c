@@ -2088,7 +2088,11 @@ static int MapRegSpace( VME4L_RESRC *res, const char *name )
 		res->vaddr = ioremap_nocache( res->phys, res->size );
 	}
 #else
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,5,0)
+	res->vaddr = ioremap( res->phys, res->size );
+#else
 	res->vaddr = ioremap_nocache( res->phys, res->size );
+#endif
 #endif
 	VME4LDBG("PLDZ002: MapRegSpace %s: phys:%p, size: 0x%x, vaddr=%p\n", name,
 			 res->phys, res->size, res->vaddr );

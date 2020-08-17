@@ -735,7 +735,12 @@ static int vme4l_make_ioremap_region(
 			  "Map vme=0x%llx (0x%llx) pa=0x%x\n", vmeAddr, (uint64_t) size,
 			  vmeStart, (uint64_t) useSize, physAddr );
 
-	if( (region->vaddr = ioremap_nocache( physAddr, useSize )) != NULL ){
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,5,0)
+	region->vaddr = ioremap( physAddr, useSize );
+#else
+	region->vaddr = ioremap_nocache( physAddr, useSize );
+#endif
+	if( region->vaddr != NULL ){
 		VME4LDBG( "ioremap ok: Mapped 0x%08x to 0x%p\n",
 				  physAddr, region->vaddr );
 
