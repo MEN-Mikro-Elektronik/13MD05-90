@@ -9,7 +9,7 @@
  *     Switches: UOS_FOR_RTAI - set by RTAI "stdio.h"
  *
  *---------------------------------------------------------------------------
- * Copyright 2000-2019, MEN Mikro Elektronik GmbH
+ * Copyright 2000-2020, MEN Mikro Elektronik GmbH
  ******************************************************************************/
 /*
  * This program is free software: you can redistribute it and/or modify

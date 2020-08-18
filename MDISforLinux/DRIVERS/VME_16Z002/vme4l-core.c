@@ -16,7 +16,7 @@
  */
 /*
  *---------------------------------------------------------------------------
- * Copyright 2003-2019, MEN Mikro Elektronik GmbH
+ * Copyright 2003-2020, MEN Mikro Elektronik GmbH
  ******************************************************************************/
 /*
  * This program is free software: you can redistribute it and/or modify
