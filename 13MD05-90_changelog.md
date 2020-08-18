@@ -1,5 +1,19 @@
 # Changelog for 13MD05-90 "MEN MDIS for Linux System Package plus lowlevel drivers"
 
+## [13MD05-90_02_03] - 2020-10-02
+
+## Changed
+- MDIS Wizard binary update
+
+## Fixed
+- System scanner script
+- vme4l-core compilation on CentOS 8
+- Real-time signal definitions
+- MDIS locking mechanism
+- Compatibility with kernel 5.6.0
+- Compatibility with CentOS 7 with kernel 3.10
+
+
 ## [13MD05-90_02_02] - 2020-05-15
 
 ### Added
