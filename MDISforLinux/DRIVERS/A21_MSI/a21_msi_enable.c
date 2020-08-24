@@ -67,7 +67,9 @@ EXPORT_SYMBOL(A21_MSI_enable);
 int mod_init(void)
 {
 	struct pci_dev *pdev = NULL;
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,16,0)
 	struct msix_entry *entries = NULL;
+#endif
 	int error;
 	int nvec;
 	printk( KERN_INFO "MEN " COMP_NAME " init_module.\n");
