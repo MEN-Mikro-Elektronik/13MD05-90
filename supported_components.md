@@ -1,5 +1,6 @@
 # **List of Supported Components**
-#### Supported tested components for release 13MD05-90_02_02:
+
+#### Supported tested components for release 13MD05-90_02_03:
 - 02F023P
 - 02F026L
 - 02G023
@@ -46,21 +47,21 @@
 - 04M199
 - Ubuntu 18.04 LTS 32-bit
 - Ubuntu 18.04 LTS 64-bit
-- Ubuntu 20 LTS 64-bit
-- CentOS 7.7 64-bit
-- CentOS 8.1 64-bit
-- Debian 10 4.19.0-6-686-pae 32-bit
-- Debian 10 4.19.0-6-amd64 64-bit
+- Ubuntu 20.04 LTS 64-bit
+- CentOS 7.8 64-bit
+- CentOS 8.2 64-bit
+- Debian 10.5 32-bit
+- Debian 10.5 64-bit
 - Yocto - Sumo, Kernel 4.15.18 64-bit (02F026L + 02G025A only)
 
-**Compilation - tested kernel versions:**
+#### **Compilation - tested kernel versions:**
 - 3.16
 - 4.4
 - 4.9
 - 4.14
 - 4.19
 - 5.4
-- 5.5
+- 5.6
 
 #### Supported not tested components:
 - 02F026C
@@ -70,9 +71,9 @@
 - 02F204
 
 #### EOS state components:
-**Comment:   EOS  (End  Of  Support)**
+**Comment: EOS (End Of Support)**
 
-Legacy  product.  Product  support  is  still available, but not functionally tested any more during regression tests.
+Legacy product. Product support is still available, but not functionally tested any more during regression tests.
 100% functionality can not be guaranteed.
 
 - 02F011S
@@ -148,7 +149,7 @@ Legacy  product.  Product  support  is  still available, but not functionally te
 - Ubuntu 18.04.1 LTS
 
 #### EOL state components:
-**Comment:   EOL (End Of Life)**
+**Comment: EOL (End Of Life)**
 
 Existing support may be removed from 13MD05-90.
 
