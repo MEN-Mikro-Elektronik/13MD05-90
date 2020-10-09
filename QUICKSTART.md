@@ -166,6 +166,8 @@ Example for self-hosted development:
 
 ## Target Prerequisites
 
+### System Scan
+
 For a system scan with *scan_system.sh*, the following packages must be installed
 on the target system:
 
@@ -173,6 +175,23 @@ on the target system:
 - *pciutils*
 
 Note: *scan_system.sh* checks the existence of these packages.
+
+### Secure Boot
+
+Under x86 architecture with linux kernel 5.4 and later, secure boot must be disabled
+in UEFI. Otherwise the *Linux Kernel Lock Down* feature would prevent to access */dev/mem*.
+
+Access to */dev/mem* is required from *scan_system.sh* script (*mm_ident* tool),
+*fpga_load* and *hwbug*.
+
+### SELinux
+
+SELinux is a security module for the Linux kernel that enables support for security
+policies for access control.
+
+If the Linux distribution (e.g. CentOS 8.2) uses SELinux, you have to set
+*SELINUX=permissive* in */etc/selinux/config*. Otherwise, the mdis_kernel/bbis_kernel
+is unable to load needed MDIS drivers.
 
 ## Installing MDIS on the Host
 
