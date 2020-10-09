@@ -188,6 +188,29 @@ get_ynq_answer() {
     done
 }
 
+### @brief Check if SELinux is enforced
+### @return 0 if SELinux is enforced
+### @return 1 if SELinux is not enforced
+isSELinuxEnforcing() {
+    local isEnforcing="1"
+    local selStatus
+
+    if [ -e "/etc/selinux/config" ]; then
+        if grep -i "^[[:space:]]*SELINUX[[:space:]]*=[[:space:]]*enforcing" "/etc/selinux/config" >/dev/null 2>&1; then
+            isEnforcing="0"
+        fi
+    fi
+
+    if which getenforce >/dev/null 2>&1; then
+        selStatus="$(getenforce)"
+        if [ "${selStatus,,}" == "enforcing" ]; then
+            isEnforcing="0"
+        fi
+    fi
+
+    return "${isEnforcing}"
+}
+
 ### @brief Get installer and scanner prerequisites
 ### @return Prerequisites are echoed
 getPrerequisites() {
@@ -630,6 +653,16 @@ if [ ${install_only} -eq "0" ] && [ $EUID -ne "0" ]; then
     show_insufficient_rights
     show_end_message
     exit
+fi
+
+# Check if SELinux is enforced. Display warning if so.
+if isSELinuxEnforcing; then
+    echo "\
+WARNING: SELinux security policy is enforced. MDIS may not work properly.
+         Please consider setting it to permissive!
+         Set SELINUX=permissive in /etc/selinux/config
+"
+    sleep 1
 fi
 
 # If install_only is set, install is done without asking user for action,
