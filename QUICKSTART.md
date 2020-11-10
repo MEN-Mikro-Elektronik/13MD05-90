@@ -209,7 +209,7 @@ is unable to load needed MDIS drivers.
 
   ```
   # cd 13MD05-90
-  # ./INSTALL
+  # ./INSTALL.sh
   ```
 
 - If you are using the target system as host system (self-hosted), you can optionally:
@@ -235,7 +235,7 @@ Note: This description is applicable for self-hosted environments!
 
 The *scan_system.sh* script performs a scan. You can execute it in different ways:
 
-- During the MDIS Host Installation with the INSTALL script (see above).
+- During the MDIS Host Installation with the INSTALL.sh script (see above).
 
 - Manually from the root console:
 
