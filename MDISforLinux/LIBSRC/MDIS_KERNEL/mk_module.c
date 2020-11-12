@@ -235,7 +235,8 @@ int mk_ioctl (
 	* "write" is reversed
 	*/
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(5,0,0)) || \
-    (LINUX_VERSION_CODE >= KERNEL_VERSION(4,18,0) && defined(RHEL_RELEASE))
+    (defined(RHEL_RELEASE_CODE) && defined(RHEL_RELEASE_VERSION) && \
+     RHEL_RELEASE_CODE >= RHEL_RELEASE_VERSION(8,1))
 	err = !access_ok((void *)arg, size);
 #else
 	if (_IOC_DIR(cmd) & _IOC_READ)

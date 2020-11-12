@@ -290,10 +290,10 @@ make_history_script() {
         fi
     else
         if [ -d "${MDIS_HISTORY_PATH}" ]; then
-            echo "GIT repository not present, ${MDIS_HISTORY_PATH} availaiable"
+            echo "GIT repository not present, ${MDIS_HISTORY_PATH} available"
             return 0
         else
-            echo "GIT repository not present, ${MDIS_HISTORY_PATH} not availaiable"
+            echo "GIT repository not present, ${MDIS_HISTORY_PATH} not available"
             echo "MDIS package is broken - exit"
             return 1
         fi
@@ -621,7 +621,7 @@ folder_recursive() {
 # - Run make install
 
 echo "                                                                                "
-echo "Installing the MEN MDIS for Linux System Package 13MD05-90_02_02                "
+echo "Installing the MEN MDIS for Linux System Package 13MD05-90_02_03                "
 echo "(see MDIS User Manual for details)                                              "
 echo "________________________________________________________________________________"
 echo "                                                                                "
