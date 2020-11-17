@@ -10,7 +10,7 @@
 #
 #
 #-----------------------------------------------------------------------------
-#   Copyright 2006-2019, MEN Mikro Elektronik GmbH
+#   Copyright 2006-2020, MEN Mikro Elektronik GmbH
 #***************************************************************************/
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -136,9 +136,10 @@ _ALL_USR_LIBS 	=  $(ALL_USR_LIBS) \
 					MDIS_API/library.mak
 
 ifndef NO_STD_ALL_COM_TOOLS
-_ALL_COM_TOOLS	=  $(ALL_COM_TOOLS) \
-					MDIS_API/MDIS_CREATEDEV/program.mak \
-
+_ALL_COM_TOOLS	=  $(ALL_COM_TOOLS)
+	ifeq (,$(findstring MDIS_API/MDIS_CREATEDEV/program.mak,$(ALL_COM_TOOLS)))
+		_ALL_COM_TOOLS += MDIS_API/MDIS_CREATEDEV/program.mak
+	endif
 else
 _ALL_COM_TOOLS  = $(ALL_COM_TOOLS)
 endif
@@ -358,7 +359,7 @@ $(THIS_DIR)/.kernelsettings: $(LIN_KERNEL_COMMON_DIR)/Makefile
 	@$(ECHO) "Getting Compiler/Linker settings from Linux Kernel Makefile"
 	@$(Q)$(MAKE) -C $(LIN_KERNEL_COMMON_DIR) \
 	--no-print-directory -f $(TPL_DIR)kernelsettings.mak \
-	KERNEL_SETTINGS_FILE=$(THIS_DIR)/.kernelsettings > /dev/null 2>&1
+	KERNEL_SETTINGS_FILE=$(THIS_DIR)/.kernelsettings
 
 $(THIS_DIR)/.endian: Makefile $(LIN_KERNEL_COMMON_DIR)/Makefile
 	@$(ECHO) "Getting Compiler/Linker settings from Linux Kernel Makefile"
@@ -498,4 +499,4 @@ callkernelbuild:
 	@$(ECHO) "++++++++ Building kernel modules ++++++++++"
 	@$(ECHO) -n "obj-m +=" >OBJ/Makefile
 	cat $(THIS_DIR)/.kernelsubdirs >>OBJ/Makefile
-	$(Q)$(MAKE) -C $(LIN_KERNEL_DIR) SUBDIRS=$(THIS_DIR)/OBJ
+	$(Q)$(MAKE) -C $(LIN_KERNEL_DIR) M=$(THIS_DIR)/OBJ

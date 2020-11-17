@@ -18,7 +18,7 @@
  */
 /*
  *---------------------------------------------------------------------------
- * Copyright 2004-2019, MEN Mikro Elektronik GmbH
+ * Copyright 2004-2020, MEN Mikro Elektronik GmbH
  ******************************************************************************/
 /*
  * This program is free software: you can redistribute it and/or modify
@@ -77,6 +77,9 @@ static const char IdentString[]=MENT_XSTR(MAK_REVISION);
 #define PLDZ002_A32D32_SIZE_64M		 0x4000000
 #define PLDZ002_A32D32_SIZE_32M		 0x2000000
 #define PLDZ002_A32D32_SIZE_16M		 0x1000000
+
+#define PLDZ002_A25_DEV_ID		0x4d45	/* Device ID for A25 */
+#define PLDZ002_A25_SUBSYS_VEN_ID	0x00d5	/* Subsystem Vendor ID for A25 */
 
 /* convert a chameleon BAR entry to its location in PCI config space (0x10, 0x14..) */
 #define CHAM_BAR2PCI_BASE_ADDR(x) (((x)*4)+0x10)
@@ -2085,7 +2088,11 @@ static int MapRegSpace( VME4L_RESRC *res, const char *name )
 		res->vaddr = ioremap_nocache( res->phys, res->size );
 	}
 #else
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,5,0)
+	res->vaddr = ioremap( res->phys, res->size );
+#else
 	res->vaddr = ioremap_nocache( res->phys, res->size );
+#endif
 #endif
 	VME4LDBG("PLDZ002: MapRegSpace %s: phys:%p, size: 0x%x, vaddr=%p\n", name,
 			 res->phys, res->size, res->vaddr );
@@ -2215,8 +2222,18 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 	for (i = 0; i < PLDZ002_MAX_UNITS ; i++)
 	{
 		if (men_chameleonV2_unit_find( CHAMELEON_16Z002_VME, i, &u) != 0) {
-				printk(KERN_ERR_PFX "%s: Did not find PLDZ002 unit %d\n",
-				       __func__, i);
+			/* no CHAMELEON_16Z002_VME unit found */
+			if ((PLDZ002_MAX_UNITS-1) == i) {
+				/* we're making a suspicion here that this is not an A25,
+				 * so there's no eighth unit */
+				if (!(chu->pdev->device == PLDZ002_A25_DEV_ID &&
+					chu->pdev->subsystem_vendor == PLDZ002_A25_SUBSYS_VEN_ID)) {
+					/* not an A25, not an error */
+					break;
+				}
+			}
+			printk(KERN_ERR_PFX "%s: Did not find PLDZ002 unit %d\n",
+				__func__, i);
 			rv = -EINVAL;
 			goto CLEANUP;
 		}
@@ -2383,9 +2400,10 @@ static int __init vme4l_pldz002_init_module(void)
 {
 	printk( KERN_INFO "%s ", __FUNCTION__);
 
-    if (!men_chameleonV2_register_driver( &G_driver ))
+    if (!men_chameleonV2_register_driver( &G_driver )) {
+		men_chameleonV2_unregister_driver( &G_driver );
 		return -ENODEV;  /* couldnt find requested unit */
-	else
+    } else
 		return 0;
 }
 

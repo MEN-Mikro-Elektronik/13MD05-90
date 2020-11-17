@@ -103,6 +103,9 @@ static int __init init_mod(void)
 	if( (ret = mdis_install_external_irq( G_dev, IrqHandler, (void *)1234 ))<0)
 		return ret;
 
+	if( (ret = mdis_enabl_external_irq( G_dev ))<0)
+		return ret;
+
 	setTime( 250000 );
 
 #if 1

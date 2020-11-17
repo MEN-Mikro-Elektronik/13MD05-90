@@ -1609,7 +1609,7 @@ static int Tsi148_SlaveWindowCtrl(
 	winResP->phys = dmaAddr;
 	winResP->size = size;
 	winResP->spc = spc;
-	*physAddrP = (void *) dmaAddr;
+	*physAddrP = (void *)(uintptr_t) dmaAddr;
 	*bDrvDataP = (void *)(U_INT32_OR_64) winNo;
 
 	rv = TSI148_OK;

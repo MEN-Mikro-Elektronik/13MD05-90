@@ -11,7 +11,7 @@
  *     Switches: DBG
  *
  *---------------------------------------------------------------------------
- * Copyright 2000-2019, MEN Mikro Elektronik GmbH
+ * Copyright 2000-2020, MEN Mikro Elektronik GmbH
  ******************************************************************************/
 /*
  * This program is free software: you can redistribute it and/or modify
@@ -612,6 +612,7 @@ static ssize_t bk_read_procmem( struct file *filp, char *buf, size_t count, loff
 
   DBGWRT_3((DBH,"mk_read_procmem: count %d\n", count));
   BK_LOCK(i);
+  if( i ) return (-ERESTARTSYS);
 
 	memset(locbuf, 0x00, PROC_BUF_LEN);
 
@@ -656,8 +657,12 @@ static ssize_t bk_read_procmem( struct file *filp, char *buf, size_t count, loff
 #endif
 
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
+static struct proc_ops bk_proc_ops = {
+	.proc_read = bk_read_procmem,
+};
 /* since kernel 3.10 new proc entry fops are needed */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
+#elif LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
 static struct file_operations bk_proc_fops = {
      .read=      	bk_read_procmem,
 };
@@ -691,7 +696,9 @@ int init_module(void)
 	OSS_DL_NewList( &G_drvList );
 	OSS_DL_NewList( &G_devList );
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
+	proc_create("bbis", 0, NULL, &bk_proc_ops);
+#elif LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	create_proc_read_entry ("bbis", 0, NULL, (read_proc_t *)bk_read_procmem, NULL);
 #else
 	proc_create (           "bbis", 0, NULL, &bk_proc_fops);

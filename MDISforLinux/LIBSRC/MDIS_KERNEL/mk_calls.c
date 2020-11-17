@@ -11,7 +11,7 @@
  *     Switches: DBG
  *
  *---------------------------------------------------------------------------
- * Copyright 2000-2019, MEN Mikro Elektronik GmbH
+ * Copyright 2000-2020, MEN Mikro Elektronik GmbH
  ******************************************************************************/
 /*
  * This program is free software: you can redistribute it and/or modify
@@ -93,7 +93,11 @@ int32 MDIS_MkSetStat( MK_PATH *mkPath, u_int32 code, void *arg )
 		    if (!IN_RANGE(value, 0, 1))
 				return(ERR_MK_ILL_PARAM);
 
-		    error = MDIS_EnableIrq(mkPath->dev, value);
+			MK_LOCK( error );
+			if( error )
+				return -EINTR;
+			error = MDIS_EnableIrq(mkPath->dev, value);
+			MK_UNLOCK;
             break;
 
         case M_MK_IRQ_COUNT:

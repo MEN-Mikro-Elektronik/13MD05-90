@@ -15,7 +15,7 @@
 #		Rules:	  all			main rule for libraries
 #
 #-----------------------------------------------------------------------------
-#   Copyright 2000-2019, MEN Mikro Elektronik GmbH
+#   Copyright 2000-2020, MEN Mikro Elektronik GmbH
 #*****************************************************************************
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -179,7 +179,7 @@ build: $(COMP_OBJ)
 
 $(COMP_OBJ): $(TMP_COMP_OBJS) $(MAK_LIBS)
 	@$(ECHO) Linking $@
-	$(Q)$(CC) $(LDFLAGS) $(TMP_COMP_OBJS) $(MAK_LIBS) -o $@
+	$(Q)$(CC) $(LDFLAGS) $(TMP_COMP_OBJS) $(MAK_LIBS) -o $@ -lm
 
 # Dependencies
 $(TMP_COMP_OBJS): 	$(MAK_INCL) \

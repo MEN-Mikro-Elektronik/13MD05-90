@@ -204,7 +204,7 @@ smb2_bus0 {
     # ------------------------------------------------------------------------
     #  		SMBus parameters
     # ------------------------------------------------------------------------
-	SMB_BUSNBR = U_INT32 0x9
+    SMB_BUSNBR = U_INT32 SCAN_SMB_BUS_NR
     SMBDEV_0 {
         NAME = STRING xm01bc_1
     }
@@ -245,7 +245,7 @@ xm01bc_1 {
     # ------------------------------------------------------------------------
 
     # SMBus bus number
-	SMB_BUSNBR = U_INT32 9	
+    SMB_BUSNBR = U_INT32 SCAN_SMB_BUS_NR
 
     # SMBus address of XM1BC
     SMB_DEVADDR = U_INT32 0x9a
@@ -283,7 +283,7 @@ smb2_1 {
     # ------------------------------------------------------------------------
 
     # SMBus bus number
-	SMB_BUSNBR = U_INT32 9	
+    SMB_BUSNBR = U_INT32 SCAN_SMB_BUS_NR
 
     # ------------------------------------------------------------------------
     #        debug levels (optional)

@@ -11,7 +11,7 @@
  *     Switches: DBG
  *
  *---------------------------------------------------------------------------
- * Copyright 2012-2019, MEN Mikro Elektronik GmbH
+ * Copyright 2012-2020, MEN Mikro Elektronik GmbH
  ******************************************************************************/
 /*
  * This program is free software: you can redistribute it and/or modify
@@ -138,6 +138,7 @@ EXPORT_SYMBOL(mdis_find_ll_handle);
 EXPORT_SYMBOL(mdis_open_external_dev);
 EXPORT_SYMBOL(mdis_close_external_dev);
 EXPORT_SYMBOL(mdis_install_external_irq);
+EXPORT_SYMBOL(mdis_enable_external_irq);
 EXPORT_SYMBOL(mdis_remove_external_irq);
 
 /****************************** mk_open ***************************************
@@ -181,9 +182,11 @@ int mk_release (struct inode *inode, struct file *filp)
 		dev = mkPath->dev;		/* point to MDIS device */
 
 		MK_LOCK( err );
+		if (err)
+			return -EINTR;
 
 		DBGWRT_2((DBH," %s useCount was %d\n", dev->devName, dev->useCount ));
-		if( (--dev->useCount == 0) && (dev->persist == FALSE) ){
+		if( (dev->useCount > 0) && (--dev->useCount == 0) && (dev->persist == FALSE) ){
 			/* do the final close */
 			if( (err = MDIS_FinalClose(dev)))
 				ret = -err;
@@ -231,7 +234,13 @@ int mk_ioctl (
 	* access_ok is kernel-oriented, so the concept of "read" and
 	* "write" is reversed
 	*/
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,0,0)
+#if defined(RHEL_RELEASE_CODE) && defined(RHEL_RELEASE_VERSION)
+	#if RHEL_RELEASE_CODE >= RHEL_RELEASE_VERSION(8,1)
+		#define RHEL_8_1_1911
+	#endif
+#endif
+
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5,0,0)) || defined(RHEL_8_1_1911)
 	err = !access_ok((void *)arg, size);
 #else
 	if (_IOC_DIR(cmd) & _IOC_READ)
@@ -326,6 +335,11 @@ int mk_ioctl (
 				ret = -EFAULT;
 				break;
 			}
+			MK_LOCK( ret );
+			if( ret ) {
+				ret = -EINTR;
+				break;
+			}
 			/* find device by its name and remove it */
 			if( (dev = MDIS_FindDevByName( mop.devName )) != NULL ){
 				if( dev->useCount == 0 ){
@@ -338,6 +352,7 @@ int mk_ioctl (
 			}
 			else
 				ret = -ENOENT;
+			MK_UNLOCK;
 		}
 		break;
 
@@ -502,14 +517,19 @@ static void *MDIS_GetUsrBuf( u_int32 size, void **bufIdP )
 {
 	void *buf = NULL;
 	OSS_DL_NODE *node;
+	int error;
 
 	*bufIdP = NULL;
 
 	if( size <= MK_USRBUF_SIZE ){
+		MK_LOCK(error);
+		if (error)
+			return NULL;
 		if( (node = OSS_DL_RemHead( &G_freeUsrBufList )) != NULL ){
 			buf = (void *)(node+1);
 			*bufIdP = (void *)node;
 		}
+		MK_UNLOCK;
 		if( buf == NULL )
 			buf = kmalloc( size, GFP_KERNEL );
 	}
@@ -534,10 +554,17 @@ static void *MDIS_GetUsrBuf( u_int32 size, void **bufIdP )
  ****************************************************************************/
 static void MDIS_RelUsrBuf( void *data, void *bufId )
 {
+	int error;
+
 	if( bufId == (void *)-1)
 		vfree( data );
-	else if (bufId)		
+	else if (bufId) {
+		MK_LOCK(error);
+		if (error)
+			return;
 		OSS_DL_AddTail( &G_freeUsrBufList, (OSS_DL_NODE *)bufId );
+		MK_UNLOCK;
+	}
 	else
 		kfree( data );
 }
@@ -1378,6 +1405,8 @@ static int mk_read_procmem( char *page, char **start, off_t off, int count, int 
 
   DBGWRT_3((DBH,"mk_read_procmem: count %d page=%p\n", count, page));
   MK_LOCK(error);
+  if (error)
+    return -EINTR;
 
 
   /* user buffers */
@@ -1462,13 +1491,15 @@ static ssize_t mk_read_procmem( struct file *filp, char *buf, size_t count, loff
 
   DBGWRT_3((DBH,"mk_read_procmem: count %d\n", count));
   MK_LOCK(error);
+  if (error)
+    return -EINTR;
 
-	locbuf = vmalloc(PROC_BUF_LEN);
-	if (!locbuf)
-		return -ENOMEM;
-	tmp = locbuf;
+  locbuf = vmalloc(PROC_BUF_LEN);
+  if (!locbuf)
+    return -ENOMEM;
+  tmp = locbuf;
 
-	memset(locbuf, 0x00, PROC_BUF_LEN);
+  memset(locbuf, 0x00, PROC_BUF_LEN);
 
   /* user buffers */
   {
@@ -1541,7 +1572,11 @@ static struct file_operations mk_fops = {
 };
 
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
+static struct proc_ops mk_proc_ops = {
+	.proc_read = mk_read_procmem,
+};
+#elif LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
 static struct file_operations mk_proc_fops = {
      read:       	mk_read_procmem,
 };
@@ -1621,7 +1656,9 @@ int init_module(void)
 		OSS_DL_AddTail( &G_freeUsrBufList, (OSS_DL_NODE *)pg );
 	}
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
+	proc_create("mdis", 0, NULL, &mk_proc_ops);
+#elif LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
 	create_proc_read_entry ("mdis", 0, NULL, mk_read_procmem, NULL);
 #else
 	proc_create (           "mdis", 0, NULL, &mk_proc_fops);

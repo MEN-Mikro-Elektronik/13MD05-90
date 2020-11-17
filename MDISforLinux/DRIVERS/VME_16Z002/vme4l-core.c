@@ -16,7 +16,7 @@
  */
 /*
  *---------------------------------------------------------------------------
- * Copyright 2003-2019, MEN Mikro Elektronik GmbH
+ * Copyright 2003-2020, MEN Mikro Elektronik GmbH
  ******************************************************************************/
 /*
  * This program is free software: you can redistribute it and/or modify
@@ -735,7 +735,12 @@ static int vme4l_make_ioremap_region(
 			  "Map vme=0x%llx (0x%llx) pa=0x%x\n", vmeAddr, (uint64_t) size,
 			  vmeStart, (uint64_t) useSize, physAddr );
 
-	if( (region->vaddr = ioremap_nocache( physAddr, useSize )) != NULL ){
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,5,0)
+	region->vaddr = ioremap( physAddr, useSize );
+#else
+	region->vaddr = ioremap_nocache( physAddr, useSize );
+#endif
+	if( region->vaddr != NULL ){
 		VME4LDBG( "ioremap ok: Mapped 0x%08x to 0x%p\n",
 				  physAddr, region->vaddr );
 
@@ -2195,7 +2200,8 @@ static long vme4l_ioctl(
 			break;
 		}
 
-	#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,0,0)
+	#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5,0,0)) || \
+		(LINUX_VERSION_CODE >= KERNEL_VERSION(4,18,0) && defined(RHEL_RELEASE))
 		if( !access_ok( blk.dataP, blk.size)){
 			rv = -EFAULT;
 			break;
@@ -3076,17 +3082,80 @@ static int vme4l_supported_bitstreams_proc_open(struct inode *inode, struct file
 	return single_open(file, vme4l_supported_bitstreams_proc_show, NULL);
 }
 
+static int vme4l_info_proc_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, vme4l_info_proc_show, NULL);
+}
+
+static int vme4l_window_proc_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, vme4l_window_proc_show, NULL);
+}
+
+static int vme4l_irq_proc_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, vme4l_irq_proc_show, NULL);
+}
+
+static int vme4l_interrupts_proc_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, vme4l_interrupts_proc_show, NULL);
+}
+
+static int vme4l_irq_levels_enable_proc_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, vme4l_irq_levels_enable_proc_show, NULL);
+}
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
+static const struct proc_ops vme4l_supported_bitstreams_proc_ops = {
+	.proc_open	= vme4l_supported_bitstreams_proc_open,
+	.proc_read	= seq_read,
+	.proc_lseek	= seq_lseek,
+	.proc_release	= single_release,
+};
+
+static const struct proc_ops vme4l_info_proc_ops = {
+	.proc_open	= vme4l_info_proc_open,
+	.proc_read	= seq_read,
+	.proc_lseek	= seq_lseek,
+	.proc_release	= single_release,
+};
+
+static const struct proc_ops vme4l_window_proc_ops = {
+	.proc_open	= vme4l_window_proc_open,
+	.proc_read	= seq_read,
+	.proc_lseek	= seq_lseek,
+	.proc_release	= single_release,
+};
+
+static const struct proc_ops vme4l_irq_proc_ops = {
+	.proc_open	= vme4l_irq_proc_open,
+	.proc_read	= seq_read,
+	.proc_lseek	= seq_lseek,
+	.proc_release	= single_release,
+};
+
+static const struct proc_ops vme4l_interrupts_proc_ops = {
+	.proc_open	= vme4l_interrupts_proc_open,
+	.proc_read	= seq_read,
+	.proc_lseek	= seq_lseek,
+	.proc_release	= single_release,
+};
+
+static const struct proc_ops vme4l_irq_levels_enable_proc_ops = {
+	.proc_open	= vme4l_irq_levels_enable_proc_open,
+	.proc_read	= seq_read,
+	.proc_lseek	= seq_lseek,
+	.proc_release	= single_release,
+};
+#else
 static const struct file_operations vme4l_supported_bitstreams_proc_ops = {
 	.open		= vme4l_supported_bitstreams_proc_open,
 	.read		= seq_read,
 	.llseek		= seq_lseek,
 	.release	= single_release,
 };
-
-static int vme4l_info_proc_open(struct inode *inode, struct file *file)
-{
-	return single_open(file, vme4l_info_proc_show, NULL);
-}
 
 static const struct file_operations vme4l_info_proc_ops = {
 	.open		= vme4l_info_proc_open,
@@ -3095,22 +3164,12 @@ static const struct file_operations vme4l_info_proc_ops = {
 	.release	= single_release,
 };
 
-static int vme4l_window_proc_open(struct inode *inode, struct file *file)
-{
-	return single_open(file, vme4l_window_proc_show, NULL);
-}
-
 static const struct file_operations vme4l_window_proc_ops = {
 	.open		= vme4l_window_proc_open,
 	.read		= seq_read,
 	.llseek		= seq_lseek,
 	.release	= single_release,
 };
-
-static int vme4l_irq_proc_open(struct inode *inode, struct file *file)
-{
-	return single_open(file, vme4l_irq_proc_show, NULL);
-}
 
 static const struct file_operations vme4l_irq_proc_ops = {
 	.open		= vme4l_irq_proc_open,
@@ -3119,11 +3178,6 @@ static const struct file_operations vme4l_irq_proc_ops = {
 	.release	= single_release,
 };
 
-static int vme4l_interrupts_proc_open(struct inode *inode, struct file *file)
-{
-	return single_open(file, vme4l_interrupts_proc_show, NULL);
-}
-
 static const struct file_operations vme4l_interrupts_proc_ops = {
 	.open		= vme4l_interrupts_proc_open,
 	.read		= seq_read,
@@ -3131,17 +3185,13 @@ static const struct file_operations vme4l_interrupts_proc_ops = {
 	.release	= single_release,
 };
 
-static int vme4l_irq_levels_enable_proc_open(struct inode *inode, struct file *file)
-{
-	return single_open(file, vme4l_irq_levels_enable_proc_show, NULL);
-}
-
 static const struct file_operations vme4l_irq_levels_enable_proc_ops = {
 	.open		= vme4l_irq_levels_enable_proc_open,
 	.read		= seq_read,
 	.llseek		= seq_lseek,
 	.release	= single_release,
 };
+#endif
 
 static void vme_bridge_procfs_register(void)
 {
