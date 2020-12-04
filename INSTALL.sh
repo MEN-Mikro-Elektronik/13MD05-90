@@ -211,6 +211,21 @@ isSELinuxEnforcing() {
     return "${isEnforcing}"
 }
 
+### @brief Check if Linux kernel lockdown feature is enabled
+### @return 0 if lockdown is enabled
+### @return 1 if lockdown is disabled
+isKernelLockdownEnabled() {
+    local isEnabled="1"
+
+    if [ -r "/sys/kernel/security/lockdown" ]; then
+        if ! grep -i "\[none\]" "/sys/kernel/security/lockdown" >/dev/null 2>&1; then
+            isEnabled="0"
+        fi
+    fi
+
+    return "${isEnabled}"
+}
+
 ### @brief Get installer and scanner prerequisites
 ### @return Prerequisites are echoed
 getPrerequisites() {
@@ -661,6 +676,16 @@ if isSELinuxEnforcing; then
 WARNING: SELinux security policy is enforced. MDIS may not work properly.
          Please consider setting it to permissive!
          Set SELINUX=permissive in /etc/selinux/config
+"
+    sleep 1
+fi
+
+# Check if Linux kernel lockdown functionality is enabled. Display warning if so.
+if isKernelLockdownEnabled; then
+    echo "\
+WARNING: Linux kernel lockdown functionality is enabled. /dev/mem is not
+         accessible and MDIS tools like hwbug, fpga_load and mm_ident are not
+         usable.
 "
     sleep 1
 fi
