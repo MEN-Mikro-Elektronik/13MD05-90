@@ -81,6 +81,9 @@ static const char IdentString[]=MENT_XSTR(MAK_REVISION);
 #define PLDZ002_A25_DEV_ID		0x4d45	/* Device ID for A25 */
 #define PLDZ002_A25_SUBSYS_VEN_ID	0x00d5	/* Subsystem Vendor ID for A25 */
 
+#define PLDZ002_A21_DEV_ID		0x4d45	/* Device ID for A21 */
+#define PLDZ002_A21_SUBSYS_VEN_ID	0x00ab	/* Subsystem Vendor ID for A21 */
+
 /* convert a chameleon BAR entry to its location in PCI config space (0x10, 0x14..) */
 #define CHAM_BAR2PCI_BASE_ADDR(x) (((x)*4)+0x10)
 
@@ -2288,7 +2291,13 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 	h->regs.phys = (unsigned long)chu->unitFpga.addr + PLDZ002_CTRL_SPACE;
 	h->regs.size = PLDZ002_CTRL_SIZE;
 
-	h->iack.phys = (unsigned long)chu->unitFpga.addr + PLDZ002_IACK_SPACE;
+	if (chu->pdev->device == PLDZ002_A21_DEV_ID &&
+		chu->pdev->subsystem_vendor == PLDZ002_A21_SUBSYS_VEN_ID) {
+		h->iack.phys = (unsigned long)chu->unitFpga.addr + PLDZ002_A21_IACK_SPACE;
+	}
+	else {
+		h->iack.phys = (unsigned long)chu->unitFpga.addr + PLDZ002_IACK_SPACE;
+	}
 	h->iack.size = PLDZ002_IACK_SIZE;
 
 	/*--- request/map permanent spaces ---*/
