@@ -366,7 +366,8 @@ int mk_ioctl (
 
 }
 
-#if defined (HAVE_UNLOCKED_IOCTL)
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5,9,0)) || \
+    defined (HAVE_UNLOCKED_IOCTL)
 long mk_unl_ioctl(
 	struct file *filp,
 	unsigned int cmd,
@@ -1562,7 +1563,8 @@ static struct file_operations mk_fops = {
     write:		mk_write,
 	/* Do not lock when entering MDIS kernel
 	   Locking is the responsability of driver developper */
-#if defined(HAVE_UNLOCKED_IOCTL)
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5,9,0)) || \
+    defined(HAVE_UNLOCKED_IOCTL)
     unlocked_ioctl:	mk_unl_ioctl,
 #else
     ioctl:      	mk_ioctl,
