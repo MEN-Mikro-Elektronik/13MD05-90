@@ -1,11 +1,23 @@
 # Changelog for 13MD05-90 "MEN MDIS for Linux System Package plus lowlevel drivers"
 
+## [13MD05-90_02_04] - 2021-03-01
+
+### Added
+- 13Z025 driver parameter for different baud base for each of the UART instances
+- Linux kernel lockdown detection in fpga_load, mm_ident and hwbug
+
+### Fixed
+- PLDZ002 VME driver interrupt handling
+- Adding SMB2 tools to SC31
+- Compilation with Linux kernel 5.10
+
+
 ## [13MD05-90_02_03] - 2020-10-02
 
-## Changed
+### Changed
 - MDIS Wizard binary update
 
-## Fixed
+### Fixed
 - System scanner script
 - vme4l-core compilation on CentOS 8
 - Real-time signal definitions
