@@ -6,6 +6,9 @@
 - 13Z025 driver parameter for different baud base for each of the UART instances
 - Linux kernel lockdown detection in fpga_load, mm_ident and hwbug
 
+### Changed
+- Updated documentation
+
 ### Fixed
 - PLDZ002 VME driver interrupt handling
 - Adding SMB2 tools to SC31
