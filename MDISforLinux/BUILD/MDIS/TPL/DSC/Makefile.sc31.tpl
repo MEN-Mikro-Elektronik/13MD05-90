@@ -106,7 +106,10 @@ ALL_BB_DRIVERS = CHAMELEON/DRIVER/COM/driver_isa.mak \
 ALL_USR_LIBS = \
 	USR_OSS/library.mak \
 	USR_UTL/COM/library.mak \
-	MSCAN_API/COM/library.mak
+	MSCAN_API/COM/library.mak \
+	SMB2_API/COM/library.mak \
+	SMB2_BMC_API/COM/library.mak \
+	SMB2_SHC/COM/library.mak
 
 ALL_CORE_LIBS = \
 	DBG/library.mak \
