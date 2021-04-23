@@ -1,28 +1,18 @@
-# **List of Supported Components**
+# **List of Supported Components for release 13MD05-90_02_04**
 
-#### Supported tested components for release 13MD05-90_02_04:
+#### Supported tested components:
 - 02F023P
 - 02F026L
-- 02G023
-- 02G025A
-- 15CB70
 - 01A025
-- 09BL50/09BC50 (SC24)
-- 09BL70/09BC70 (SC25)
 - 09BL51/09BC51 (SC31)
 - 02F215
 - 02F223
 - 02G215
-- 02G229
-- 16Z001_SMB
 - 16Z029_CAN
 - 16Z034_GPIO
 - 16Z037_GPIO
-- 16Z055_HDLC
 - 16Z087_ETH
 - 16Z125_UART
-- 16Z127_GPIO
-- 16Z135_HSUART
 - 02F205
 - 02G204
 - 04M011
@@ -30,7 +20,6 @@
 - 04M032
 - 04M033
 - 04M035N
-- 04M036N
 - 04M037N
 - 04M043N
 - 04M047
@@ -39,12 +28,9 @@
 - 04M062N
 - 04M065N
 - 04M066
-- 04M072
 - 04M077N
 - 04M081
 - 04M082
-- 04M099
-- 04M199
 - Ubuntu 18.04 LTS 32-bit
 - Ubuntu 18.04 LTS 64-bit
 - Ubuntu 20.04 LTS 64-bit
@@ -52,6 +38,8 @@
 - CentOS 8.2 64-bit
 - Debian 10.5 32-bit
 - Debian 10.5 64-bit
+- Debian 10.6 32-bit
+- Debian 10.6 64-bit
 - Yocto - Sumo, Kernel 4.15.18 64-bit (02F026L + 02G025A only)
 
 #### **Compilation - tested kernel versions:**
@@ -62,8 +50,23 @@
 - 4.19
 - 5.4
 - 5.6
+- 5.10
 
 #### Supported not tested components:
+- 02G023
+- 02G025A
+- 15CB70
+- 09BL50/09BC50 (SC24)
+- 09BL70/09BC70 (SC25)
+- 02G229
+- 16Z001_SMB
+- 16Z055_HDLC
+- 16Z127_GPIO
+- 16Z135_HSUART
+- 04M036N
+- 04M072
+- 04M099
+- 04M199
 - 02F026C
 - Display Computer DC19 (SC31)
 - Display Computer DC20 (SC31)
