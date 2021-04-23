@@ -1,6 +1,6 @@
 # **List of Supported Components**
 
-#### Supported tested components for release 13MD05-90_02_03:
+#### Supported tested components for release 13MD05-90_02_04:
 - 02F023P
 - 02F026L
 - 02G023
