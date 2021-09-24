@@ -42,7 +42,7 @@ MOD_DIR=/lib/modules/$(uname -r)
 OUTPUT_DIR_PATH=$(pwd)
 # currently detected CPU boards. ADD NEW BOARDS HERE!
 # also take care for special (native) driver adding etc.
-CPU_KNOWN_BOARDS="CB70 SC25 SC24 SC31 F011 F11S F14- F014 F15- F015 F17- F017 F075 F75P F19P F19C F019 F21P F22P F23P F21C F021 F026 XM01 MM01 G20- G22- G022 G23- G023 G25- G25A G025 A025 F27P"
+CPU_KNOWN_BOARDS="CB70 SC25 SC24 SC31 F011 F11S F14- F014 F15- F015 F17- F017 F075 F75P F19P F19C F019 F21P F22P F23P F21C F021 F026 XM01 MM01 G20- G22- G022 G23- G023 G25- G25A G025 A025 F027"
 
 # which SMB adresses to scan for CPU ID eeproms
 ID_EEPROM_ADRESSES="0x57 0x55"
@@ -2209,7 +2209,7 @@ case $main_cpu in
         add_vme_drivers "PLDZ002"
         G_mdisExtraDefs+=" -DCONFIG_MEN_VME_KERNELIF"
         ;;
-    F27P)
+    F027)
         wiz_model_cpu=F27P
         wiz_model_smb=SMBPCI_ICH
         G_primPciPath=0x1e
