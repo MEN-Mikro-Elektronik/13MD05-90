@@ -247,3 +247,5 @@
 [submodule "13Z055-90"]
 	path = 13Z055-90
 	url = ../13Z055-90
+[submodule "MDISforLinux/DRIVERS/BBIS/CHAMELEON"]
+	branch = mad-dev
