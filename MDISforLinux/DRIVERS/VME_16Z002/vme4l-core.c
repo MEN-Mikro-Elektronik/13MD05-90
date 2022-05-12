@@ -1255,7 +1255,7 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode )
 
 	if (to_user) {
 		VME4LDBG("To/from Userspace DMA transfer\n");
-		rv = get_user_pages_fast( uaddr, nr_pages, direction, pages);
+		rv = get_user_pages_fast( uaddr, nr_pages, direction == DMA_FROM_DEVICE  ? FOLL_WRITE : 0, pages);
 		if (rv < 0)
 			printk(KERN_ERR_PFX "%s: get_user_pages_fast failed rv"
 			       "%d nr pages %d\n",
