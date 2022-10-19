@@ -249,7 +249,7 @@
 	url = ../13Z072-06.git
 [submodule "DRIVERS/BBIS/CHAMELEON"]
 	branch = mad-dev
-[submodule "13M072-06"]
+[submodule "13Z072-06"]
 	branch = mad-dev
 [submodule "13Z055-90"]
 	branch = mad_dev
