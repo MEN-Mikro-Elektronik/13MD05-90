@@ -3,6 +3,7 @@
 #### Supported tested components:
 - 02F023P
 - 02F026L
+- 02F027P
 - 01A025
 - 09BL51/09BC51 (SC31)
 - 02F215
