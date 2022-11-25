@@ -28,15 +28,17 @@
 # Free Software Foundation;  either version 2 of the  License, or (at your
 # option) any later version.
 
-include Makefile
-
 KERNEL_SETTINGS_FILE ?= /dev/null
 
 .DEFAULT_GOAL := getsettings_for_mdis
 
 getsettings_for_mdis:
-	@echo "KERNEL_CC := $(CC)" > $(KERNEL_SETTINGS_FILE)
-	@echo "KERNEL_LD := $(LD)" >> $(KERNEL_SETTINGS_FILE)
+	@echo "KERNEL_CC := $(CROSS_COMPILE)gcc" > $(KERNEL_SETTINGS_FILE)
+	@echo "KERNEL_LD := $(CROSS_COMPILE)ld" >> $(KERNEL_SETTINGS_FILE)
 	@echo "KERNEL_CFLAGS := $(CFLAGS)" >> $(KERNEL_SETTINGS_FILE)
 	@echo "KERNEL_LDFLAGS := $(LDFLAGS)" >> $(KERNEL_SETTINGS_FILE)
+ifeq ($(ARCH), )
+	@echo "KERNEL_ARCH := x86" >> $(KERNEL_SETTINGS_FILE)
+else
 	@echo "KERNEL_ARCH := $(ARCH)" >> $(KERNEL_SETTINGS_FILE)
+endif
