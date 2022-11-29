@@ -944,7 +944,7 @@ static int oss_smb2_probe(struct i2c_client *client, const struct i2c_device_id 
 
     spin_lock(&G_smb2Lock);
 
-    printk( KERN_INFO "Adapter Nr. %d '%s': probe SMBus client 0x%02x\n",
+    DBGBB( KERN_INFO "Adapter Nr. %d '%s': probe SMBus client 0x%02x\n",
 			client->adapter->nr, client->adapter->name, client->addr);
 
     if (!(data = kmalloc(sizeof(SMB2_I2C_DATA), GFP_KERNEL))) {
@@ -977,7 +977,7 @@ static int oss_smb2_remove(struct i2c_client *client)
     int err =0;
     SMB2_I2C_DATA *data = i2c_get_clientdata(client);
 
-    printk( KERN_INFO "remove SMB client 0x%02x\n", client->addr );
+    DBGBB( KERN_INFO "remove SMB client 0x%02x\n", client->addr );
 
     list_del(&data->node);
     kfree(data);
@@ -1003,13 +1003,13 @@ static int oss_smb2_detect(struct i2c_client *new_client, struct i2c_board_info 
 	int address = new_client->addr;
 	const char* client_name;
 
-	printk( KERN_INFO "oss_smb2_detect: addr 0x%02x adapter 0x%02x\n", address, adapter->nr);
+	DBGBB( KERN_INFO "oss_smb2_detect: addr 0x%02x adapter 0x%02x\n", address, adapter->nr);
 
 	if (strlen(info->type) == 0)
 	{
 		client_name = "smb2";
 		strlcpy(info->type, client_name, I2C_NAME_SIZE);
-		printk( KERN_INFO " registered driver 'smb2' for device. \n", address, adapter->nr);
+		DBGBB( KERN_INFO " registered driver 'smb2' for device. \n", address, adapter->nr);
 		return 0;
 	}
 	else
@@ -1688,7 +1688,7 @@ static int32 OSS_SmbExit( void **smbHdlP )
 {
 
     SMB_HANDLE *smbH = (SMB_HANDLE*)*smbHdlP;
-    printk("-> OSS_SmbExit called\n");
+    DBGBB( KERN_INFO "-> OSS_SmbExit called\n");
     /*-----------------------------+
      | detach clients and driver   |
      +-----------------------------*/
