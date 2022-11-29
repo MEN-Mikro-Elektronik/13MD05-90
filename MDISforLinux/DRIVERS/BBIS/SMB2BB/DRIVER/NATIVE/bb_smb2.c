@@ -41,13 +41,8 @@
 
 #include <linux/interrupt.h>
 #include <linux/workqueue.h>
-
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
-	#include <linux/slab.h>
-#endif
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
-	#include <linux/semaphore.h>
-#endif
+#include <linux/slab.h>
+#include <linux/semaphore.h>
 
 /* same values in <linux/i2c.h> and <MEN/smb2.h>! */
 #undef I2C_M_TEN
@@ -63,13 +58,9 @@
 #include <MEN/mdis_api.h>   /* MDIS global defs               */
 #include <MEN/smb2.h>   	/* SMB_HANDLE				      */
 
-/* Sanity checks: this BBIS driver is linux specific and kernel 2.6 only  */
+/* Sanity checks: this BBIS driver is linux specific */
 #ifndef LINUX
 # error *** ERROR: SMB2 pseudo BBIS driver is intended for use under Linux only
-#endif
-
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,5,0)
-# error *** ERROR: SMB2 pseudo BBIS driver supports kernel 2.6 only!
 #endif
 
 
@@ -89,10 +80,6 @@
 #else
 #define DBGBB(x...)
 #endif
-
-/* Somewhere after kernel 2.6.13 I2C API was changed, workqueue API in 2.6.20 */
-#define LX_VERSION_I2C_DIFFERS      13
-#define WORKQUEUE_API_CHANGE		20
 
 #define OSS_SMB_DRV_NAME		    "OSS_SMB2-I2C"
 #define OSS_SMB_NAM_SIZE			13
@@ -131,12 +118,8 @@ static const char IdentString[]=MENT_XSTR(MAK_REVISION);
 /* dynamic list of found clients per Adapter */
 typedef struct i2ctest_data {
     struct list_head 	node;
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,31)
-    struct i2c_client 	client;
-#else
-	struct i2c_client*  client;
-#endif
-	unsigned int		adapNr;		/**< Adapter# we are on (0,1,2...)	*/
+    struct i2c_client*  client;
+    unsigned int		adapNr;		/**< Adapter# we are on (0,1,2...)	*/
     unsigned int		smbusNr;	/**< SMB_BUSNBR passed in dsc file	*/
     OSS_HANDLE			*osHdl;		/**< OSS handle   					*/
 } SMB2_I2C_DATA;
@@ -159,32 +142,10 @@ typedef struct smb_access_struct {
 /*
  *  SMBus registering/access functions differ a bit throughout 2.4 to 2.6.x.
  */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,5,0)
- #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,31)
-static int oss_smb2_probe(struct i2c_adapter *adapter, int address, int kind);
- #else
 static int oss_smb2_probe(struct i2c_client* client, const struct i2c_device_id *id);
- #endif
-#else
-static int oss_smb2_probe(struct i2c_adapter *adapter, int address,
-						  unsigned short flags, int kind);
-#endif
-
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,31)
-static int oss_smb2_attach(struct i2c_adapter *adap);
-static int oss_smb2_detach(struct i2c_client *client);
-#else
-
 static int oss_smb2_probe(struct i2c_client *client, const struct i2c_device_id *id);
 static int oss_smb2_remove(struct i2c_client *client);
-
- #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
 static int oss_smb2_detect(struct i2c_client *new_client, struct i2c_board_info *info);
- #else
-static int oss_smb2_detect(struct i2c_client *new_client, int kind, struct i2c_board_info *info);
- #endif
-
-#endif /* #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,31) */
 
 /* init/exit */
 static int32 SMB2BB_Init(OSS_HANDLE*, DESC_SPEC*, BBIS_HANDLE**);
@@ -225,115 +186,45 @@ static int32 SMB2BB_ExpSrv( BBIS_HANDLE *h, u_int32 mSlot );
 /*-------------------------------+
  |  GLOBALS                      |
  +-------------------------------*/
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,33)
-static unsigned short ignore[] = { I2C_CLIENT_END };
-#endif
 
 /* Linux specific extensions */
 static struct list_head		G_smb2ListHead;
 static spinlock_t 			G_smb2Lock;
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,31)
-static unsigned int			G_globalAdapterNr;
-#endif
 static SMB_ACC 				G_smbAccess;
 
 static struct workqueue_struct *smb2_wq;
-
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, WORKQUEUE_API_CHANGE)
-static void smb2_wqfunc(void* data);
-DECLARE_WORK( work_obj, smb2_wqfunc, NULL );
-# else
 static void smb2_wqfunc(struct work_struct *workstruct);
 DECLARE_WORK( work_obj, smb2_wqfunc );
-#endif
 
-/*
- * Major change in struct i2c_client_address_data: all xxx_range
- * members are now gone.
- */
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,LX_VERSION_I2C_DIFFERS)
-static unsigned short normal_i2c_range[] = { SMB2_I2C_START_ADDR,
-											 SMB2_I2C_END_ADDR,
-											 I2C_CLIENT_END };
-static struct i2c_client_address_data addr_data = {
-    .normal_i2c			= ignore,
-    .normal_i2c_range	= normal_i2c_range,
-    .probe				= ignore,
-    .probe_range		= ignore,
-    .ignore				= ignore,
-    .ignore_range		= ignore,
-    .force				= ignore,
-
-};
-#else
 static unsigned short normal_addr[SMB2_I2C_ADDR_COUNT];
 
-/* this struct is only necessary up to kernel 2.6.32;
-   in newer kernel versions, addresses are handed over directly*/
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,33)
-static struct i2c_client_address_data addr_data = {
-    .normal_i2c 	= normal_addr,
-    .probe 			= ignore,
-    .ignore 		= ignore,
- #if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,14)
-    .forces			= NULL,
- #else
-    .force			= ignore,
- #endif
-};
-#endif /*#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,33)*/
-
-#endif /*#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,LX_VERSION_I2C_DIFFERS)*/
-
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,31)
 struct i2c_device_id oss_smb2_idtable[] = {
 	{ "smb2", 0 },
 	{}
 };
 
 MODULE_DEVICE_TABLE(i2c, oss_smb2_idtable);
-#endif
 
 static struct i2c_driver smb2_driver = {
 #ifdef I2C_DF_NOTIFY
 	.flags      	= I2C_DF_NOTIFY,
 #endif
-
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,16)
-	.name   		= OSS_SMB_DRV_NAME,
-	.owner      	= THIS_MODULE,
-#endif
 	.driver = {
 		.name	= OSS_SMB_DRV_NAME,
 	},
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,31)
-	.id    	 		= I2C_DRIVERID_OSS_SMB2,
-	.attach_adapter = oss_smb2_attach,
-	.detach_client  = oss_smb2_detach,
-#else
 	.id_table		= oss_smb2_idtable,
 	.probe 			= oss_smb2_probe,
-    .remove 		= oss_smb2_remove,
-    .detect			= oss_smb2_detect,
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,33)
-    .address_data	= &addr_data,
-#else
+  .remove 		= oss_smb2_remove,
+  .detect			= oss_smb2_detect,
 	.address_list = normal_addr,
-#endif
 	.class			= I2C_CLASS_HWMON,
-#endif
 };
-
 
 /*-----------------------------------------+
  |  STATICS                                |
  +-----------------------------------------*/
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36)
 static DEFINE_SEMAPHORE(G_smb2Mutex);
-#else
-static DECLARE_MUTEX(G_smb2Mutex);
-#endif
 
 static struct i2c_client *getClientFromAddrAndBusnr(int addr, int busnr);
 static int32 SMB2BB_QuickComm( void *smbHdl, u_int32 flags, u_int16 addr,
@@ -368,10 +259,7 @@ int32 OSS_GetSmbHdl( OSS_HANDLE *oss, u_int32 busNbr, void **smbHdlP);
 /*  We _have_ to put this EXPORT into this men_bb_smb2 module, because
  *  otherwise men_oss and men_bb_smb2 modules have circular dependencies
  */
-
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,5,0)
 EXPORT_SYMBOL(OSS_GetSmbHdl);
-#endif
 
 /***************************** SMB2BB_GetEntry *******************************/
 /** Initialize drivers jump table.
@@ -552,11 +440,7 @@ static int32 SMB2BB_Init(OSS_HANDLE *osHdl, DESC_SPEC *descSpec,
  */
 static int32 SMB2BB_BrdInit( BBIS_HANDLE *h )
 {
-
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,LX_VERSION_I2C_DIFFERS)
     unsigned int i	=	0;
-#endif
-
     OSS_HANDLE *oss 	= 	h->osHdl;
     SMB_HANDLE 	*newHdl = 	NULL;
     u_int32	gotsize 	= 	0;
@@ -572,13 +456,11 @@ static int32 SMB2BB_BrdInit( BBIS_HANDLE *h )
     }
     OSS_MemFill(oss, gotsize, (u_int8*)newHdl, 0);
 
-
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,LX_VERSION_I2C_DIFFERS)
     /* init addr_data, we have to probe the whole Bus on a adapter */
     for ( i = 0; i<SMB2_I2C_ADDR_COUNT-1; i++)
-		normal_addr[i] = (SMB2_I2C_START_ADDR+i);
+      normal_addr[i] = (SMB2_I2C_START_ADDR+i);
+
     normal_addr[SMB2_I2C_ADDR_COUNT-1] = I2C_CLIENT_END;
-#endif
 
     /*-----------------------------+
       |  Register client driver	   |
@@ -1035,11 +917,7 @@ static int32 Cleanup(BBIS_HANDLE  *h,int32 retCode /* nodoc */)
 /********************** end of Standard BBIS API *****************************/
 /*****************************************************************************/
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,WORKQUEUE_API_CHANGE)
-static void smb2_wqfunc(void* notneeded)
-# else
 static void smb2_wqfunc(struct work_struct *notneeded)
-#endif
 {
 
 	SMB_ACC *smbP = (SMB_ACC *)&G_smbAccess;
@@ -1050,148 +928,6 @@ static void smb2_wqfunc(struct work_struct *notneeded)
 	smbP->ready = 1;
 	return;
 }
-
-
-
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,31)
-
-/*************************** oss_smb2_probe **********************************/
-/** create a entry in client list for each probed(found) SMBus device
- *
- *	\brief the given BUSNBR in the system.dsc corresponds linear with the found
- *		   Adapters. For example, the first Adapter may be reported as
- *         Adapter 'SMBus I801 adapter at 3400' by i2c-core. Then this Adapter
- *		   is associated with BUSNBR = 0.
- *
- *  \param adapter   \IN  pointer to I2C Adapter struct
- *  \param address   \IN  The LSB aligned SMBus address
- *  \param flags     \IN  SMBus access flags (only in 2.6.x)
- *  \param kind      \IN  blindly probe device
- *  \return           \c 0 On success or error code
- */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,5,0)
-static int oss_smb2_probe(struct i2c_adapter *adapter, int address, int kind)
-#else
-static int oss_smb2_probe(struct i2c_adapter *adapter, int address,
-						  unsigned short flags, int kind )
-#endif
-{
-
-    struct i2c_client *client;
-
-	/*
-	 * take given SMB_BUSNBR from system.dsc file into account,
-	 * since I2C devices with same Address can sit on 2 different adapters.
-	 * Member 'unsigned int nr' in struct i2c_adapter (which would give us
-	 * this number directly) is available only in 2.6.x kernels.
-	 *
-	 * So we use member 'name' from the struct i2c_adapter.
-	 */
-	static char nameold[ADAP_NAME_LEN];
-	static char namenew[ADAP_NAME_LEN];
-
-    SMB2_I2C_DATA *data = NULL;
-    int err = 0;
-
-    spin_lock(&G_smb2Lock);
-
-	/*
-	 * if Adapter name changed since last call to oss_smb2_probe then
-	 * we must be on the next Adapter -> Increment global Adapter Nr.
-	 */
-    strncpy( namenew, adapter->name, ADAP_NAME_LEN);
-	if (strncmp( namenew, nameold, ADAP_NAME_LEN ))
-		G_globalAdapterNr ++;
-
-    printk( KERN_INFO "Adapter Nr. %d '%s': probe SMBus client 0x%02x\n",
-			G_globalAdapterNr - 1, namenew, address);
-
-    if (!(data = kmalloc(sizeof(SMB2_I2C_DATA), GFP_KERNEL))) {
-		err = -ENOMEM;
-		goto exit;
-    }
-
-    /* Initialize/clean our structures */
-    memset(data, 0x0, sizeof(SMB2_I2C_DATA));
-    client 				= &data->client;
-    client->addr 		= address;
-    client->driver 		= &smb2_driver;
-    client->adapter		= adapter;
-    strncpy(client->name, OSS_SMB_DRV_NAME, OSS_SMB_NAM_SIZE);
-
-	data->adapNr		= G_globalAdapterNr - 1; /* SMB_BUSNBR starts at 0 */
-
-	/* new name becomes old name... */
-    strncpy( nameold, namenew, ADAP_NAME_LEN);
-
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,5,0)
-    i2c_set_clientdata(client, data);
-#else
-    client->data = data;
-#endif
-
-    /* Inform the i2c layer a new client has arrived */
-    if ((err = i2c_attach_client(client)))
-		goto exit_kfree;
-
-    list_add(&data->node, &G_smb2ListHead);
-
-    spin_unlock(&G_smb2Lock);
-    return 0;
-
-exit_kfree:
-    kfree(data);
-
-exit:
-    return err;
-    /* take from i2c101 example */
-
-}
-
-/******************************** oss_smb2_attach ****************************/
-/** attach a single client to the given SMBus Adapter
- *
- *  \param adap     	\IN  The SMBus Adapter, passed by Linux i2c-core
- *
- *  \return             \c 0 or error code
- */
-
-static int oss_smb2_attach(struct i2c_adapter *adap)
-{
-    return i2c_probe(adap, &addr_data, oss_smb2_probe);
-}
-
-/******************************** oss_smb2_detach ****************************/
-/** detach a single client from our used SMBus Adapter
- *
- *  \param client     	\IN  The i2c_client struct for a particular device
- *
- *  \return             \c 0 or error code
- */
-static int oss_smb2_detach(struct i2c_client *client)
-{
-
-    int err;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,5,0)
-    SMB2_I2C_DATA *data = i2c_get_clientdata(client);
-#else
-    SMB2_I2C_DATA *data = client->data;
-#endif
-
-    printk( KERN_INFO "detaching SMBus client: 0x%02x\n", client->addr );
-
-    if ((err = i2c_detach_client(client)))
-		return err;
-
-    list_del(&data->node);
-    kfree(data);
-
-    /* -- data invalid now -- */
-
-    return err;
-}
-
-#else
 
 /*************************** oss_smb2_probe **********************************/
 /** set the client data for this driver (set adapter nr)
@@ -1238,13 +974,8 @@ static int oss_smb2_probe(struct i2c_client *client, const struct i2c_device_id 
  */
 static int oss_smb2_remove(struct i2c_client *client)
 {
-
     int err =0;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,5,0)
     SMB2_I2C_DATA *data = i2c_get_clientdata(client);
-#else
-    SMB2_I2C_DATA *data = client->data;
-#endif
 
     printk( KERN_INFO "remove SMB client 0x%02x\n", client->addr );
 
@@ -1266,11 +997,7 @@ static int oss_smb2_remove(struct i2c_client *client)
  *
  *  \return             \c 0 if match; -ENODEV if no match
  */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
 static int oss_smb2_detect(struct i2c_client *new_client, struct i2c_board_info *info)
-#else
-static int oss_smb2_detect(struct i2c_client *new_client, int kind, struct i2c_board_info *info)
-#endif
 {
 	struct i2c_adapter* adapter = new_client->adapter;
 	int address = new_client->addr;
@@ -1288,8 +1015,6 @@ static int oss_smb2_detect(struct i2c_client *new_client, int kind, struct i2c_b
 	else
 		return -ENODEV;
 }
-
-#endif /*if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,31)*/
 
 /******************************* OSS_GetSmbHdl *******************************/
 /** Create a fully populated and SMBus access enabled SMB Handle
@@ -1386,11 +1111,7 @@ static struct i2c_client *getClientFromAddrAndBusnr(int addr, int busnr )
     list_for_each( pos, &G_smb2ListHead ) {
 
 		ent = list_entry( pos, SMB2_I2C_DATA, node );
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,31)
-		cl	= &(ent->client);
-#else
-        cl	= ent->client;
-#endif
+    cl	= ent->client;
 
 		/* Got a matching 7bit client address <addr> on Adapter <busnr> ? */
 		if ((cl->addr == shifted_addr) && (ent->adapNr == busnr))
