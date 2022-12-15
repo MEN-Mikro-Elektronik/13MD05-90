@@ -297,7 +297,11 @@ void *vme4l_destroy_ioremap_region( VME4L_IOREMAP_REGION *region );
 static int vme4l_send_sig( VME4L_IRQ_ENTRY *ent, int priv)
 {
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,14,0)
+	if (READ_ONCE(ent->u.user.task->__state) < EXIT_ZOMBIE )
+#else
 	if (ent->u.user.task->state < EXIT_ZOMBIE )
+#endif
 		return send_sig( ent->u.user.signal, ent->u.user.task, priv);
 	else
 		return -EINVAL;
