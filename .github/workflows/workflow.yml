@@ -1,0 +1,26 @@
+name: MDIS Build check
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+      - mad-dev
+
+jobs:
+  build-check:
+    runs-on: [self-hosted, mdis-docker]
+    steps:
+      - name: Check out mdis_test_system
+        uses: actions/checkout@v3
+        with:
+          repository: MEN-Mikro-Elektronik/mdis_test_system
+          ref: mad-dev
+          path: mdis_test_system
+
+      - name: Run Compilation Test
+        run: |
+          ls ${{ github.workspace }}
+          cd mdis_test_system/MDIS_Compilation_Test
+          sed -i s/GitMdisBranch=.*/GitMdisBranch="${{ github.ref_name }}"/ Conf.sh
+          sudo ./run_buildtest.sh --download --all
