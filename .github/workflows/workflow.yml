@@ -11,6 +11,10 @@ jobs:
   build-check:
     runs-on: [self-hosted, mdis-docker]
     steps:
+      - name: Clean up workspace
+        run: |
+          rm -rf ${{ github.workspace }}/*
+
       - name: Check out mdis_test_system
         uses: actions/checkout@v3
         with:
@@ -18,9 +22,33 @@ jobs:
           ref: mad-dev
           path: mdis_test_system
 
+      - name: Exclude private components
+        run: |
+          rm ${{ github.workspace }}/mdis_test_system/MDIS_Compilation_Test/Makefiles/Makefile.13M057-06
+          rm ${{ github.workspace }}/mdis_test_system/MDIS_Compilation_Test/Makefiles/Makefile.13M065-06
+
       - name: Run Compilation Test
         run: |
           ls ${{ github.workspace }}
           cd mdis_test_system/MDIS_Compilation_Test
           sed -i s/GitMdisBranch=.*/GitMdisBranch="${{ github.ref_name }}"/ Conf.sh
-          sudo ./run_buildtest.sh --download --all
+
+          rm -rf ${{ github.workspace }}/mdis_test_system/Results
+          ./run_buildtest.sh --download --all --output-dir ${{ github.workspace }}/mdis_test_system/Results
+
+      - name: Check Results
+        run: |
+          cat ${{ github.workspace }}/mdis_test_system/Results/TestReport.log
+          if grep -q FAILED ${{ github.workspace }}/mdis_test_system/Results/TestReport.log
+          then
+              exit 1
+          fi
+
+      - name: Upload Make logs
+        uses: actions/upload-artifact@v3
+        if: always() # always run even if the previous step fails
+        with:
+          name: build-logs
+          path: |
+            ${{ github.workspace }}/mdis_test_system/Results/*.log
+            ${{ github.workspace }}/mdis_test_system/Results/*/*.log
