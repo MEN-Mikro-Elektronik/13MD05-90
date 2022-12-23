@@ -31,7 +31,12 @@ jobs:
         run: |
           ls ${{ github.workspace }}
           cd mdis_test_system/MDIS_Compilation_Test
-          sed -i s/GitMdisBranch=.*/GitMdisBranch="${{ github.ref_name }}"/ Conf.sh
+          if [[ "${{ github.event_name }}" == "pull_request" ]]
+          then
+              sed -i s/GitMdisBranch=.*/GitMdisBranch="${{ github.head_ref }}"/ Conf.sh
+          else
+              sed -i s/GitMdisBranch=.*/GitMdisBranch="${{ github.ref_name }}"/ Conf.sh
+          fi
 
           rm -rf ${{ github.workspace }}/mdis_test_system/Results
           ./run_buildtest.sh --download --all --output-dir ${{ github.workspace }}/mdis_test_system/Results
