@@ -10,6 +10,9 @@ on:
 jobs:
   build-check:
     runs-on: [self-hosted, mdis-docker]
+    strategy:
+      matrix:
+        kernel_version: [4.9, 4.14, 4.19, 5.4, 5.10, 5.15]
     steps:
       - name: Clean up workspace
         run: |
@@ -38,6 +41,8 @@ jobs:
               sed -i s/GitMdisBranch=.*/GitMdisBranch="${{ github.ref_name }}"/ Conf.sh
           fi
 
+          echo ${{ matrix.kernel_version }} > kernel_list_release_02.txt
+
           rm -rf ${{ github.workspace }}/mdis_test_system/Results
           ./run_buildtest.sh --download --all --output-dir ${{ github.workspace }}/mdis_test_system/Results
 
@@ -53,7 +58,7 @@ jobs:
         uses: actions/upload-artifact@v3
         if: always() # always run even if the previous step fails
         with:
-          name: build-logs
+          name: logs_${{ matrix.kernel_version }}
           path: |
             ${{ github.workspace }}/mdis_test_system/Results/*.log
             ${{ github.workspace }}/mdis_test_system/Results/*/*.log
