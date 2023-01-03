@@ -100,14 +100,6 @@ Note: RedHat Linux is not officially supported!
 
     ``# ln -s /usr/src/kernels/$(uname -r) /usr/src/linux``
 
-- Prepare the kernel headers:
-
-  ```
-  # cd /usr/src/linux
-  # make oldconfig
-  # make prepare
-  ```
-
 ### Manjaro / Arch Linux
 
 Note: Manjaro/Arch Linux is not officially supported!
