@@ -27,7 +27,7 @@ ifdef KERNEL_CC
  export HOST_OS = $(shell uname -s | awk '{print toupper(substr($$NF,1,5))}')
 
  export TARGET_BYTEORDER = $(shell $(CC) $(TPL_DIR)/gettargetbyteorder.c 2>&1 \
-	| awk '/\#error/ {print $$NF}')
+	| sed -n 's/^.*\#error[[:space:]]//p')
 #$(warning - HOST_OS = $(HOST_OS) ----)
   ifeq ($(HOST_OS),LINUX)
    ifeq ($(TARGET_BYTEORDER),little)

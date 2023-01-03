@@ -115,7 +115,7 @@ endif
 
 # check if we have a 64bit system
 LONG_WIDTH = $(shell $(CC) $(TPL_DIR)/checkTypeSize.c 2>&1 \
-	          | awk '/\#error/ {print $$NF}')
+	          | sed -n 's/^.*\#error[[:space:]]//p')
 
 ifeq ($(LONG_WIDTH),_64)	
   DEF += -D_LIN64
