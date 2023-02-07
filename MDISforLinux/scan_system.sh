@@ -1423,15 +1423,25 @@ create_makefile () {
     # Add cretion note into Makefile
     sed -i "s/CREATION_NOTE/ ${CREATION_NOTE}\n# ${COMMIT_ID}\n# ${DATE}/g" ${TMP_MAKE_FILE}
 
-    # write library installation directory
-    local LIB_INSTALL_DIR="/usr/local/lib"
-    local LIN_DISTRO_NAME
-    LIN_DISTRO_NAME="$(grep -oPs "(?<=^NAME=\")[^\"]+(?=\")" /etc/os-release)"
-    if [ "${LIN_DISTRO_NAME}" == "CentOS Linux" ]; then
-        LIB_INSTALL_DIR="/usr/lib"
-    elif [[ "${LIN_DISTRO_NAME}" =~ Yocto ]]; then
-        LIB_INSTALL_DIR="/usr/lib"
-    fi
+    # write prefix installation directory
+    local INSTALL_PREFIX="/usr/local"
+    local LIN_DISTRO_ID="$(grep ^ID= /etc/os-release | cut -d'=' -f2)"
+    case "$LIN_DISTRO_ID" in
+        *rhel*|*centos*|*fedora*)
+        INSTALL_PREFIX="/usr"
+        ;;
+        *ubuntu*|*debian*)
+        INSTALL_PREFIX="/usr/local"
+        ;;
+    esac
+
+    local BIN_INSTALL_DIR="${INSTALL_PREFIX}/bin"
+    local LIB_INSTALL_DIR="${INSTALL_PREFIX}/lib"
+
+    local bin_dir
+    bin_dir="$(echo "${BIN_INSTALL_DIR}" | sed "s/\//@/g")"
+    sed -i.bak "s/SCAN_BIN_INSTALL_DIR/${bin_dir}/g" ${TMP_MAKE_FILE}
+
     local lib_dir
     lib_dir="$(echo "${LIB_INSTALL_DIR}" | sed "s/\//@/g")"
     sed -i.bak "s/SCAN_LIB_INSTALL_DIR/${lib_dir}/g" ${TMP_MAKE_FILE}
