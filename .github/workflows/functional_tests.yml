@@ -8,7 +8,7 @@ on:
       - mad-dev
 
 jobs:
-  build-check:
+  functional-test:
     runs-on: [self-hosted, mdis-docker]
     strategy:
       matrix:
@@ -27,6 +27,7 @@ jobs:
 
       - name: Set up ssh config
         run: |
+          mkdir -p ~/.ssh
           echo "${{ secrets.SSH_CONFIG_FILE }}" > ~/.ssh/config
 
       - name: Clone private components
