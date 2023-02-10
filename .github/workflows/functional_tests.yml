@@ -1,4 +1,4 @@
-name: MDIS Build check
+name: MDIS Fnnctional Tests
 
 on:
   workflow_dispatch:
@@ -27,7 +27,7 @@ jobs:
 
       - name: Set up ssh config
         run: |
-          echo ${{ secrets.SSH_CONFIG_FILE }} > ~/.ssh/config
+          echo "${{ secrets.SSH_CONFIG_FILE }}" > ~/.ssh/config
 
       - name: Clone private components
         run: |
