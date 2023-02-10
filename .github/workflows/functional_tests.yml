@@ -1,0 +1,66 @@
+name: MDIS Build check
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+      - mad-dev
+
+jobs:
+  build-check:
+    runs-on: [self-hosted, mdis-docker]
+    strategy:
+      matrix:
+        test_setup: [2, 3, 5, 9]
+    steps:
+      - name: Clean up workspace
+        run: |
+          rm -rf ${{ github.workspace }}/*
+
+      - name: Check out mdis_test_system
+        uses: actions/checkout@v3
+        with:
+          repository: MEN-Mikro-Elektronik/mdis_test_system
+          ref: mad-dev
+          path: mdis_test_system
+
+      - name: Set up ssh config
+        run: |
+          echo ${{ secrets.SSH_CONFIG_FILE }} > ~/.ssh/config
+
+      - name: Clone private components
+        run: |
+          echo "TODO"
+
+      - name: Run Functional Test
+        run: |
+          ls ${{ github.workspace }}
+          if [[ "${{ github.event_name }}" == "pull_request" ]]
+          then
+              sed -i s/GitMdisBranch=.*/GitMdisBranch="${{ github.head_ref }}"/ Common/Conf.sh
+          else
+              sed -i s/GitMdisBranch=.*/GitMdisBranch="${{ github.ref_name }}"/ Common/Conf.sh
+          fi
+
+          cd ${{ github.workspace}}/mdis_test_system/Host/Mdis_Test/
+          rm -rf MDIS_Functional/Results
+          ./Mdis_Test.sh --run-instantly --verbose=1 --run-setup=${{ matrix.test_setup }}
+
+      - name: Check Results
+        run: |
+          cd ${{ github.workspace}}/mdis_test_system/Host/Mdis_Test/
+          cat ./MDIS_Functional/St_Test_Setup_${{ matrix.test_setup }}/latest/*/Results_summary.log | \
+              grep "Test_Result for"
+          if grep -q FAIL ./MDIS_Functional/St_Test_Setup_${{ matrix.test_setup }}/latest/*/Results_summary.log
+          then
+              exit 1
+          fi
+
+      - name: Upload Make logs
+        uses: actions/upload-artifact@v3
+        if: always() # always run even if the previous step fails
+        with:
+          name: logs_Test_Setup_${{ matrix.test_setup }}
+          path: |
+            ${{ github.workspace}}/mdis_test_system/Host/Mdis_Test/MDIS_Functional/St_Test_Setup_${{ matrix.test_setup }}/latest/*
