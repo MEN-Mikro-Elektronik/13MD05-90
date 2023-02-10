@@ -37,11 +37,12 @@ jobs:
       - name: Run Functional Test
         run: |
           ls ${{ github.workspace }}
+          cd ${{ github.workspace}}/mdis_test_system
           if [[ "${{ github.event_name }}" == "pull_request" ]]
           then
-              sed -i s/GitMdisBranch=.*/GitMdisBranch="${{ github.head_ref }}"/ Common/Conf.sh
+              sed -i s/GitMdisBranch=.*/GitMdisBranch="${{ github.head_ref }}"/ ./Common/Conf.sh
           else
-              sed -i s/GitMdisBranch=.*/GitMdisBranch="${{ github.ref_name }}"/ Common/Conf.sh
+              sed -i s/GitMdisBranch=.*/GitMdisBranch="${{ github.ref_name }}"/ ./Common/Conf.sh
           fi
 
           cd ${{ github.workspace}}/mdis_test_system/Host/Mdis_Test/
