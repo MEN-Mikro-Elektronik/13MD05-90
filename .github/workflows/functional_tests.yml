@@ -50,6 +50,7 @@ jobs:
           ./Mdis_Test.sh --run-instantly --verbose=1 --run-setup=${{ matrix.test_setup }}
 
       - name: Check Results
+        if: always() #TODO: This should not be here.
         run: |
           cd ${{ github.workspace}}/mdis_test_system/Host/Mdis_Test/
           cat ./MDIS_Functional/St_Test_Setup_${{ matrix.test_setup }}/latest/*/Results_summary.log | \
@@ -59,10 +60,10 @@ jobs:
               exit 1
           fi
 
-      - name: Upload Make logs
+      - name: Upload logs
         uses: actions/upload-artifact@v3
         if: always() # always run even if the previous step fails
         with:
           name: logs_Test_Setup_${{ matrix.test_setup }}
           path: |
-            ${{ github.workspace}}/mdis_test_system/Host/Mdis_Test/MDIS_Functional/St_Test_Setup_${{ matrix.test_setup }}/latest/*
+            ${{ github.workspace}}/mdis_test_system/Host/Mdis_Test/MDIS_Functional/St_Test_Setup_${{ matrix.test_setup }}/latest/*/
