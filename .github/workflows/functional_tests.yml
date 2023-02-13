@@ -11,6 +11,7 @@ jobs:
   functional-test:
     runs-on: [self-hosted, mdis-docker]
     strategy:
+      max-parallel: 1
       matrix:
         test_setup: [2, 3, 5, 9]
     steps:
@@ -66,4 +67,4 @@ jobs:
         with:
           name: logs_Test_Setup_${{ matrix.test_setup }}
           path: |
-            ${{ github.workspace}}/mdis_test_system/Host/Mdis_Test/MDIS_Functional/St_Test_Setup_${{ matrix.test_setup }}/latest/*/*
+            ${{ github.workspace}}/mdis_test_system/Host/Mdis_Test/MDIS_Functional/St_Test_Setup_${{ matrix.test_setup }}/*/*/
