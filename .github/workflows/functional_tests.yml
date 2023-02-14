@@ -6,6 +6,9 @@ on:
     branches:
       - master
       - mad-dev
+  schedule:
+      # At the end of every day
+    - cron: "0 0 * * *"
 
 jobs:
   functional-test:
@@ -49,7 +52,7 @@ jobs:
 
           cd ${{ github.workspace}}/mdis_test_system/Host/Mdis_Test/
           rm -rf MDIS_Functional/Results
-          ./Mdis_Test.sh --run-instantly --verbose=1 --run-setup=${{ matrix.test_setup }}
+          ./Mdis_Test.sh --verbose=1 --run-setup=${{ matrix.test_setup }}
 
       - name: Check Results
         if: always() #TODO: This should not be here.
