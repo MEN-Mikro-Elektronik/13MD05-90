@@ -40,7 +40,6 @@ jobs:
         with:
           repository: MEN-Mikro-Elektronik/13M057-06
           ref: mad-dev
-          path: MDIS_External_Sources/13M057-06
           token: ${{ secrets.ACTIONS_TOKEN }}
 
       - name: Move private components to target
