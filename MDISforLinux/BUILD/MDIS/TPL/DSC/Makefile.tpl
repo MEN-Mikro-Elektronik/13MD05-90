@@ -67,7 +67,7 @@ MODS_INSTALL_DIR = /lib/modules/$(LINUX_VERSION)/misc
 # installed. Often something like /usr/local/bin. (relative to
 # the target's root tree)
 ##REPLNEWLINE021
-BIN_INSTALL_DIR = /usr/local/bin
+BIN_INSTALL_DIR = SCAN_BIN_INSTALL_DIR
 ##REPLNEWLINE022
 # The directory in which the shared (.so) user mode libraries
 # are to be installed. Often something like /usr/local/lib.

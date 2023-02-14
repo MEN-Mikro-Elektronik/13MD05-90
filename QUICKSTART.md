@@ -345,7 +345,7 @@ The binaries will be installed in the following directories on the target:
 
 - Executables
 
-  ``/usr/local/bin``
+  ``/usr/local/bin`` or ``/usr/bin``
 
 - Descriptor files
 
