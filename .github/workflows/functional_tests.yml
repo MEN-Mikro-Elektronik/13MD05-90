@@ -45,7 +45,7 @@ jobs:
 
       - name: Move private components to target
         run: |
-          scp -r ${{ github.workspace }}/MDIS_External_Sources mdis-setup${{ matrix.test_setup }}:/media/tests/
+          scp -o StrictHostKeyChecking=no -r ${{ github.workspace }}/MDIS_External_Sources mdis-setup${{ matrix.test_setup }}:/media/tests/
 
       - name: Run Functional Test
         run: |
