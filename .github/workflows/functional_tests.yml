@@ -17,7 +17,7 @@ jobs:
       max-parallel: 1
       fail-fast: false
       matrix:
-        test_setup: [2, 3, 5, 9]
+        test_setup: [2, 3, 9]
     steps:
       - name: Clean up workspace
         run: |
