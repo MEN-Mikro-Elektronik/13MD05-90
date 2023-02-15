@@ -7,7 +7,7 @@ on:
       - master
       - mad-dev
   schedule:
-      # At the end of every day
+      # At the end of every day (only works on default branch)
     - cron: "0 0 * * *"
 
 jobs:
