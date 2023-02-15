@@ -46,7 +46,7 @@ jobs:
       - name: Move private components to target
         run: |
           sshpass -p "${{ secrets.MDIS_SETUP_PASS }}" \
-            ssh mdis-setup${{ matrix.test_setup }} mkdir -p ~/workspace
+            ssh mdis-setup${{ matrix.test_setup }} 'mkdir -p ~/workspace'
           sshpass -p "${{ secrets.MDIS_SETUP_PASS }}" \
             scp -r ${{ github.workspace }}/MDIS_External_Sources mdis-setup${{ matrix.test_setup }}:~/workspace/MDIS_External_Sources
 
