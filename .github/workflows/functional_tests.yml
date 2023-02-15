@@ -45,7 +45,8 @@ jobs:
 
       - name: Move private components to target
         run: |
-          sshpass -p "${{ secrets.MDIS_SETUP_PASS }}" scp -r ${{ github.workspace }}/MDIS_External_Sources mdis-setup${{ matrix.test_setup }}:/media/tests/
+          sshpass -p "${{ secrets.MDIS_SETUP_PASS }}" \
+            scp -r ${{ github.workspace }}/MDIS_External_Sources mdis-setup${{ matrix.test_setup }}:~/workspace/MDIS_External_Sources
 
       - name: Run Functional Test
         run: |
