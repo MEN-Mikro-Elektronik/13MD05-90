@@ -12,7 +12,7 @@ jobs:
     runs-on: [self-hosted, mdis-docker]
     strategy:
       matrix:
-        kernel_version: [4.9, 4.14, 4.19, 5.4, 5.10, 5.15]
+        kernel_version: [4.9, 4.14, 4.19, 5.4, 5.10, 5.15, 6.1]
     steps:
       - name: Clean up workspace
         run: |
