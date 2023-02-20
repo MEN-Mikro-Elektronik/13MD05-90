@@ -33,7 +33,6 @@
 #endif
 
 #include <linux/types.h>
-#include <stdarg.h> /* for va_list */
 
 /*-----------------------------------------+
 |  DEFINES & CONST                         |
@@ -44,6 +43,12 @@
 #ifdef __KERNEL__
 #include <linux/timer.h>
 #include <linux/spinlock.h>
+#include <linux/version.h>
+#if LINUX_VERSION_CODE > KERNEL_VERSION(5,15,0)
+#include <linux/stdarg.h> /* for va_list */
+#else
+#include <stdarg.h> /* for va_list */
+#endif
 
 #define OSS_HAS_UNASSIGN_RESOURCES /* flag for oss.h  */
 
@@ -203,6 +208,8 @@ extern int32  OSS_Exit( OSS_HANDLE **ossP );
 
 
 #else /* NOT KERNEL */
+#include <stdarg.h>
+
 typedef void OSS_HANDLE;
 typedef void OSS_ALARM_HANDLE;
 typedef void OSS_SIG_HANDLE;
