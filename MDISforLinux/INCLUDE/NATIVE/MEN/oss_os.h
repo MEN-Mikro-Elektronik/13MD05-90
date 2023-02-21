@@ -44,11 +44,19 @@
 #include <linux/timer.h>
 #include <linux/spinlock.h>
 #include <linux/version.h>
+
 #if LINUX_VERSION_CODE > KERNEL_VERSION(5,15,0)
 #include <linux/stdarg.h> /* for va_list */
 #else
+// RHEL specific changes
+#if defined(RHEL_RELEASE_CODE) && defined(RHEL_RELEASE_VERSION)
+#if RHEL_RELEASE_CODE >= RHEL_RELEASE_VERSION(9,1)
+#include <linux/stdarg.h> /* for va_list */
+#endif // RHEL_RELEASE_CODE >= RHEL_RELEASE_VERSION(9,1)
+#else
 #include <stdarg.h> /* for va_list */
-#endif
+#endif // defined(RHEL_RELEASE_CODE) && defined(RHEL_RELEASE_VERSION)
+#endif // LINUX_VERSION_CODE > KERNEL_VERSION(5,15,0)
 
 #define OSS_HAS_UNASSIGN_RESOURCES /* flag for oss.h  */
 
