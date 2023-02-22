@@ -140,6 +140,7 @@
 [submodule "LIBSRC/CHAMELEON/COM"]
 	path = MDISforLinux/LIBSRC/CHAMELEON/COM
 	url = ../mdis_libsrc_chameleon_com.git
+	branch = mad-dev
 [submodule "LIBSRC/DESC/COM"]
 	path = MDISforLinux/LIBSRC/DESC/COM
 	url = ../mdis_libsrc_desc_com.git
