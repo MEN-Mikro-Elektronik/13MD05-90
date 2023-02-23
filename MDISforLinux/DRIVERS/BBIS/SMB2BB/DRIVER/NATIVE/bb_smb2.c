@@ -142,10 +142,14 @@ typedef struct smb_access_struct {
 /*
  *  SMBus registering/access functions differ a bit throughout 2.4 to 2.6.x.
  */
-static int oss_smb2_probe(struct i2c_client* client, const struct i2c_device_id *id);
-static int oss_smb2_probe(struct i2c_client *client, const struct i2c_device_id *id);
+static int  oss_smb2_probe(struct i2c_client* client, const struct i2c_device_id *id);
+static int  oss_smb2_probe(struct i2c_client *client, const struct i2c_device_id *id);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
+static void oss_smb2_remove(struct i2c_client *client);
+#else
 static int oss_smb2_remove(struct i2c_client *client);
-static int oss_smb2_detect(struct i2c_client *new_client, struct i2c_board_info *info);
+#endif
+static int  oss_smb2_detect(struct i2c_client *new_client, struct i2c_board_info *info);
 
 /* init/exit */
 static int32 SMB2BB_Init(OSS_HANDLE*, DESC_SPEC*, BBIS_HANDLE**);
@@ -972,9 +976,12 @@ static int oss_smb2_probe(struct i2c_client *client, const struct i2c_device_id 
  *
  *  \return             \c 0 or error code
  */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
+static void oss_smb2_remove(struct i2c_client *client)
+#else
 static int oss_smb2_remove(struct i2c_client *client)
+#endif
 {
-    int err =0;
     SMB2_I2C_DATA *data = i2c_get_clientdata(client);
 
     DBGBB( KERN_INFO "remove SMB client 0x%02x\n", client->addr );
@@ -983,8 +990,6 @@ static int oss_smb2_remove(struct i2c_client *client)
     kfree(data);
 
     /* -- data invalid now -- */
-
-    return err;
 }
 
 /******************************** oss_smb2_detect ****************************/
