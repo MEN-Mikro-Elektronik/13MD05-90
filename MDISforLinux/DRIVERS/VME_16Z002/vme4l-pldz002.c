@@ -458,25 +458,25 @@ static int WritePio##size ( \
 {\
 	unsigned long ps;\
 	int rv = 0;\
-               \
+\
 	PLDZ002_LOCK_STATE_IRQ(ps);\
-    \
-    /* clear bus error and disable posted writes */\
+\
+	/* clear bus error and disable posted writes */\
 	VME_REG_WRITE8( PLDZ002_MSTR, (h->mstrShadow | PLDZ002_MSTR_BERR)\
-                    & ~PLDZ002_MSTR_POSTWR);\
+			& ~PLDZ002_MSTR_POSTWR);\
 	VME_WIN_WRITE##size(vaddr,*dataP);\
-	\
+\
 	if( VME_REG_READ8( PLDZ002_MSTR ) & PLDZ002_MSTR_BERR ){\
-        VME4LDBG("*** PLDZ002 bus error at vaddr=%p\n", vaddr );\
+		VME4LDBG("*** PLDZ002 bus error at vaddr=%p\n", vaddr );\
 		rv = -EIO;\
-        /* clear bus error */\
-	    VME_REG_WRITE8( PLDZ002_MSTR, h->mstrShadow | PLDZ002_MSTR_BERR );\
-        VME_REG_READ8( PLDZ002_MSTR ); /* dummy read to complete access */\
+		/* clear bus error */\
+		VME_REG_WRITE8( PLDZ002_MSTR, h->mstrShadow | PLDZ002_MSTR_BERR );\
+		VME_REG_READ8( PLDZ002_MSTR ); /* dummy read to complete access */\
 	}\
-    /* reset posted write mode */\
-    if( h->mstrShadow & PLDZ002_MSTR_POSTWR	)\
-        VME_REG_WRITE8( PLDZ002_MSTR, h->mstrShadow );\
-	\
+	/* reset posted write mode */\
+	if( h->mstrShadow & PLDZ002_MSTR_POSTWR	)\
+		VME_REG_WRITE8( PLDZ002_MSTR, h->mstrShadow );\
+\
 	PLDZ002_UNLOCK_STATE_IRQ(ps);\
 	return rv;\
 }
