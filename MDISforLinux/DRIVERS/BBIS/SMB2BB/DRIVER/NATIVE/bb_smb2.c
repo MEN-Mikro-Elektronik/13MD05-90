@@ -1004,17 +1004,13 @@ static int oss_smb2_remove(struct i2c_client *client)
  */
 static int oss_smb2_detect(struct i2c_client *new_client, struct i2c_board_info *info)
 {
-	struct i2c_adapter* adapter = new_client->adapter;
-	int address = new_client->addr;
 	const char* client_name;
-
-	DBGBB( KERN_INFO "oss_smb2_detect: addr 0x%02x adapter 0x%02x\n", address, adapter->nr);
 
 	if (strlen(info->type) == 0)
 	{
 		client_name = "smb2";
 		strlcpy(info->type, client_name, I2C_NAME_SIZE);
-		DBGBB( KERN_INFO " registered driver 'smb2' for device. \n", address, adapter->nr);
+		DBGBB( KERN_INFO " registered driver 'smb2' for device. \n");
 		return 0;
 	}
 	else
