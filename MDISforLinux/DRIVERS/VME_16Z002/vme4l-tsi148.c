@@ -214,12 +214,8 @@ static VME4L_BRIDGE_HANDLE *vme4l_bh;
 											 _low = (uint32_t)(_val64); }
 
 /* TSI148 has big endian regs, so we have to swap */
-#define	TSI148_SWAP_32(dword)	( ((dword)>>24)	| ((dword)<<24)	| \
-								  (((dword)>>8) & 0x0000ff00) |	\
-								  (((dword)<<8) & 0x00ff0000) )
-
-#define	TSI148_SWAP_16(word)	( (((word)>>8) & 0x00ff) |	\
-								  (((word)<<8) & 0xff00) )
+#define	TSI148_SWAP_32(dword)	OSS_SWAP32(dword)
+#define	TSI148_SWAP_16(word)	OSS_SWAP16(word)
 
 #define	TSI148_CTRL_READ( _reg ) \
 		TSI148_SWAP_32( readl( G_vme4l_bh.regs.vaddr \
