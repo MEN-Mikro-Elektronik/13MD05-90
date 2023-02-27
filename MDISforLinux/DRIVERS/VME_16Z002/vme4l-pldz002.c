@@ -1247,14 +1247,15 @@ static int SlaveWindowCtrlFs3(
 			if( h->bmShmem.size == 0 ){
 				/* currently not setup, allocate a new one */
 				dma_addr_t dmaAddr = 0;
-
-				h->bmShmem.vaddr = pci_alloc_consistent(h->pdev,
-														size,
-														&dmaAddr);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
+				h->bmShmem.vaddr = dma_alloc_coherent(&h->pdev->dev, size, &dmaAddr, GFP_KERNEL);
+#else
+				h->bmShmem.vaddr = pci_alloc_consistent(h->pdev, size, &dmaAddr);
+#endif
 				h->bmShmem.phys = dmaAddr;
 
-				VME4LDBG("pldz002: pci_alloc_consistent: v=%p p=%x (%llx)\n",
-						 h->bmShmem.vaddr, h->bmShmem.phys, (uint64_t) size );
+				VME4LDBG("pldz002: alloc pci dma: v=%p p=%x (%llx)\n",
+					 h->bmShmem.vaddr, h->bmShmem.phys, (uint64_t) size );
 
 				if( h->bmShmem.vaddr == NULL ){
 					VME4LDBG("*** pldz002: can't alloc BM slave window "
@@ -1340,13 +1341,20 @@ static int SlaveWindowCtrlFs3(
 			if( !(VME_REG_READ16( PLDZ002_SLV24_PCI ) & PLDZ002_SLVxx_EN) &&
 				!(VME_REG_READ32( PLDZ002_SLV32_PCI ) & PLDZ002_SLVxx_EN)) {
 
-				VME4LDBG("pldz002: pci_free_consistent: v=%p p=%x (%llx)\n",
+				VME4LDBG("pldz002: dma free: v=%p p=%x (%llx)\n",
 						 h->bmShmem.vaddr, h->bmShmem.phys, (uint64_t) size );
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
+				dma_free_coherent(&h->pdev->dev,
+						  h->bmShmem.size,
+						  h->bmShmem.vaddr,
+						  h->bmShmem.phys);
+#else
 				pci_free_consistent(h->pdev,
-									h->bmShmem.size,
-									h->bmShmem.vaddr,
-									h->bmShmem.phys);	
+						    h->bmShmem.size,
+						    h->bmShmem.vaddr,
+						    h->bmShmem.phys);
+#endif
 				h->bmShmem.size = 0;
 			}
 			break;
