@@ -142,14 +142,13 @@ typedef struct smb_access_struct {
 /*
  *  SMBus registering/access functions differ a bit throughout 2.4 to 2.6.x.
  */
-static int  oss_smb2_probe(struct i2c_client* client, const struct i2c_device_id *id);
-static int  oss_smb2_probe(struct i2c_client *client, const struct i2c_device_id *id);
+static int oss_smb2_probe(struct i2c_client *client, const struct i2c_device_id *id);
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
 static void oss_smb2_remove(struct i2c_client *client);
 #else
 static int oss_smb2_remove(struct i2c_client *client);
 #endif
-static int  oss_smb2_detect(struct i2c_client *new_client, struct i2c_board_info *info);
+static int oss_smb2_detect(struct i2c_client *new_client, struct i2c_board_info *info);
 
 /* init/exit */
 static int32 SMB2BB_Init(OSS_HANDLE*, DESC_SPEC*, BBIS_HANDLE**);
@@ -990,6 +989,9 @@ static int oss_smb2_remove(struct i2c_client *client)
     kfree(data);
 
     /* -- data invalid now -- */
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6,1,0)
+    return 0;
+#endif
 }
 
 /******************************** oss_smb2_detect ****************************/
