@@ -395,10 +395,14 @@ static int do_free_adrswin(VME4L_ADRSWIN *win, bool checkUseCount)
 	}
 
 	if(!checkUseCount || lastReference) {
-		rv = G_bDrv->releaseAddrWindow(G_bHandle,
-			win->spc, win->vmeAddr, win->size,
-			win->flags, win->bDrvData);
-
+		if (G_bDrv) {
+			rv = G_bDrv->releaseAddrWindow(G_bHandle,
+						       win->spc,
+						       win->vmeAddr,
+						       win->size,
+						       win->flags,
+						       win->bDrvData);
+		}
 		if( !rv ) {
 			list_del(&win->node);
 
