@@ -142,9 +142,12 @@ typedef struct smb_access_struct {
 /*
  *  SMBus registering/access functions differ a bit throughout 2.4 to 2.6.x.
  */
-static int oss_smb2_probe(struct i2c_client* client, const struct i2c_device_id *id);
 static int oss_smb2_probe(struct i2c_client *client, const struct i2c_device_id *id);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
+static void oss_smb2_remove(struct i2c_client *client);
+#else
 static int oss_smb2_remove(struct i2c_client *client);
+#endif
 static int oss_smb2_detect(struct i2c_client *new_client, struct i2c_board_info *info);
 
 /* init/exit */
@@ -972,9 +975,12 @@ static int oss_smb2_probe(struct i2c_client *client, const struct i2c_device_id 
  *
  *  \return             \c 0 or error code
  */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
+static void oss_smb2_remove(struct i2c_client *client)
+#else
 static int oss_smb2_remove(struct i2c_client *client)
+#endif
 {
-    int err =0;
     SMB2_I2C_DATA *data = i2c_get_clientdata(client);
 
     DBGBB( KERN_INFO "remove SMB client 0x%02x\n", client->addr );
@@ -983,8 +989,9 @@ static int oss_smb2_remove(struct i2c_client *client)
     kfree(data);
 
     /* -- data invalid now -- */
-
-    return err;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6,1,0)
+    return 0;
+#endif
 }
 
 /******************************** oss_smb2_detect ****************************/
@@ -999,17 +1006,13 @@ static int oss_smb2_remove(struct i2c_client *client)
  */
 static int oss_smb2_detect(struct i2c_client *new_client, struct i2c_board_info *info)
 {
-	struct i2c_adapter* adapter = new_client->adapter;
-	int address = new_client->addr;
 	const char* client_name;
-
-	DBGBB( KERN_INFO "oss_smb2_detect: addr 0x%02x adapter 0x%02x\n", address, adapter->nr);
 
 	if (strlen(info->type) == 0)
 	{
 		client_name = "smb2";
 		strlcpy(info->type, client_name, I2C_NAME_SIZE);
-		DBGBB( KERN_INFO " registered driver 'smb2' for device. \n", address, adapter->nr);
+		DBGBB( KERN_INFO " registered driver 'smb2' for device. \n");
 		return 0;
 	}
 	else

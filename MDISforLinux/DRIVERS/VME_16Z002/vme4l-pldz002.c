@@ -458,25 +458,25 @@ static int WritePio##size ( \
 {\
 	unsigned long ps;\
 	int rv = 0;\
-               \
+\
 	PLDZ002_LOCK_STATE_IRQ(ps);\
-    \
-    /* clear bus error and disable posted writes */\
+\
+	/* clear bus error and disable posted writes */\
 	VME_REG_WRITE8( PLDZ002_MSTR, (h->mstrShadow | PLDZ002_MSTR_BERR)\
-                    & ~PLDZ002_MSTR_POSTWR);\
+			& ~PLDZ002_MSTR_POSTWR);\
 	VME_WIN_WRITE##size(vaddr,*dataP);\
-	\
+\
 	if( VME_REG_READ8( PLDZ002_MSTR ) & PLDZ002_MSTR_BERR ){\
-        VME4LDBG("*** PLDZ002 bus error at vaddr=%p\n", vaddr );\
+		VME4LDBG("*** PLDZ002 bus error at vaddr=%p\n", vaddr );\
 		rv = -EIO;\
-        /* clear bus error */\
-	    VME_REG_WRITE8( PLDZ002_MSTR, h->mstrShadow | PLDZ002_MSTR_BERR );\
-        VME_REG_READ8( PLDZ002_MSTR ); /* dummy read to complete access */\
+		/* clear bus error */\
+		VME_REG_WRITE8( PLDZ002_MSTR, h->mstrShadow | PLDZ002_MSTR_BERR );\
+		VME_REG_READ8( PLDZ002_MSTR ); /* dummy read to complete access */\
 	}\
-    /* reset posted write mode */\
-    if( h->mstrShadow & PLDZ002_MSTR_POSTWR	)\
-        VME_REG_WRITE8( PLDZ002_MSTR, h->mstrShadow );\
-	\
+	/* reset posted write mode */\
+	if( h->mstrShadow & PLDZ002_MSTR_POSTWR	)\
+		VME_REG_WRITE8( PLDZ002_MSTR, h->mstrShadow );\
+\
 	PLDZ002_UNLOCK_STATE_IRQ(ps);\
 	return rv;\
 }
@@ -1247,14 +1247,15 @@ static int SlaveWindowCtrlFs3(
 			if( h->bmShmem.size == 0 ){
 				/* currently not setup, allocate a new one */
 				dma_addr_t dmaAddr = 0;
-
-				h->bmShmem.vaddr = pci_alloc_consistent(h->pdev,
-														size,
-														&dmaAddr);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
+				h->bmShmem.vaddr = dma_alloc_coherent(&h->pdev->dev, size, &dmaAddr, GFP_KERNEL);
+#else
+				h->bmShmem.vaddr = pci_alloc_consistent(h->pdev, size, &dmaAddr);
+#endif
 				h->bmShmem.phys = dmaAddr;
 
-				VME4LDBG("pldz002: pci_alloc_consistent: v=%p p=%x (%llx)\n",
-						 h->bmShmem.vaddr, h->bmShmem.phys, (uint64_t) size );
+				VME4LDBG("pldz002: alloc pci dma: v=%p p=%x (%llx)\n",
+					 h->bmShmem.vaddr, h->bmShmem.phys, (uint64_t) size );
 
 				if( h->bmShmem.vaddr == NULL ){
 					VME4LDBG("*** pldz002: can't alloc BM slave window "
@@ -1340,13 +1341,20 @@ static int SlaveWindowCtrlFs3(
 			if( !(VME_REG_READ16( PLDZ002_SLV24_PCI ) & PLDZ002_SLVxx_EN) &&
 				!(VME_REG_READ32( PLDZ002_SLV32_PCI ) & PLDZ002_SLVxx_EN)) {
 
-				VME4LDBG("pldz002: pci_free_consistent: v=%p p=%x (%llx)\n",
+				VME4LDBG("pldz002: dma free: v=%p p=%x (%llx)\n",
 						 h->bmShmem.vaddr, h->bmShmem.phys, (uint64_t) size );
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
+				dma_free_coherent(&h->pdev->dev,
+						  h->bmShmem.size,
+						  h->bmShmem.vaddr,
+						  h->bmShmem.phys);
+#else
 				pci_free_consistent(h->pdev,
-									h->bmShmem.size,
-									h->bmShmem.vaddr,
-									h->bmShmem.phys);	
+						    h->bmShmem.size,
+						    h->bmShmem.vaddr,
+						    h->bmShmem.phys);
+#endif
 				h->bmShmem.size = 0;
 			}
 			break;

@@ -565,18 +565,18 @@ static int ReadPio##size ( \
 {\
 	unsigned long ps;\
 	int rv = 0;\
-               \
+\
 	PLDZ002_LOCK_STATE_IRQ(ps);\
-    \
+\
 	VME_REG_WRITE8( PLDZ002_MSTR, h->mstrShadow | PLDZ002_MSTR_BERR );\
 	*dataP = VME_WIN_READ##size(vaddr);\
-	\
+\
 	if( VME_REG_READ8( PLDZ002_MSTR ) & PLDZ002_MSTR_BERR ){\
 		StoreAndClearBuserror(h);\
-        VME_REG_READ8( PLDZ002_MSTR ); /* dummy read to complete access */\
-        rv = -EIO;\
+		VME_REG_READ8( PLDZ002_MSTR ); /* dummy read to complete access */\
+		rv = -EIO;\
 	}\
-	\
+\
 	PLDZ002_UNLOCK_STATE_IRQ(ps);\
 	return rv;\
 }
@@ -595,21 +595,21 @@ static int WritePio##size ( \
 {\
 	unsigned long ps;\
 	int rv = 0;\
-               \
+\
 	PLDZ002_LOCK_STATE_IRQ(ps);\
-    /* clear bus error and disable posted writes */\
+	/* clear bus error and disable posted writes */\
 	VME_REG_WRITE8( PLDZ002_MSTR, (h->mstrShadow | PLDZ002_MSTR_BERR) & ~PLDZ002_MSTR_POSTWR);\
 	VME_WIN_WRITE##size(vaddr,*dataP);\
-	\
+\
 	if( VME_REG_READ8( PLDZ002_MSTR ) & PLDZ002_MSTR_BERR ){\
 		rv = -EIO;\
 		StoreAndClearBuserror(h);\
-        VME_REG_READ8( PLDZ002_MSTR ); /* dummy read to complete access */\
+		VME_REG_READ8( PLDZ002_MSTR ); /* dummy read to complete access */\
 	}\
-    /* reset posted write mode */\
-    if( h->mstrShadow & PLDZ002_MSTR_POSTWR	)\
-        VME_REG_WRITE8( PLDZ002_MSTR, h->mstrShadow );\
-	\
+	/* reset posted write mode */\
+	if( h->mstrShadow & PLDZ002_MSTR_POSTWR	)\
+		VME_REG_WRITE8( PLDZ002_MSTR, h->mstrShadow );\
+\
 	PLDZ002_UNLOCK_STATE_IRQ(ps);\
 	return rv;\
 }

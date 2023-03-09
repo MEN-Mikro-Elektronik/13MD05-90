@@ -40,12 +40,14 @@
 [submodule "13M072-06"]
 	path = 13M072-06
 	url = ../13M072-06.git
+	branch = mad-dev
 [submodule "13M075-06"]
 	path = 13M075-06
 	url = ../13M075-06.git
 [submodule "13M077-90"]
 	path = 13M077-90
 	url = ../13M077-90.git
+	branch = mad-dev
 [submodule "13M099-06"]
 	path = 13M099-06
 	url = ../13M099-06.git
@@ -116,6 +118,7 @@
 [submodule "13Z077-90"]
 	path = 13Z077-90
 	url = ../13Z077-90.git
+	branch = mad-dev
 [submodule "13M054-06"]
 	path = 13M054-06
 	url = ../13M054-06.git
@@ -128,6 +131,7 @@
 [submodule "13Z135-90"]
 	path = 13Z135-90
 	url = ../13Z135-90.git
+	branch = mad-dev
 [submodule "13SC24-91"]
 	path = 13SC24-91
 	url = ../13SC24-91.git
@@ -137,9 +141,11 @@
 [submodule "INCLUDE/COM/MEN"]
 	path = MDISforLinux/INCLUDE/COM/MEN
 	url = ../mdis_include_com_men.git
+	branch = mad-dev
 [submodule "LIBSRC/CHAMELEON/COM"]
 	path = MDISforLinux/LIBSRC/CHAMELEON/COM
 	url = ../mdis_libsrc_chameleon_com.git
+	branch = mad-dev
 [submodule "LIBSRC/DESC/COM"]
 	path = MDISforLinux/LIBSRC/DESC/COM
 	url = ../mdis_libsrc_desc_com.git
@@ -185,6 +191,7 @@
 [submodule "DRIVERS/BBIS/D302"]
 	path = MDISforLinux/DRIVERS/BBIS/D302
 	url = ../mdis_drivers_bbis_d302_com.git
+	branch = mad-dev
 [submodule "DRIVERS/BBIS/ISA"]
 	path = MDISforLinux/DRIVERS/BBIS/ISA
 	url = ../mdis_drivers_bbis_isa_com.git
