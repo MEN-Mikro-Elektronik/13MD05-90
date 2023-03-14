@@ -558,7 +558,7 @@ scan_cham_table () {
     local hwName
 
     while read -r devline <&3; do
-    if [ "${do_parse}" == "1" ]; then
+    if [ "${devline}" != "" ] && [ "${do_parse}" == "1" ]; then
         ipcore=$(echo "${devline}" | awk '{print $3}')
         devid=$(echo "${devline}" | awk '{print $2}' | awk '{print substr($1,5,2)}')
         inst_raw=$(echo "${devline}" | awk '{print $5}')
