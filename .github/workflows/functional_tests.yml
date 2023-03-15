@@ -45,8 +45,13 @@ jobs:
 
       - name: Set up ssh config
         run: |
+          # Set up local ssh
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_CONFIG_FILE }}" > ~/.ssh/config
+
+          # Set up target ssh
+          sshpass -p "${{ secrets.MDIS_SETUP_PASS }}" \
+            scp -r ~/.ssh mdis-setup${{ matrix.test_setup }}:~/
 
       - name: Clone private 13M057-06
         if: matrix.test_setup == '2'
