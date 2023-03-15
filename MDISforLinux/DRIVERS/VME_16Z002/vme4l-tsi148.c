@@ -25,10 +25,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #include <linux/version.h>
 #include <linux/module.h>
 #include <linux/kernel.h> /* printk() */
 #include <linux/pci.h>
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
+#error This module is not supported by MDIS for Kernel version 6.1 and above.
+#else // LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,26)
  #include <asm/semaphore.h>
@@ -2680,3 +2685,4 @@ MODULE_LICENSE("GPL");
 #ifdef MAK_REVISION
 MODULE_VERSION(MENT_XSTR(MAK_REVISION));
 #endif
+#endif //LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
