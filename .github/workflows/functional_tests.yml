@@ -51,7 +51,7 @@ jobs:
 
           # Set up target ssh
           sshpass -p "${{ secrets.MDIS_SETUP_PASS }}" \
-            scp -r ~/.ssh mdis-setup${{ matrix.test_setup }}:~/
+            scp ~/.ssh/config mdis-setup${{ matrix.test_setup }}:~/.ssh/config
 
       - name: Clone private 13M057-06
         if: matrix.test_setup == '2'
