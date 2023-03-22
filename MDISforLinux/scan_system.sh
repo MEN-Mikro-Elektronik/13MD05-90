@@ -945,6 +945,9 @@ enable_memory_regions () {
             elif [ "${pciVend}" == "0x1172" ] && [ "${pciDevId}" == "0x4d45" ] || [ "${pciVend}" == "0x1a88" ]; then
                 echo "Found F2xx/G2xx carrier with disabled memory region(s)"
                 set_command_register "${pciBusHex}" "${pciDevNrHex}" "${pciDevFunHex}" "3"
+            elif [ "${pciVend}" == "0x1172" ] && [ "${pciDevId}" == "0x000a" ] && [ "${pciSubVend}" == "0x4d45" ]; then
+                echo "Found F401 board with disabled memory region(s)"
+                set_command_register "${pciBusHex}" "${pciDevNrHex}" "${pciDevFunHex}" "3"
             else
                 echo "Memory disabled on device ${pciBusHex}:${pciDevNrHex}.${pciDevFunHex}"
                 echo "This is not valid board to enable memory regions, skipping"
@@ -1083,6 +1086,15 @@ scan_for_pci_devs () {
 
         # any other F2xx/G2xx carrier (mezzanine chameleon) ?
         if [ "${pcivend}" == "0x1172" ] && [ "${pcidevid}" == "0x4d45" ] || [ "${pcivend}" == "0x1a88" ]; then
+            count_instance_f2xx=$((count_instance_f2xx + 1))
+            echo "Found possible MEN chameleon device(s), checking"
+            check_for_cham_devs "${MEN_LIN_DIR}" \
+                "${pcivend}" "${pcidevid}" "${pcidevnr}" "${pcisubvend}" \
+                "${count_instance_f2xx}" "${pcibus}"
+        fi
+
+        # any other F401 (mezzanine chameleon) ?
+        if [ "${pcivend}" == "0x1172" ] && [ "${pcidevid}" == "0x000a" ] && [ "${pcisubvend}" == "0x4d45" ]; then
             count_instance_f2xx=$((count_instance_f2xx + 1))
             echo "Found possible MEN chameleon device(s), checking"
             check_for_cham_devs "${MEN_LIN_DIR}" \
