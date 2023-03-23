@@ -1,0 +1,108 @@
+name: MDIS Fnnctional Tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+      - mad-dev
+  push:
+    branches:
+      - master
+      - mad-dev
+    tags:
+      - 13MD05-90_**
+  schedule:
+      # At the end of every day (only works on default branch)
+    - cron: "0 0 * * *"
+
+jobs:
+  functional-test:
+    runs-on: [self-hosted, mdis-docker]
+    strategy:
+      max-parallel: 1
+      fail-fast: false
+      matrix:
+        test_setup: [2, 3, 4, 5, 6, 7, 9]
+    steps:
+      - name: Check for develop lock file
+        run: |
+          retVal=$(sshpass -p "${{ secrets.MDIS_SETUP_PASS }}" \
+            ssh mdis-setup${{ matrix.test_setup }} 'find ~/workspace/ -name "develop.lock" | wc -l')
+          echo "Retval: $retVal"
+          if [[ $retVal -gt 0 ]]; then exit 1; fi
+
+      - name: Clean up workspace
+        run: |
+          rm -rf ${{ github.workspace }}/*
+
+      - name: Check out mdis_test_system
+        uses: actions/checkout@v3
+        with:
+          repository: MEN-Mikro-Elektronik/mdis_test_system
+          ref: mad-dev
+          path: mdis_test_system
+
+      - name: Set up ssh config
+        run: |
+          # Set up local ssh
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_CONFIG_FILE }}" > ~/.ssh/config
+
+          # Set up target ssh
+          sshpass -p "${{ secrets.MDIS_SETUP_PASS }}" \
+            scp ~/.ssh/config mdis-setup${{ matrix.test_setup }}:~/.ssh/config
+
+      - name: Clone private 13M057-06
+        if: matrix.test_setup == '2'
+        uses: actions/checkout@v3
+        with:
+          repository: MEN-Mikro-Elektronik/13M057-06
+          ref: master
+          path: MDIS_External_Sources/13M057-06
+          token: ${{ secrets.ACTIONS_TOKEN }}
+
+      - name: Move private components to target
+        if: matrix.test_setup == '2'
+        run: |
+          sshpass -p "${{ secrets.MDIS_SETUP_PASS }}" \
+            ssh mdis-setup${{ matrix.test_setup }} 'mkdir -p ~/workspace'
+          sshpass -p "${{ secrets.MDIS_SETUP_PASS }}" \
+            ssh mdis-setup${{ matrix.test_setup }} 'rm -rf ~/workspace/MDIS_External_Sources'
+          sshpass -p "${{ secrets.MDIS_SETUP_PASS }}" \
+            scp -r ${{ github.workspace }}/MDIS_External_Sources mdis-setup${{ matrix.test_setup }}:~/workspace/MDIS_External_Sources
+
+      - name: Run Functional Test
+        id: runTest
+        run: |
+          ls ${{ github.workspace }}
+          cd ${{ github.workspace}}/mdis_test_system
+          if [[ "${{ github.event_name }}" == "pull_request" ]]
+          then
+              sed -i s/GitMdisBranch=.*/GitMdisBranch="${{ github.head_ref }}"/ ./Common/Conf.sh
+          else
+              sed -i s/GitMdisBranch=.*/GitMdisBranch="${{ github.ref_name }}"/ ./Common/Conf.sh
+          fi
+
+          cd ${{ github.workspace}}/mdis_test_system/Host/Mdis_Test/
+          rm -rf MDIS_Functional/Results
+          ./Mdis_Test.sh --verbose=1 --run-setup=${{ matrix.test_setup }}
+
+      - name: Check Results
+        if: ${{ always() && steps.runTest.conclusion != 'skipped' }}
+        run: |
+          cd ${{ github.workspace}}/mdis_test_system/Host/Mdis_Test/
+          cat ./MDIS_Functional/St_Test_Setup_${{ matrix.test_setup }}/latest/*/Results_summary.log | \
+              grep "Test_Result for"
+          if grep -q FAIL ./MDIS_Functional/St_Test_Setup_${{ matrix.test_setup }}/latest/*/Results_summary.log
+          then
+              exit 1
+          fi
+
+      - name: Upload logs
+        uses: actions/upload-artifact@v3
+        if: ${{ always() && steps.runTest.conclusion != 'skipped' }}
+        with:
+          name: logs_Test_Setup_${{ matrix.test_setup }}
+          path: |
+            ${{ github.workspace}}/mdis_test_system/Host/Mdis_Test/MDIS_Functional/St_Test_Setup_${{ matrix.test_setup }}/*/*/
