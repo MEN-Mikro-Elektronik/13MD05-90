@@ -1490,7 +1490,7 @@ create_makefile () {
     if [ ! -z "${subs}" ]
     then
         sed -i.bak "s/${subs}/#LAST_BBIS_DRIVER/g" ${TMP_MAKE_FILE}
-        subs="${subs//".mak"/".lastmak"}"
+        subs="${subs//.mak/.lastmak}"
     fi
     sed -i.bak "s/#LAST_BBIS_DRIVER/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_BB_DRIVER//g" ${TMP_MAKE_FILE}
@@ -1514,7 +1514,7 @@ create_makefile () {
     if [ ! -z "${subs}" ]
     then
         sed -i.bak "s/${subs}/#LAST_LL_DRIVER/g" ${TMP_MAKE_FILE}
-        subs="${subs//".mak"/".lastmak"}"
+        subs="${subs//.mak/.lastmak}"
     fi
     sed -i.bak "s/#LAST_LL_DRIVER/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_LL_DRIVER//g" ${TMP_MAKE_FILE}
@@ -1537,7 +1537,7 @@ create_makefile () {
     if [ ! -z "${subs}" ]
     then
         sed -i.bak "s/${subs}/#LAST_LL_TOOL/g" ${TMP_MAKE_FILE}
-        subs="${subs//".mak"/".lastmak"}"
+        subs="${subs//.mak/.lastmak}"
     fi
     sed -i.bak "s/#LAST_LL_TOOL/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_LL_TOOL//g" ${TMP_MAKE_FILE}
@@ -1560,7 +1560,7 @@ create_makefile () {
     if [ ! -z "${subs}" ]
     then
         sed -i.bak "s/${subs}/#LAST_NAT_DRIVER/g" ${TMP_MAKE_FILE}
-        subs="${subs//".mak"/".lastmak"}"
+        subs="${subs//.mak/.lastmak}"
     fi
     sed -i.bak "s/#LAST_NAT_DRIVER/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_NAT_DRIVER//g" ${TMP_MAKE_FILE}
@@ -1582,7 +1582,7 @@ create_makefile () {
     if [ ! -z "${subs}" ]
     then
         sed -i.bak "s/${subs}/#LAST_USR_LIB/g" ${TMP_MAKE_FILE}
-        subs="${subs//".mak"/".lastmak"}"
+        subs="${subs//.mak/.lastmak}"
     fi
     sed -i.bak "s/#LAST_USR_LIB/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_USR_LIB//g" ${TMP_MAKE_FILE}
@@ -1604,7 +1604,7 @@ create_makefile () {
     if [ ! -z "${subs}" ]
     then
         sed -i.bak "s/${subs}/#LAST_COM_TOOL/g" ${TMP_MAKE_FILE}
-        subs="${subs//".mak"/".lastmak"}"
+        subs="${subs//.mak/.lastmak}"
     fi
     sed -i.bak "s/#LAST_COM_TOOL/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_COM_TOOL//g" ${TMP_MAKE_FILE}
