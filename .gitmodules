@@ -81,6 +81,7 @@
 [submodule "13Z010-06"]
 	path = 13Z010-06
 	url = ../13Z010-06.git
+	branch = mad-dev
 [submodule "13Z005-06"]
 	path = 13Z005-06
 	url = ../13Z005-06.git
@@ -252,6 +253,7 @@
 [submodule "MDISforLinux/LIBSRC/OSS"]
 	path = MDISforLinux/LIBSRC/OSS
 	url = ../mdis_libsrc_oss_linux
+        branch = mad-dev
 [submodule "13Z072-06"]
 	path = 13Z072-06
 	url = ../13Z072-06.git
