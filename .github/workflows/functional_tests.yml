@@ -25,6 +25,16 @@ jobs:
       matrix:
         test_setup: [2, 3, 4, 5, 6, 7, 9]
     steps:
+      - name: Set up ssh config
+        run: |
+          # Set up local ssh
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_CONFIG_FILE }}" > ~/.ssh/config
+
+          # Set up target ssh
+          sshpass -p "${{ secrets.MDIS_SETUP_PASS }}" \
+            scp ~/.ssh/config mdis-setup${{ matrix.test_setup }}:~/.ssh/config
+
       - name: Check for develop lock file
         run: |
           retVal=$(sshpass -p "${{ secrets.MDIS_SETUP_PASS }}" \
@@ -42,16 +52,6 @@ jobs:
           repository: MEN-Mikro-Elektronik/mdis_test_system
           ref: mad-dev
           path: mdis_test_system
-
-      - name: Set up ssh config
-        run: |
-          # Set up local ssh
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_CONFIG_FILE }}" > ~/.ssh/config
-
-          # Set up target ssh
-          sshpass -p "${{ secrets.MDIS_SETUP_PASS }}" \
-            scp ~/.ssh/config mdis-setup${{ matrix.test_setup }}:~/.ssh/config
 
       - name: Clone private 13M057-06
         if: matrix.test_setup == '2'
