@@ -1,5 +1,49 @@
 # Changelog for 13MD05-90 "MEN MDIS for Linux System Package plus lowlevel drivers"
 
+## [13MD05-90_02_05] - 2023-05-01
+
+### Added
+- F27 and G28 CPU Boards support
+- scan_system.sh: Detection of CPU Board G23
+- scan_system.sh: Detection of new FPGA board F401
+- 13Z072-06: OWB enhancements
+- 13Z077-90: Operstate functionality
+- 13Z055-90: Half duplex support
+- 13Z055-90: Send one/four start flag(s)
+- fpga_load: read chameleon table from IO-MAPPED memory regions
+- INSTALL.sh: Improvements to use tag date in stamped version
+- RHEL 9 support
+- Ubuntu 22.04 and debian 11 support
+- Kernel 5.13 to 6.1 support
+
+### Changed
+- fpga_load binary update
+- MDIS Wizard binary update
+- MDIS Wizard compilation enviroment update
+- 13Z055-90: Update hdlc_utils tool
+- 13Z055-90: Rename NRZI-S to NRZ-S
+- 13Z055-90: Update documentation
+
+### Removed
+- Official support for kernels below 4.9
+- Uneeded debug messages
+- IP Core Z62 DMA support for kernels greater than 6.1
+
+### Fixed
+- bb_chameleon: SMP IRQ issue
+- men_chameleon: Missing initialisation of sysfs attributes
+- QUICKSTART: How to blacklist mcb modules
+- QUICKSTART: RHEL inaccurated instructions
+- PCI Bus Path on VxWorks and Linux
+- 13Z055-90: hdlc_utils minor bugs
+- 13Z077-90: Linkstate and NETDEV Watchdog issues
+- MDIS wizard kernel source directory validation bug on Debian distributions
+- vme4l-core: kernel protection triggered while performing DMA transfer
+- vme4l-core: NULL pointer crash while unloading MDIS kernel modules
+- scan_system.sh: minor bugs
+- Cross compilation support
+
+
 ## [13MD05-90_02_04] - 2021-03-01
 
 ### Added
