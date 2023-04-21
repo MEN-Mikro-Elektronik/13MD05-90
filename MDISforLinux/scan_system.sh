@@ -600,8 +600,9 @@ scan_cham_table () {
                     for (( i=0; i<listSize; i++ )); do
                         listName="${ipcoreSpecList[${i}]}"
                         hwName="$(mapGet "${listName}" "hwname")"
+                        modelName="$(mapGet "${listName}" "modelname")"
                         if [ "${bar_mem_type[$ipcoreBar]}" == "IO" ]; then
-                            if [ "${modelname}" == "${ipcore}_IO" ]; then
+                            if [ "${modelName}" == "${ipcore}_IO" ]; then
                                  itemMatch="${i}"
                                  break
                             fi
