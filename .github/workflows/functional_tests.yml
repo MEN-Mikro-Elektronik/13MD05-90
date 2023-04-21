@@ -23,7 +23,7 @@ jobs:
       max-parallel: 1
       fail-fast: false
       matrix:
-        test_setup: [2, 3, 4, 5, 6, 7, 9]
+        test_setup: [1, 2, 3, 4, 5, 6, 7]
     steps:
       - name: Set up ssh config
         run: |
@@ -54,7 +54,7 @@ jobs:
           path: mdis_test_system
 
       - name: Clone private 13M057-06
-        if: matrix.test_setup == '2'
+        if: matrix.test_setup == '1'
         uses: actions/checkout@v3
         with:
           repository: MEN-Mikro-Elektronik/13M057-06
@@ -63,7 +63,7 @@ jobs:
           token: ${{ secrets.ACTIONS_TOKEN }}
 
       - name: Move private components to target
-        if: matrix.test_setup == '2'
+        if: matrix.test_setup == '1'
         run: |
           sshpass -p "${{ secrets.MDIS_SETUP_PASS }}" \
             ssh mdis-setup${{ matrix.test_setup }} 'mkdir -p ~/workspace'
