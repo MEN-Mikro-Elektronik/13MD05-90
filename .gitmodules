@@ -103,7 +103,6 @@
 [submodule "13Z051-06"]
 	path = 13Z051-06
 	url = ../13Z051-06.git
-	branch = mad-dev
 [submodule "13Z055-90"]
 	path = 13Z055-90
 	url = ../13Z055-90.git
