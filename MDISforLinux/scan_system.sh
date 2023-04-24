@@ -557,9 +557,26 @@ scan_cham_table () {
     local itemMatch
     local hwName
 
+    declare bar_mem_type=()
+    local do_bars_parse=0
+    local bar=0
+    local memType
+
     while read -r devline <&3; do
+    if [ "${devline}" != "" ] && [ "${do_bars_parse}" == "1" ]; then
+        debug_print "Reading line: "${devline}" bar: "$bar
+        memType=$(echo "${devline}" | awk '{print $6}' | awk '{print substr($1,0,length($1)-1)}')
+        debug_print "Memory Type: "$memType
+        bar_mem_type[${bar}]="${memType}"
+        bar=$(($bar + 1))
+        if [ $bar -gt 5 ]; then
+            debug_print "end of bars section."
+            do_bars_parse=0
+        fi
+    fi
     if [ "${devline}" != "" ] && [ "${do_parse}" == "1" ]; then
         ipcore=$(echo "${devline}" | awk '{print $3}')
+        ipcoreBar=$(echo "${devline}" | awk '{print $9}')
         devid=$(echo "${devline}" | awk '{print $2}' | awk '{print substr($1,5,2)}')
         inst_raw=$(echo "${devline}" | awk '{print $5}')
         instance=$(printf "%02x" "${inst_raw}")
@@ -583,7 +600,13 @@ scan_cham_table () {
                     for (( i=0; i<listSize; i++ )); do
                         listName="${ipcoreSpecList[${i}]}"
                         hwName="$(mapGet "${listName}" "hwname")"
-                        if [ "${hwName}" == "${ipcore}" ]; then
+                        modelName="$(mapGet "${listName}" "modelname")"
+                        if [ "${bar_mem_type[$ipcoreBar]}" == "IO" ]; then
+                            if [ "${modelName}" == "${ipcore}_IO" ]; then
+                                 itemMatch="${i}"
+                                 break
+                            fi
+                        elif [ "${hwName}" == "${ipcore}" ]; then
                             if [ "${itemMatch}" == "" ]; then
                                 itemMatch="${i}"
                             else
@@ -647,7 +670,9 @@ scan_cham_table () {
 
     # skip to begin of IP cores table
     delimiter=$(echo "${devline}" | awk '{print $1}')
-    if [ "${delimiter}" == "---" ]; then
+    if [ "${delimiter}" == "BARs" ]; then
+        do_bars_parse=1
+    elif [ "${delimiter}" == "---" ]; then
         do_parse=1
     elif [ "${delimiter}" == "" ]; then
         do_parse=0
