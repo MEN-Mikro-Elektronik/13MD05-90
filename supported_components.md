@@ -42,7 +42,6 @@
 - RHEL 9.1 64-bit
 
 #### **Compilation - tested kernel versions:**
-- 4.9
 - 4.14
 - 4.19
 - 5.4
