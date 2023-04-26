@@ -394,8 +394,7 @@ makeIpCoreOutputDataCallback() {
     elif [ "${2}" == "endElement" ]; then
         if [ "${3}" == "/package/modellist/model" ] && \
             [ "${4}" == "model" ]; then
-            if [ "${1}" == "${xModel["chamv2id"]}" ] && \
-                [ "${xModel["name"]: -3}" != "_io" ]; then
+            if [ "${1}" == "${xModel["chamv2id"]}" ]; then
                 ipcoreSpecList+=("${xName}")
                 for xKey in "${!xModel[@]}"; do
                     mapPut "${xName}" "${xKey// /_}" "${xModel["${xKey}"]}"
