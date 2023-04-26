@@ -100,9 +100,6 @@
 [submodule "13Z047-06"]
 	path = 13Z047-06
 	url = ../13Z047-06.git
-[submodule "13Z051-06"]
-	path = 13Z051-06
-	url = ../13Z051-06.git
 [submodule "13Z055-90"]
 	path = 13Z055-90
 	url = ../13Z055-90.git
