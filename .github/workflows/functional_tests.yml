@@ -1,4 +1,4 @@
-name: MDIS Fnnctional Tests
+name: MDIS Functional Tests
 
 on:
   workflow_dispatch:
