@@ -558,6 +558,7 @@ scan_cham_table () {
     local hwName
 
     declare bar_mem_type=()
+    declare item_match_list=()
     local do_bars_parse=0
     local bar=0
     local memType
@@ -593,6 +594,7 @@ scan_cham_table () {
             if [ "${write_mdis_dsc}" == "1" ]; then
                 makeIpCoreOutputData "${ipcoreId}"
                 listItem="0"
+                item_match_list=()
                 listChoice=()
                 listSize="${#ipcoreSpecList[@]}"
                 if [ "${listSize}" -gt "1" ]; then
@@ -601,25 +603,25 @@ scan_cham_table () {
                         listName="${ipcoreSpecList[${i}]}"
                         hwName="$(mapGet "${listName}" "hwname")"
                         modelName="$(mapGet "${listName}" "modelname")"
+                        if [ "${modelName}" == "${ipcore}_IO" ] && [ "${bar_mem_type[$ipcoreBar]}" != "IO" ]; then
+                            continue
+                        fi
                         if [ "${bar_mem_type[$ipcoreBar]}" == "IO" ]; then
                             if [ "${modelName}" == "${ipcore}_IO" ]; then
-                                 itemMatch="${i}"
-                                 break
-                            fi
-                        elif [ "${hwName}" == "${ipcore}" ]; then
-                            if [ "${itemMatch}" == "" ]; then
-                                itemMatch="${i}"
-                            else
-                                itemMatch=""
+                                item_match_list+=("${i}")
                                 break
                             fi
+                        elif [ "${hwName}" == "${ipcore}" ]; then
+                            item_match_list+=("${i}")
                         fi
                     done
-                    if [ "${itemMatch}" != "" ]; then
-                        listItem="${itemMatch}"
+                    listSize="${#item_match_list[@]}"
+                    if [ "${listSize}" -eq "1" ]; then
+                        listItem="${item_match_list[0]}"
                     else
                         for (( i=0; i<listSize; i++ )); do
-                            listName="${ipcoreSpecList[${i}]}"
+                            index="${item_match_list[${i}]}"
+                            listName="${ipcoreSpecList[${index}]}"
                             listEntry="$(mapGet "${listName}" "hwname")"
                             listEntry+=" - $(mapGet "${listName}" "description")"
                             listChoice+=("${listEntry}")
@@ -631,7 +633,7 @@ scan_cham_table () {
                         listItem="${?}"
                     fi
                 fi
-                if [ "${listItem}" -ge "${listSize}" ]; then
+                if [ "${listItem}" -ge "${#ipcoreSpecList[@]}" ]; then
                     echo "*** Aborted by user"
                     exit "1"
                 fi
