@@ -71,9 +71,9 @@ To compile kernel modules on the host system, you require:
 
     ``# ln -s /usr/src/linux-headers-$(uname -r) /usr/src/linux``
 
-### CentOs / RedHat
+### RedHat / CentOs
 
-Note: RedHat Linux is not officially supported!
+Note: CentOs Linux is not officially supported!
 
 - Install the build toolchain:
 
