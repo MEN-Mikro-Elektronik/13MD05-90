@@ -1,6 +1,6 @@
 # **List of Supported Components for release 13MD05-90_02_05**
 
-#### Supported tested components:
+## Supported tested components:
 - 02F026L
 - 02F027P
 - 02G025
@@ -49,7 +49,7 @@
 - 5.15
 - 6.1
 
-#### Supported not tested components:
+## Supported not tested components:
 - 02G023
 - 02G025A
 - 15CB70
@@ -66,7 +66,7 @@
 - 02D203
 - 02F204
 
-#### EOS state components:
+## EOS state components:
 **Comment: EOS (End Of Support)**
 
 Legacy product. Product support is still available, but not functionally tested any more during regression tests.
@@ -83,8 +83,6 @@ Legacy product. Product support is still available, but not functionally tested 
 - 02G020
 - 02G022
 - 02D009
-- 09BL50/09BC50 (SC24)
-- 09BL70/09BC70 (SC25)
 - 15EM09
 - 15EM10A
 - 15MM50
@@ -101,9 +99,12 @@ Legacy product. Product support is still available, but not functionally tested 
 - 01A017
 - 01A021
 - 09DC15 (08SC24)
+- 09BL50/09BC50 (08SC24)
+- 09BL70/09BC70 (08SC25)
 - 02D202
 - 02F206
 - 02F207
+- 02F405
 - 15P599
 - 15P506
 - 16Z024_SRAM
@@ -141,17 +142,21 @@ Legacy product. Product support is still available, but not functionally tested 
 - 13Y001-06
 - 13Y002-06
 - 13Y007-06
+- CentOS 7.5
+- CentOS 7.6
+- CentOS 7.x
+- CentOS 8.x
 - Ubuntu 14.04.1 LTS
 - Ubuntu 14.04.5 LTS
 - Ubuntu 16.04.1 LTS
 - Ubuntu 16.04.5 LTS
 - Ubuntu 16.04.6 LTS
+- Ubuntu 18.04.1 LTS
 - Ubuntu 18.04 LTS
-- CentOS 7.x
-- CentOS 8.x
 - Yocto - Sumo, kernel 4.14
+- Yocto – Dunfell, kernel 5.4
 
-#### EOL state components:
+## EOL state components:
 **Comment: EOL (End Of Life)**
 
 Existing support may be removed from 13MD05-90.
@@ -165,7 +170,6 @@ Existing support may be removed from 13MD05-90.
 - 02F006
 - 02F012
 - 02F050
-- 02F223
 - 02G051
 - 02G052
 - 02D002
@@ -193,6 +197,7 @@ Existing support may be removed from 13MD05-90.
 - 02F203
 - 02D201
 - 02D302
+- 02F223
 - 16Z047_WDOG
 - 16Z069_RST
 - 04M008
