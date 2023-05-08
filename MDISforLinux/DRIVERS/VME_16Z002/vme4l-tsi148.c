@@ -35,11 +35,7 @@
 #error This module is not supported by MDIS for Kernel version 6.1 and above.
 #else // LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,26)
- #include <asm/semaphore.h>
-#else
- #include <linux/semaphore.h>
-#endif
+#include <linux/semaphore.h>
 
 #include <MEN/men_typs.h>
 #ifndef MAC_MEM_MAPPED
@@ -132,17 +128,10 @@ MODULE_PARM_DESC(debug, "Enable debugging printouts (default " \
 #define	TSI148_ERROR   (-1)
 #define	TSI148_OK	   (0)
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0)
-#define DEVINIT     __devinit
-#define DEVINITDATA __devinitdata
-#define DEVEXIT     __devexit
-#define DEVEXIT_P   __devexit_p
-#else
 #define DEVINIT
 #define DEVINITDATA
 #define DEVEXIT
 #define DEVEXIT_P
-#endif
 
 /**********************************************************************/
 /** \defgroup TSI148_SLVx_TARGET Settings for slave windows.
@@ -664,15 +653,9 @@ static inline void Tsi148_ProcessVmeInterrupt(
  *				bus devices. From here we dispatch everything to vme4l-core
  *
  */
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19)
-static irqreturn_t Tsi148_IrqHandler( int irq, void *dev_id, struct pt_regs *regs )
-{
-#else
 static irqreturn_t Tsi148_IrqHandler( int irq, void *dev_id )
 {
 	struct pt_regs *regs = NULL;
-#endif /*LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19)*/
-
 	int vector=0;
 	int level=VME4L_IRQLEV_UNKNOWN;
 	VME4L_BRIDGE_HANDLE *vme4l_bh 	= (VME4L_BRIDGE_HANDLE *)dev_id;
@@ -1410,26 +1393,6 @@ static inline int Tsi148_SlaveWindowAllocKernSpc(
 	
 	/* clear region */
 	memset( winResP->vaddr, 0, size );
-
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,10)
-	/*
-	 * The SetPageReserved() is an important issue!
-	 * If this is not done, remap_page_range don't work
-	 * for BM slave windows (returns 0, but maps zero pages)
-	 *
-	 * Note: SetPageReserved does the same as
-	 * mem_map_reserve(page), but exists for 2.4 and 2.6
-	 */
-	{
-		struct page *page, *pend;
-		void *rawbuf = winResP->vaddr;
-		pend = virt_to_page(rawbuf + size - 1);
-	
-		for( page = virt_to_page(rawbuf); page <= pend; page++ ) {
-			SetPageReserved(page);
-		}
-	}
-#endif
 
 	return TSI148_OK;
 }

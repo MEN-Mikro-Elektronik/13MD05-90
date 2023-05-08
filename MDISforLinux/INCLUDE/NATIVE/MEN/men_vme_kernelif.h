@@ -74,15 +74,11 @@
 #endif /* A25_WRAPPER */
 
 extern int vme_bus_to_phys( int space, u32 vmeadrs, void **physadrs_p );
-extern int VME_REQUEST_IRQ(	unsigned int vme_irq,
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)
-							void (*handler)(int, void * ),
-#else
-							void (*handler)(int, void *, struct pt_regs *),
-#endif
-							unsigned long flags,
-							const char *device,
-							void *dev_id);
+extern int VME_REQUEST_IRQ(unsigned int vme_irq,
+			   void (*handler)(int, void * ),
+			   unsigned long flags,
+			   const char *device,
+			   void *dev_id);
 
 extern void VME_FREE_IRQ(unsigned int vme_irq, void *dev_id);
 extern int vme_ilevel_control( int level, int enable );

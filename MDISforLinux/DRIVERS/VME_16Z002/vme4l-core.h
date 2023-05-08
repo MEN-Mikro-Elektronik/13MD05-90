@@ -30,9 +30,6 @@
 
 
 #include <linux/version.h>
-#if !(defined AUTOCONF_INCLUDED) && (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19))
- #include <linux/config.h>
-#endif
 
 #include <linux/module.h>
 #include <linux/interrupt.h>
@@ -44,9 +41,7 @@
 #include <linux/proc_fs.h>
 #include <linux/pagemap.h>
 #include <linux/sched.h>
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
-# include <linux/sched/signal.h>
-#endif
+#include <linux/sched/signal.h>
 #include <linux/ioport.h>
 #include <linux/fcntl.h>        /* O_ACCMODE 		*/
 #include <linux/pci.h>
@@ -59,11 +54,7 @@
 #include <linux/mm.h>
 #include <linux/pci.h>
 #include <linux/seq_file.h>
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4,12,0)
-#include <asm/uaccess.h>        /* put_user */
-#else
 #include <linux/uaccess.h>        /* put_user */
-#endif
 #include <asm/io.h>
 
 /* include men_vme_kernelif.h depending on build environment */

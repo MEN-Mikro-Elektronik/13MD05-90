@@ -16,11 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <linux/version.h>
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,33)
-# include <linux/utsrelease.h>
-#else
-# include <generated/utsrelease.h>
-#endif
+#include <generated/utsrelease.h>
 
 RELEASE UTS_RELEASE
 VERSION LINUX_VERSION_CODE

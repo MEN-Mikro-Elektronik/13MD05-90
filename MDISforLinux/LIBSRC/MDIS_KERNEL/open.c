@@ -536,28 +536,9 @@ int32 MapAddressSpaces(MK_DEV *dev, DESC_HANDLE *devDescHdl)
         +------------------------------------------*/
 		if( dev->space[n].type == OSS_ADDRSPACE_MEM )
 		{
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4,0,0)
-			if( check_mem_region( (unsigned long) dev->space[n].physAddr, dev->space[n].reqSize ))
-			{
-				DBGWRT_ERR((DBH," *** MapAddressSpaces: can't request mem space[%d] addr 0x%p size 0x%x\n",n,dev->space[n].physAddr,
-							dev->space[n].reqSize));
-				error = ERR_OSS_BUSY_RESOURCE;
-				return error;
-			}
-#endif
 			request_mem_region( (unsigned long) dev->space[n].physAddr,	dev->space[n].reqSize, dev->devName);
 		}
 		else {
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4,0,0)
-			if( check_region( (unsigned long) dev->space[n].physAddr,
-							  dev->space[n].reqSize )){
-				DBGWRT_ERR((DBH," *** MapAddressSpaces: can't request I/O "
-							"space[%d] addr 0x%p size 0x%x\n",n,dev->space[n].physAddr,
-							dev->space[n].reqSize));
-				error = ERR_OSS_BUSY_RESOURCE;
-				return error;
-			}
-#endif
 			request_region( (unsigned long) dev->space[n].physAddr, dev->space[n].reqSize, dev->devName );
 		}
 		dev->space[n].flags |= MK_REQUESTED;
@@ -955,14 +936,10 @@ int32 MDIS_InstallSysirq(MK_DEV *dev)
 #ifdef CONFIG_MEN_VME_KERNELIF
 	/* VME interrupt installation, only through special interface */	
 	if( dev->busType == OSS_BUSTYPE_VME ){
-			if((error = vme_request_irq( dev->irqVector, (void (*)( int, void *, struct pt_regs *))MDIS_IRQFUNC,
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,20)
-					IRQF_SHARED,
-#else
-					SA_SHIRQ,
-#endif
-					dev->devName,
-					dev )) < 0 ){
+			if((error = vme_request_irq(dev->irqVector, (void (*)( int, void *, struct pt_regs *))MDIS_IRQFUNC,
+						    IRQF_SHARED,
+						    dev->devName,
+						    dev )) < 0 ) {
 				DBGWRT_ERR((DBH," *** InstallSysirq: can't install VME "
 							"interrupt (linux error=%d)\n", -error ));
 				return(ERR_MK_IRQ_INSTALL);
@@ -972,14 +949,10 @@ int32 MDIS_InstallSysirq(MK_DEV *dev)
 #endif /* CONFIG_MEN_VME_KERNELIF */
 	{
 
-		if((error = request_irq( dev->irqVector, MDIS_IRQFUNC,
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,20)
-								 IRQF_SHARED,
-#else
-								 SA_SHIRQ,
-#endif
-								 dev->devName,
-								 dev )) < 0 ){
+		if((error = request_irq(dev->irqVector, MDIS_IRQFUNC,
+					IRQF_SHARED,
+					dev->devName,
+					dev )) < 0){
 			DBGWRT_ERR((DBH," *** InstallSysirq: can't install interrupt (linux error=%d)\n", -error ));
 			return(ERR_MK_IRQ_INSTALL);
 		}
@@ -1234,16 +1207,12 @@ int32 PciGetAddrReg(
 {
 	unsigned int devfn = PCI_DEVFN( dev->pciDevNbr, dev->pciFuncNbr );
 	struct pci_dev *pdev;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,0)
 	struct pci_bus *pbus;
 	
 	if( (pbus = pci_find_bus( dev->pciDomainNbr, dev->pciBusNbr ) ) == NULL ) {
 			return ERR_OSS_PCI_ILL_ADDRNBR;
 	}
 	if( (pdev = pci_get_slot( pbus, devfn )) == NULL ){
-#else
-	if( (pdev = pci_find_slot( dev->pciBusNbr, devfn )) == NULL ){
-#endif
 		/* non-existant device */
 		DBGWRT_ERR((DBH," *** PciGetAddrReg: Device non existant!\n",
 					pciBaseReg ));

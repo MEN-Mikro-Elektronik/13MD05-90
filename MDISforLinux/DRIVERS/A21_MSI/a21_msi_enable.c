@@ -67,9 +67,7 @@ EXPORT_SYMBOL(A21_MSI_enable);
 int mod_init(void)
 {
 	struct pci_dev *pdev = NULL;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,16,0)
 	struct msix_entry *entries = NULL;
-#endif
 	int error;
 	int nvec;
 	printk( KERN_INFO "MEN " COMP_NAME " init_module.\n");
@@ -94,19 +92,11 @@ int mod_init(void)
 	pci_set_master(pdev);
 
 	if ( pci_msi_enabled()) {
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,16,0)
-	  if((nvec = pci_enable_msi_block(pdev, A21_MSI_BLOCK_SIZE ))) {
-	    if (pci_enable_msi_block(pdev, nvec) < 0) {
-	      printk(KERN_ERR " *** failed to request MSI, falling back to legacy IRQs\n");
-	    }
-	  }
-#else
 	  if((nvec = pci_enable_msix_exact(pdev, entries, A21_MSI_BLOCK_SIZE ))) {
 	    if (pci_enable_msix_exact(pdev, entries, nvec) < 0) {
 	      printk(KERN_ERR " *** failed to request MSI, falling back to legacy IRQs\n");
 	    }
 	  }
-#endif
 	}
 	printk( KERN_INFO "MSIs enabled successfully.\n");
 out:

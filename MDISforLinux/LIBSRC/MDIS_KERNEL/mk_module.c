@@ -84,18 +84,10 @@ static dev_t first;  		/* Global variable for the first device number */
 static struct cdev c_dev; 	/* Global variable for the character device structure */
 static struct class *cl; 	/* Global variable for the device class */
 
-
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,14)
-MODULE_PARM( mk_nbufs, "i" );
-MODULE_PARM_DESC(mk_nbufs, "number of static users buffers to allocate");
-MODULE_PARM( mk_dbglevel, "i" );
-MODULE_PARM_DESC(mk_dbglevel, "MDIS kernel debug level");
-#else
 module_param( mk_nbufs, int, 0664 );
 MODULE_PARM_DESC(mk_nbufs, "number of static users buffers to allocate");
 module_param( mk_dbglevel, int, 0664 );
 MODULE_PARM_DESC(mk_dbglevel, "MDIS kernel debug level");
-#endif
 
 OSS_HANDLE	*G_osh;			/* MK's OSS handle */
 DBG_HANDLE 	*G_dbh;			/* debug handle */
@@ -104,12 +96,6 @@ OSS_SEM_HANDLE  *G_mkIoctlSem; 		/* MK ioctl sempahore */
 OSS_DL_LIST	G_drvList;		/* list of reg. LL drivers */
 OSS_DL_LIST	G_devList;		/* list of devices */
 OSS_DL_LIST	G_freeUsrBufList;	/* list of free user buffers */
-
-#ifdef CONFIG_DEVFS_FS
-# if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0)
-static devfs_handle_t devfs_handle = NULL;
-# endif
-#endif
 
 /*--------------------------------------+
 |   PROTOTYPES                          |
@@ -1398,83 +1384,6 @@ int CompressErrno( int mdisErr )
  *				  *eof			true if all characters output
  *  Globals....:  -
  ****************************************************************************/
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
-static int mk_read_procmem( char *page, char **start, off_t off, int count, int *eof, void *data)
-{
-  int i, error, len = 0, rv;
-  off_t begin = 0;
-
-  DBGWRT_3((DBH,"mk_read_procmem: count %d page=%p\n", count, page));
-  MK_LOCK(error);
-  if (error)
-    return -EINTR;
-
-
-  /* user buffers */
-  {
-    OSS_DL_NODE *node;
-
-    for( i=0, node=G_freeUsrBufList.head; node->next;
-	 node=node->next, i++ ){
-    }
-  }
-  len += sprintf( page+len, "User API Buffers: total %d"
-		  ", free %d, each %d bytes\n",
-		  mk_nbufs, i, MK_USRBUF_SIZE);
-
-  /* Drivers */
-  len += sprintf( page+len, "\nDrivers:\n" );
-  INC_LEN;
-
-  {
-    MK_DRV *node;
-    for( node=(MK_DRV *)G_drvList.head;
-	 node->node.next;
-	 node = (MK_DRV *)node->node.next ){
-
-      len += sprintf( page+len, "  %s\n", node->drvName );
-      INC_LEN;
-    }
-  }
-	
-  /* Devices */
-  len += sprintf( page+len, "Devices:\n" );
-  INC_LEN;
-  {
-    MK_DEV *node;
-    for( node=(MK_DEV *)G_devList.head;
-	 node->node.next;
-	 node = (MK_DEV *)node->node.next ){
-
-      len += sprintf( page+len, "  %s brd=%s slot=%d drv=%s "
-		      "usecnt=%d persist=%d\n",
-		      node->devName,
-		      node->brdName,
-		      node->devSlot,
-		      node->drv ? node->drv->drvName : "?",
-		      node->useCount,
-		      node->persist);
-      INC_LEN;
-    }
-  }
-
-  *eof = 1;
- done:
-  if (off >= len+begin){
-    rv = 0;
-    goto end;
-  }
-  *start = page + (off-begin);
-  rv = ((count < begin+len-off) ? count : begin+len-off);
-
- end:
-  DBGWRT_3((DBH,"mk_read_procmem: ex eof=%d rv=%d\n", *eof, rv));
-  MK_UNLOCK;
-
-  return rv;
-}
-
-#else /* newer kernel >= 3.10 */
 static ssize_t mk_read_procmem( struct file *filp, char *buf, size_t count, loff_t *pos)
 {
 
@@ -1550,9 +1459,6 @@ static ssize_t mk_read_procmem( struct file *filp, char *buf, size_t count, loff
   return len;
 }
 
-#endif
-
-
 
 /*
  * The different file operations
@@ -1578,7 +1484,7 @@ static struct file_operations mk_fops = {
 static struct proc_ops mk_proc_ops = {
 	.proc_read = mk_read_procmem,
 };
-#elif LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
+#else
 static struct file_operations mk_proc_fops = {
      read:       	mk_read_procmem,
 };
@@ -1608,11 +1514,7 @@ int init_module(void)
 		return -1;
 	}
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,27)
 	if (device_create(cl, NULL, first, NULL, "mdis") == NULL)
-#else
-	if (device_create(cl, NULL, first, "mdis") == NULL)
-#endif
 	{
 		class_destroy(cl);
 		unregister_chrdev_region(first, 1);
@@ -1660,8 +1562,6 @@ int init_module(void)
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
 	proc_create("mdis", 0, NULL, &mk_proc_ops);
-#elif LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
-	create_proc_read_entry ("mdis", 0, NULL, mk_read_procmem, NULL);
 #else
 	proc_create (           "mdis", 0, NULL, &mk_proc_fops);
 #endif

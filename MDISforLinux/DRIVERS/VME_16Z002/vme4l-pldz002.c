@@ -43,17 +43,10 @@
 
 #define VERSION_CODE_NEW_IRQFLAGS 0 /* evaluates to 0 by compiler if not defined */
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0)
-#define DEVINIT     __devinit
-#define DEVINITDATA __devinitdata
-#define DEVEXIT     __devexit
-#define DEVEXIT_P   __devexit_p
-#else
 #define DEVINIT
 #define DEVINITDATA
 #define DEVEXIT
 #define DEVEXIT_P
-#endif
 
 /*--------------------------------------+
 |   DEFINES                             |
@@ -1266,25 +1259,6 @@ static int SlaveWindowCtrlFs3(
 
 				/* clear region */
 				memset( h->bmShmem.vaddr, 0, size );
-
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,10)
-				/*
-				 * The SetPageReserved() is an important issue!
-				 * If this is not done, remap_page_range don't work
-				 * for BM slave windows (returns 0, but maps zero pages)
-				 *
-				 * Note: SetPageReserved does the same as
-				 * mem_map_reserve(page), but exists for 2.4 and 2.6
-				 */
-				{
-					struct page *page, *pend;
-					void *rawbuf = h->bmShmem.vaddr;
-					pend = virt_to_page(rawbuf + size - 1);
-
-					for (page = virt_to_page(rawbuf); page <= pend; page++)
-						SetPageReserved(page);
-				}
-#endif
 				VME_REG_WRITE32( PLDZ002_PCI_OFFSET, h->bmShmem.phys );
 			}
 			else {
@@ -1744,16 +1718,8 @@ static int PldZ002_CheckMiscVmeInterrupts( VME4L_BRIDGE_HANDLE *h,
  *				bus devices. From here we dispatch everything to vme4l-core
  *
  */
-
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19)
-static irqreturn_t PldZ002Irq(int irq, void *dev_id, struct pt_regs *regs)
+static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 {
-#else
-  static irqreturn_t PldZ002Irq(int irq, void *dev_id )
-{
-	/* struct pt_regs *regs = NULL; */
-#endif /* LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19) */
-
 	int vector=0, level=VME4L_IRQLEV_UNKNOWN;
 	VME4L_BRIDGE_HANDLE *h 	= (VME4L_BRIDGE_HANDLE *)dev_id;
 
@@ -1800,11 +1766,6 @@ static irqreturn_t PldZ002Irq(int irq, void *dev_id, struct pt_regs *regs)
 static int MapRegSpace( VME4L_RESRC *res, const char *name )
 {
 	res->vaddr = NULL;
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4,0,0)
-	if( check_mem_region( res->phys, res->size ))
-		return -EBUSY;
-#endif
-
 	request_mem_region( res->phys, res->size, name );
 	
 #if 0
@@ -2101,12 +2062,7 @@ static int __init vme4l_pldz002_init_module(void)
 
 	int rv;
 	printk( KERN_INFO "Initializing vme4l_pldz002...\n");
-
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 22)
-	if( (rv =  pci_module_init( &G_pci_driver )) < 0 ) {
-#else
 	if( (rv =  pci_register_driver( &G_pci_driver )) < 0 ) {
-#endif
 		return rv;
 	}
 
