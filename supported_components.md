@@ -1,6 +1,16 @@
-# **List of Supported Components for release 13MD05-90_02_05**
+# List of Supported Components for release 13MD05-90_02_05
 
-## Supported tested components:
+## Compilation Tested Kernel Versions
+
+- 4.14
+- 4.19
+- 5.4
+- 5.10
+- 5.15
+- 6.1
+
+## Supported and Tested Components
+
 - 02F026L
 - 02F027P
 - 02G025
@@ -41,15 +51,8 @@
 - Debian 11 64-bit
 - RHEL 9.1 64-bit
 
-#### **Compilation - tested kernel versions:**
-- 4.14
-- 4.19
-- 5.4
-- 5.10
-- 5.15
-- 6.1
+## Supported but Not Tested Components
 
-## Supported not tested components:
 - 02G023
 - 02G025A
 - 15CB70
@@ -66,11 +69,11 @@
 - 02D203
 - 02F204
 
-## EOS state components:
-**Comment: EOS (End Of Support)**
+## EOS (End Of Support) Components
 
-Legacy product. Product support is still available, but not functionally tested any more during regression tests.
-100% functionality can not be guaranteed.
+**Legacy products.
+Product support is still available, but not functionally tested any more during regression tests.
+100% functionality can not be guaranteed.**
 
 - 02F011S
 - 02F014
@@ -156,10 +159,10 @@ Legacy product. Product support is still available, but not functionally tested 
 - Yocto - Sumo, kernel 4.14
 - Yocto – Dunfell, kernel 5.4
 
-## EOL state components:
-**Comment: EOL (End Of Life)**
+## EOL (End Of Life) Components
 
-Existing support may be removed from 13MD05-90.
+**Product and/or support for product EOL.
+Existing support may be removed from MDIS System Package 13MD05-90.**
 
 - 02F007
 - 02F009
