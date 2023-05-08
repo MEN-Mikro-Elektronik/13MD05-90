@@ -97,21 +97,25 @@
 [submodule "13Z044-90"]
 	path = 13Z044-90
 	url = ../13Z044-90.git
+	branch = remove_old_code_branches
 [submodule "13Z047-06"]
 	path = 13Z047-06
 	url = ../13Z047-06.git
 [submodule "13Z055-90"]
 	path = 13Z055-90
 	url = ../13Z055-90.git
+	branch = remove_old_code_branches
 [submodule "13Z061-06"]
 	path = 13Z061-06
 	url = ../13Z061-06
 [submodule "13Z069-90"]
 	path = 13Z069-90
 	url = ../13Z069-90.git
+	branch = remove_old_code_branches
 [submodule "13Z077-90"]
 	path = 13Z077-90
 	url = ../13Z077-90.git
+	branch = remove_old_code_branches
 [submodule "13M054-06"]
 	path = 13M054-06
 	url = ../13M054-06.git
@@ -241,6 +245,7 @@
 [submodule "MDISforLinux/LIBSRC/OSS"]
 	path = MDISforLinux/LIBSRC/OSS
 	url = ../mdis_libsrc_oss_linux
+	branch = remove_old_code_branches
 [submodule "13Z072-06"]
 	path = 13Z072-06
 	url = ../13Z072-06.git
