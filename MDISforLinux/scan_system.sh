@@ -42,7 +42,7 @@ MOD_DIR=/lib/modules/$(uname -r)
 OUTPUT_DIR_PATH=$(pwd)
 # currently detected CPU boards. ADD NEW BOARDS HERE!
 # also take care for special (native) driver adding etc.
-CPU_KNOWN_BOARDS="CB70 SC25 SC24 SC31 F011 F11S F14- F014 F15- F015 F17- F017 F075 F75P F19P F19C F019 F21P F22P F23P F21C F021 F026 XM01 MM01 G20- G22- G022 G23- G023 G25- G25A G025 A025"
+CPU_KNOWN_BOARDS="CB70 SC25 SC24 SC31 F011 F11S F14- F014 F15- F015 F17- F017 F075 F75P F19P F19C F019 F21P F22P F23P F21C F021 F026 F027 XM01 MM01 G20- G22- G022 G23- G023 G25- G25A G025 G028 A025"
 
 # which SMB adresses to scan for CPU ID eeproms
 ID_EEPROM_ADRESSES="0x57 0x55"
@@ -557,9 +557,27 @@ scan_cham_table () {
     local itemMatch
     local hwName
 
+    declare bar_mem_type=()
+    declare item_match_list=()
+    local do_bars_parse=0
+    local bar=0
+    local memType
+
     while read -r devline <&3; do
-    if [ "${do_parse}" == "1" ]; then
+    if [ "${devline}" != "" ] && [ "${do_bars_parse}" == "1" ]; then
+        debug_print "Reading line: "${devline}" bar: "$bar
+        memType=$(echo "${devline}" | awk '{print $6}' | awk '{print substr($1,0,length($1)-1)}')
+        debug_print "Memory Type: "$memType
+        bar_mem_type[${bar}]="${memType}"
+        bar=$(($bar + 1))
+        if [ $bar -gt 5 ]; then
+            debug_print "end of bars section."
+            do_bars_parse=0
+        fi
+    fi
+    if [ "${devline}" != "" ] && [ "${do_parse}" == "1" ]; then
         ipcore=$(echo "${devline}" | awk '{print $3}')
+        ipcoreBar=$(echo "${devline}" | awk '{print $9}')
         devid=$(echo "${devline}" | awk '{print $2}' | awk '{print substr($1,5,2)}')
         inst_raw=$(echo "${devline}" | awk '{print $5}')
         instance=$(printf "%02x" "${inst_raw}")
@@ -576,6 +594,7 @@ scan_cham_table () {
             if [ "${write_mdis_dsc}" == "1" ]; then
                 makeIpCoreOutputData "${ipcoreId}"
                 listItem="0"
+                item_match_list=()
                 listChoice=()
                 listSize="${#ipcoreSpecList[@]}"
                 if [ "${listSize}" -gt "1" ]; then
@@ -583,20 +602,26 @@ scan_cham_table () {
                     for (( i=0; i<listSize; i++ )); do
                         listName="${ipcoreSpecList[${i}]}"
                         hwName="$(mapGet "${listName}" "hwname")"
-                        if [ "${hwName}" == "${ipcore}" ]; then
-                            if [ "${itemMatch}" == "" ]; then
-                                itemMatch="${i}"
-                            else
-                                itemMatch=""
+                        modelName="$(mapGet "${listName}" "modelname")"
+                        if [ "${modelName}" == "${ipcore}_IO" ] && [ "${bar_mem_type[$ipcoreBar]}" != "IO" ]; then
+                            continue
+                        fi
+                        if [ "${bar_mem_type[$ipcoreBar]}" == "IO" ]; then
+                            if [ "${modelName}" == "${ipcore}_IO" ]; then
+                                item_match_list+=("${i}")
                                 break
                             fi
+                        elif [ "${hwName}" == "${ipcore}" ]; then
+                            item_match_list+=("${i}")
                         fi
                     done
-                    if [ "${itemMatch}" != "" ]; then
-                        listItem="${itemMatch}"
+                    listSize="${#item_match_list[@]}"
+                    if [ "${listSize}" -eq "1" ]; then
+                        listItem="${item_match_list[0]}"
                     else
                         for (( i=0; i<listSize; i++ )); do
-                            listName="${ipcoreSpecList[${i}]}"
+                            index="${item_match_list[${i}]}"
+                            listName="${ipcoreSpecList[${index}]}"
                             listEntry="$(mapGet "${listName}" "hwname")"
                             listEntry+=" - $(mapGet "${listName}" "description")"
                             listChoice+=("${listEntry}")
@@ -608,7 +633,7 @@ scan_cham_table () {
                         listItem="${?}"
                     fi
                 fi
-                if [ "${listItem}" -ge "${listSize}" ]; then
+                if [ "${listItem}" -ge "${#ipcoreSpecList[@]}" ]; then
                     echo "*** Aborted by user"
                     exit "1"
                 fi
@@ -647,7 +672,9 @@ scan_cham_table () {
 
     # skip to begin of IP cores table
     delimiter=$(echo "${devline}" | awk '{print $1}')
-    if [ "${delimiter}" == "---" ]; then
+    if [ "${delimiter}" == "BARs" ]; then
+        do_bars_parse=1
+    elif [ "${delimiter}" == "---" ]; then
         do_parse=1
     elif [ "${delimiter}" == "" ]; then
         do_parse=0
@@ -945,6 +972,9 @@ enable_memory_regions () {
             elif [ "${pciVend}" == "0x1172" ] && [ "${pciDevId}" == "0x4d45" ] || [ "${pciVend}" == "0x1a88" ]; then
                 echo "Found F2xx/G2xx carrier with disabled memory region(s)"
                 set_command_register "${pciBusHex}" "${pciDevNrHex}" "${pciDevFunHex}" "3"
+            elif [ "${pciVend}" == "0x1172" ] && [ "${pciDevId}" == "0x000a" ] && [ "${pciSubVend}" == "0x4d45" ]; then
+                echo "Found F401 board with disabled memory region(s)"
+                set_command_register "${pciBusHex}" "${pciDevNrHex}" "${pciDevFunHex}" "3"
             else
                 echo "Memory disabled on device ${pciBusHex}:${pciDevNrHex}.${pciDevFunHex}"
                 echo "This is not valid board to enable memory regions, skipping"
@@ -1083,6 +1113,15 @@ scan_for_pci_devs () {
 
         # any other F2xx/G2xx carrier (mezzanine chameleon) ?
         if [ "${pcivend}" == "0x1172" ] && [ "${pcidevid}" == "0x4d45" ] || [ "${pcivend}" == "0x1a88" ]; then
+            count_instance_f2xx=$((count_instance_f2xx + 1))
+            echo "Found possible MEN chameleon device(s), checking"
+            check_for_cham_devs "${MEN_LIN_DIR}" \
+                "${pcivend}" "${pcidevid}" "${pcidevnr}" "${pcisubvend}" \
+                "${count_instance_f2xx}" "${pcibus}"
+        fi
+
+        # any other F401 (mezzanine chameleon) ?
+        if [ "${pcivend}" == "0x1172" ] && [ "${pcidevid}" == "0x000a" ] && [ "${pcisubvend}" == "0x4d45" ]; then
             count_instance_f2xx=$((count_instance_f2xx + 1))
             echo "Found possible MEN chameleon device(s), checking"
             check_for_cham_devs "${MEN_LIN_DIR}" \
@@ -1423,15 +1462,25 @@ create_makefile () {
     # Add cretion note into Makefile
     sed -i "s/CREATION_NOTE/ ${CREATION_NOTE}\n# ${COMMIT_ID}\n# ${DATE}/g" ${TMP_MAKE_FILE}
 
-    # write library installation directory
-    local LIB_INSTALL_DIR="/usr/local/lib"
-    local LIN_DISTRO_NAME
-    LIN_DISTRO_NAME="$(grep -oPs "(?<=^NAME=\")[^\"]+(?=\")" /etc/os-release)"
-    if [ "${LIN_DISTRO_NAME}" == "CentOS Linux" ]; then
-        LIB_INSTALL_DIR="/usr/lib"
-    elif [[ "${LIN_DISTRO_NAME}" =~ Yocto ]]; then
-        LIB_INSTALL_DIR="/usr/lib"
-    fi
+    # write prefix installation directory
+    local INSTALL_PREFIX="/usr/local"
+    local LIN_DISTRO_ID="$(grep ^ID= /etc/os-release | cut -d'=' -f2)"
+    case "$LIN_DISTRO_ID" in
+        *rhel*|*centos*|*fedora*)
+        INSTALL_PREFIX="/usr"
+        ;;
+        *ubuntu*|*debian*)
+        INSTALL_PREFIX="/usr/local"
+        ;;
+    esac
+
+    local BIN_INSTALL_DIR="${INSTALL_PREFIX}/bin"
+    local LIB_INSTALL_DIR="${INSTALL_PREFIX}/lib"
+
+    local bin_dir
+    bin_dir="$(echo "${BIN_INSTALL_DIR}" | sed "s/\//@/g")"
+    sed -i.bak "s/SCAN_BIN_INSTALL_DIR/${bin_dir}/g" ${TMP_MAKE_FILE}
+
     local lib_dir
     lib_dir="$(echo "${LIB_INSTALL_DIR}" | sed "s/\//@/g")"
     sed -i.bak "s/SCAN_LIB_INSTALL_DIR/${lib_dir}/g" ${TMP_MAKE_FILE}
@@ -1468,7 +1517,7 @@ create_makefile () {
     if [ ! -z "${subs}" ]
     then
         sed -i.bak "s/${subs}/#LAST_BBIS_DRIVER/g" ${TMP_MAKE_FILE}
-        subs="${subs//".mak"/".lastmak"}"
+        subs="${subs//.mak/.lastmak}"
     fi
     sed -i.bak "s/#LAST_BBIS_DRIVER/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_BB_DRIVER//g" ${TMP_MAKE_FILE}
@@ -1492,7 +1541,7 @@ create_makefile () {
     if [ ! -z "${subs}" ]
     then
         sed -i.bak "s/${subs}/#LAST_LL_DRIVER/g" ${TMP_MAKE_FILE}
-        subs="${subs//".mak"/".lastmak"}"
+        subs="${subs//.mak/.lastmak}"
     fi
     sed -i.bak "s/#LAST_LL_DRIVER/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_LL_DRIVER//g" ${TMP_MAKE_FILE}
@@ -1515,7 +1564,7 @@ create_makefile () {
     if [ ! -z "${subs}" ]
     then
         sed -i.bak "s/${subs}/#LAST_LL_TOOL/g" ${TMP_MAKE_FILE}
-        subs="${subs//".mak"/".lastmak"}"
+        subs="${subs//.mak/.lastmak}"
     fi
     sed -i.bak "s/#LAST_LL_TOOL/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_LL_TOOL//g" ${TMP_MAKE_FILE}
@@ -1538,7 +1587,7 @@ create_makefile () {
     if [ ! -z "${subs}" ]
     then
         sed -i.bak "s/${subs}/#LAST_NAT_DRIVER/g" ${TMP_MAKE_FILE}
-        subs="${subs//".mak"/".lastmak"}"
+        subs="${subs//.mak/.lastmak}"
     fi
     sed -i.bak "s/#LAST_NAT_DRIVER/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_NAT_DRIVER//g" ${TMP_MAKE_FILE}
@@ -1560,7 +1609,7 @@ create_makefile () {
     if [ ! -z "${subs}" ]
     then
         sed -i.bak "s/${subs}/#LAST_USR_LIB/g" ${TMP_MAKE_FILE}
-        subs="${subs//".mak"/".lastmak"}"
+        subs="${subs//.mak/.lastmak}"
     fi
     sed -i.bak "s/#LAST_USR_LIB/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_USR_LIB//g" ${TMP_MAKE_FILE}
@@ -1582,7 +1631,7 @@ create_makefile () {
     if [ ! -z "${subs}" ]
     then
         sed -i.bak "s/${subs}/#LAST_COM_TOOL/g" ${TMP_MAKE_FILE}
-        subs="${subs//".mak"/".lastmak"}"
+        subs="${subs//.mak/.lastmak}"
     fi
     sed -i.bak "s/#LAST_COM_TOOL/${subs}\n/g" ${TMP_MAKE_FILE}
     sed -i.bak "s/#SCAN_NEXT_COM_TOOL//g" ${TMP_MAKE_FILE}
@@ -2203,11 +2252,32 @@ case $main_cpu in
         add_z001_io_support
         add_mdis_drivers "SMB2"
         ;;
+    G028)
+        wiz_model_cpu=G28
+        wiz_model_smb=SMBPCI_ICH
+        G_primPciPath=0x1c
+        wiz_model_busif=7
+        bCreateXm01bcDrv=1
+        bCreateSmb2GenericDrv=1
+        add_mdis_drivers "XM01BC"
+        add_z001_io_support
+        add_mdis_drivers "SMB2"
+        ;;
     A025)
         makeVMEDriversFileMap
         wiz_model_cpu=A25
         add_vme_drivers "PLDZ002"
         G_mdisExtraDefs+=" -DCONFIG_MEN_VME_KERNELIF"
+        ;;
+    F027)
+        wiz_model_cpu=F27P
+        wiz_model_smb=SMBPCI_ICH
+        G_primPciPath=0x1e
+        wiz_model_busif=0
+        bCreateXm01bcDrv=1
+        bCreateSmb2GenericDrv=1
+        add_mdis_drivers "XM01BC"
+        add_mdis_drivers "SMB2"
         ;;
     *)
         echo "No MEN CPU type found!"

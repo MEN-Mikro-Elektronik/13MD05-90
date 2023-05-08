@@ -698,6 +698,7 @@ static int __devinit pci_init_one(struct pci_dev *pdev,
 	for ( i=0; i < NR_CHAM_TBL_ATTRS; i++) {
 		CHAM_ATTR_SET(h->attr_cham[i],G_sysChamTblAttrname[i],CHAM_SYSFS_MODE,cham_sysfs_read,NULL);
 		h->chamTblAttrs[i] = &h->attr_cham[i].attr;
+		sysfs_attr_init(&h->attr_cham[i].attr);
 	}
 	h->chamTblAttrGrp.attrs = h->chamTblAttrs;
 
@@ -781,6 +782,7 @@ static int __devinit pci_init_one(struct pci_dev *pdev,
 		for ( i=0; i < NR_CHAM_IPCORE_ATTRS; i++) {
 			CHAM_ATTR_SET(ip->attr_ip[i], G_sysIpCoreAttrname[i],CHAM_SYSFS_MODE,cham_sysfs_read,NULL);
 			ip->ipCoreAttrs[i] = &ip->attr_ip[i].attr;
+			sysfs_attr_init(&ip->attr_ip[i].attr);
 		}
 		ip->ipCoreAttrGrp.attrs = ip->ipCoreAttrs;
 

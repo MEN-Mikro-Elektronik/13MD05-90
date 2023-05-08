@@ -146,11 +146,7 @@ typedef struct {
 			void *dev_id;				/**< handler's private data */
 			union {
                 /** Linux kernel handler */
- #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)
 				void (*lHandler)(int, void *);
- #else
-				void (*lHandler)(int, void *, struct pt_regs *);
- #endif /*LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)*/
 			} h;
 		} kernel;
 	} u;
@@ -207,11 +203,7 @@ static spinlock_t			G_lockFlags;
 #endif
 
 /** mutex for DMA */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36)
 static DEFINE_SEMAPHORE(G_dmaMutex);
-#else
-DECLARE_MUTEX(G_dmaMutex);
-#endif
 
 #ifdef CONFIG_PROC_FS
 static struct proc_dir_entry *vme4l_root;
@@ -305,7 +297,11 @@ void *vme4l_destroy_ioremap_region( VME4L_IOREMAP_REGION *region );
 static int vme4l_send_sig( VME4L_IRQ_ENTRY *ent, int priv)
 {
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,14,0)
+	if (READ_ONCE(ent->u.user.task->__state) < EXIT_ZOMBIE )
+#else
 	if (ent->u.user.task->state < EXIT_ZOMBIE )
+#endif
 		return send_sig( ent->u.user.signal, ent->u.user.task, priv);
 	else
 		return -EINVAL;
@@ -399,10 +395,14 @@ static int do_free_adrswin(VME4L_ADRSWIN *win, bool checkUseCount)
 	}
 
 	if(!checkUseCount || lastReference) {
-		rv = G_bDrv->releaseAddrWindow(G_bHandle,
-			win->spc, win->vmeAddr, win->size,
-			win->flags, win->bDrvData);
-
+		if (G_bDrv) {
+			rv = G_bDrv->releaseAddrWindow(G_bHandle,
+						       win->spc,
+						       win->vmeAddr,
+						       win->size,
+						       win->flags,
+						       win->bDrvData);
+		}
 		if( !rv ) {
 			list_del(&win->node);
 
@@ -1255,7 +1255,7 @@ static int vme4l_zc_dma( VME4L_SPACE spc, VME4L_RW_BLOCK *blk, int swapMode )
 
 	if (to_user) {
 		VME4LDBG("To/from Userspace DMA transfer\n");
-		rv = get_user_pages_fast( uaddr, nr_pages, direction, pages);
+		rv = get_user_pages_fast( uaddr, nr_pages, direction == DMA_FROM_DEVICE  ? FOLL_WRITE : 0, pages);
 		if (rv < 0)
 			printk(KERN_ERR_PFX "%s: get_user_pages_fast failed rv"
 			       "%d nr pages %d\n",
@@ -1871,11 +1871,7 @@ void vme4l_irq( int level, int vector, struct pt_regs *regs)
 
 			case VME4L_KERNEL_IRQ:
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)
 				ent->u.kernel.h.lHandler( level, ent->u.kernel.dev_id );
-#else
-				ent->u.kernel.h.lHandler( level, ent->u.kernel.dev_id, regs );
-#endif /*LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)*/
 				break;
 
 
@@ -2122,13 +2118,7 @@ static int vme4l_mmap(
 
 	/* replace discontinued VM_RESERVED as stated in Torvalds' mail:
 	https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/commit/?id=547b1e81afe3119f7daf702cc03b158495535a25 */
-	vma->vm_flags |= ( VM_IO | VM_DONTEXPAND |
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,7,0)
-			  VM_DONTDUMP
-#else
-			  VM_RESERVED
-#endif
-			 );
+	vma->vm_flags |= ( VM_IO | VM_DONTEXPAND | VM_DONTDUMP );
 	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
 	/*
 	 * Setup a callback to free our window when user unmaps area
@@ -2752,11 +2742,7 @@ int vme_bus_to_phys( int space, u32 vmeadrs, void **physadrs_p )
  */
 int VME_REQUEST_IRQ(
 	unsigned int vme_irq,
- #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)
 	void (*handler)(int, void * ),
-#else
-	void (*handler)(int, void *, struct pt_regs * ),
-#endif
 	unsigned long flags,
 	const char *device,
 	void *dev_id

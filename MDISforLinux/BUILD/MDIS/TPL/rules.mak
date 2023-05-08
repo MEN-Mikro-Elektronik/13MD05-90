@@ -499,4 +499,9 @@ callkernelbuild:
 	@$(ECHO) "++++++++ Building kernel modules ++++++++++"
 	@$(ECHO) -n "obj-m +=" >OBJ/Makefile
 	cat $(THIS_DIR)/.kernelsubdirs >>OBJ/Makefile
+ifeq ($(CROSS_COMPILE), )
+	@$(ECHO) "### Compiling kernel modules ###"
+else
+	@$(ECHO) "### Cross-compiling kernel modules for arch: $(ARCH) ###"
+endif
 	$(Q)$(MAKE) -C $(LIN_KERNEL_DIR) M=$(THIS_DIR)/OBJ

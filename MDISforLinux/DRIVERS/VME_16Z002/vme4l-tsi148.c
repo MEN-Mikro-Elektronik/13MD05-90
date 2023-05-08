@@ -25,10 +25,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #include <linux/version.h>
 #include <linux/module.h>
 #include <linux/kernel.h> /* printk() */
 #include <linux/pci.h>
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
+#error This module is not supported by MDIS for Kernel version 6.1 and above.
+#else // LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,26)
  #include <asm/semaphore.h>
@@ -214,12 +219,8 @@ static VME4L_BRIDGE_HANDLE *vme4l_bh;
 											 _low = (uint32_t)(_val64); }
 
 /* TSI148 has big endian regs, so we have to swap */
-#define	TSI148_SWAP_32(dword)	( ((dword)>>24)	| ((dword)<<24)	| \
-								  (((dword)>>8) & 0x0000ff00) |	\
-								  (((dword)<<8) & 0x00ff0000) )
-
-#define	TSI148_SWAP_16(word)	( (((word)>>8) & 0x00ff) |	\
-								  (((word)<<8) & 0xff00) )
+#define	TSI148_SWAP_32(dword)	OSS_SWAP32(dword)
+#define	TSI148_SWAP_16(word)	OSS_SWAP16(word)
 
 #define	TSI148_CTRL_READ( _reg ) \
 		TSI148_SWAP_32( readl( G_vme4l_bh.regs.vaddr \
@@ -1388,7 +1389,12 @@ static inline int Tsi148_SlaveWindowAllocKernSpc(
 	size_t size,
 	dma_addr_t *dmaAddrP )
 {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
+	winResP->vaddr = dma_alloc_coherent(&vme4l_bh->pdev->dev, size, dmaAddrP, GFP_KERNEL);
+#else
 	winResP->vaddr = pci_alloc_consistent( vme4l_bh->pdev, size, dmaAddrP);
+#endif
+
 	VME4LDBG( "vme4l(%s): alloced PCI mem virt=0x%p phys=0x%llx (0x%llx)\n",
 			  __FUNCTION__, winResP->vaddr, (uint64_t) *dmaAddrP,
 			  (uint64_t) size );
@@ -1585,8 +1591,17 @@ static int Tsi148_SlaveWindowCtrl(
 	else {
 		/* free window... */
 		if( winResP->memReq ) {
-			pci_free_consistent(vme4l_bh->pdev, winResP->size, winResP->vaddr,
-								winResP->phys);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
+			dma_free_coherent(&vme4l_bh->pdev->dev,
+					  winResP->size,
+					  winResP->vaddr,
+					  winResP->phys);
+#else
+			pci_free_consistent(vme4l_bh->pdev,
+					    winResP->size,
+					    winResP->vaddr,
+					    winResP->phys);
+#endif
 		}
 		winResP->memReq = 0;
 		winResP->inUse = 0;
@@ -2539,8 +2554,17 @@ static void DEVEXIT tsi148_pci_remove_one( struct pci_dev *pdev )
 		
 		Tsi148_InboundWinSet( i, VME4L_SPC_SLV0+i, 0, 0, 0 /*disable*/ );
 		if( winResP->memReq ) {
-			pci_free_consistent( vme4l_bh->pdev, winResP->size, winResP->vaddr,
-								 winResP->phys );
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)
+			dma_free_coherent(&vme4l_bh->pdev->dev,
+					  winResP->size,
+					  winResP->vaddr,
+					  winResP->phys);
+#else
+			pci_free_consistent(vme4l_bh->pdev,
+					    winResP->size,
+					    winResP->vaddr,
+					    winResP->phys);
+#endif
 		}
 	}
 
@@ -2661,3 +2685,4 @@ MODULE_LICENSE("GPL");
 #ifdef MAK_REVISION
 MODULE_VERSION(MENT_XSTR(MAK_REVISION));
 #endif
+#endif //LINUX_VERSION_CODE >= KERNEL_VERSION(6,1,0)

@@ -1,16 +1,19 @@
-# **List of Supported Components for release 13MD05-90_02_04**
+# **List of Supported Components for release 13MD05-90_02_05**
 
-#### Supported tested components:
-- 02F023P
+## Supported tested components:
 - 02F026L
+- 02F027P
+- 02G025
+- 02G028
 - 01A025
 - 09BL51/09BC51 (SC31)
 - 02F215
-- 02F223
 - 02G215
 - 16Z029_CAN
 - 16Z034_GPIO
 - 16Z037_GPIO
+- 16Z050_BIO
+- 16Z055_HDLC
 - 16Z087_ETH
 - 16Z125_UART
 - 02F205
@@ -20,6 +23,7 @@
 - 04M032
 - 04M033
 - 04M035N
+- 04M036N
 - 04M037N
 - 04M043N
 - 04M047
@@ -28,43 +32,32 @@
 - 04M062N
 - 04M065N
 - 04M066
-- 04M077N
 - 04M081
 - 04M082
-- Ubuntu 18.04 LTS 32-bit
-- Ubuntu 18.04 LTS 64-bit
 - Ubuntu 20.04 LTS 64-bit
-- CentOS 7.8 64-bit
-- CentOS 8.2 64-bit
-- Debian 10.5 32-bit
-- Debian 10.5 64-bit
-- Debian 10.6 32-bit
-- Debian 10.6 64-bit
-- Yocto - Sumo, Kernel 4.15.18 64-bit (02F026L + 02G025A only)
+- Ubuntu 22.04 LTS 64-bit
+- Debian 10 32-bit
+- Debian 10 64-bit
+- Debian 11 64-bit
+- RHEL 9.1 64-bit
 
 #### **Compilation - tested kernel versions:**
-- 3.16
-- 4.4
-- 4.9
 - 4.14
 - 4.19
 - 5.4
-- 5.6
 - 5.10
+- 5.15
+- 6.1
 
-#### Supported not tested components:
+## Supported not tested components:
 - 02G023
 - 02G025A
 - 15CB70
-- 09BL50/09BC50 (SC24)
-- 09BL70/09BC70 (SC25)
+- 09BL72/09BC72 (CB71)
 - 02G229
 - 16Z001_SMB
-- 16Z055_HDLC
 - 16Z127_GPIO
 - 16Z135_HSUART
-- 04M036N
-- 04M072
 - 04M099
 - 04M199
 - 02F026C
@@ -73,7 +66,7 @@
 - 02D203
 - 02F204
 
-#### EOS state components:
+## EOS state components:
 **Comment: EOS (End Of Support)**
 
 Legacy product. Product support is still available, but not functionally tested any more during regression tests.
@@ -86,6 +79,7 @@ Legacy product. Product support is still available, but not functionally tested 
 - 02F019P
 - 02F021P
 - 02F022P
+- 02F023P
 - 02G020
 - 02G022
 - 02D009
@@ -105,16 +99,18 @@ Legacy product. Product support is still available, but not functionally tested 
 - 01A017
 - 01A021
 - 09DC15 (08SC24)
+- 09BL50/09BC50 (08SC24)
+- 09BL70/09BC70 (08SC25)
 - 02D202
 - 02F206
 - 02F207
+- 02F405
 - 15P599
 - 15P506
 - 16Z024_SRAM
 - 16Z025_UART
 - 16Z044_DISP
 - 16Z050_BIOC
-- 16Z051_DAC
 - 16Z057_UART
 - 16Z061_PWM
 - 16Z075_SPEED
@@ -134,9 +130,11 @@ Legacy product. Product support is still available, but not functionally tested 
 - 04M054
 - 04M065
 - 04M069N
+- 04M072
 - 04M075
 - 04M076
 - 04M077
+- 04M077N
 - 04M078
 - 04M079
 - 15PP04
@@ -144,14 +142,21 @@ Legacy product. Product support is still available, but not functionally tested 
 - 13Y001-06
 - 13Y002-06
 - 13Y007-06
+- CentOS 7.5
+- CentOS 7.6
+- CentOS 7.x
+- CentOS 8.x
 - Ubuntu 14.04.1 LTS
 - Ubuntu 14.04.5 LTS
 - Ubuntu 16.04.1 LTS
 - Ubuntu 16.04.5 LTS
 - Ubuntu 16.04.6 LTS
 - Ubuntu 18.04.1 LTS
+- Ubuntu 18.04 LTS
+- Yocto - Sumo, kernel 4.14
+- Yocto – Dunfell, kernel 5.4
 
-#### EOL state components:
+## EOL state components:
 **Comment: EOL (End Of Life)**
 
 Existing support may be removed from 13MD05-90.
@@ -192,6 +197,7 @@ Existing support may be removed from 13MD05-90.
 - 02F203
 - 02D201
 - 02D302
+- 02F223
 - 16Z047_WDOG
 - 16Z069_RST
 - 04M008
@@ -219,4 +225,3 @@ Existing support may be removed from 13MD05-90.
 - 04M097
 - 04MS09N
 - ELinOS
-- Yocto - Sumo, kernel 4.14

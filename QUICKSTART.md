@@ -71,9 +71,9 @@ To compile kernel modules on the host system, you require:
 
     ``# ln -s /usr/src/linux-headers-$(uname -r) /usr/src/linux``
 
-### CentOs / RedHat
+### RedHat / CentOs
 
-Note: RedHat Linux is not officially supported!
+Note: CentOs Linux is not officially supported!
 
 - Install the build toolchain:
 
@@ -99,14 +99,6 @@ Note: RedHat Linux is not officially supported!
   - for running kernel version:
 
     ``# ln -s /usr/src/kernels/$(uname -r) /usr/src/linux``
-
-- Prepare the kernel headers:
-
-  ```
-  # cd /usr/src/linux
-  # make oldconfig
-  # make prepare
-  ```
 
 ### Manjaro / Arch Linux
 
@@ -353,7 +345,7 @@ The binaries will be installed in the following directories on the target:
 
 - Executables
 
-  ``/usr/local/bin``
+  ``/usr/local/bin`` or ``/usr/bin``
 
 - Descriptor files
 

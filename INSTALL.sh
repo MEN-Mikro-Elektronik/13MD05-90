@@ -348,7 +348,15 @@ make_history_script() {
             git log > "${MDIS_HISTORY_PATH}/${var2}_history.txt"
             git remote -v > "${MDIS_HISTORY_PATH}/${var2}_url.txt"
             gitRevision=$(git describe --dirty --long --tags --always)
-            gitDate=$(git --no-pager show -s --date=short --format=format:"%cd%n")
+            gitLatestTag=$(git describe --tags)
+            # First, try to get the date of the latest tag.
+            gitTagDate=$(git for-each-ref --format='%(taggerdate:short) | %(tag)' | grep -m1 ${gitLatestTag} | awk '{print $1}')
+            # If tag date is found, just get it, use the fallback method otherwise
+            if [ ! -z ${gitTagDate} ]; then
+                gitDate=${gitTagDate}
+            else
+                gitDate=$(git --no-pager show -s --date=short --format=format:"%cd%n")
+            fi
             echo "${gitRevision}_${gitDate}" > "${MDIS_HISTORY_PATH}/${var2}_version.txt"
             git describe --exact-match --tags "$(git rev-parse --verify HEAD)" &> "${MDIS_HISTORY_PATH}/${var2}_tag.txt"
             cd "${MDIS_REPO_DIR}" || { echo "cannot change directory into: ${MDIS_REPO_DIR}"; exit 1; }
@@ -636,7 +644,7 @@ folder_recursive() {
 # - Run make install
 
 echo "                                                                                "
-echo "Installing the MEN MDIS for Linux System Package 13MD05-90_02_04                "
+echo "Installing the MEN MDIS for Linux System Package 13MD05-90_02_05                "
 echo "(see MDIS User Manual for details)                                              "
 echo "________________________________________________________________________________"
 echo "                                                                                "

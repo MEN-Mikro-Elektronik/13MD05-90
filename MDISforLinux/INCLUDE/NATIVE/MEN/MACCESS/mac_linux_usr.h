@@ -47,6 +47,12 @@ typedef unsigned long MACCESS;         /* access pointer */
 #define MWRITE_D32(ma,offs,val)		*(volatile u_int32*)((MACCESS)(ma)+(offs)) = WSWAP32(val)
 
 #else
+/**
+ * Include sys/io.h where are declared the functions to write/read from/to IO MAPPED
+ * regions
+*/
+#include <sys/io.h>
+
 /*---- I/O mapped hardware (only CPUs supporting real I/O access (x86))----*/
 typedef unsigned MACCESS;         /* access pointer */
 
