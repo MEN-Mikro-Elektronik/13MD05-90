@@ -40,12 +40,8 @@
 #include <linux/interrupt.h>
 
 #include <asm/fixmap.h>     /* fix_to_virt() */
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4,10,0)
-#include <asm/uaccess.h>     /* copy_to/from_user */
-#else
-#include <linux/uaccess.h>     /* copy_to/from_user */
-#endif
 
+#include <linux/uaccess.h>     /* copy_to/from_user */
 
 #include <MEN/men_typs.h>
 #include <MEN/dbg.h>
@@ -222,16 +218,9 @@ MK_DEV *MDIS_FindDevByName( const char *name );
  * define the IRQ handler depending on the kernel version (arg changes.. )
  * and maintain it as one kernel-independent Macro throughout the MDIS kernel.
  */
-
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)
 irqreturn_t MDIS_IrqHandler( int irq, void *dev_id );
-# define MDIS_IRQHANDLER(a,b,c) MDIS_IrqHandler(a,b)
-# define FUNCTYPE irqreturn_t
-#else
-irqreturn_t MDIS_IrqHandler( int irq, void *dev_id, struct pt_regs *regs );
-# define MDIS_IRQHANDLER(a,b,c) MDIS_IrqHandler(a,b,c)
-# define FUNCTYPE irqreturn_t
-#endif
+#define MDIS_IRQHANDLER(a,b,c) MDIS_IrqHandler(a,b)
+#define FUNCTYPE irqreturn_t
 
 #define MDIS_IRQFUNC MDIS_IrqHandler
 

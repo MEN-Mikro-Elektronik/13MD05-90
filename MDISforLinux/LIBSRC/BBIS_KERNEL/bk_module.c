@@ -528,68 +528,6 @@ int bbis_unregister_bb_driver( char *bbName )
  *				  *eof			true if all characters output
  *  Globals....:  -
  ****************************************************************************/
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
-static ssize_t bk_read_procmem( char *page, 
-				char **start, 
-				off_t off,
-				int count, 
-				int *eof, 
-				void *data)
-{
-    int i, len = 0, rv;
-	off_t begin = 0;
-
-	DBGWRT_3((DBH,"bk_read_procmem: count %d page=%p\n", count, page));
-	BK_LOCK(i);
-	if( i ) return (-ERESTARTSYS);
-
-	/* Drivers */
-	len += sprintf( page+len, "\nDrivers\n" );
-	{
-		BK_DRV *node;
-		for( node=(BK_DRV *)G_drvList.head;
-			 node->node.next;
-			 node = (BK_DRV *)node->node.next ){
-
-			len += sprintf( page+len, "  %s\n", node->drvName );
-			INC_LEN;
-		}
-	}
-
-	/* Devices */
-	len += sprintf( page+len, "Devices\n" );
-	INC_LEN;
-
-	{
-		BK_DEV *node;
-		for( node=(BK_DEV *)G_devList.head;
-			 node->node.next;
-			 node = (BK_DEV *)node->node.next ){
-			len += sprintf( page+len, "  %s drv=%s "
-							"usecnt=%d\n",
-							node->devName,
-							node->drv->drvName,
-							node->useCount);
-			INC_LEN;
-		}
-	}
-
- done:
-	if (off >= len+begin){
-		rv = 0;
-		goto end;
-	}
-	*start = page + (off-begin);
-	rv = ((count < begin+len-off) ? count : begin+len-off);
-
- end:
-	DBGWRT_3((DBH,"bk_read_procmem: ex eof=%d rv=%d\n", *eof, rv));
-	BK_UNLOCK;
-
-	return rv;
-}
-
-#else /* newer kernel >= 3.10 */
 static ssize_t bk_read_procmem( struct file *filp, char *buf, size_t count, loff_t *pos)
 {
 
@@ -654,15 +592,13 @@ static ssize_t bk_read_procmem( struct file *filp, char *buf, size_t count, loff
   BK_UNLOCK;
   return len;
 }
-#endif
-
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
 static struct proc_ops bk_proc_ops = {
 	.proc_read = bk_read_procmem,
 };
 /* since kernel 3.10 new proc entry fops are needed */
-#elif LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
+#elif LINUX_VERSION_CODE >= KERNEL_VERSION(4,14,0)
 static struct file_operations bk_proc_fops = {
      .read=      	bk_read_procmem,
 };
@@ -698,8 +634,6 @@ int init_module(void)
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
 	proc_create("bbis", 0, NULL, &bk_proc_ops);
-#elif LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
-	create_proc_read_entry ("bbis", 0, NULL, (read_proc_t *)bk_read_procmem, NULL);
 #else
 	proc_create (           "bbis", 0, NULL, &bk_proc_fops);
 #endif

@@ -59,12 +59,7 @@
 /*
  * special patch for SC24 to map LPC space and adjust IRQ type
  */
-
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
-# define PCI_FIND_FUNC pci_get_device
-#else
-# define PCI_FIND_FUNC pci_find_device
-#endif
+#define PCI_FIND_FUNC pci_get_device
 
 #define FPGA_ADDR_SC24_LPC 		0xe000e000
 #define PCI_DEV_ATI_LPC 		0x439d	/* not present in earlier pci_ids.h */

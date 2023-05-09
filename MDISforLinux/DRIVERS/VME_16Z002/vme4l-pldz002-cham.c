@@ -36,9 +36,6 @@
  */
 
 #include <linux/version.h>
-/* #if !(defined AUTOCONF_INCLUDED) && (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19)) */
-/*  #include <linux/config.h> */
-/* #endif */
 #include <linux/module.h>
 #include <linux/kernel.h> /* printk() */
 
@@ -1949,15 +1946,9 @@ static int PldZ002_CheckLocationMonitorInterrupts(VME4L_BRIDGE_HANDLE *h,
  *				bus devices. From here we dispatch everything to vme4l-core
  *
  */
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19)
-static irqreturn_t PldZ002Irq(int irq, void *dev_id, struct pt_regs *regs)
-{
-#else
 static irqreturn_t PldZ002Irq(int irq, void *dev_id )
 {
 	struct pt_regs *regs = NULL;
-# endif /* LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19) */
-
 	int vector=0, level=VME4L_IRQLEV_UNKNOWN;
 	VME4L_BRIDGE_HANDLE *h 	= (VME4L_BRIDGE_HANDLE *)dev_id;
 	int handled=1;
@@ -2336,14 +2327,8 @@ static int vme4l_probe( CHAMELEONV2_UNIT_T *chu )
 		goto CLEANUP;
 	} else {
 		/*normal linux kernel mode: PldZ002Irq is a standard linux IRQ handler */
-		if( (rv = request_irq( chu->pdev->irq, PldZ002Irq,
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,20)
-						IRQF_SHARED,
-#else
-						SA_SHIRQ,
-#endif
-						"men_vme_bridge",
-						h))<0 )
+		if( (rv = request_irq(chu->pdev->irq, PldZ002Irq,
+				      IRQF_SHARED, "men_vme_bridge", h)) <0 )
 			goto CLEANUP;
 	}
 	VME4LDBG("Got MSI %x\n", chu->pdev->irq);

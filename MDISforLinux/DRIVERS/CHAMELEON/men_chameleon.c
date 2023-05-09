@@ -55,15 +55,11 @@
 #include <MEN/oss.h>
 #include <MEN/chameleon.h>
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35)
 #include <linux/semaphore.h>
-#endif
 
 /* __devinit qualifiers are removed */
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0)
 # define __devinit
 # define __devinitdata
-#endif
 
 #define STR_HELPER(x) 		#x
 #define M_INT_TO_STR(x) 	STR_HELPER(x)
@@ -182,11 +178,7 @@ static int G_tblIdx = 0;		/**< index of chameleon table		*/
 static const char *G_sysChamTblAttrname[NR_CHAM_TBL_ATTRS] = { "fpga_file","model","revision", "magic" };
 static const char *G_sysIpCoreAttrname[NR_CHAM_IPCORE_ATTRS] = { "Unit", "devId", "Grp", "Rev", "Var", "Inst", "IRQ", "BAR", "Offset", "Addr" };
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36)
 static DEFINE_SEMAPHORE(cham_probe_sem);
-#else
-static DECLARE_MUTEX(cham_probe_sem);
-#endif
 
 static void cham_probe_lock(void)
 {
